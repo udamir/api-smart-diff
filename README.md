@@ -38,11 +38,15 @@ const diff = syncApiDiff(oldSpec, newSpec, "OpenApi3")
 ```
 
 ### Browsers
-Browser folder contains an Ubundle allowing you to either reference `api-smart-diff.min.js` in your HTML or import module using Require.js.
+
+A browser version of `api-smart-diff` is also available via SDN:
+```html
+<script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.js"></script>
+```
 
 Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiSmartDiff`.
 ```HTML
-<script src="node_modules/api-smart-diff/browser/api-smart-diff.min.js"></script>
 <script>
   var diff = ApiSmartDiff.syncApiDiff (oldSpec, newSpec, "OpenApi3")
 </script>
