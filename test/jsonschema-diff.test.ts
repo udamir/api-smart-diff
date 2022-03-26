@@ -1,5 +1,5 @@
 import { ExampleResource, replacePatch } from "./helpers"
-import { annotation, nonBreaking } from "../src"
+import { annotation } from "../src"
 
 const exampleResource = new ExampleResource("jsonschema.yaml", "JsonSchema")
 

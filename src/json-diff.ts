@@ -1,6 +1,9 @@
-import { ActionType, IDiff, IJsonPath } from "./types"
+import { ActionType, IJsonPath } from "./types"
+import { classifyDiff } from "./classifier"
+import { IClassifiedDiff, Rules } from "."
 
 interface IJsonDiffOptions {
+  rules?: Rules
   trimStrings?: boolean
   caseSensitive?: boolean
   findFirstDiff?: boolean
@@ -14,9 +17,14 @@ const typeOf = (value: any) => {
   return typeof value == null ? "null" : typeof value
 }
 
-export const jsonDiff = (before: any, after: any, options?: IJsonDiffOptions, path: IJsonPath = []): IDiff[] => {
+export const jsonDiff = (
+  before: any,
+  after: any,
+  options?: IJsonDiffOptions,
+  path: IJsonPath = []
+): IClassifiedDiff[] => {
   if (typeOf(before) !== typeOf(after)) {
-    return [{ path, before, after, action: ActionType.replace }]
+    return [classifyDiff({ path, before, after, action: ActionType.replace }, options?.rules)]
   }
 
   switch (typeOf(before)) {
@@ -27,7 +35,7 @@ export const jsonDiff = (before: any, after: any, options?: IJsonDiffOptions, pa
     case "array":
       return arrayDiff(before, after, options, path)
     default:
-      return before !== after ? [{ path, before, after, action: ActionType.replace }] : []
+      return before !== after ? [classifyDiff({ path, before, after, action: ActionType.replace }, options?.rules)] : []
   }
 }
 
@@ -36,10 +44,10 @@ const stringsDiff = (
   after: string,
   options?: IJsonDiffOptions,
   path: IJsonPath = []
-): IDiff[] => {
+): IClassifiedDiff[] => {
   const a = normalizeString(before, options)
   const b = normalizeString(after, options)
-  return a !== b ? [{ path, before, after, action: ActionType.replace }] : []
+  return a !== b ? [classifyDiff({ path, before, after, action: ActionType.replace }, options?.rules)] : []
 }
 
 const normalizeString = (value: string, options?: IJsonDiffOptions) => {
@@ -48,8 +56,8 @@ const normalizeString = (value: string, options?: IJsonDiffOptions) => {
   return value
 }
 
-const objectsDiff = (before: any, after: any, options?: IJsonDiffOptions, path: IJsonPath = []): IDiff[] => {
-  const diffs: IDiff[] = []
+const objectsDiff = (before: any, after: any, options?: IJsonDiffOptions, path: IJsonPath = []): IClassifiedDiff[] => {
+  const diffs: IClassifiedDiff[] = []
   const keys = new Set([...Object.keys(before), ...Object.keys(after)])
   for (const key of keys) {
     // skip symbol key
@@ -59,20 +67,28 @@ const objectsDiff = (before: any, after: any, options?: IJsonDiffOptions, path: 
 
     if (!before.hasOwnProperty(key)) {
       // added key
-      diffs.push({
-        path: [...path, key],
-        before: undefined,
-        after: after[key],
-        action: ActionType.add,
-      })
+      diffs.push(
+        classifyDiff(
+          {
+            path: [...path, key],
+            after: after[key],
+            action: ActionType.add,
+          },
+          options?.rules
+        )
+      )
     } else if (!after.hasOwnProperty(key)) {
       // deleted key
-      diffs.push({
-        path: [...path, key],
-        before: before[key],
-        after: undefined,
-        action: ActionType.remove,
-      })
+      diffs.push(
+        classifyDiff(
+          {
+            path: [...path, key],
+            before: before[key],
+            action: ActionType.remove,
+          },
+          options?.rules
+        )
+      )
     } else {
       // updated value
       diffs.push(...jsonDiff(before[key], after[key], options, [...path, key]))
@@ -94,19 +110,28 @@ const findEqualItemIndex = (item: any, array: any[], options?: IJsonDiffOptions)
   return -1
 }
 
-const arrayDiff = (before: any[], after: any[], options?: IJsonDiffOptions, path: IJsonPath = []): IDiff[] => {
-  const diffs: IDiff[] = []
+const arrayDiff = (
+  before: any[],
+  after: any[],
+  options?: IJsonDiffOptions,
+  path: IJsonPath = []
+): IClassifiedDiff[] => {
+  const diffs: IClassifiedDiff[] = []
 
   const _after = [...after]
   for (let i = 0; i < before.length; i++) {
     if (options?.strictArrays) {
       if (i >= after.length) {
-        diffs.push({
-          path: [...path, i],
-          before: before[i],
-          after: undefined,
-          action: ActionType.remove,
-        })
+        diffs.push(
+          classifyDiff(
+            {
+              path: [...path, i],
+              before: before[i],
+              action: ActionType.remove,
+            },
+            options?.rules
+          )
+        )
       } else {
         diffs.push(...jsonDiff(before[i], after[i], options, [...path, i]))
       }
@@ -115,12 +140,16 @@ const arrayDiff = (before: any[], after: any[], options?: IJsonDiffOptions, path
       if (index >= 0) {
         _after.splice(index, 1)
       } else {
-        diffs.push({
-          path: [...path, i],
-          before: before[i],
-          after: undefined,
-          action: ActionType.remove,
-        })
+        diffs.push(
+          classifyDiff(
+            {
+              path: [...path, i],
+              before: before[i],
+              action: ActionType.remove,
+            },
+            options?.rules
+          )
+        )
       }
     }
     if (options?.findFirstDiff && diffs.length) {
@@ -133,12 +162,16 @@ const arrayDiff = (before: any[], after: any[], options?: IJsonDiffOptions, path
   }
 
   for (let i = 0; i < _after.length; i++) {
-    diffs.push({
-      path: [...path, before.length + i],
-      before: undefined,
-      after: _after[i],
-      action: ActionType.add,
-    })
+    diffs.push(
+      classifyDiff(
+        {
+          path: [...path, before.length + i],
+          after: _after[i],
+          action: ActionType.add,
+        },
+        options?.rules
+      )
+    )
   }
 
   return diffs

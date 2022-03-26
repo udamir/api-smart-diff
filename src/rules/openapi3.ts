@@ -1,8 +1,10 @@
-import { 
-  breaking, nonBreaking, unclassified, Rules, allAnnotation, 
-  addNonBreaking, allBreaking, breakingIfAfterTrue
-} from "../types"
 import { jsonSchemaRules } from "./jsonschema"
+import { Rules } from "../types"
+import { 
+  breaking, nonBreaking, unclassified, 
+  allAnnotation, addNonBreaking, 
+  allBreaking, breakingIfAfterTrue
+} from "./helpers"
 
 const serversRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
@@ -77,7 +79,7 @@ const requestBodiesRules: Rules = {
     "/": [nonBreaking, breaking, breaking],
     "/description": allAnnotation,
     "/content": contentRules,
-    "/required": [breaking, nonBreaking, (_, a) => a ? breaking : nonBreaking],
+    "/required": [breaking, nonBreaking, (_, a) => (a ? breaking : nonBreaking)],
   },
 }
 
@@ -141,7 +143,7 @@ export const openapi3Rules: Rules = {
     },
   },
   "/components": {
-    "/": [nonBreaking, breaking, breaking],
+    "/": [nonBreaking, nonBreaking, nonBreaking],
     "/schemas": {
       "/": [nonBreaking, breaking, breaking],
       "/*": jsonSchemaRules(addNonBreaking),

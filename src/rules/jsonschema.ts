@@ -1,23 +1,25 @@
-import { 
-  addNonBreaking, allAnnotation, allBreaking, allUnclassified, breaking, 
-  breakingIf, breakingIfAfterTrue, Classifier, nonBreaking, onlyAddBreaking, Rules
-} from "../types"
+import { Classifier, Rules } from "../types"
+import {
+  breaking, nonBreaking, addNonBreaking, 
+  allAnnotation, allBreaking, allUnclassified,
+  breakingIf, breakingIfAfterTrue, onlyAddBreaking,
+} from "./helpers"
 
 const maxClassifier: Classifier = [
-  breaking,
-  nonBreaking,
+  breaking, 
+  nonBreaking, 
   (b, a) => breakingIf(b < a)
 ]
 
 const minClassifier: Classifier = [
   breaking,
-  nonBreaking, 
+  nonBreaking,
   (b, a) => breakingIf(b > a)
 ]
 
 const exclusiveClassifier: Classifier = [
   breakingIfAfterTrue, 
-  nonBreaking,
+  nonBreaking, 
   (b, a) => breakingIf(b < a)
 ]
 
@@ -50,29 +52,29 @@ export const jsonSchemaRules = (rootRule: Classifier = allUnclassified): Rules =
   "/maxProperties": maxClassifier,
   "/minProperties": minClassifier,
   "/required": {
-    '/': onlyAddBreaking,
-    '/*': [breaking, nonBreaking, breaking]
+    "/": onlyAddBreaking,
+    "/*": [breaking, nonBreaking, breaking],
   },
   "/enum": {
     "/": [breaking, nonBreaking, breaking],
-    "/*": [nonBreaking, breaking, breaking]
+    "/*": [nonBreaking, breaking, breaking],
   },
   "/type": [breaking, nonBreaking, breaking],
   "/not": {
-    '/': [breaking, nonBreaking, breaking],
-    '/*': () => jsonSchemaRules(allBreaking)    
+    "/": [breaking, nonBreaking, breaking],
+    "/*": () => jsonSchemaRules(allBreaking),
   },
   "/allOf": {
-    '/': [breaking, nonBreaking, breaking],
-    '/*': () => jsonSchemaRules(allBreaking)
+    "/": [breaking, nonBreaking, breaking],
+    "/*": () => jsonSchemaRules(allBreaking),
   },
   "/oneOf": {
-    '/': [breaking, nonBreaking, breaking],
-    '/*': () => jsonSchemaRules(addNonBreaking)
+    "/": [breaking, nonBreaking, breaking],
+    "/*": () => jsonSchemaRules(addNonBreaking),
   },
   "/anyOf": {
-    '/': [breaking, nonBreaking, breaking],
-    '/*': () => jsonSchemaRules(addNonBreaking)
+    "/": [breaking, nonBreaking, breaking],
+    "/*": () => jsonSchemaRules(addNonBreaking),
   },
   "/items": () => jsonSchemaRules(),
   "/properties": {
@@ -81,24 +83,26 @@ export const jsonSchemaRules = (rootRule: Classifier = allUnclassified): Rules =
   },
   "/additionalProperties": {
     "/": [breaking, breaking, breakingIfAfterTrue],
-    '/*': () => jsonSchemaRules(addNonBreaking)
+    "/*": () => jsonSchemaRules(addNonBreaking),
   },
   "/description": allAnnotation,
   "/format": [breaking, nonBreaking, breaking],
   "/default": [nonBreaking, breaking, breaking],
   "/nullable": booleanClassifier,
-  "/discriminator": { // TODO
-    '/': allUnclassified,
-    '/propertyName': allUnclassified,
-    '/mapping': allUnclassified
+  "/discriminator": {
+    // TODO
+    "/": allUnclassified,
+    "/propertyName": allUnclassified,
+    "/mapping": allUnclassified,
   },
   "/readOnly": booleanClassifier,
   "/writeOnly": booleanClassifier,
   "/example": allAnnotation,
   "/externalDocs": allAnnotation,
   "/deprecated": booleanClassifier,
-  "/xml": { // TODO
-    '/': allUnclassified,
+  "/xml": {
+    // TODO
+    "/": allUnclassified,
     "/name": allUnclassified,
     "/namespace": allUnclassified,
     "/prefix": allUnclassified,

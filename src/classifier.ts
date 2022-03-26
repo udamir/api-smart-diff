@@ -1,4 +1,6 @@
-import { Rules, IJsonPath, Classifier, allUnclassified, IClassifiedDiff, IDiff } from "./types"
+import { Rules, IJsonPath, Classifier, IDiff } from "./types"
+import { allUnclassified } from "./rules/helpers"
+import { IClassifiedDiff } from "."
 
 export const findClassifier = (rules: Rules, path: IJsonPath): Classifier => {
   let _rules = rules
@@ -22,19 +24,17 @@ export const findClassifier = (rules: Rules, path: IJsonPath): Classifier => {
   return allUnclassified
 }
 
-export const classifyDiff = (rules: Rules, diff: IDiff[]): IClassifiedDiff[] => {
-  const _diff = diff as IClassifiedDiff[]
+export const classifyDiff = (diff: IDiff, rules: Rules = {}): IClassifiedDiff => {
+  const _diff = diff as IClassifiedDiff
 
-  for (const item of _diff) {
-    const classifier = findClassifier(rules, item.path)
-    const index = ["add", "remove", "replace"].indexOf(item.action)
-    const changeType = classifier[index]
-    if (typeof changeType === "function") {
-      item.type = changeType(item.before, item.after)
-    } else {
-      item.type = changeType
-    }
-  }
+  const classifier = findClassifier(rules, diff.path)
+
+  const index = ["add", "remove", "replace"].indexOf(diff.action)
+  const changeType = classifier[index]
+
+  _diff.type = typeof changeType === "function" 
+    ? changeType(diff.before, diff.after)
+    : changeType
 
   return _diff
 }

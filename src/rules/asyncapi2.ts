@@ -1,8 +1,9 @@
-import { 
-  addNonBreaking, allBreaking, allNonBreaking, allUnclassified, 
-  onlyAddBreaking, Rules, allAnnotation
-} from "../types"
 import { jsonSchemaRules } from "./jsonschema"
+import { Rules } from "../types"
+import { 
+  addNonBreaking, allBreaking, allNonBreaking, 
+  allUnclassified, onlyAddBreaking, allAnnotation
+} from "./helpers"
 
 const correlationIdRules: Rules = {
   "/": addNonBreaking,

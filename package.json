@@ -1,7 +1,7 @@
 {
   "name": "api-smart-diff",
-  "version": "0.1.0",
-  "description": "Compare two api specifications, supported formats: OpenAPI, AsyncAPI, JsonSchema",
+  "version": "0.1.1",
+  "description": "Generate the diff between two API specifications (OpenAPI, AsyncAPI, JsonSchema)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
