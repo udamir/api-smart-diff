@@ -1,0 +1,22 @@
+allOf:
+  - type: object
+    properties:
+      pet_color:
+        type: string
+type: object
+required:
+  - pet_type
+properties:
+  name:
+    type: string
+  pet_type:
+    nullable: false
+    allOf:
+    - type: string
+  age:
+    type: number
+    title: age
+    minimum: 10
+    maximum: 20
+    multipleOf: 2
+    exclusiveMaximum: true

@@ -1,0 +1,60 @@
+{
+  "name": "api-smart-diff",
+  "version": "0.1.0",
+  "description": "Compare two api specifications, supported formats: OpenAPI, AsyncAPI, JsonSchema",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "browser"
+  ],
+  "browser": {
+    "./dist/index.js": "./browser/api-smart-diff.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "jest --verbose",
+    "test:coverage": "jest --verbose --coverage",
+    "build:web": "webpack"
+  },
+  "keywords": [
+    "jsonschema",
+    "diff",
+    "openapi",
+    "swagger",
+    "asyncapi"
+  ],
+  "author": "Damir Yusipov",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^26.0.0",
+    "@types/js-yaml": "^4.0.5",
+    "fast-json-patch": "^3.1.1",
+    "jest": "^26.0.1",
+    "js-yaml": "^4.1.0",
+    "ts-jest": "^26.1.0",
+    "ts-loader": "^8.0.8",
+    "ts-node": "^10.7.0",
+    "tslint": "^6.1.2",
+    "typescript": "^4.6.2",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/tests/.*|(\\.|/)(test|spec))\\.(ts?|tsx?|js?|jsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "modulePathIgnorePatterns": ["<rootDir>/dist/"],
+    "collectCoverage": true
+  }
+}

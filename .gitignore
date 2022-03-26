@@ -1,0 +1,8 @@
+node_modules
+.env
+.vscode
+dist
+.vuepress
+temp
+coverage
+.DS_store
