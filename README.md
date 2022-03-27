@@ -3,9 +3,9 @@
 This package provides utils to compute the diff between two API specifications.
 
 ## Purpose
-- Identify breaking and non-breaking changes.
-- Ensure API versioning consistency.
-- Generate API changelog.
+- Generate API changelog
+- Classify all changes: breaking, non-breaking or annotation
+- Ensure API versioning consistency
 
 ## Compatilibity
 
