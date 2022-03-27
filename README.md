@@ -9,9 +9,9 @@ This package provides utils to compute the diff between two API specifications.
 
 ## Compatilibity
 
-- OpenApi 3.0
-- AsyncApi 2.1
-- JsonSchema
+- [OpenApi 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md)
+- [AsyncApi 2.1](https://www.asyncapi.com/docs/specifications/v2.1.0)
+- [JsonSchema](https://json-schema.org/draft/2020-12/json-schema-core.html)
 - ~~[Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)~~ (Roadmap)
 - ~~graphql~~ (Roadmap)
 - ~~gRPC~~ (Roadmap)
