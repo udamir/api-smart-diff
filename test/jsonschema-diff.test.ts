@@ -3,8 +3,8 @@ import { annotation } from "../src"
 
 const exampleResource = new ExampleResource("jsonschema.yaml", "JsonSchema")
 
-describe("Test openapi 3 diff", () => {
-  it("add servers should be non-breaking change", () => {
+describe("Test Jsonschema diff", () => {
+  it("replace property title should be annotation change", () => {
     const path = ["properties", "age", "title"]
     const value = "size"
 
