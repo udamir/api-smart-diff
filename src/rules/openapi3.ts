@@ -64,12 +64,10 @@ const contentRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/*": {
     "/": [nonBreaking, breaking, breaking],
-    "*": {
-      "/schema": jsonSchemaRules(allBreaking),
-      "/example": allAnnotation,
-      "/examples": allAnnotation,
-      "/encoding": encodingRules,
-    },
+    "/schema": jsonSchemaRules(allBreaking),
+    "/example": allAnnotation,
+    "/examples": allAnnotation,
+    "/encoding": encodingRules,
   },
 }
 
@@ -99,6 +97,7 @@ const securityRules: Rules = {
 }
 
 const operationRules: Rules = {
+  "/": [nonBreaking, breaking, breaking],
   "/tags": allAnnotation,
   "/summary": allAnnotation,
   "/description": allAnnotation,
@@ -134,10 +133,7 @@ export const openapi3Rules: Rules = {
       "/": [nonBreaking, breaking, breaking],
       "/summary": allAnnotation,
       "/description": allAnnotation,
-      "/*": {
-        "/": [nonBreaking, breaking, breaking],
-        "/*": operationRules,
-      },
+      "/*": operationRules,
       "/servers": serversRules,
       "/parameters": parametersRules,
     },

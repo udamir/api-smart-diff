@@ -7,24 +7,13 @@ export const typeOf = (value: any) => {
   return typeof value == null ? "null" : typeof value
 }
 
-export const resolveObjValue = (obj: any, path: string) => {
-  let value = obj
-  for (const key of parsePath(path)) {
-    value = typeOf(value) === "array" ? value[+key] : value[key]
-    if (value === undefined) {
-      break
-    }
-  }
-  return value
-}
-
 export const parsePath = (path: string): string[] => {
-  const [_, ...pathArr] = path.split("/")
+  const [_, ...pathArr] = path.split("/").map((i) => i.replace(new RegExp("~1", "g"), "/"))
   return pathArr
 }
 
 export const buildPath = (path: DiffPath): string => {
-  return "/" + path.join("/")
+  return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
 }
 
 export const findExternalRefs = (source: any | any[]): string[] => {

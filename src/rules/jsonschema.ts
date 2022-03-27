@@ -76,15 +76,12 @@ export const jsonSchemaRules = (rootRule: Classifier = allUnclassified): Rules =
     "/": [breaking, nonBreaking, breaking],
     "/*": () => jsonSchemaRules(addNonBreaking),
   },
-  "/items": () => jsonSchemaRules(),
+  "/items": () => jsonSchemaRules(addNonBreaking),
   "/properties": {
     "/": [breaking, nonBreaking, breaking],
-    "/*": () => jsonSchemaRules(),
-  },
-  "/additionalProperties": {
-    "/": [breaking, breaking, breakingIfAfterTrue],
     "/*": () => jsonSchemaRules(addNonBreaking),
   },
+  "/additionalProperties": () => jsonSchemaRules([breaking, breaking, breakingIfAfterTrue]),
   "/description": allAnnotation,
   "/format": [breaking, nonBreaking, breaking],
   "/default": [nonBreaking, breaking, breaking],

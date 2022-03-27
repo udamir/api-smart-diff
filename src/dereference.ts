@@ -1,13 +1,26 @@
-import { resolveObjValue } from "./utils"
+import { parsePath, typeOf } from "./utils"
+
+export const resolveObjValue = (obj: any, path: string, cache: any = {}) => {
+  let value = obj
+  cache = new Map(Object.entries(cache))
+  for (const key of parsePath(path)) {
+    value = typeOf(value) === "array" ? value[+key] : value[key]
+    if (value === undefined) {
+      break
+    }
+    value = dereference(value, obj, new Set(), cache)
+  }
+  return value
+}
 
 export const dereference = (value: any, source: any, refs: Set<string>, cache: Map<string, any>): any => {
   if (value.hasOwnProperty("$ref")) {
-    const ref = value["$ref"]
-    if (refs.has(ref)) {
+    const { $ref, ...rest } = value
+    if (refs.has($ref)) {
       // TODO: handle circular ref
-      value = { $circularRef: ref }
+      value = { $circularRef: $ref }
     }
-    const [external, path] = ref.split("#")
+    const [external, path] = $ref.split("#")
 
     // resolve external obj 
     if (external) {
@@ -17,8 +30,8 @@ export const dereference = (value: any, source: any, refs: Set<string>, cache: M
       source = cache.get(external)
     }
 
-    value = resolveObjValue(source, path)
-    refs.add(ref)
+    value = { ...rest, ...resolveObjValue(source, path) }
+    refs.add($ref)
   }
   return value
 }

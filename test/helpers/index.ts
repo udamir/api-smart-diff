@@ -4,10 +4,13 @@ import path from "path"
 import fs from "fs"
 
 import { apiDiff, BaseRulesType, DiffPath } from "../../src"
-import { buildPath, resolveObjValue, findExternalRefs } from "../../src/utils"
+import { buildPath, findExternalRefs } from "../../src/utils"
+import { resolveObjValue } from "../../src/dereference"
 
 export class ExampleResource {
   private res: any = {}
+  public externalSources: any = {}
+
   constructor(private filename: string, public type: BaseRulesType) {
     try {
       const resPath = path.join(__dirname, "../resources/", this.filename)
@@ -26,12 +29,12 @@ export class ExampleResource {
   }
 
   public diff(after: any) {
-    return apiDiff(this.res, after, { rules: this.type })
+    return apiDiff(this.res, after, { rules: this.type, externalRefs: this.externalSources })
   }
 
   public getValue(path: DiffPath | string) {
-    path = typeof path === "string" ? path : "/" + path.join("/")
-    return resolveObjValue(this.res, path)
+    path = typeof path === "string" ? path : buildPath(path)
+    return resolveObjValue(this.res, path, this.externalSources)
   }
 
   public findExternalSources () {

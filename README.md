@@ -1,4 +1,5 @@
 # api-smart-diff
+<img alt="npm" src="https://img.shields.io/npm/v/api-smart-diff"> <img alt="npm" src="https://img.shields.io/npm/dm/api-smart-diff?label=npm"> <img alt="npm type definitions" src="https://img.shields.io/npm/types/api-smart-diff"> <img alt="GitHub" src="https://img.shields.io/github/license/udamir/api-smart-diff">
 
 This package provides utils to compute the diff between two API specifications.
 
@@ -38,9 +39,9 @@ import { apiDiff } from 'api-smart-diff'
 const diff = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 // {
 //   action: "add" | "remove" | "replace",
-//   after: 'value after',
-//   before: 'value before',
-//   path: ['path, 'in', 'array'],
+//   after: 'value in newSpec',
+//   before: 'value in oldSpec',
+//   path: ['path, 'in', 'array', 'format'],
 //   type: "annotation" | "breaking" | "non-breaking" | "unclassified"
 // }
 ```
