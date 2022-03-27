@@ -48,7 +48,7 @@ const diff = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 
 ### Browsers
 
-A browser version of `api-smart-diff` is also available via SDN:
+A browser version of `api-smart-diff` is also available via CDN:
 ```html
 <script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.js"></script>
