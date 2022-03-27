@@ -18,12 +18,11 @@ This package provides utils to compute the diff between two API specifications.
 
 ## Features
 - Generate diff for supported specifications
-- Classify all changes in breaking, non-breaking, annotation
+- Classify all changes as breaking, non-breaking, annotation
 - Supports custom classification rules
 - Resolves all $ref pointers, including external
 - Typescript syntax support out of the box
-- No dependencies
-- Can be used in nodejs or browser
+- No dependencies, can be used in nodejs or browser
 
 ## Installation
 ```SH
