@@ -3,7 +3,8 @@ import yaml from 'js-yaml';
 import path from 'path';
 import fs from 'fs';
 
-import { apiDiff, BaseRulesType } from '../../src';
+import { apiDiff, BaseRulesType, DiffPath } from '../../src';
+import { typeOf } from '../../src/utils';
 
 export class ExampleResource {
   private res: any = {}
@@ -26,6 +27,21 @@ export class ExampleResource {
 
   public diff(after: any) {
     return apiDiff(this.res, after, { rules: this.type })
+  }
+
+  public getValue(pathArr: DiffPath) {
+    let value = this.res
+    for (const key of pathArr) {
+      if (typeOf(value) === "array") {
+        value = value[+key]
+      } else {
+        value = value[key]
+      }
+      if (value === undefined) {
+        break
+      }
+    }
+    return value
   }
 }
 

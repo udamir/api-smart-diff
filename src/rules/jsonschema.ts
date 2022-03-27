@@ -8,19 +8,19 @@ import {
 const maxClassifier: Classifier = [
   breaking, 
   nonBreaking, 
-  (b, a) => breakingIf(b < a)
+  (b, a) => breakingIf(b > a)
 ]
 
 const minClassifier: Classifier = [
   breaking,
   nonBreaking,
-  (b, a) => breakingIf(b > a)
+  (b, a) => breakingIf(b < a)
 ]
 
 const exclusiveClassifier: Classifier = [
   breakingIfAfterTrue, 
   nonBreaking, 
-  (b, a) => breakingIf(b < a)
+  breakingIfAfterTrue
 ]
 
 const booleanClassifier: Classifier = [
