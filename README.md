@@ -4,10 +4,10 @@ This package provides utils to compute the diff between two API specifications.
 
 ## Purpose
 - Generate API changelog
-- Classify all changes: breaking, non-breaking or annotation
+- Identify breaking changes
 - Ensure API versioning consistency
 
-## Compatilibity
+## Supported API specifications
 
 - [OpenApi 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md)
 - [AsyncApi 2.1](https://www.asyncapi.com/docs/specifications/v2.1.0)
@@ -15,6 +15,15 @@ This package provides utils to compute the diff between two API specifications.
 - ~~[Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)~~ (Roadmap)
 - ~~graphql~~ (Roadmap)
 - ~~gRPC~~ (Roadmap)
+
+## Features
+- Generate diff for supported specifications
+- Classify all changes in breaking, non-breaking, annotation
+- Supports custom classification rules
+- Resolves all $ref pointers, including external
+- Typescript syntax support out of the box
+- No dependencies
+- Can be used in nodejs or browser
 
 ## Installation
 ```SH
