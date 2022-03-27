@@ -4,7 +4,7 @@ import path from "path"
 import fs from "fs"
 
 import { apiDiff, BaseRulesType, DiffPath } from "../../src"
-import { buildPath, resolveObjValue } from "../../src/utils"
+import { buildPath, resolveObjValue, findExternalRefs } from "../../src/utils"
 
 export class ExampleResource {
   private res: any = {}
@@ -32,6 +32,10 @@ export class ExampleResource {
   public getValue(path: DiffPath | string) {
     path = typeof path === "string" ? path : "/" + path.join("/")
     return resolveObjValue(this.res, path)
+  }
+
+  public findExternalSources () {
+    return findExternalRefs(this.res)
   }
 }
 

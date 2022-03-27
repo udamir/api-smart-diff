@@ -10,7 +10,10 @@ export const dereference = (value: any, source: any, refs: Set<string>, cache: M
     const [external, path] = ref.split("#")
 
     // resolve external obj 
-    if (external && cache.has(external)) {
+    if (external) {
+      if (!cache.has(external)) {
+        return value
+      }
       source = cache.get(external)
     }
 

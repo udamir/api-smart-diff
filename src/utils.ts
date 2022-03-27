@@ -26,3 +26,29 @@ export const parsePath = (path: string): string[] => {
 export const buildPath = (path: DiffPath): string => {
   return "/" + path.join("/")
 }
+
+export const findExternalRefs = (source: any | any[]): string[] => {
+  if (typeof source !== "object") {
+    return []
+  }
+  let refs: Set<string> = new Set()
+  if (typeOf(source) === "array") {
+    for (const item of source) {
+      if (typeof item === "object") {
+        refs = new Set([...refs, ...findExternalRefs(item)])
+      }
+    }
+  } else {
+    for (const key of Object.keys(source)) {
+      if (key === "$ref") {
+        const [external] = source[key].split("#")
+        refs.add(external)
+      } else {
+        if (typeof source[key] === "object") {
+          refs = new Set([...refs, ...findExternalRefs(source[key])])
+        }
+      }
+    }
+  }
+  return [...refs]
+}
