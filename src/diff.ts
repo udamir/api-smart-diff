@@ -39,24 +39,11 @@ const stringsDiff = (before: string, after: string, ctx: DiffContext, path: Diff
     : []
 }
 
-const normalizeObject = (value: any, source: any, refs: Set<string>, cache: Map<string, any>) => {
-  if (value.hasOwnProperty("$ref")) {
-    const ref = value["$ref"]
-    if (refs.has(ref)) {
-      // TODO: handle circular ref
-      value = { $circularRef: ref }
-    }
-    value = dereference(ref, source, cache) 
-    refs.add(ref)
-  }
-  return value
-}
-
 const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath): Diff[] => {
   const diffs: Diff[] = []
 
-  const _before = normalizeObject(before, ctx.before, ctx.beforeRefs, ctx.cache)
-  const _after = normalizeObject(after, ctx.after, ctx.afterRefs, ctx.cache)
+  const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.cache)
+  const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.cache)
   
   const keys = new Set([...Object.keys(_before), ...Object.keys(_after)])
   for (const key of keys) {

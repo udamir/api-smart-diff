@@ -1,30 +1,21 @@
-import { typeOf } from "./utils"
+import { resolveObjValue } from "./utils"
 
-export const dereference = (ref: string, obj: any, cache: Map<string, any>): any => {
-  // try to find ref in cache
-  if (cache.has(ref)) {
-    return cache.get(ref)
-  }
-
-  const [external, path] = ref.split("#")
-
-  // resolve external obj 
-  if (external && cache.has(external)) {
-    obj = cache.get(external)
-  }
-
-  const [_, ...pathArr] = path.split("/")
-  let _obj = obj
-
-  for (const key of pathArr) {
-    if (typeOf(_obj) === "array") {
-      _obj = _obj[+key]
-    } else {
-      _obj = _obj[key]
+export const dereference = (value: any, source: any, refs: Set<string>, cache: Map<string, any>): any => {
+  if (value.hasOwnProperty("$ref")) {
+    const ref = value["$ref"]
+    if (refs.has(ref)) {
+      // TODO: handle circular ref
+      value = { $circularRef: ref }
     }
+    const [external, path] = ref.split("#")
+
+    // resolve external obj 
+    if (external && cache.has(external)) {
+      source = cache.get(external)
+    }
+
+    value = resolveObjValue(source, path)
+    refs.add(ref)
   }
-
-  cache.set(ref, _obj)
-
-  return _obj
+  return value
 }
