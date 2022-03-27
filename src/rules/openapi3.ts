@@ -144,8 +144,14 @@ export const openapi3Rules: Rules = {
       "/": [nonBreaking, breaking, breaking],
       "/*": jsonSchemaRules(addNonBreaking),
     },
-    "/responses": responsesRules,
-    "/parameters": parametersRules,
+    "/responses": {
+      "/": [nonBreaking, breaking, breaking],
+      "/*": responsesRules,
+    },
+    "/parameters": {
+      "/": [nonBreaking, breaking, breaking],
+      "/*": parametersRules,
+    },
     "/examples": allAnnotation,
     "/requestBodies": {
       "/": [nonBreaking, breaking, breaking],
