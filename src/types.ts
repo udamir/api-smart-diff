@@ -1,4 +1,4 @@
-export type IJsonPath = Array<string | number>
+export type DiffPath = Array<string | number>
 
 export enum ActionType {
   add = "add",
@@ -6,26 +6,26 @@ export enum ActionType {
   replace = "replace",
 }
 
-export interface IDiff {
+export type UnclassifiedDiff = {
   action: ActionType
-  path: IJsonPath
+  path: DiffPath
   before?: any
   after?: any
 }
 
-export interface IClassifiedDiff extends IDiff {
-  type: ChangeType
+export type Diff = UnclassifiedDiff & {
+  type: DiffType
 }
 
-export type ChangeType = "breaking" | "non-breaking" | "annotation" | "unclassified"
+export type DiffType = "breaking" | "non-breaking" | "annotation" | "unclassified"
 
-export type AddChangeType = ChangeType | ChangeTypeFunc
-export type RemoveChangeType = ChangeType | ChangeTypeFunc
-export type EditChangeType = ChangeType | ChangeTypeFunc
+export type AddDiffType = DiffType | DiffTypeFunc
+export type RemoveDiffType = DiffType | DiffTypeFunc
+export type ReplaceDiffType = DiffType | DiffTypeFunc
 
-export type ChangeTypeFunc = (before: any, after: any) => ChangeType
+export type DiffTypeFunc = (before: any, after: any) => DiffType
 
-export type Classifier = [AddChangeType, RemoveChangeType, EditChangeType]
+export type Classifier = [AddDiffType, RemoveDiffType, ReplaceDiffType]
 export type RulesRef = () => Rules
 
 export type Rules = {
@@ -35,3 +35,11 @@ export type Rules = {
 }
 
 export type BaseRulesType = "OpenApi3" | "AsyncApi2" | "JsonSchema"
+
+export type DiffOptions = {
+  rules?: Rules | BaseRulesType
+  trimStrings?: boolean
+  caseSensitive?: boolean
+  strictArrays?: boolean
+  externalRefs?: { [key: string]: any }
+}

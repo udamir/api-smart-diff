@@ -1,8 +1,7 @@
-import { Rules, IJsonPath, Classifier, IDiff } from "./types"
+import { Rules, DiffPath, Classifier, UnclassifiedDiff, Diff } from "./types"
 import { allUnclassified } from "./rules/helpers"
-import { IClassifiedDiff } from "."
 
-export const findClassifier = (rules: Rules, path: IJsonPath): Classifier => {
+export const findClassifier = (rules: Rules, path: DiffPath): Classifier => {
   let _rules = rules
   for (let key of [...path, ""]) {
     // check if rules dont have key of key is array index
@@ -24,8 +23,8 @@ export const findClassifier = (rules: Rules, path: IJsonPath): Classifier => {
   return allUnclassified
 }
 
-export const classifyDiff = (diff: IDiff, rules: Rules = {}): IClassifiedDiff => {
-  const _diff = diff as IClassifiedDiff
+export const classifyDiff = (diff: UnclassifiedDiff, rules: Rules = {}): Diff => {
+  const _diff = diff as Diff
 
   const classifier = findClassifier(rules, diff.path)
 

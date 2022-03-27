@@ -1,3 +1,3 @@
-export * from "./api-diff"
+export * from "./diff"
 export * from "./rules"
 export * from "./types"

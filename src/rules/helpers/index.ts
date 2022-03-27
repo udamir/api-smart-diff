@@ -1,4 +1,4 @@
-import { ChangeType, Classifier } from "../.."
+import { DiffType, Classifier } from "../.."
 
 export const breaking = "breaking"
 export const nonBreaking = "non-breaking"
@@ -14,5 +14,5 @@ export const allUnclassified: Classifier = [unclassified, unclassified, unclassi
 export const allAnnotation: Classifier = [annotation, annotation, annotation]
 
 // helpers
-export const breakingIf = (v: boolean): ChangeType => (v ? breaking : nonBreaking)
-export const breakingIfAfterTrue = (_: any, a: any): ChangeType => breakingIf(a)
+export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
+export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)

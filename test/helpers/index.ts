@@ -1,9 +1,9 @@
 import { applyOperation, Operation } from 'fast-json-patch';
 import yaml from 'js-yaml';
-import fs from 'fs';
 import path from 'path';
+import fs from 'fs';
 
-import { syncApiDiff, BaseRulesType } from '../../src';
+import { apiDiff, BaseRulesType } from '../../src';
 
 export class ExampleResource {
   private res: any = {}
@@ -25,7 +25,7 @@ export class ExampleResource {
   }
 
   public diff(after: any) {
-    return syncApiDiff(this.res, after, this.type)
+    return apiDiff(this.res, after, { rules: this.type })
   }
 }
 

@@ -1,14 +1,10 @@
 openapi: 3.0.0
-# Added by API Auto Mocking Plugin
 servers:
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/anshul10s/pet-store/1.0.0
 info:
   description: |
-    This is a sample Petstore server.  You can find
-    out more about Swagger at
-    [http://swagger.io](http://swagger.io) or on
-    [irc.freenode.net, #swagger](http://swagger.io/irc/).
+    This is a sample Petstore server.
   version: "1.0.0"
   title: Swagger Petstore
   termsOfService: 'http://swagger.io/terms/'
@@ -18,18 +14,8 @@ info:
     name: Apache 2.0
     url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
 tags:
-  - name: pet
-    description: Everything about your Pets
-    externalDocs:
-      description: Find out more
-      url: 'http://swagger.io'
   - name: store
     description: Access to Petstore orders
-  - name: user
-    description: Operations about user
-    externalDocs:
-      description: Find out more about our store
-      url: 'http://swagger.io'
 paths:
   /store/inventory:
     get:

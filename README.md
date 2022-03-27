@@ -18,16 +18,16 @@ This package provides utils to compute the diff between two API specifications.
 
 ## Installation
 ```SH
-npm install api-smart-diff
+npm install api-smart-diff --save
 ```
 
 ## Usage
 
 ### Nodejs
 ```ts
-import { syncApiDiff } from 'api-smart-diff'
+import { apiDiff } from 'api-smart-diff'
 
-const diff = syncApiDiff(oldSpec, newSpec, "OpenApi3")
+const diff = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 // {
 //   action: "add" | "remove" | "replace",
 //   after: 'value after',
@@ -48,7 +48,7 @@ A browser version of `api-smart-diff` is also available via SDN:
 Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiSmartDiff`.
 ```HTML
 <script>
-  var diff = ApiSmartDiff.syncApiDiff (oldSpec, newSpec, "OpenApi3")
+  var diff = ApiSmartDiff.apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 </script>
 ```
 
