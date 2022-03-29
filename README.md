@@ -62,7 +62,7 @@ Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiS
 ```HTML
 <script>
   var diff = ApiSmartDiff.apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
-  var merge = ApiSmartDiff.mergeDiff(oldSpec, newSpec, { rules: "OpenApi3" })
+  var merge = ApiSmartDiff.apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
 </script>
 ```
 
