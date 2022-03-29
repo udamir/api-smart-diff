@@ -74,7 +74,7 @@ const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath):
   return diffs
 }
 
-const findEqualItemIndex = (item: any, array: any[], ctx: DiffContext): number => {
+export const findEqualItemIndex = (item: any, array: any[], ctx: DiffContext): number => {
   for (let j = 0; j < array.length; j++) {
     ctx.findFirstDiff = true
     const diff = findDiff(item, array[j], ctx)

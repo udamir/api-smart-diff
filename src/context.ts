@@ -15,12 +15,14 @@ export class DiffContext implements DiffOptions {
   public trimStrings?: boolean
   public caseSensitive?: boolean
   public strictArrays?: boolean
+  public arrayMeta?: boolean
 
   constructor(public before: any, public after: any, options: DiffOptions) {
     this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules
     this.trimStrings = options.trimStrings 
     this.caseSensitive = options.caseSensitive 
-    this.strictArrays = options.strictArrays 
+    this.strictArrays = options.strictArrays
+    this.arrayMeta = options.arrayMeta || false
 
     const externalRefs = options.externalRefs || {}
     for (const ref of Object.keys(externalRefs)) {
@@ -38,6 +40,7 @@ export class DiffContext implements DiffOptions {
         return jsonSchemaRules()
     }
   }
+  
 }
 
 export class MergeContext extends DiffContext {

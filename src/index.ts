@@ -1,5 +1,5 @@
-export * from "./diff"
+export { apiDiff } from "./diff"
 export * from "./rules"
 export * from "./types"
-export * from "./merge"
+export { apiMerge } from "./merge"
 export { findExternalRefs } from "./utils"

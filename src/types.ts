@@ -42,6 +42,7 @@ export type DiffOptions = {
   caseSensitive?: boolean
   strictArrays?: boolean
   externalRefs?: { [key: string]: any }
+  arrayMeta?: boolean
 }
 
 export type MergeOptions<T = MergedKeyMeta> = DiffOptions & {

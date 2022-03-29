@@ -1,13 +1,12 @@
 import { DiffContext, MergeContext } from "./context"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
-import { findDiff } from "./diff"
+import { findEqualItemIndex } from "./diff"
 import { typeOf } from "./utils"
 import { 
   ActionType, DiffPath, MergedArrayMeta,
   MergeOptions, MergeResult
 } from "./types"
-
 
 export const apiMerge = (before: any, after: any, options: MergeOptions): any => {
   const [ value ] = mergeChanges(before, after, new MergeContext(before, after, options), [])
@@ -90,18 +89,6 @@ const mergeObjects = (before: any, after: any, ctx: MergeContext, path: DiffPath
   return [ merged ]
 }
 
-const findEqualItemIndex = (item: any, array: any[], ctx: DiffContext): number => {
-  for (let j = 0; j < array.length; j++) {
-    ctx.findFirstDiff = true
-    const diff = findDiff(item, array[j], ctx)
-    ctx.findFirstDiff = false
-    if (!diff.length) {
-      return j
-    }
-  }
-  return -1
-}
-
 const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffPath): MergeResult => {
   const arrMeta: MergedArrayMeta = { array: {} }
   const meta = arrMeta.array
@@ -144,8 +131,13 @@ const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffP
     meta[j] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
   }
 
-  if (Object.keys(arrMeta.array).length) {
-    return [ array, arrMeta ]
+  if (ctx.arrayMeta && Object.keys(arrMeta.array).length) {
+    (array as any)[ctx.metaKey] = arrMeta.array
   }
-  return [ array ]
+  
+  if (ctx.arrayMeta || !Object.keys(arrMeta.array).length) {
+    return [array]
+  } else {
+    return [array, arrMeta]
+  }
 }

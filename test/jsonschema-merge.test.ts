@@ -1,8 +1,7 @@
 import { addPatch, ExampleResource, replacePatch } from "./helpers"
 import { ActionType, annotation, breaking } from "../src"
-import { resolveObjValue } from "../src/dereference"
-import { DIFF_META_KEY } from "../src/context"
 
+const metaKey = Symbol("diff")
 const example = new ExampleResource("jsonschema.yaml", "JsonSchema")
 
 describe("Test Jsonschema merge", () => {
@@ -12,24 +11,34 @@ describe("Test Jsonschema merge", () => {
     const value = "size"
 
     const after = example.clone([replacePatch(path, value)])
-    const merged = example.merge(after)
+    const merged = example.merge(after, { metaKey })
 
-    const obj = resolveObjValue(merged, "/properties/age")
+    const meta = merged.properties.age[metaKey]
 
-    expect(obj).toHaveProperty(DIFF_META_KEY)
-    expect(obj[DIFF_META_KEY]).toHaveProperty("title")
-    expect(obj[DIFF_META_KEY].title).toMatchObject({ type: annotation, action: ActionType.replace, replaced: oldValue })
+    expect(meta).toHaveProperty("title")
+    expect(meta.title).toMatchObject({ type: annotation, action: ActionType.replace, replaced: oldValue })
   })
 
-  it("add of required property should be 'breaing' change in meta", () => {
+  it("array change meta should be in object if arrayMeta is false", () => {
     const path = ["required", 1]
     const value = "age"
 
     const after = example.clone([addPatch(path, value)])
-    const merged = example.merge(after)
-    const meta = merged[DIFF_META_KEY]
+    const merged = example.merge(after, { metaKey })
+    const meta = merged[metaKey]
 
     expect(meta).toHaveProperty("required")
     expect(meta.required.array[1]).toMatchObject({ type: breaking, action: ActionType.add })
+  })
+
+  it("array change meta should be in array if arrayMeta is true", () => {
+    const path = ["required", 1]
+    const value = "age"
+
+    const after = example.clone([addPatch(path, value)])
+    const merged = example.merge(after, { metaKey, arrayMeta: true })
+    const meta = merged.required[metaKey]
+
+    expect(meta[1]).toMatchObject({ type: breaking, action: ActionType.add })
   })
 })
