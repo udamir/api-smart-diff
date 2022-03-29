@@ -1,5 +1,8 @@
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
+import { ActionType, Diff, MergedKeyMeta, MergeOptions } from "."
 import { BaseRulesType, DiffOptions, Rules } from "./types"
+
+export const DIFF_META_KEY = "_diff"
 
 export class DiffContext implements DiffOptions {
   public rules?: Rules
@@ -34,5 +37,24 @@ export class DiffContext implements DiffOptions {
       case "JsonSchema":
         return jsonSchemaRules()
     }
+  }
+}
+
+export class MergeContext extends DiffContext {
+  public formatMeta: (diff: Diff) => MergedKeyMeta
+  public metaKey: string | symbol
+
+  constructor(before: any, after: any, options: MergeOptions) {
+    super(before, after, options)
+    this.formatMeta = options.formatMeta || ((d: Diff) => this._formatMeta(d))
+    this.metaKey = options.metaKey || DIFF_META_KEY
+  }
+
+  private _formatMeta = (diff: Diff): MergedKeyMeta => {
+    return { 
+      type: diff.type,
+      action: diff.action,
+      ...diff.action === ActionType.replace ? { replaced: diff.before } : {}
+    } 
   }
 }

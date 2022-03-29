@@ -43,3 +43,20 @@ export type DiffOptions = {
   strictArrays?: boolean
   externalRefs?: { [key: string]: any }
 }
+
+export type MergeOptions<T = MergedKeyMeta> = DiffOptions & {
+  formatMeta?: (diff: Diff) => T
+  metaKey?: string | symbol
+}
+
+export type MergedKeyMeta = {
+  type: DiffType
+  action: ActionType
+  replaced?: any
+}
+
+export type MergedArrayMeta<T = MergedKeyMeta> = {
+  array: { [key: number]: T | MergedArrayMeta }
+}
+
+export type MergeResult = [any, (MergedKeyMeta | MergedArrayMeta)?]

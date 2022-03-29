@@ -1,4 +1,5 @@
 export * from "./diff"
 export * from "./rules"
 export * from "./types"
+export * from "./merge"
 export { findExternalRefs } from "./utils"

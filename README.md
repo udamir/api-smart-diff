@@ -19,6 +19,7 @@ This package provides utils to compute the diff between two API specifications.
 
 ## Features
 - Generate diff for supported specifications
+- Generate merged spec with changes in metadata 
 - Classify all changes as breaking, non-breaking, annotation
 - Supports custom classification rules
 - Resolves all $ref pointers, including external
@@ -44,6 +45,9 @@ const diff = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 //   path: ['path, 'in', 'array', 'format'],
 //   type: "annotation" | "breaking" | "non-breaking" | "unclassified"
 // }
+
+const merge = apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
+
 ```
 
 ### Browsers
@@ -58,6 +62,7 @@ Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiS
 ```HTML
 <script>
   var diff = ApiSmartDiff.apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
+  var merge = ApiSmartDiff.mergeDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 </script>
 ```
 

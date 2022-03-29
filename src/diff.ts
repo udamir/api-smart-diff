@@ -8,20 +8,25 @@ export const apiDiff = (before: any, after: any, options: DiffOptions): Diff[] =
   return findDiff(before, after, new DiffContext(before, after, options))
 }
 
-const findDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath = []): Diff[] => {
+export const findDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath = []): Diff[] => {
   if (typeOf(before) !== typeOf(after)) {
-    return [classifyDiff({ path: path, before, after, action: ActionType.replace }, ctx.rules)]
+    const diff = { path: path, before, after, action: ActionType.replace }
+    return [classifyDiff(diff, ctx.rules)]
   }
 
   switch (typeOf(before)) {
-    case "string":
-      return stringsDiff(before, after, ctx, path)
     case "object":
       return objectsDiff(before, after, ctx, path)
     case "array":
       return arrayDiff(before, after, ctx, path)
     default:
-      return before !== after ? [classifyDiff({ path, before, after, action: ActionType.replace }, ctx.rules)] : []
+      if (typeOf(before) === "string") {
+        before = normalizeString(before, ctx)
+        after = normalizeString(after, ctx)
+      }
+
+      const diff = { path, before, after, action: ActionType.replace }
+      return before !== after ? [classifyDiff(diff, ctx.rules)] : []
   }
 }
 
@@ -31,20 +36,12 @@ const normalizeString = (value: string, ctx: DiffContext) => {
   return value
 }
 
-const stringsDiff = (before: string, after: string, ctx: DiffContext, path: DiffPath): Diff[] => {
-  before = normalizeString(before, ctx)
-  after = normalizeString(after, ctx)
-  return before !== after 
-    ? [classifyDiff({ path, before, after, action: ActionType.replace }, ctx.rules)]
-    : []
-}
-
 const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath): Diff[] => {
   const diffs: Diff[] = []
 
   const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.cache)
   const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.cache)
-  
+
   const keys = new Set([...Object.keys(_before), ...Object.keys(_after)])
   for (const key of keys) {
     // skip symbol key
@@ -54,28 +51,12 @@ const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath):
 
     if (!_before.hasOwnProperty(key)) {
       // added key
-      diffs.push(
-        classifyDiff(
-          {
-            path: [...path, key],
-            after: _after[key],
-            action: ActionType.add,
-          },
-          ctx.rules
-        )
-      )
+      const diff = { path: [...path, key], after: _after[key], action: ActionType.add }
+      diffs.push(classifyDiff(diff, ctx.rules))
     } else if (!_after.hasOwnProperty(key)) {
       // deleted key
-      diffs.push(
-        classifyDiff(
-          {
-            path: [...path, key],
-            before: _before[key],
-            action: ActionType.remove,
-          },
-          ctx.rules
-        )
-      )
+      const diff = { path: [...path, key], before: _before[key], action: ActionType.remove }
+      diffs.push(classifyDiff(diff, ctx.rules))
     } else {
       // updated value
       diffs.push(...findDiff(_before[key], _after[key], ctx, [...path, key]))
@@ -112,16 +93,8 @@ const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath
   for (let i = 0; i < before.length; i++) {
     if (ctx.strictArrays) {
       if (i >= after.length) {
-        diffs.push(
-          classifyDiff(
-            {
-              path: [...path, i],
-              before: before[i],
-              action: ActionType.remove,
-            },
-            ctx.rules
-          )
-        )
+        const diff = { path: [...path, i], before: before[i], action: ActionType.remove }
+        diffs.push(classifyDiff(diff, ctx.rules))
       } else {
         diffs.push(...findDiff(before[i], after[i], ctx, [...path, i]))
       }
@@ -130,16 +103,8 @@ const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath
       if (index >= 0) {
         _after.splice(index, 1)
       } else {
-        diffs.push(
-          classifyDiff(
-            {
-              path: [...path, i],
-              before: before[i],
-              action: ActionType.remove,
-            },
-            ctx.rules
-          )
-        )
+        const diff = { path: [...path, i], before: before[i], action: ActionType.remove }
+        diffs.push(classifyDiff(diff, ctx.rules))
       }
     }
     if (ctx.findFirstDiff && diffs.length) {
@@ -152,16 +117,8 @@ const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath
   }
 
   for (let i = 0; i < _after.length; i++) {
-    diffs.push(
-      classifyDiff(
-        {
-          path: [...path, before.length + i],
-          after: _after[i],
-          action: ActionType.add,
-        },
-        ctx.rules
-      )
-    )
+    const diff = { path: [...path, before.length + i], after: _after[i], action: ActionType.add }
+    diffs.push(classifyDiff(diff, ctx.rules))
   }
 
   return diffs
