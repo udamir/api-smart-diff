@@ -9,24 +9,28 @@ export class DiffContext implements DiffOptions {
 
   public beforeRefs: Set<string> = new Set()
   public afterRefs: Set<string> = new Set()
-  public cache: Map<string, any> = new Map()
+  public beforeCache: Map<string, any> = new Map()
+  public afterCache: Map<string, any> = new Map()
   public findFirstDiff = false
 
   public trimStrings?: boolean
   public caseSensitive?: boolean
   public strictArrays?: boolean
   public arrayMeta?: boolean
+  public circularRef?: boolean
 
   constructor(public before: any, public after: any, options: DiffOptions) {
     this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules
     this.trimStrings = options.trimStrings 
     this.caseSensitive = options.caseSensitive 
     this.strictArrays = options.strictArrays
+    this.circularRef = options.circularRef || false
     this.arrayMeta = options.arrayMeta || false
 
     const externalRefs = options.externalRefs || {}
     for (const ref of Object.keys(externalRefs)) {
-      this.cache.set(ref, externalRefs[ref])
+      this.beforeCache.set(ref, externalRefs[ref])
+      this.afterCache.set(ref, externalRefs[ref])
     }
   }
 

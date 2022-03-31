@@ -2,7 +2,7 @@ import { ActionType, DiffPath, DiffOptions, Diff } from "./types"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
 import { DiffContext } from "./context"
-import { typeOf } from "./utils"
+import { buildPath, typeOf } from "./utils"
 
 export const apiDiff = (before: any, after: any, options: DiffOptions): Diff[] => {
   return findDiff(before, after, new DiffContext(before, after, options))
@@ -38,9 +38,13 @@ const normalizeString = (value: string, ctx: DiffContext) => {
 
 const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath): Diff[] => {
   const diffs: Diff[] = []
+  const ref = "#" + buildPath(path)
 
-  const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.cache)
-  const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.cache)
+  ctx.beforeRefs.add(ref)
+  ctx.afterRefs.add(ref)
+
+  const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.beforeCache)
+  const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.afterCache)
 
   const keys = new Set([...Object.keys(_before), ...Object.keys(_after)])
   for (const key of keys) {
@@ -70,6 +74,9 @@ const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath):
   // remove refs
   before.$ref && ctx.beforeRefs.delete(before.$ref)
   after.$ref && ctx.afterRefs.delete(after.$ref)
+
+  ctx.beforeRefs.delete(ref)
+  ctx.afterRefs.delete(ref)
 
   return diffs
 }

@@ -1,5 +1,7 @@
 import { parsePath, typeOf } from "./utils"
 
+const circularRef = Symbol("circularRef")
+
 export const resolveObjValue = (obj: any, path: string, cache: any = {}) => {
   let value = obj
   cache = new Map(Object.entries(cache))
@@ -17,8 +19,7 @@ export const dereference = (value: any, source: any, refs: Set<string>, cache: M
   if (value.hasOwnProperty("$ref")) {
     const { $ref, ...rest } = value
     if (refs.has($ref)) {
-      // TODO: handle circular ref
-      value = { $circularRef: $ref }
+      return value
     }
     const [external, path] = $ref.split("#")
 
@@ -30,8 +31,9 @@ export const dereference = (value: any, source: any, refs: Set<string>, cache: M
       source = cache.get(external)
     }
 
-    value = { ...rest, ...resolveObjValue(source, path) }
+    value = { ...rest, ...resolveObjValue(source, path, cache) }
     refs.add($ref)
+    cache.set($ref, value)
   }
   return value
 }

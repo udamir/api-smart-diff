@@ -1,4 +1,4 @@
-import { ExampleResource, replacePatch } from "./helpers"
+import { addPatch, ExampleResource, replacePatch } from "./helpers"
 import { breaking } from "../src"
 
 const example = new ExampleResource("externalref.yaml", "OpenApi3")
@@ -9,6 +9,16 @@ describe("Test refs in openapi 3", () => {
     expect(refs.length).toEqual(2)
     expect(refs).toMatchObject(["http://swagger.io", "http://swagger.io/api"])
   })
+
+  it("changes circular refs should be merged", () => {
+    const path = ["components", "schemas", "Group", "properties", "alias"]
+    const value = { type: "string" }
+
+    const after = example.clone([addPatch(path, value)])
+    const diff = example.diff(after)
+    expect(diff.length).toEqual(1)
+  })
+
 
   it("should dereference components from external refs", () => {
     example.externalSources = {

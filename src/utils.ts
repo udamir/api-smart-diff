@@ -31,7 +31,7 @@ export const findExternalRefs = (source: any | any[]): string[] => {
     for (const key of Object.keys(source)) {
       if (key === "$ref") {
         const [external] = source[key].split("#")
-        refs.add(external)
+        external && refs.add(external)
       } else {
         if (typeof source[key] === "object") {
           refs = new Set([...refs, ...findExternalRefs(source[key])])

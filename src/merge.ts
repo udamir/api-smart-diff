@@ -47,8 +47,8 @@ const mergeObjects = (before: any, after: any, ctx: MergeContext, path: DiffPath
   const merged: any = {}
   const meta: any = {}
 
-  const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.cache)
-  const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.cache)
+  const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.beforeCache)
+  const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.afterCache)
 
   const keys = new Set([...Object.keys(_before), ...Object.keys(_after)])
 

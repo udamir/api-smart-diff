@@ -55,3 +55,9 @@ components:
           type: count
         extra_info:
           type: string
+    Group:
+      type: object
+      properties:
+        parent:
+          $ref: "#/components/schemas/Group"
+      
