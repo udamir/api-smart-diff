@@ -1,9 +1,21 @@
-import { DiffType, Classifier } from "../.."
+import { Classifier } from "./types"
 
-export const breaking = "breaking"
-export const nonBreaking = "non-breaking"
-export const annotation = "annotation"
-export const unclassified = "unclassified"
+export const DIFF_META_KEY = "$diff"
+
+export enum DiffAction {
+  add = "add",
+  remove = "remove",
+  replace = "replace",
+}
+
+export enum ClassifierType {
+  breaking = "breaking",
+  nonBreaking = "non-breaking",
+  annotation = "annotation",
+  unclassified = "unclassified"
+}
+
+export const { breaking, nonBreaking, unclassified, annotation } = ClassifierType
 
 // predefined classifiers
 export const allNonBreaking: Classifier = [nonBreaking, nonBreaking, nonBreaking]
@@ -12,7 +24,3 @@ export const onlyAddBreaking: Classifier = [breaking, nonBreaking, nonBreaking]
 export const addNonBreaking: Classifier = [nonBreaking, breaking, breaking]
 export const allUnclassified: Classifier = [unclassified, unclassified, unclassified]
 export const allAnnotation: Classifier = [annotation, annotation, annotation]
-
-// helpers
-export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
-export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)

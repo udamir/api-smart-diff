@@ -1,10 +1,6 @@
 export type DiffPath = Array<string | number>
 
-export enum ActionType {
-  add = "add",
-  remove = "remove",
-  replace = "replace",
-}
+export type ActionType = "add" | "remove" | "replace"
 
 export type UnclassifiedDiff = {
   action: ActionType

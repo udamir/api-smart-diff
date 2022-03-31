@@ -1,8 +1,6 @@
+import { Diff, BaseRulesType, DiffOptions, Rules, MergedKeyMeta, MergeOptions } from "./types"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
-import { ActionType, Diff, MergedKeyMeta, MergeOptions } from "."
-import { BaseRulesType, DiffOptions, Rules } from "./types"
-
-export const DIFF_META_KEY = "_diff"
+import { DiffAction, DIFF_META_KEY,  } from "./constants"
 
 export class DiffContext implements DiffOptions {
   public rules?: Rules
@@ -61,7 +59,7 @@ export class MergeContext extends DiffContext {
     return { 
       type: diff.type,
       action: diff.action,
-      ...diff.action === ActionType.replace ? { replaced: diff.before } : {}
+      ...diff.action === DiffAction.replace ? { replaced: diff.before } : {}
     } 
   }
 }

@@ -1,4 +1,8 @@
-import { DiffPath } from "./types"
+import { breaking, nonBreaking } from "./constants"
+import { DiffType, DiffPath } from "./types"
+
+export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
+export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)
 
 export const typeOf = (value: any) => {
   if (Array.isArray(value)) {

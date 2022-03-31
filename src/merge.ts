@@ -2,11 +2,13 @@ import { DiffContext, MergeContext } from "./context"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
 import { findEqualItemIndex } from "./diff"
+import { DiffAction } from "./constants"
 import { typeOf } from "./utils"
 import { 
-  ActionType, DiffPath, MergedArrayMeta,
+  DiffPath, MergedArrayMeta,
   MergeOptions, MergeResult
 } from "./types"
+import { MergedKeyMeta } from "."
 
 export const apiMerge = (before: any, after: any, options: MergeOptions): any => {
   const [ value ] = mergeChanges(before, after, new MergeContext(before, after, options), [])
@@ -15,7 +17,7 @@ export const apiMerge = (before: any, after: any, options: MergeOptions): any =>
 
 const mergeChanges = (before: any, after: any, ctx: MergeContext, path: DiffPath = []): MergeResult => {
   if (typeOf(before) !== typeOf(after)) {
-    const diff = { path, before, after, action: ActionType.replace }
+    const diff = { path, before, after, action: DiffAction.replace }
     return [ after, ctx.formatMeta(classifyDiff(diff, ctx.rules)) ]
   }
 
@@ -30,7 +32,7 @@ const mergeChanges = (before: any, after: any, ctx: MergeContext, path: DiffPath
         after = normalizeString(after, ctx)
       }
       if (before !== after) {
-        const diff = { path, before, after, action: ActionType.replace }
+        const diff = { path, before, after, action: DiffAction.replace }
         return [ after, ctx.formatMeta(classifyDiff(diff, ctx.rules)) ]
       } 
   }
@@ -60,12 +62,12 @@ const mergeObjects = (before: any, after: any, ctx: MergeContext, path: DiffPath
 
     if (!_before.hasOwnProperty(key)) {
       // added key
-      const diff = { path: [...path, key], after: _after[key], action: ActionType.add }
+      const diff = { path: [...path, key], after: _after[key], action: DiffAction.add }
       merged[key] = _after[key]
       meta[key] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
     } else if (!_after.hasOwnProperty(key)) {
       // deleted key
-      const diff = { path: [...path, key], before: _before[key], action: ActionType.remove }
+      const diff = { path: [...path, key], before: _before[key], action: DiffAction.remove }
       merged[key] = _before[key]
       meta[key] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
     } else {
@@ -90,8 +92,7 @@ const mergeObjects = (before: any, after: any, ctx: MergeContext, path: DiffPath
 }
 
 const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffPath): MergeResult => {
-  const arrMeta: MergedArrayMeta = { array: {} }
-  const meta = arrMeta.array
+  const arrMeta: { [i: number]: MergedKeyMeta | MergedArrayMeta } = {}
 
   const array: any[] = []
   const _after = [...after]
@@ -99,14 +100,14 @@ const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffP
   for (let i = 0; i < before.length; i++) {
     if (ctx.strictArrays) {
       if (i >= after.length) {
-        const diff = { path: [...path, i], before: before[i], action: ActionType.remove }
+        const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
         array[i] = before[i]
-        meta[i] = ctx.formatMeta((classifyDiff(diff, ctx.rules)))
+        arrMeta[i] = ctx.formatMeta((classifyDiff(diff, ctx.rules)))
       } else {
         const [value, m] = mergeChanges(before[i], after[i], ctx, [...path, i])
         array[i] = value
         if (m) {
-          meta[i] = m
+          arrMeta[i] = m
         } 
       }
     } else {
@@ -115,8 +116,8 @@ const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffP
       if (index >= 0) {
         _after.splice(index, 1)
       } else {
-        const diff = { path: [...path, i], before: before[i], action: ActionType.remove }
-        meta[i] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
+        const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
+        arrMeta[i] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
       }
     }
   }
@@ -127,17 +128,18 @@ const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffP
 
   for (let j = before.length, i = 0; j < before.length + _after.length; j++, i++) {
     array[j] = _after[i]
-    const diff = { path: [...path, j], after: _after[i], action: ActionType.add }
-    meta[j] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
+    const diff = { path: [...path, j], after: _after[i], action: DiffAction.add }
+    arrMeta[j] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
   }
 
-  if (ctx.arrayMeta && Object.keys(arrMeta.array).length) {
-    (array as any)[ctx.metaKey] = arrMeta.array
+
+  if (ctx.arrayMeta && Object.keys(arrMeta).length) {
+    (array as any)[ctx.metaKey] = arrMeta
   }
   
-  if (ctx.arrayMeta || !Object.keys(arrMeta.array).length) {
+  if (ctx.arrayMeta || !Object.keys(array).length) {
     return [array]
   } else {
-    return [array, arrMeta]
+    return [array, { array: arrMeta }]
   }
 }

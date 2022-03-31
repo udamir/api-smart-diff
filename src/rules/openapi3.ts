@@ -1,10 +1,11 @@
+import { breakingIfAfterTrue } from "../utils"
 import { jsonSchemaRules } from "./jsonschema"
 import { Rules } from "../types"
 import { 
   breaking, nonBreaking, unclassified, 
   allAnnotation, addNonBreaking, 
-  allBreaking, breakingIfAfterTrue
-} from "./helpers"
+  allBreaking,
+} from "../constants"
 
 const serversRules: Rules = {
   "/": [nonBreaking, breaking, breaking],

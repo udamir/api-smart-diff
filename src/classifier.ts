@@ -1,5 +1,5 @@
 import { Rules, DiffPath, Classifier, UnclassifiedDiff, Diff } from "./types"
-import { allUnclassified } from "./rules/helpers"
+import { allUnclassified } from "./constants"
 
 export const findClassifier = (rules: Rules, path: DiffPath): Classifier => {
   let _rules = rules

@@ -1,8 +1,9 @@
-import { ActionType, DiffPath, DiffOptions, Diff } from "./types"
+import { DiffPath, DiffOptions, Diff } from "./types"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
-import { DiffContext } from "./context"
 import { buildPath, typeOf } from "./utils"
+import { DiffContext } from "./context"
+import { DiffAction } from "./constants"
 
 export const apiDiff = (before: any, after: any, options: DiffOptions): Diff[] => {
   return findDiff(before, after, new DiffContext(before, after, options))
@@ -10,7 +11,7 @@ export const apiDiff = (before: any, after: any, options: DiffOptions): Diff[] =
 
 export const findDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath = []): Diff[] => {
   if (typeOf(before) !== typeOf(after)) {
-    const diff = { path: path, before, after, action: ActionType.replace }
+    const diff = { path: path, before, after, action: DiffAction.replace }
     return [classifyDiff(diff, ctx.rules)]
   }
 
@@ -25,7 +26,7 @@ export const findDiff = (before: any, after: any, ctx: DiffContext, path: DiffPa
         after = normalizeString(after, ctx)
       }
 
-      const diff = { path, before, after, action: ActionType.replace }
+      const diff = { path, before, after, action: DiffAction.replace }
       return before !== after ? [classifyDiff(diff, ctx.rules)] : []
   }
 }
@@ -55,11 +56,11 @@ const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath):
 
     if (!_before.hasOwnProperty(key)) {
       // added key
-      const diff = { path: [...path, key], after: _after[key], action: ActionType.add }
+      const diff = { path: [...path, key], after: _after[key], action: DiffAction.add }
       diffs.push(classifyDiff(diff, ctx.rules))
     } else if (!_after.hasOwnProperty(key)) {
       // deleted key
-      const diff = { path: [...path, key], before: _before[key], action: ActionType.remove }
+      const diff = { path: [...path, key], before: _before[key], action: DiffAction.remove }
       diffs.push(classifyDiff(diff, ctx.rules))
     } else {
       // updated value
@@ -100,7 +101,7 @@ const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath
   for (let i = 0; i < before.length; i++) {
     if (ctx.strictArrays) {
       if (i >= after.length) {
-        const diff = { path: [...path, i], before: before[i], action: ActionType.remove }
+        const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
         diffs.push(classifyDiff(diff, ctx.rules))
       } else {
         diffs.push(...findDiff(before[i], after[i], ctx, [...path, i]))
@@ -110,7 +111,7 @@ const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath
       if (index >= 0) {
         _after.splice(index, 1)
       } else {
-        const diff = { path: [...path, i], before: before[i], action: ActionType.remove }
+        const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
         diffs.push(classifyDiff(diff, ctx.rules))
       }
     }
@@ -124,7 +125,7 @@ const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath
   }
 
   for (let i = 0; i < _after.length; i++) {
-    const diff = { path: [...path, before.length + i], after: _after[i], action: ActionType.add }
+    const diff = { path: [...path, before.length + i], after: _after[i], action: DiffAction.add }
     diffs.push(classifyDiff(diff, ctx.rules))
   }
 

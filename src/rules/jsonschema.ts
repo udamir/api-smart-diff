@@ -1,9 +1,10 @@
+import { breakingIf, breakingIfAfterTrue } from "../utils"
 import { Classifier, Rules } from "../types"
 import {
   breaking, nonBreaking, addNonBreaking, 
   allAnnotation, allBreaking, allUnclassified,
-  breakingIf, breakingIfAfterTrue, onlyAddBreaking,
-} from "./helpers"
+  onlyAddBreaking,
+} from "../constants"
 
 const maxClassifier: Classifier = [
   breaking, 

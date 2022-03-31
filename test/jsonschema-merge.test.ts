@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource, replacePatch } from "./helpers"
-import { ActionType, annotation, breaking } from "../src"
+import { annotation, breaking, DiffAction } from "../src"
 
 const metaKey = Symbol("diff")
 const example = new ExampleResource("jsonschema.yaml", "JsonSchema")
@@ -16,7 +16,7 @@ describe("Test Jsonschema merge", () => {
     const meta = merged.properties.age[metaKey]
 
     expect(meta).toHaveProperty("title")
-    expect(meta.title).toMatchObject({ type: annotation, action: ActionType.replace, replaced: oldValue })
+    expect(meta.title).toMatchObject({ type: annotation, action: DiffAction.replace, replaced: oldValue })
   })
 
   it("array change meta should be in object if arrayMeta is false", () => {
@@ -28,7 +28,7 @@ describe("Test Jsonschema merge", () => {
     const meta = merged[metaKey]
 
     expect(meta).toHaveProperty("required")
-    expect(meta.required.array[1]).toMatchObject({ type: breaking, action: ActionType.add })
+    expect(meta.required.array[1]).toMatchObject({ type: breaking, action: DiffAction.add })
   })
 
   it("array change meta should be in array if arrayMeta is true", () => {
@@ -39,6 +39,6 @@ describe("Test Jsonschema merge", () => {
     const merged = example.merge(after, { metaKey, arrayMeta: true })
     const meta = merged.required[metaKey]
 
-    expect(meta[1]).toMatchObject({ type: breaking, action: ActionType.add })
+    expect(meta[1]).toMatchObject({ type: breaking, action: DiffAction.add })
   })
 })

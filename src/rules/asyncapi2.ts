@@ -3,7 +3,7 @@ import { Rules } from "../types"
 import { 
   addNonBreaking, allBreaking, allNonBreaking, 
   allUnclassified, onlyAddBreaking, allAnnotation
-} from "./helpers"
+} from "../constants"
 
 const correlationIdRules: Rules = {
   "/": addNonBreaking,
