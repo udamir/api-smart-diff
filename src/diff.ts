@@ -1,15 +1,17 @@
-import { DiffPath, DiffOptions, Diff, EnumDiff } from "./types"
+import { ObjPath, CompareOptions, Diff, EnumDiff } from "./types"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
 import { buildPath, typeOf } from "./utils"
-import { DiffContext } from "./context"
+import { CompareContext } from "./context"
 import { DiffAction } from "./constants"
+import { compare } from "./compare"
 
-export const apiDiff = (before: any, after: any, options: DiffOptions): Diff[] => {
-  return findDiff(before, after, new DiffContext(before, after, options))
+export const apiDiff = (before: any, after: any, options: CompareOptions): Diff[] => {
+  const res = compare(before, after, new CompareContext(before, after, options))
+  return res.diffs
 }
 
-export const findDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath = []): Diff[] => {
+export const findDiff = (before: any, after: any, ctx: CompareContext, path: ObjPath = []): Diff[] => {
   if (typeOf(before) !== typeOf(after)) {
     const diff = { path: path, before, after, action: DiffAction.replace }
     return [classifyDiff(diff, ctx.rules)]
@@ -31,13 +33,13 @@ export const findDiff = (before: any, after: any, ctx: DiffContext, path: DiffPa
   }
 }
 
-const normalizeString = (value: string, ctx: DiffContext) => {
+const normalizeString = (value: string, ctx: CompareContext) => {
   value = ctx.trimStrings ? value.trim() : value
   value = ctx.caseSensitive ? value : value.toLowerCase()
   return value
 }
 
-const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath): Diff[] => {
+const objectsDiff = (before: any, after: any, ctx: CompareContext, path: ObjPath): Diff[] => {
   const diffs: Diff[] = []
   const ref = "#" + buildPath(path)
 
@@ -82,7 +84,7 @@ const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath):
   return diffs
 }
 
-export const findEqualItemIndex = (item: any, array: any[], ctx: DiffContext): number => {
+export const findEqualItemIndex = (item: any, array: any[], ctx: CompareContext): number => {
   for (let j = 0; j < array.length; j++) {
     ctx.findFirstDiff = true
     const diff = findDiff(item, array[j], ctx)
@@ -94,7 +96,7 @@ export const findEqualItemIndex = (item: any, array: any[], ctx: DiffContext): n
   return -1
 }
 
-const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath): Diff[] => {
+const arrayDiff = (before: any[], after: any[], ctx: CompareContext, path: ObjPath): Diff[] => {
   const diffs: Diff[] = []
 
   const _after = [...after]
@@ -133,7 +135,7 @@ const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath
   return diffs
 }
 
-export const enumDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath): EnumDiff => {
+export const enumDiff = (before: any[], after: any[], ctx: CompareContext, path: ObjPath): EnumDiff => {
   const result: EnumDiff = {
     added: [],
     removed: [],

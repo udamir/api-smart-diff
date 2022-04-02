@@ -1,5 +1,5 @@
 import { breaking, nonBreaking } from "./constants"
-import { DiffType, DiffPath } from "./types"
+import { DiffType, ObjPath } from "./types"
 
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
 export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)
@@ -16,7 +16,7 @@ export const parsePath = (path: string): string[] => {
   return pathArr
 }
 
-export const buildPath = (path: DiffPath): string => {
+export const buildPath = (path: ObjPath): string => {
   return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
 }
 

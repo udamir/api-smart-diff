@@ -1,7 +1,7 @@
-import { Rules, DiffPath, Classifier, UnclassifiedDiff, Diff } from "./types"
+import { Rules, ObjPath, Classifier, UnclassifiedDiff, Diff } from "./types"
 import { allUnclassified } from "./constants"
 
-export const findClassifier = (rules: Rules, path: DiffPath): Classifier => {
+export const findClassifier = (rules: Rules, path: ObjPath): Classifier => {
   let _rules = rules
   for (let key of [...path, ""]) {
     // check if rules dont have key of key is array index
