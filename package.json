@@ -1,6 +1,6 @@
 {
   "name": "api-smart-diff",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Generate the diff between two API specifications (OpenAPI, AsyncAPI, JsonSchema)",
   "module": "dist/esm/index.js",
   "main": "dist/cjs/index.js",
@@ -15,12 +15,14 @@
   "scripts": {
     "build": "tsc && tsc --module commonjs --outDir dist/cjs",
     "test": "jest --verbose",
+    "prepublish": "rm -r dist || true && npm run build && npm run build:web",
     "test:coverage": "jest --verbose --coverage",
     "build:web": "webpack"
   },
   "keywords": [
     "jsonschema",
     "diff",
+    "merge",
     "openapi",
     "swagger",
     "asyncapi"

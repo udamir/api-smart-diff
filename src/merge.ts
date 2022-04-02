@@ -1,14 +1,13 @@
 import { DiffContext, MergeContext } from "./context"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
-import { findEqualItemIndex } from "./diff"
 import { DiffAction } from "./constants"
+import { enumDiff } from "./diff"
 import { typeOf } from "./utils"
 import { 
-  DiffPath, MergedArrayMeta,
+  DiffPath, MergedArrayMeta, MergedKeyMeta,
   MergeOptions, MergeResult
 } from "./types"
-import { MergedKeyMeta } from "."
 
 export const apiMerge = (before: any, after: any, options: MergeOptions): any => {
   const [ value ] = mergeChanges(before, after, new MergeContext(before, after, options), [])
@@ -91,14 +90,22 @@ const mergeObjects = (before: any, after: any, ctx: MergeContext, path: DiffPath
   return [ merged ]
 }
 
+// const mergeByDiff = (before: any, path: DiffPath, diff: Diff, ctx: DiffContext) => {
+//   const arrPath = diff.path.slice(path.length)
+//   const _path = buildPath(arrPath)
+//   const value = resolveObjValue(before, _path, ctx.beforeCache)
+
+ 
+// }
+
 const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffPath): MergeResult => {
   const arrMeta: { [i: number]: MergedKeyMeta | MergedArrayMeta } = {}
 
   const array: any[] = []
   const _after = [...after]
 
-  for (let i = 0; i < before.length; i++) {
-    if (ctx.strictArrays) {
+  if (ctx.strictArrays) {
+    for (let i = 0; i < before.length; i++) {
       if (i >= after.length) {
         const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
         array[i] = before[i]
@@ -110,34 +117,50 @@ const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffP
           arrMeta[i] = m
         } 
       }
-    } else {
-      const index = findEqualItemIndex(before[i], _after, ctx)
+    }
+  } else {
+    const itemsDiff = enumDiff(before, after, ctx, path)
+    for (let i = 0; i < before.length; i++) {
       array[i] = before[i]
-      if (index >= 0) {
-        _after.splice(index, 1)
-      } else {
+      if (itemsDiff.unchanged.includes(i)) {
+      } else if (itemsDiff.removed.includes(i)) {
         const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
         arrMeta[i] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
+      } else if (itemsDiff.changed[i]) {
+        const { afterIndex } = itemsDiff.changed[i]
+        const [value, m] = mergeChanges(before[i], after[afterIndex], ctx, [...path, i])
+        array[i] = value
+        if (m) {
+          arrMeta[i] = m
+        } 
+        // const { diffs } = itemsDiff.changed[i]
+        // apply diffs to array[i]
+        // for (let diff of diffs) {
+        //   mergeByDiff(array[i], [...path, i], diff)
+        // }
       }
+    }
+    for (const j of itemsDiff.added) {
+      array.push(after[j])
+      const diff = { path: [...path, j], after: after[j], action: DiffAction.add }
+      arrMeta[j] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
     }
   }
 
   if (ctx.strictArrays) {
     _after.splice(0, before.length)
+    for (let j = before.length, i = 0; j < before.length + _after.length; j++, i++) {
+      array[j] = _after[i]
+      const diff = { path: [...path, j], after: _after[i], action: DiffAction.add }
+      arrMeta[j] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
+    }
   }
-
-  for (let j = before.length, i = 0; j < before.length + _after.length; j++, i++) {
-    array[j] = _after[i]
-    const diff = { path: [...path, j], after: _after[i], action: DiffAction.add }
-    arrMeta[j] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
-  }
-
 
   if (ctx.arrayMeta && Object.keys(arrMeta).length) {
     (array as any)[ctx.metaKey] = arrMeta
   }
   
-  if (ctx.arrayMeta || !Object.keys(array).length) {
+  if (ctx.arrayMeta || !Object.keys(arrMeta).length) {
     return [array]
   } else {
     return [array, { array: arrMeta }]

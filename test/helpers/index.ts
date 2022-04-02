@@ -20,7 +20,7 @@ export class ExampleResource {
     }
   }
 
-  public clone(patches: Operation[]) {
+  public clone(patches: Operation[] = []) {
     const res = JSON.parse(JSON.stringify(this.res))
     for (const patch of patches) {
       applyOperation(res, patch)

@@ -96,6 +96,7 @@ export const jsonSchemaRules = (rootRule: Classifier = allUnclassified): Rules =
   "/readOnly": booleanClassifier,
   "/writeOnly": booleanClassifier,
   "/example": allAnnotation,
+  "/examples": allAnnotation,
   "/externalDocs": allAnnotation,
   "/deprecated": booleanClassifier,
   "/xml": {

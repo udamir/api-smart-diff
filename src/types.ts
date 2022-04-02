@@ -42,6 +42,18 @@ export type DiffOptions = {
   arrayMeta?: boolean
 }
 
+export type EnumDiff = {
+  added: number[],
+  removed: number[],
+  changed: { 
+    [index: number]: {
+      afterIndex: number
+      diffs: Diff[] 
+    },
+  },
+  unchanged: number[],
+}
+
 export type MergeOptions<T = MergedKeyMeta> = DiffOptions & {
   formatMeta?: (diff: Diff) => T
   metaKey?: string | symbol
