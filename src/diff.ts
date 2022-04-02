@@ -66,10 +66,6 @@ const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath):
       // updated value
       diffs.push(...findDiff(_before[key], _after[key], ctx, [...path, key]))
     }
-
-    if (ctx.findFirstDiff && diffs.length) {
-      break
-    }
   }
 
   // remove refs
@@ -80,18 +76,6 @@ const objectsDiff = (before: any, after: any, ctx: DiffContext, path: DiffPath):
   ctx.afterRefs.delete(ref)
 
   return diffs
-}
-
-export const findEqualItemIndex = (item: any, array: any[], ctx: DiffContext): number => {
-  for (let j = 0; j < array.length; j++) {
-    ctx.findFirstDiff = true
-    const diff = findDiff(item, array[j], ctx)
-    ctx.findFirstDiff = false
-    if (!diff.length) {
-      return j
-    }
-  }
-  return -1
 }
 
 const arrayDiff = (before: any[], after: any[], ctx: DiffContext, path: DiffPath): Diff[] => {

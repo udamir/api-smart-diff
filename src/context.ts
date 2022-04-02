@@ -9,7 +9,6 @@ export class DiffContext implements DiffOptions {
   public afterRefs: Set<string> = new Set()
   public beforeCache: Map<string, any> = new Map()
   public afterCache: Map<string, any> = new Map()
-  public findFirstDiff = false
 
   public trimStrings?: boolean
   public caseSensitive?: boolean
@@ -22,7 +21,7 @@ export class DiffContext implements DiffOptions {
     this.trimStrings = options.trimStrings 
     this.caseSensitive = options.caseSensitive 
     this.strictArrays = options.strictArrays
-    this.circularRef = options.circularRef || false
+    // this.circularRef = options.circularRef || false
     this.arrayMeta = options.arrayMeta || false
 
     const externalRefs = options.externalRefs || {}

@@ -1,9 +1,9 @@
 import { DiffContext, MergeContext } from "./context"
+import { buildPath, typeOf } from "./utils"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
 import { DiffAction } from "./constants"
 import { enumDiff } from "./diff"
-import { typeOf } from "./utils"
 import { 
   DiffPath, MergedArrayMeta, MergedKeyMeta,
   MergeOptions, MergeResult
@@ -48,6 +48,11 @@ const mergeObjects = (before: any, after: any, ctx: MergeContext, path: DiffPath
   const merged: any = {}
   const meta: any = {}
 
+  const ref = "#" + buildPath(path)
+
+  ctx.beforeRefs.add(ref)
+  ctx.afterRefs.add(ref)
+
   const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.beforeCache)
   const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.afterCache)
 
@@ -83,6 +88,9 @@ const mergeObjects = (before: any, after: any, ctx: MergeContext, path: DiffPath
   before.$ref && ctx.beforeRefs.delete(before.$ref)
   after.$ref && ctx.afterRefs.delete(after.$ref)
 
+  ctx.beforeRefs.delete(ref)
+  ctx.afterRefs.delete(ref)
+  
   if (Object.keys(meta).length) {
     merged[ctx.metaKey] = meta
   }
@@ -141,8 +149,9 @@ const mergeArrays = (before: any[], after: any[], ctx: MergeContext, path: DiffP
       }
     }
     for (const j of itemsDiff.added) {
+      const i = array.length
       array.push(after[j])
-      const diff = { path: [...path, j], after: after[j], action: DiffAction.add }
+      const diff = { path: [...path, i], after: after[j], action: DiffAction.add }
       arrMeta[j] = ctx.formatMeta(classifyDiff(diff, ctx.rules))
     }
   }

@@ -37,7 +37,7 @@ export type DiffOptions = {
   trimStrings?: boolean
   caseSensitive?: boolean
   strictArrays?: boolean
-  circularRef?: boolean
+  // circularRef?: boolean
   externalRefs?: { [key: string]: any }
   arrayMeta?: boolean
 }
