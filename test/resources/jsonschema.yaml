@@ -3,7 +3,7 @@ required:
   - pet_type
 properties:
   name:
-    type: string
+    $ref: "#/$refs/NameType"
   pet_type:
     nullable: false
     type: string
@@ -14,3 +14,6 @@ properties:
     maximum: 20
     multipleOf: 2
     exclusiveMaximum: true
+$refs:
+  NameType:
+    type: string

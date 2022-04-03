@@ -1,105 +1,102 @@
 import { CompareContext, CompareResult } from "./context"
-import { dereference } from "./dereference"
-import { classifyDiff } from "./classifier"
-import { buildPath, typeOf } from "./utils"
+import { ObjPath, Diff, CompareOptions } from "./types"
+import { getPathRuleMeta, typeOf } from "./utils"
 import { DiffAction } from "./constants"
-import { ObjPath } from "./types"
+
+export const apiDiff = (before: any, after: any, options: CompareOptions): Diff[] => {
+  const res = compare(before, after, new CompareContext(before, after, options))
+  return res.diffs
+}
 
 export const compare = <T extends CompareResult>(before: any, after: any, ctx: CompareContext<T>, path: ObjPath = []): T => {
   if (typeOf(before) !== typeOf(after)) {
-    const diff = { path, before, after, action: DiffAction.replace }
-    return ctx.formatResult(classifyDiff(diff, ctx.rules), before, path)
+    return ctx.diffResult({ path, before, after, action: DiffAction.replace })
   }
 
   switch (typeOf(before)) {
-    case "object":
-      return compareObjects(before, after, ctx, path)
-    case "array":
-      return compareArrays(before, after, ctx, path)
+    case "object": return compareObjects(before, after, ctx, path)
+    case "array":  return compareArrays(before, after, ctx, path)
     default:
       if (typeof before === "string") {
-        before = normalizeString(before, ctx)
-        after = normalizeString(after, ctx)
+        before = ctx.normalizeString(before)
+        after = ctx.normalizeString(after)
       }
       if (before !== after) {
-        const diff = { path, before, after, action: DiffAction.replace }
-        return ctx.formatResult(classifyDiff(diff, ctx.rules), before, path)
+        return ctx.diffResult({ path, before, after, action: DiffAction.replace })
       } else {
-        return ctx.formatResult(undefined, before, path)
+        return ctx.equalResult(before, path)
       }
   }
 }
 
-const normalizeString = <T extends CompareResult>(value: string, ctx: CompareContext<T>) => {
-  value = ctx.trimStrings ? value.trim() : value
-  value = ctx.caseSensitive ? value : value.toLowerCase()
-  return value
-}
-
-const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: CompareContext<T>, path: ObjPath): T => {
-  const ref = "#" + buildPath(path)
+const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: CompareContext<T>, objPath: ObjPath): T => {
   const result: CompareResult = { diffs: [] }
 
-  ctx.beforeRefs.add(ref)
-  ctx.afterRefs.add(ref)
+  const [_before, _after, clearCache] = ctx.dereference(before, after, objPath)
 
-  const _before = dereference(before, ctx.before, ctx.beforeRefs, ctx.beforeCache)
-  const _after = dereference(after, ctx.after, ctx.afterRefs, ctx.afterCache)
+  const beforeKeys = Object.keys(_before)
+  const afterKeys = new Set(Object.keys(_after))
+  const meta = ctx.rules && getPathRuleMeta(ctx.rules, objPath)
+  
+  for (const key of beforeKeys) {
+    const afterKey = [...afterKeys].find((k) => k === key || (meta?.matchKeysFunc && meta.matchKeysFunc(key, k)))
+    const path = [...objPath, key]
 
-  const keys = new Set([...Object.keys(_before), ...Object.keys(_after)])
-
-  for (const key of keys) {
-    // skip symbol key
-    if (typeof key === "symbol") {
-      continue
-    }
-
-    if (!_before.hasOwnProperty(key)) {
-      // added key
-      const diff = { path: [...path, key], after: _after[key], action: DiffAction.add }
-      ctx.mergeResult(result, ctx.formatResult(classifyDiff(diff, ctx.rules), _after[key], path))
-    } else if (!_after.hasOwnProperty(key)) {
+    if (!afterKey) {
       // deleted key
-      const diff = { path: [...path, key], before: _before[key], action: DiffAction.remove }
-      ctx.mergeResult(result, ctx.formatResult(classifyDiff(diff, ctx.rules), _before[key], path))
+      const diff = { path, before: _before[key], action: DiffAction.remove }
+      ctx.mergeResult(result, ctx.diffResult(diff))
     } else {
       // updated value
-      ctx.mergeResult(result, compare(_before[key], _after[key], ctx, [...path, key]))
-    }
+      ctx.mergeResult(result, compare(_before[key], _after[key], ctx, path))
+      afterKeys.delete(key)
+    } 
   }
 
-  // remove refs
-  before.$ref && ctx.beforeRefs.delete(before.$ref)
-  after.$ref && ctx.afterRefs.delete(after.$ref)
+  for (const key of afterKeys) {
+    // added key
+    const diff = { path: [...objPath, key], after: _after[key], action: DiffAction.add }
+    ctx.mergeResult(result, ctx.diffResult(diff))
+  }
 
-  ctx.beforeRefs.delete(ref)
-  ctx.afterRefs.delete(ref)
+  clearCache()
 
   return result as T
 }
 
-const compareArrays = <T extends CompareResult>(before: any[], after: any[], ctx: CompareContext<T>, path: ObjPath): T => {
-  if (!ctx.strictArrays) {
-    return compareEnums(before, after, ctx, path)
+const compareArrays = <T extends CompareResult>(before: any[], after: any[], ctx: CompareContext<T>, objPath: ObjPath): T => {
+  const meta = ctx.rules && getPathRuleMeta(ctx.rules, objPath)
+
+  if (!ctx.strictArrays && !meta?.matchItemsFunc) {
+    return compareEnums(before, after, ctx, objPath)
   }
   const result: CompareResult = { diffs: [] }
-  const _after = [...after]
+  const afterKeys = new Set(after.keys())
 
-  for (let i = 0; i < before.length; i++) {
-    if (i >= after.length) {
-      const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
-      ctx.mergeResult(result, ctx.formatResult(classifyDiff(diff, ctx.rules), before[i], path))
+  for (const i of before.keys()) {
+    const path = [...objPath, i]
+    if (meta?.matchItemsFunc) {
+      const j = meta?.matchItemsFunc && [...afterKeys].find((j) => meta.matchItemsFunc!(before[i], after[j]))
+      if (j === undefined) {
+        ctx.mergeResult(result, ctx.diffResult({ path, before: before[i], action: DiffAction.remove }))
+      } else {
+        afterKeys.delete(j)
+        ctx.mergeResult(result, compare(before[i], after[j], ctx, path))
+      }
     } else {
-      ctx.mergeResult(result, compare(before[i], after[i], ctx, [...path, i]))
+      if (i >= after.length) {
+        ctx.mergeResult(result, ctx.diffResult({ path, before: before[i], action: DiffAction.remove }))
+      } else {
+        afterKeys.delete(i)
+        ctx.mergeResult(result, compare(before[i], after[i], ctx, path))
+      }
     }
   }
 
-  _after.splice(0, before.length)
-  for (let j = before.length, i = 0; j < before.length + _after.length; j++, i++) {
-    const diff = { path: [...path, -1], after: _after[i], action: DiffAction.add }
-    ctx.mergeResult(result, ctx.formatResult(classifyDiff(diff, ctx.rules), _after[i], path))
+  for (const key of afterKeys) {
+    ctx.mergeResult(result, ctx.diffResult({ path: [...objPath, -1], after: after[key], action: DiffAction.add }))
   }
-  
+
   return result as T
 }
 
@@ -159,7 +156,7 @@ export const compareEnums = <T extends CompareResult>(before: any[], after: any[
 
       if (!beforeEquals.has(i)) {
         const diff = { path: [...path, i], before: before[i], action: DiffAction.remove }
-        ctx.mergeResult(result, ctx.formatResult(classifyDiff(diff, ctx.rules), before[i], path))
+        ctx.mergeResult(result, ctx.diffResult(diff))
       }
     }
   }
@@ -167,7 +164,7 @@ export const compareEnums = <T extends CompareResult>(before: any[], after: any[
   for (let j = 0; j < after.length; j++) {
     if (!afterEquals.has(j)) {
       const diff = { path: [...path, -1], after: after[j], action: DiffAction.add }
-      ctx.mergeResult(result, ctx.formatResult(classifyDiff(diff, ctx.rules), after[j], path))
+      ctx.mergeResult(result, ctx.diffResult(diff))
     }
   }
 

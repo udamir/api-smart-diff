@@ -1,6 +1,6 @@
 export * from "./rules/index"
 export * from "./types"
 export * from "./constants"
-export { apiDiff } from "./diff"
+export { apiDiff, compare } from "./compare"
 export { apiMerge } from "./merge"
 export { findExternalRefs } from "./utils"

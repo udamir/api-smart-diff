@@ -1,4 +1,4 @@
-import { breakingIfAfterTrue } from "../utils"
+import { breakingIfAfterTrue, mapRules } from "../utils"
 import { jsonSchemaRules } from "./jsonschema"
 import { Rules } from "../types"
 import { 
@@ -6,6 +6,10 @@ import {
   allAnnotation, addNonBreaking, 
   allBreaking,
 } from "../constants"
+
+const pathRules = (rules: Rules) => mapRules(rules, (b: any, a: any) => {
+  return true
+})
 
 const serversRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
@@ -130,14 +134,14 @@ export const openapi3Rules: Rules = {
   "/servers": serversRules,
   "/paths": {
     "/": [nonBreaking, breaking, breaking],
-    "/*": {
+    "/*": pathRules({
       "/": [nonBreaking, breaking, breaking],
       "/summary": allAnnotation,
       "/description": allAnnotation,
       "/*": operationRules,
       "/servers": serversRules,
       "/parameters": parametersRules,
-    },
+    }),
   },
   "/components": {
     "/": [nonBreaking, nonBreaking, nonBreaking],

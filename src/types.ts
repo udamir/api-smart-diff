@@ -24,8 +24,11 @@ export type DiffTypeFunc = (before: any, after: any) => DiffType
 export type Classifier = [AddDiffType, RemoveDiffType, ReplaceDiffType]
 export type RulesRef = () => Rules
 
-export type RuleMeta = {
-  arrayObjectKeys: string[]
+export type MatchFunc = (b: any, a: any) => boolean
+
+export type RulesMeta = {
+  matchItemsFunc?: MatchFunc
+  matchKeysFunc?: MatchFunc
 }
 
 export type Rules = {
@@ -33,7 +36,7 @@ export type Rules = {
 } & {
   "/"?: Classifier
 } & {
-  [meta: symbol]: RuleMeta
+  [meta: symbol]: RulesMeta
 }
 
 export type BaseRulesType = "OpenApi3" | "AsyncApi2" | "JsonSchema"

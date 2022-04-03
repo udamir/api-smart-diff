@@ -5,7 +5,7 @@ const metaKey = Symbol("diff")
 const exampleBefore = new ExampleResource("schema-before.yaml", "JsonSchema")
 const exapmleAfter = new ExampleResource("schema-after.yaml", "JsonSchema")
 
-describe.skip("Test jsonschema merge", () => {
+describe("Test jsonschema merge", () => {
   it("add servers should be non-breaking change", () => {
     const after = exapmleAfter.clone()
     const merged = exampleBefore.merge(after, { metaKey, arrayMeta: true })

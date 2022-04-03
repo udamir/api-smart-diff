@@ -1,11 +1,18 @@
-import { allAnnotation, allBreaking, allUnclassified, RuleMeta } from "../constants"
-import { Classifier, Rules } from "../types"
+import { allAnnotation, allBreaking, allUnclassified } from "../constants"
+import { enumRules } from "../utils"
 import { jsonSchemaRules } from "."
+import { Rules } from "../types"
 
-const objectArrayRule = (rules: Rules, arrayObjectKeys: string[] = []): Rules => {
-  rules[RuleMeta] = { arrayObjectKeys }
-  return rules
-}
+const operationArray = (rules: Rules) => enumRules(rules, (b, a) => {
+
+  return true
+})
+
+const contentArray = (rules: Rules) => enumRules(rules, (b, a) => {
+
+  return true
+})
+
 
 const paramRules: Rules = {
   '/name': allUnclassified,
@@ -47,7 +54,7 @@ const requestRules: Rules = {
   },
   '/body': {
     '/': allUnclassified,
-    '/contents': objectArrayRule({
+    '/contents': contentArray({
       '/': allUnclassified,
       '/*': contentRules
     }),
@@ -70,7 +77,7 @@ const headersRules = {
 
 const responseRules: Rules = {
   '/code': allUnclassified,
-  '/contents': objectArrayRule({
+  '/contents': contentArray({
     '/': allUnclassified, 
     '/*': contentRules,
   }),
@@ -102,7 +109,7 @@ const operationRules: Rules = {
     '/': allUnclassified,
     '/*': serverRules
   },
-  '/callbacks': objectArrayRule({
+  '/callbacks': operationArray({
     '/callbackName': allUnclassified,
     '/method': allUnclassified,
     '/path': allUnclassified,
@@ -117,8 +124,6 @@ const operationRules: Rules = {
   '/internal': allUnclassified,
   '/extensions': allUnclassified
 }
-
-const operationsRules = objectArrayRule(operationRules, [])
 
 const serviceRules = {
   // Node common
@@ -145,5 +150,5 @@ const serviceRules = {
 
 export const apiSpecRules = {
   '/service': serviceRules,
-  '/operations': operationsRules
+  '/operations': operationArray(operationRules)
 }

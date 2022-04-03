@@ -3,7 +3,7 @@ import { nonBreaking } from "../src"
 
 const exampleResource = new ExampleResource("openapi3.yaml", "OpenApi3")
 
-describe.skip("Test openapi 3 diff", () => {
+describe("Test openapi 3 diff", () => {
   it("add servers should be non-breaking change", () => {
     const path = ["servers", 1]
     const value = {
