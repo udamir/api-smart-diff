@@ -4,13 +4,13 @@ import { jsonSchemaRules } from "."
 import { Rules } from "../types"
 
 const operationArray = (rules: Rules) => enumRules(rules, (b, a) => {
-
-  return true
+  const beforePath = b.path.replace(new RegExp("\{.*?\}", "g"), "*")
+  const afterPath = a.path.replace(new RegExp("\{.*?\}", "g"), "*")
+  return beforePath === afterPath && b.method === a.method
 })
 
 const contentArray = (rules: Rules) => enumRules(rules, (b, a) => {
-
-  return true
+  return a.mediaType === b.mediaType
 })
 
 

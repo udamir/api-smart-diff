@@ -1,11 +1,11 @@
 import { addPatch, ExampleResource } from "./helpers"
-import { nonBreaking } from "../src"
+import { breaking, nonBreaking } from "../src"
 
-const exampleResource = new ExampleResource("openapi3.yaml", "OpenApi3")
+const exampleResource = new ExampleResource("petstore.yaml", "OpenApi3")
 
 describe("Test openapi 3 diff", () => {
   it("add servers should be non-breaking change", () => {
-    const path = ["servers", 1]
+    const path = ["servers", 2]
     const value = {
       url: "http://localhost:3000",
       description: "Local server1"
@@ -18,6 +18,20 @@ describe("Test openapi 3 diff", () => {
       path: ["servers", -1],
       after: value,
       type: nonBreaking
+    }])
+  })
+
+  it("rename path parameter should be breaking change", () => {
+    const after = exampleResource.clone()
+    after.paths["/pet/{pet}/uploadImage"] = after.paths["/pet/{petId}/uploadImage"]
+    delete after.paths["/pet/{petId}/uploadImage"]
+    after.paths["/pet/{pet}/uploadImage"].post.parameters[0].name = "pet"
+
+    const diff = exampleResource.diff(after)
+    expect(diff.length).toEqual(1)
+    expect(diff).toMatchObject([{
+      path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"],
+      type: breaking
     }])
   })
 })

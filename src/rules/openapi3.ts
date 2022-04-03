@@ -7,8 +7,10 @@ import {
   allBreaking,
 } from "../constants"
 
-const pathRules = (rules: Rules) => mapRules(rules, (b: any, a: any) => {
-  return true
+const pathArrayRules = (rules: Rules) => mapRules(rules, (b: string, a: string) => {
+  const beforePath = b.replace(new RegExp("\{.*?\}", "g"), "*")
+  const afterPath = a.replace(new RegExp("\{.*?\}", "g"), "*")
+  return beforePath === afterPath
 })
 
 const serversRules: Rules = {
@@ -132,17 +134,17 @@ export const openapi3Rules: Rules = {
     "/version": allAnnotation,
   },
   "/servers": serversRules,
-  "/paths": {
+  "/paths": pathArrayRules({
     "/": [nonBreaking, breaking, breaking],
-    "/*": pathRules({
+    "/*": {
       "/": [nonBreaking, breaking, breaking],
       "/summary": allAnnotation,
       "/description": allAnnotation,
       "/*": operationRules,
       "/servers": serversRules,
       "/parameters": parametersRules,
-    }),
-  },
+    },
+  }),
   "/components": {
     "/": [nonBreaking, nonBreaking, nonBreaking],
     "/schemas": {

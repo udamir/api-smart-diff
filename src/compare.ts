@@ -48,8 +48,8 @@ const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: C
       ctx.mergeResult(result, ctx.diffResult(diff))
     } else {
       // updated value
-      ctx.mergeResult(result, compare(_before[key], _after[key], ctx, path))
-      afterKeys.delete(key)
+      ctx.mergeResult(result, compare(_before[key], _after[afterKey], ctx, path))
+      afterKeys.delete(afterKey)
     } 
   }
 
