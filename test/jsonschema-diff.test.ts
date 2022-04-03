@@ -69,7 +69,7 @@ describe("Test Jsonschema diff", () => {
     const diff = example.diff(after)
 
     expect(diff.length).toEqual(1)
-    expect(diff).toMatchObject([{ path, after: value, type: breaking }])
+    expect(diff).toMatchObject([{ path: ["required", -1], after: value, type: breaking }])
   })
 
   it("change type in ref should be 'breaing' change", () => {

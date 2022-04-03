@@ -1,8 +1,3 @@
-allOf:
-  - type: object
-    properties:
-      pet_color:
-        type: string
 type: object
 required:
   - pet_type
@@ -11,8 +6,7 @@ properties:
     $ref: "#/$refs/NameType"
   pet_type:
     nullable: false
-    allOf:
-    - type: string
+    type: string
   age:
     type: number
     title: age

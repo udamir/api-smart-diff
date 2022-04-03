@@ -15,7 +15,7 @@ describe("Test openapi 3 diff", () => {
     const diff = exampleResource.diff(after)
     expect(diff.length).toEqual(1)
     expect(diff).toMatchObject([{
-      path,
+      path: ["servers", -1],
       after: value,
       type: nonBreaking
     }])

@@ -1,5 +1,6 @@
 import { Classifier } from "./types"
 
+export const RuleMetaKey = Symbol("rule")
 export const DIFF_META_KEY = "$diff"
 
 export enum DiffAction {
