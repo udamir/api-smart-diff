@@ -28,10 +28,6 @@ export class CompareContext<T extends CompareResult> implements CompareOptions {
     this.caseSensitive = options.caseSensitive 
     this.strictArrays = options.strictArrays
     // this.circularRef = options.circularRef || false
-<<<<<<< HEAD
-    this.arrayMeta = options.arrayMeta || false
-=======
->>>>>>> compare
 
     const externalRefs = options.externalRefs || {}
     for (const ref of Object.keys(externalRefs)) {
