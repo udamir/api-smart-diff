@@ -3,7 +3,7 @@ import yaml from "js-yaml"
 import path from "path"
 import fs from "fs"
 
-import { apiDiff, apiMerge, BaseRulesType, ObjPath, MergeOptions } from "../../src"
+import { apiDiff, apiMerge, BaseRulesType, ObjPath, MergeOptions, Rules } from "../../src"
 import { buildPath, findExternalRefs } from "../../src/utils"
 import { resolveObjValue } from "../../src/dereference"
 
@@ -11,7 +11,7 @@ export class ExampleResource {
   private res: any = {}
   public externalSources: any = {}
 
-  constructor(private filename: string, public type: BaseRulesType) {
+  constructor(private filename: string, public rules: BaseRulesType | Rules) {
     try {
       const resPath = path.join(__dirname, "../resources/", this.filename)
       this.res = yaml.load(fs.readFileSync(resPath, "utf8"))
@@ -29,11 +29,11 @@ export class ExampleResource {
   }
 
   public diff(after: any) {
-    return apiDiff(this.res, after, { rules: this.type, externalRefs: this.externalSources })
+    return apiDiff(this.res, after, { rules: this.rules, externalRefs: this.externalSources })
   }
 
   public merge(after: any, options?: MergeOptions) {
-    return apiMerge(this.res, after, { ...options, rules: this.type, externalRefs: this.externalSources })
+    return apiMerge(this.res, after, { ...options, rules: this.rules, externalRefs: this.externalSources })
   }
 
   public getValue(path: ObjPath | string) {

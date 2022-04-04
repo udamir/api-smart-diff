@@ -1,12 +1,15 @@
-import { allAnnotation, allBreaking, allUnclassified } from "../constants"
+import { allAnnotation, allBreaking, allUnclassified, addNonBreaking, breaking, nonBreaking } from "../constants"
 import { enumRules } from "../utils"
 import { jsonSchemaRules } from "."
 import { Rules } from "../types"
 
-const operationArray = (rules: Rules) => enumRules(rules, (b, a) => {
-  const beforePath = b.path.replace(new RegExp("\{.*?\}", "g"), "*")
-  const afterPath = a.path.replace(new RegExp("\{.*?\}", "g"), "*")
-  return beforePath === afterPath && b.method === a.method
+const childrenArray = (rules: Rules) => enumRules(rules, (b, a) => {
+  if (a.type !== b.type) {
+    return false
+  }
+  const beforePath = b.data.path?.replace(new RegExp("\{.*?\}", "g"), "*")
+  const afterPath = a.data.path?.replace(new RegExp("\{.*?\}", "g"), "*")
+  return beforePath === afterPath && b.data.method === a.data.method
 })
 
 const contentArray = (rules: Rules) => enumRules(rules, (b, a) => {
@@ -109,7 +112,7 @@ const operationRules: Rules = {
     '/': allUnclassified,
     '/*': serverRules
   },
-  '/callbacks': operationArray({
+  '/callbacks': childrenArray({
     '/callbackName': allUnclassified,
     '/method': allUnclassified,
     '/path': allUnclassified,
@@ -148,7 +151,22 @@ const serviceRules = {
   '/logo': allAnnotation
 }
 
-export const apiSpecRules = {
-  '/service': serviceRules,
-  '/operations': operationArray(operationRules)
+export const serviceNodeRules: Rules = {
+  '/*': allAnnotation,
+  '/data': serviceRules,
+  '/children': childrenArray({
+    '/': [nonBreaking, breaking, breaking],
+    '/*': {
+      '/': [nonBreaking, breaking, breaking],
+      '/data': operationRules,
+      '/*': allAnnotation,
+    }
+  }),
+  "/components": {
+    "/": [nonBreaking, nonBreaking, nonBreaking],
+    "/schemas": {
+      "/": [nonBreaking, breaking, breaking],
+      "/*": jsonSchemaRules(addNonBreaking),
+    },
+  },
 }

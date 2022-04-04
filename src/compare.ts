@@ -15,7 +15,7 @@ export const compare = <T extends CompareResult>(before: any, after: any, ctx: C
 
   switch (typeOf(before)) {
     case "object": return compareObjects(before, after, ctx, path)
-    case "array":  return compareArrays(before, after, ctx, path)
+    case "array": return compareArrays(before, after, ctx, path)
     default:
       if (typeof before === "string") {
         before = ctx.normalizeString(before)
@@ -33,6 +33,10 @@ const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: C
   const result: CompareResult = { diffs: [] }
 
   const [_before, _after, clearCache] = ctx.dereference(before, after, objPath)
+
+  if (Object.keys(_before).length === 0 && Object.keys(_after).length === 0) {
+    return ctx.equalResult(before, objPath)
+  }
 
   const beforeKeys = Object.keys(_before)
   const afterKeys = new Set(Object.keys(_after))
@@ -70,6 +74,11 @@ const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: C
 }
 
 const compareArrays = <T extends CompareResult>(before: any[], after: any[], ctx: CompareContext<T>, objPath: ObjPath): T => {
+
+  if (before.length === 0 && after.length === 0) {
+    return ctx.equalResult(before, objPath)
+  }
+
   const meta = ctx.rules && getPathRuleMeta(ctx.rules, objPath)
 
   if (!ctx.strictArrays && !meta?.matchItemsFunc) {
