@@ -21,17 +21,17 @@ describe("Test openapi 3 diff", () => {
     }])
   })
 
-  it("rename path parameter should be breaking change", () => {
+  it("rename path parameter should not be breaking change", () => {
     const after = exampleResource.clone()
     after.paths["/pet/{pet}/uploadImage"] = after.paths["/pet/{petId}/uploadImage"]
     delete after.paths["/pet/{petId}/uploadImage"]
     after.paths["/pet/{pet}/uploadImage"].post.parameters[0].name = "pet"
 
     const diff = exampleResource.diff(after)
-    expect(diff.length).toEqual(1)
-    expect(diff).toMatchObject([{
-      path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"],
-      type: breaking
-    }])
+    expect(diff.length).toEqual(2)
+    expect(diff).toMatchObject([
+      { path: ["paths", "/pet/{petId}/uploadImage"], after: "/pet/{pet}/uploadImage", type: nonBreaking },
+      { path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"], type: breaking } // should be non-breaking
+    ])
   })
 })

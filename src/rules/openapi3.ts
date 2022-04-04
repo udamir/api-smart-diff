@@ -137,7 +137,7 @@ export const openapi3Rules: Rules = {
   "/paths": pathArrayRules({
     "/": [nonBreaking, breaking, breaking],
     "/*": {
-      "/": [nonBreaking, breaking, breaking],
+      "/": [nonBreaking, breaking, nonBreaking],
       "/summary": allAnnotation,
       "/description": allAnnotation,
       "/*": operationRules,
