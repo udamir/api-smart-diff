@@ -22,6 +22,7 @@ This package provides utils to compute the diff between two API specifications.
 - Generate merged spec with changes in metadata 
 - Classify all changes as breaking, non-breaking, annotation
 - Supports custom classification rules
+- Supports custom match rules for array items and object keys
 - Resolves all $ref pointers, including external
 - Typescript syntax support out of the box
 - No dependencies, can be used in nodejs or browser
