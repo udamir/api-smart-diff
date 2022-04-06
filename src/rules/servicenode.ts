@@ -1,5 +1,8 @@
-import { allAnnotation, allBreaking, allUnclassified, addNonBreaking, breaking, nonBreaking } from "../constants"
-import { enumRules } from "../utils"
+import { 
+  allAnnotation, allBreaking, allUnclassified, 
+  unclassified, addNonBreaking, breaking, nonBreaking
+} from "../constants"
+import { breakingIfAfterTrue, enumRules } from "../utils"
 import { jsonSchemaRules } from "."
 import { Rules } from "../types"
 
@@ -18,63 +21,63 @@ const contentArray = (rules: Rules) => enumRules(rules, (b, a) => {
 
 
 const paramRules: Rules = {
-  '/name': allUnclassified,
+  '/name': [nonBreaking, breaking, breaking],
   '/style': allUnclassified,
   '/description': allAnnotation,
   '/explode': allUnclassified,
-  '/required': allUnclassified,
-  '/deprecated': allUnclassified,
+  '/required': [breaking, nonBreaking, breakingIfAfterTrue],
+  '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
 }
 
 const contentRules: Rules = {
-  '/': allUnclassified,
-  '/mediaType': allUnclassified,
-  '/schema': jsonSchemaRules(allUnclassified),
+  '/': [nonBreaking, breaking, breaking],
+  '/mediaType': [nonBreaking, breaking, breaking],
+  '/schema': jsonSchemaRules(allBreaking),
   '/examples': allAnnotation,
-  '/encodings': allUnclassified
+  '/encodings': [nonBreaking, breaking, breaking],
 }
 
 const requestRules: Rules = {
   '/path': {
-    '/': allUnclassified,
+    '/': [nonBreaking, breaking, breaking],
     '/*': paramRules,
   },
   '/query': {
-    '/': allUnclassified,
+    '/': [nonBreaking, breaking, breaking],
     '/*': {
       ...paramRules,
-      '/allowEmptyValue': allUnclassified,
-      '/allowReserved': allUnclassified,
+      '/allowEmptyValue': [breaking, nonBreaking, breakingIfAfterTrue],
+      '/allowReserved': [breaking, nonBreaking, breakingIfAfterTrue],
     },
   },
   '/headers': {
-    '/': allUnclassified,
+    '/': [nonBreaking, breaking, breaking],
     '/*': paramRules
   },
   '/cookie': {
-    '/': allUnclassified,
+    '/': [nonBreaking, breaking, breaking],
     '/*': paramRules
   },
   '/body': {
-    '/': allUnclassified,
+    '/': [nonBreaking, breaking, breaking],
     '/contents': contentArray({
       '/': allUnclassified,
       '/*': contentRules
     }),
-    '/required': allUnclassified, 
+    '/required': [breaking, nonBreaking, breakingIfAfterTrue],
     '/description': allAnnotation
   },
 }
 
-const headersRules = {
+const headersRules: Rules = {
   '/': allUnclassified,
   '/*': {
-    '/name': allUnclassified,
+    '/name': [nonBreaking, breaking, breaking],
     '/style': allUnclassified,
     '/description': allAnnotation,
     '/explode': allUnclassified,
-    '/required': allUnclassified,
-    '/deprecated': allUnclassified,
+    '/required': [breaking, nonBreaking, breakingIfAfterTrue],
+    '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
   }
 }
 
@@ -88,11 +91,17 @@ const responseRules: Rules = {
   '/description': allAnnotation
 }
 
-const serverRules = {
-  '/url': allUnclassified,
-  '/name': allUnclassified,
+const serverRules: Rules = {
+  '/': [nonBreaking, breaking, breaking],
+  '/url': [nonBreaking, breaking, breaking],
+  '/name': allAnnotation,
   '/description': allAnnotation,
-  '/variables': allUnclassified,
+  '/variables': [nonBreaking, breaking, breaking],
+}
+
+const securityRules: Rules = {
+  "/": [breaking, nonBreaking, unclassified],
+  "/*": [breaking, nonBreaking, unclassified],
 }
 
 const operationRules: Rules = {
@@ -104,8 +113,8 @@ const operationRules: Rules = {
   '/description': allAnnotation,
 
   // Operation
-  '/method': allBreaking,
-  '/path': allBreaking,
+  '/method': [nonBreaking, breaking, breaking],
+  '/path': [nonBreaking, breaking, breaking],
   '/request': requestRules,
   '/responses': responseRules,
   '/servers': {
@@ -113,22 +122,22 @@ const operationRules: Rules = {
     '/*': serverRules
   },
   '/callbacks': childrenArray({
-    '/callbackName': allUnclassified,
-    '/method': allUnclassified,
-    '/path': allUnclassified,
+    '/callbackName': allAnnotation,
+    '/method': [nonBreaking, breaking, breaking],
+    '/path': [nonBreaking, breaking, breaking],
     '/request': requestRules,
     '/responses': responseRules,
     '/deprecated': allUnclassified,
     '/internal': allUnclassified,
     '/extensions': allUnclassified,
   }),
-  '/security': allUnclassified,
-  '/deprecated': allUnclassified,
+  '/security': securityRules,
+  '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
   '/internal': allUnclassified,
   '/extensions': allUnclassified
 }
 
-const serviceRules = {
+const serviceRules: Rules = {
   // Node common
   '/id': allAnnotation,
   '/iid': allAnnotation,
@@ -140,14 +149,14 @@ const serviceRules = {
   '/name': allAnnotation,
   '/version': allAnnotation,
   '/servers': {
-    '/': allUnclassified,
+    '/': [nonBreaking, breaking, breaking],
     '/*': serverRules
   },
-  '/security': allUnclassified,
-  '/securitySchemes': allUnclassified,
-  '/termsOfService': allUnclassified,
+  '/security': securityRules,
+  '/securitySchemes': [breaking, nonBreaking, breaking],
+  '/termsOfService': allAnnotation,
   '/contact': allAnnotation,
-  '/license': allUnclassified,
+  '/license': [breaking, breaking, breaking],
   '/logo': allAnnotation
 }
 
