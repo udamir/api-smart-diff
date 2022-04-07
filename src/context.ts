@@ -1,15 +1,15 @@
 import { Diff, ObjPath, UnclassifiedDiff, BaseRulesType, CompareOptions, Rules } from "./types"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
+import { buildPath, getPathRuleMeta } from "./utils"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
-import { buildPath } from "./utils"
 
 export interface CompareResult {
   diffs: Diff[]
 }
 
 export class CompareContext<T extends CompareResult> implements CompareOptions {
-  public rules?: Rules
+  public rules: Rules
 
   public beforeRefs: Set<string> = new Set()
   public afterRefs: Set<string> = new Set()
@@ -23,7 +23,7 @@ export class CompareContext<T extends CompareResult> implements CompareOptions {
   // public circularRef?: boolean
 
   constructor(public before: any, public after: any, options: CompareOptions) {
-    this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules
+    this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules || {}
     this.trimStrings = options.trimStrings 
     this.caseSensitive = options.caseSensitive 
     this.strictArrays = options.strictArrays
@@ -40,6 +40,10 @@ export class CompareContext<T extends CompareResult> implements CompareOptions {
     value = this.trimStrings ? value.trim() : value
     value = this.caseSensitive ? value : value.toLowerCase()
     return value
+  }
+
+  public getPathRuleMeta(path: ObjPath) {
+    return getPathRuleMeta(this.rules, path, this.before)
   }
 
   public dereference(before: any, after: any, objPath: ObjPath): [any, any, () => void] {
@@ -63,8 +67,6 @@ export class CompareContext<T extends CompareResult> implements CompareOptions {
     return [_before, _after, clearCache]
   }
 
-
-
   private getBaseRules (name: BaseRulesType): Rules {
     switch (name) {
       case "OpenApi3":
@@ -85,7 +87,7 @@ export class CompareContext<T extends CompareResult> implements CompareOptions {
 
   public diffResult (diff: UnclassifiedDiff): T {
     const result: CompareResult = {
-      diffs: [classifyDiff(diff, this.rules)]
+      diffs: [classifyDiff(diff, this.before, this.rules)]
     }
     return result as T
   }

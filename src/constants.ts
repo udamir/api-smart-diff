@@ -1,4 +1,4 @@
-import { Classifier } from "./types"
+import { Rule } from "./types"
 
 export const RuleMetaKey = Symbol("rule")
 export const DIFF_META_KEY = "$diff"
@@ -19,9 +19,9 @@ export enum ClassifierType {
 export const { breaking, nonBreaking, unclassified, annotation } = ClassifierType
 
 // predefined classifiers
-export const allNonBreaking: Classifier = [nonBreaking, nonBreaking, nonBreaking]
-export const allBreaking: Classifier = [breaking, breaking, breaking]
-export const onlyAddBreaking: Classifier = [breaking, nonBreaking, nonBreaking]
-export const addNonBreaking: Classifier = [nonBreaking, breaking, breaking]
-export const allUnclassified: Classifier = [unclassified, unclassified, unclassified]
-export const allAnnotation: Classifier = [annotation, annotation, annotation]
+export const allNonBreaking: Rule = [nonBreaking, nonBreaking, nonBreaking]
+export const allBreaking: Rule = [breaking, breaking, breaking]
+export const onlyAddBreaking: Rule = [breaking, nonBreaking, nonBreaking]
+export const addNonBreaking: Rule = [nonBreaking, breaking, breaking]
+export const allUnclassified: Rule = [unclassified, unclassified, unclassified]
+export const allAnnotation: Rule = [annotation, annotation, annotation]

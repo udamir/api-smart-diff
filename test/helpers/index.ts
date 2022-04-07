@@ -12,11 +12,14 @@ export class ExampleResource {
   public externalSources: any = {}
 
   constructor(private filename: string, public rules: BaseRulesType | Rules) {
-    try {
-      const resPath = path.join(__dirname, "../resources/", this.filename)
-      this.res = yaml.load(fs.readFileSync(resPath, "utf8"))
-    } catch (e) {
-      console.log(e)
+    const resPath = path.join(__dirname, "../resources/", this.filename)
+    const data = fs.readFileSync(resPath, "utf8")
+    if (new RegExp(".(yaml|YAML|yml|YML)$", "g").test(filename)) {
+      try {
+        this.res = yaml.load(data)
+      } catch (e) {
+        console.log(e)
+      }
     }
   }
 

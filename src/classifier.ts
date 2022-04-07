@@ -1,32 +1,12 @@
-import { Rules, ObjPath, Classifier, UnclassifiedDiff, Diff } from "./types"
+import { Rules, UnclassifiedDiff, Diff } from "./types"
 import { allUnclassified } from "./constants"
+import { getRules } from "./utils"
 
-export const findClassifier = (rules: Rules, path: ObjPath): Classifier => {
-  let _rules = rules
-  for (let key of [...path, ""]) {
-    // check if rules dont have key of key is array index
-    if (!_rules.hasOwnProperty(`/${key}`) || typeof key === "number") {
-      key = "*"
-    }
-
-    // check if rules have key
-    if (_rules.hasOwnProperty(`/${key}`)) {
-      const rule = _rules[`/${key}`]
-      if (Array.isArray(rule)) {
-        return rule
-      }
-      _rules = typeof rule === "function" ? rule() : rule
-    } else {
-      return allUnclassified
-    }
-  }
-  return allUnclassified
-}
-
-export const classifyDiff = (diff: UnclassifiedDiff, rules: Rules = {}): Diff => {
+export const classifyDiff = (diff: UnclassifiedDiff, source: any, rules: Rules = {}): Diff => {
   const _diff = diff as Diff
 
-  const classifier = findClassifier(rules, diff.path)
+  const rule = getRules(rules, [...diff.path, ""], source)
+  const classifier = Array.isArray(rule) ? rule : allUnclassified
 
   const index = ["add", "remove", "replace"].indexOf(diff.action)
   const changeType = classifier[index]

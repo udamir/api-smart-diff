@@ -49,8 +49,8 @@ export class MergeContext extends CompareContext<MergeResult> {
 
   public diffResult (diff: UnclassifiedDiff): MergeResult {
     const result: MergeResult = {
-      diffs: [classifyDiff(diff, this.rules)],
-      diff: classifyDiff(diff, this.rules),
+      diffs: [classifyDiff(diff, this.before, this.rules)],
+      diff: classifyDiff(diff, this.before, this.rules),
       path: diff.path
     }
     return result

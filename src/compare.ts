@@ -1,7 +1,7 @@
 import { CompareContext, CompareResult } from "./context"
 import { ObjPath, Diff, CompareOptions } from "./types"
-import { getPathRuleMeta, typeOf } from "./utils"
 import { DiffAction } from "./constants"
+import { typeOf } from "./utils"
 
 export const apiDiff = (before: any, after: any, options: CompareOptions): Diff[] => {
   const res = compare(before, after, new CompareContext(before, after, options))
@@ -40,7 +40,7 @@ const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: C
 
   const beforeKeys = Object.keys(_before)
   const afterKeys = new Set(Object.keys(_after))
-  const meta = ctx.rules && getPathRuleMeta(ctx.rules, objPath)
+  const meta = ctx.getPathRuleMeta(objPath)
   
   for (const key of beforeKeys) {
     const afterKey = [...afterKeys].find((k) => k === key || (meta?.matchKeysFunc && meta.matchKeysFunc(key, k)))
@@ -79,7 +79,7 @@ const compareArrays = <T extends CompareResult>(before: any[], after: any[], ctx
     return ctx.equalResult(before, objPath)
   }
 
-  const meta = ctx.rules && getPathRuleMeta(ctx.rules, objPath)
+  const meta = ctx.getPathRuleMeta(objPath)
 
   if (!ctx.strictArrays && !meta?.matchItemsFunc) {
     return compareEnums(before, after, ctx, objPath)

@@ -21,8 +21,8 @@ export type ReplaceDiffType = DiffType | DiffTypeFunc
 
 export type DiffTypeFunc = (before: any, after: any) => DiffType
 
-export type Classifier = [AddDiffType, RemoveDiffType, ReplaceDiffType]
-export type RulesRef = () => Rules
+export type Rule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
+export type RulesRef = (b: any) => Rules
 
 export type MatchFunc = (b: any, a: any) => boolean
 
@@ -32,9 +32,9 @@ export type RulesMeta = {
 }
 
 export type Rules = {
-  [key: `/${string}`]: Classifier | Rules | RulesRef
+  [key: `/${string}`]: Rule | Rules | RulesRef
 } & {
-  "/"?: Classifier
+  "/"?: Rule
 } & {
   [meta: symbol]: RulesMeta
 }

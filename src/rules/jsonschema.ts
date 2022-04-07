@@ -1,42 +1,42 @@
 import { breakingIf, breakingIfAfterTrue } from "../utils"
-import { Classifier, Rules } from "../types"
+import { Rule, Rules } from "../types"
 import {
   breaking, nonBreaking, addNonBreaking, 
   allAnnotation, allBreaking, allUnclassified,
   onlyAddBreaking,
 } from "../constants"
 
-const maxClassifier: Classifier = [
+const maxClassifier: Rule = [
   breaking, 
   nonBreaking, 
   (b, a) => breakingIf(b > a)
 ]
 
-const minClassifier: Classifier = [
+const minClassifier: Rule = [
   breaking,
   nonBreaking,
   (b, a) => breakingIf(b < a)
 ]
 
-const exclusiveClassifier: Classifier = [
+const exclusiveClassifier: Rule = [
   breakingIfAfterTrue, 
   nonBreaking, 
   breakingIfAfterTrue
 ]
 
-const booleanClassifier: Classifier = [
+const booleanClassifier: Rule = [
   breakingIfAfterTrue,
   nonBreaking,
   breakingIfAfterTrue
 ]
 
-const multipleOfClassifier: Classifier = [
+const multipleOfClassifier: Rule = [
   breaking,
   nonBreaking,
   (b, a) => breakingIf(!!(b % a))
 ]
 
-export const jsonSchemaRules = (rootRule: Classifier = allUnclassified): Rules => ({
+export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/": rootRule,
   "/title": allAnnotation,
   "/multipleOf": multipleOfClassifier,

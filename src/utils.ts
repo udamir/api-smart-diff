@@ -1,4 +1,4 @@
-import { RulesMeta, MatchFunc, Rules, DiffType, ObjPath } from "./types"
+import { Rule, RulesMeta, MatchFunc, Rules, DiffType, ObjPath } from "./types"
 import { breaking, nonBreaking, RuleMetaKey } from "./constants"
 
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
@@ -20,9 +20,11 @@ export const buildPath = (path: ObjPath): string => {
   return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
 }
 
-export const getPathRuleMeta = (rules: Rules, path: ObjPath): RulesMeta | undefined => {
+export const getRules = (rules: Rules, path: ObjPath, source: any): Rules | Rule | undefined => {
   let _rules = rules
+  let value = source
   for (let key of [...path]) {
+    value = (key !== undefined && value !== undefined) ? value[key] : undefined
     // check if rules dont have key of key is array index
     if (!_rules.hasOwnProperty(`/${key}`) || typeof key === "number") {
       key = "*"
@@ -32,14 +34,24 @@ export const getPathRuleMeta = (rules: Rules, path: ObjPath): RulesMeta | undefi
     if (_rules.hasOwnProperty(`/${key}`)) {
       const rule = _rules[`/${key}`]
       if (Array.isArray(rule)) {
-        return undefined
+        return rule
       }
-      _rules = typeof rule === "function" ? rule() : rule
+      _rules = typeof rule === "function" ? rule(value) : rule
     } else {
       return undefined
     }
   }
-  return _rules[RuleMetaKey]
+  return _rules
+}
+
+export const getPathRuleMeta = (rules: Rules, path: ObjPath, source: any): RulesMeta | undefined => {
+  const _rules = getRules(rules, path, source)
+
+  if (_rules && !Array.isArray(_rules) && RuleMetaKey in _rules) {
+    return _rules[RuleMetaKey]
+  }
+
+  return undefined
 }
 
 export const findExternalRefs = (source: any | any[]): string[] => {
@@ -70,6 +82,11 @@ export const findExternalRefs = (source: any | any[]): string[] => {
 
 export const enumRules = (rules: Rules, matchItemsFunc: MatchFunc): Rules => {
   rules[RuleMetaKey] = { matchItemsFunc }
+  return rules
+}
+
+export const objArray = (key: string, rules: Rules): Rules => {
+  rules[RuleMetaKey] = { matchKeysFunc: (b, a) => a[key] === b[key] }
   return rules
 }
 

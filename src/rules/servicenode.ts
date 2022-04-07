@@ -2,7 +2,7 @@ import {
   allAnnotation, allBreaking, allUnclassified, 
   unclassified, addNonBreaking, breaking, nonBreaking
 } from "../constants"
-import { breakingIfAfterTrue, enumRules } from "../utils"
+import { breakingIfAfterTrue, enumRules, objArray } from "../utils"
 import { jsonSchemaRules } from "."
 import { Rules } from "../types"
 
@@ -10,13 +10,13 @@ const childrenArray = (rules: Rules) => enumRules(rules, (b, a) => {
   if (a.type !== b.type) {
     return false
   }
-  const beforePath = b.data.path?.replace(new RegExp("\{.*?\}", "g"), "*")
-  const afterPath = a.data.path?.replace(new RegExp("\{.*?\}", "g"), "*")
-  return beforePath === afterPath && b.data.method === a.data.method
-})
-
-const contentArray = (rules: Rules) => enumRules(rules, (b, a) => {
-  return a.mediaType === b.mediaType
+  if (a.type === "model") {
+    return a.name === b.name
+  } else {
+    const beforePath = b.data.path?.replace(new RegExp("\{.*?\}", "g"), "*")
+    const afterPath = a.data.path?.replace(new RegExp("\{.*?\}", "g"), "*")
+    return beforePath === afterPath && b.data.method === a.data.method
+  }
 })
 
 
@@ -29,41 +29,37 @@ const paramRules: Rules = {
   '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
 }
 
-const contentRules: Rules = {
+const paramsRules: Rules = {
   '/': [nonBreaking, breaking, breaking],
-  '/mediaType': [nonBreaking, breaking, breaking],
-  '/schema': jsonSchemaRules(allBreaking),
-  '/examples': allAnnotation,
-  '/encodings': [nonBreaking, breaking, breaking],
+  '/*': paramRules
+}
+
+const contentsRules: Rules = {
+  '/': addNonBreaking, 
+  '/*': {
+    '/': [nonBreaking, breaking, breaking],
+    '/mediaType': [nonBreaking, breaking, breaking],
+    '/schema': jsonSchemaRules(allBreaking),
+    '/examples': allAnnotation,
+    '/encodings': [nonBreaking, breaking, breaking],
+  }
 }
 
 const requestRules: Rules = {
-  '/path': {
-    '/': [nonBreaking, breaking, breaking],
-    '/*': paramRules,
-  },
-  '/query': {
+  '/path': objArray("name", paramsRules),
+  '/query': objArray("name", {
     '/': [nonBreaking, breaking, breaking],
     '/*': {
       ...paramRules,
       '/allowEmptyValue': [breaking, nonBreaking, breakingIfAfterTrue],
       '/allowReserved': [breaking, nonBreaking, breakingIfAfterTrue],
     },
-  },
-  '/headers': {
-    '/': [nonBreaking, breaking, breaking],
-    '/*': paramRules
-  },
-  '/cookie': {
-    '/': [nonBreaking, breaking, breaking],
-    '/*': paramRules
-  },
+  }),
+  '/headers': objArray("name", paramsRules),
+  '/cookie': objArray("name", paramsRules),
   '/body': {
     '/': [nonBreaking, breaking, breaking],
-    '/contents': contentArray({
-      '/': allUnclassified,
-      '/*': contentRules
-    }),
+    '/contents': objArray("mediaType", contentsRules),
     '/required': [breaking, nonBreaking, breakingIfAfterTrue],
     '/description': allAnnotation
   },
@@ -81,14 +77,15 @@ const headersRules: Rules = {
   }
 }
 
-const responseRules: Rules = {
-  '/code': allUnclassified,
-  '/contents': contentArray({
-    '/': allUnclassified, 
-    '/*': contentRules,
-  }),
-  '/headers': headersRules,
-  '/description': allAnnotation
+const responsesRules: Rules = {
+  "/": addNonBreaking,
+  "/*": {
+    "/": addNonBreaking,
+    '/code': allUnclassified,
+    '/contents': objArray("mediaType", contentsRules),
+    '/headers': objArray("name", headersRules),
+    '/description': allAnnotation
+  }
 }
 
 const serverRules: Rules = {
@@ -104,37 +101,47 @@ const securityRules: Rules = {
   "/*": [breaking, nonBreaking, unclassified],
 }
 
-const operationRules: Rules = {
-  // Node common
-  '/id': allAnnotation,
-  '/iid': allAnnotation,
-  '/tags': allAnnotation,
-  '/summary': allAnnotation,
-  '/description': allAnnotation,
+const modelRules: Rules = {
+  '/': [nonBreaking, breaking, breaking],
+  '/data': () => jsonSchemaRules(addNonBreaking),
+  '/*': allAnnotation,
+}
 
-  // Operation
-  '/method': [nonBreaking, breaking, breaking],
-  '/path': [nonBreaking, breaking, breaking],
-  '/request': requestRules,
-  '/responses': responseRules,
-  '/servers': {
-    '/': allUnclassified,
-    '/*': serverRules
-  },
-  '/callbacks': childrenArray({
-    '/callbackName': allAnnotation,
+const operationRules: Rules = {
+  '/': [nonBreaking, breaking, breaking],
+  '/data': {
+    // Node common
+    '/id': allAnnotation,
+    '/iid': allAnnotation,
+    '/tags': allAnnotation,
+    '/summary': allAnnotation,
+    '/description': allAnnotation,
+
+    // Operation
     '/method': [nonBreaking, breaking, breaking],
     '/path': [nonBreaking, breaking, breaking],
     '/request': requestRules,
-    '/responses': responseRules,
-    '/deprecated': allUnclassified,
+    '/responses': objArray("code", responsesRules),
+    '/servers': {
+      '/': allUnclassified,
+      '/*': serverRules
+    },
+    '/callbacks': childrenArray({
+      '/callbackName': allAnnotation,
+      '/method': [nonBreaking, breaking, breaking],
+      '/path': [nonBreaking, breaking, breaking],
+      '/request': requestRules,
+      '/responses': objArray("code", responsesRules),
+      '/deprecated': allUnclassified,
+      '/internal': allUnclassified,
+      '/extensions': allUnclassified,
+    }),
+    '/security': securityRules,
+    '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
     '/internal': allUnclassified,
-    '/extensions': allUnclassified,
-  }),
-  '/security': securityRules,
-  '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
-  '/internal': allUnclassified,
-  '/extensions': allUnclassified
+    '/extensions': allUnclassified
+  },
+  '/*': allAnnotation,
 }
 
 const serviceRules: Rules = {
@@ -165,11 +172,7 @@ export const serviceNodeRules: Rules = {
   '/data': serviceRules,
   '/children': childrenArray({
     '/': [nonBreaking, breaking, breaking],
-    '/*': {
-      '/': [nonBreaking, breaking, breaking],
-      '/data': operationRules,
-      '/*': allAnnotation,
-    }
+    '/*': ({ type }) => type === "model" ? modelRules : operationRules,
   }),
   "/components": {
     "/": [nonBreaking, nonBreaking, nonBreaking],
