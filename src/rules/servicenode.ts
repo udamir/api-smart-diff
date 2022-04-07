@@ -19,7 +19,6 @@ const childrenArray = (rules: Rules) => enumRules(rules, (b, a) => {
   }
 })
 
-
 const paramRules: Rules = {
   '/name': [nonBreaking, breaking, breaking],
   '/style': allUnclassified,
@@ -40,7 +39,10 @@ const contentsRules: Rules = {
     '/': [nonBreaking, breaking, breaking],
     '/mediaType': [nonBreaking, breaking, breaking],
     '/schema': jsonSchemaRules(allBreaking),
-    '/examples': allAnnotation,
+    '/examples': objArray("key", {
+      "/": allAnnotation,
+      "/*": allAnnotation,
+    }),
     '/encodings': [nonBreaking, breaking, breaking],
   }
 }
@@ -160,7 +162,20 @@ const serviceRules: Rules = {
     '/*': serverRules
   },
   '/security': securityRules,
-  '/securitySchemes': [breaking, nonBreaking, breaking],
+  '/securitySchemes': objArray("name", {
+    '/': addNonBreaking,
+    '/*': {
+      "/": [breaking, nonBreaking, breaking],
+      "/type": [breaking, nonBreaking, breaking],
+      "/description": allAnnotation,
+      "/name": [breaking, nonBreaking, breaking],
+      "/in": [breaking, nonBreaking, breaking],
+      "/scheme": [breaking, nonBreaking, breaking],
+      "/bearerFormat": allAnnotation,
+      "/flows": [breaking, nonBreaking, breaking],
+      "/openIdConnectUrl": allAnnotation,
+    },
+  }),
   '/termsOfService': allAnnotation,
   '/contact': allAnnotation,
   '/license': [breaking, breaking, breaking],

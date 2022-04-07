@@ -1,5 +1,5 @@
 import { annotation, breaking, DiffAction, serviceNodeRules } from "../src"
-import { ExampleResource, removePatch, replacePatch } from "./helpers"
+import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 
 const metaKey = Symbol("diff")
 const exampleResource = new ExampleResource("serviceNode.yaml", serviceNodeRules)
@@ -38,10 +38,10 @@ describe("Test service-node merge", () => {
   })
 
   it("should be breaking change in meta (remove responsey)", () => {
-    const after = exampleResource.clone([removePatch(["children", 0, "data", "responses", 1])])
+    const after = exampleResource.clone([addPatch(["children", 0, "data", "responses", 2, "contents", 0, "schema", "required", 2], "test")])
     const merged = exampleResource.merge(after, { metaKey, arrayMeta: true })
 
-    const meta = merged.children[0].data.responses[metaKey]
-    expect(meta).toMatchObject({ 1: { action: DiffAction.remove, type: breaking } })
+    const meta = merged.children[0].data.responses[2].contents[0].schema.required[metaKey]
+    expect(meta).toMatchObject({ 2: { action: DiffAction.add, type: breaking } })
   })
 })

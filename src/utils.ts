@@ -86,7 +86,7 @@ export const enumRules = (rules: Rules, matchItemsFunc: MatchFunc): Rules => {
 }
 
 export const objArray = (key: string, rules: Rules): Rules => {
-  rules[RuleMetaKey] = { matchKeysFunc: (b, a) => a[key] === b[key] }
+  rules[RuleMetaKey] = { matchItemsFunc: (b, a) => a[key] === b[key] }
   return rules
 }
 
