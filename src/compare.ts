@@ -134,7 +134,7 @@ export const compareEnums = <T extends CompareResult>(before: any[], after: any[
         afterDiffs = res
         break
       }
-      afterDiffs.push(res)
+      afterDiffs[j] = res
     }
     beforeDiffs.push(afterDiffs)
   }
@@ -148,7 +148,7 @@ export const compareEnums = <T extends CompareResult>(before: any[], after: any[
     } else {
       // find item with min diff count
       const afterIndexes = [ ...Array(after.length).keys() ]
-      const minDiffs = afterIndexes.sort((a, b) => (itemDiff[a]?.length || 0) - (itemDiff[b]?.length || 0))
+      const minDiffs = afterIndexes.sort((a, b) => (itemDiff[a]?.diffs.length || 0) - (itemDiff[b]?.diffs.length || 0))
       for (let j = 0; j < after.length; j++) {
         let minDiffIndex = minDiffs[j]
         if (afterEquals.has(minDiffIndex)) { continue }

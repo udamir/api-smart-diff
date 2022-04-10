@@ -14,6 +14,17 @@ properties:
     maximum: 20
     multipleOf: 2
     exclusiveMaximum: true
+  foo:
+    type: object
+    properties:
+      bar:
+        $ref: "#/$refs/NameType"
+      baz:
+        type: number
+  arr:
+    type: array
+    items: 
+      type: number
 $refs:
   NameType:
     type: string

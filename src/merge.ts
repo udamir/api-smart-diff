@@ -57,10 +57,6 @@ export class MergeContext extends CompareContext<MergeResult> {
   }
 
   public mergeResult(parent: MergeResult, child: MergeResult) {
-    if (!child) {
-      // TODO: fix error
-      return 
-    }
     // merge object properties or array items
     parent.diffs = [...parent.diffs, ...child.diffs]
 

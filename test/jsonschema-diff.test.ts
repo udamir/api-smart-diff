@@ -50,6 +50,16 @@ describe("Test Jsonschema diff", () => {
     expect(diff).toMatchObject([{ path, after: value, type: breaking }])
   })
 
+  it("replace of required property should be 'breaing' change", () => {
+    const path = ["required", 0]
+
+    const after = example.clone([replacePatch(path, "name")])
+    const diff = example.diff(after)
+
+    expect(diff.length).toEqual(1)
+    expect(diff).toMatchObject([{ path, type: breaking }])
+  })
+
   it("remove of required property should be 'non-breaing' change", () => {
     const path = ["required", 0]
     const oldValue = example.getValue(path)
@@ -80,9 +90,10 @@ describe("Test Jsonschema diff", () => {
     const after = example.clone([replacePatch(path, value)])
     const diff = example.diff(after)
 
-    expect(diff.length).toEqual(2)
+    expect(diff.length).toEqual(3)
     expect(diff).toMatchObject([
       { path: ["properties", "name", "type"], before: oldValue, after: value, type: breaking },
+      { path: ["properties", "foo",  "properties", "bar", "type"], before: oldValue, after: value, type: breaking },
       { path, before: oldValue, after: value, type: unclassified },
     ])
   })
