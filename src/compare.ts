@@ -46,12 +46,12 @@ const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: C
     const afterKey = [...afterKeys].find((k) => k === key || (meta?.matchKeysFunc && meta.matchKeysFunc(key, k)))
     const path = [...objPath, key]
 
-    if (afterKey !== key) {
+    if (afterKey && afterKey !== key) {
       const diff = { path, before: key, after: afterKey, action: DiffAction.replace }
       ctx.mergeResult(result, ctx.diffResult(diff))
     }
 
-    if (!afterKey) {
+    if (afterKey === undefined) {
       // deleted key
       const diff = { path, before: _before[key], action: DiffAction.remove }
       ctx.mergeResult(result, ctx.diffResult(diff))
