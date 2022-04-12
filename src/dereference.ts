@@ -1,9 +1,11 @@
 import { parsePath, typeOf } from "./utils"
+import { ObjPath } from "./types"
 
-export const resolveObjValue = (obj: any, path: string, cache: any = {}) => {
+export const resolveObjValue = (obj: any, path: string | ObjPath, cache: any = {}) => {
+  path = Array.isArray(path) ? path : parsePath(path)
   let value = obj
   cache = new Map(Object.entries(cache))
-  for (const key of parsePath(path)) {
+  for (const key of path) {
     value = typeOf(value) === "array" ? value[+key] : value[key]
     if (value === undefined) {
       break

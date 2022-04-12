@@ -20,6 +20,7 @@ properties:
     - 20
     - 30
     - 40
+    - 50
     readOnly: false
   completed_at:
     type: string

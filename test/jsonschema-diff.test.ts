@@ -97,4 +97,36 @@ describe("Test Jsonschema diff", () => {
       { path, before: oldValue, after: value, type: unclassified },
     ])
   })
+
+  it("should be 'breaking' change on delete enum item", () => {
+    const path = ["properties", 'foo', "properties", "baz", "enum", 2]
+    const oldValue = example.getValue(path)
+
+    const after = example.clone([removePatch(path)])
+    const diff = example.diff(after)
+
+    expect(diff.length).toEqual(1)
+    expect(diff).toMatchObject([{ path, before: oldValue, type: breaking }])
+  })
+
+  it("should be 'breaking' change on replace enum item", () => {
+    const path = ["properties", 'foo', "properties", "baz", "enum", 3]
+    const oldValue = example.getValue(path)
+
+    const after = example.clone([replacePatch(path, 50)])
+    const diff = example.diff(after)
+
+    expect(diff.length).toEqual(1)
+    expect(diff).toMatchObject([{ path, before: oldValue, after: 50, type: breaking }])
+  })
+
+  it("should be 'non-breaking' change on add enum item", () => {
+    const path = ["properties", 'foo', "properties", "baz", "enum"]
+
+    const after = example.clone([addPatch([...path, "-"], 50)])
+    const diff = example.diff(after)
+
+    expect(diff.length).toEqual(1)
+    expect(diff).toMatchObject([{ path: [...path, -1], after: 50, type: nonBreaking }])
+  })
 })
