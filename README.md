@@ -1,7 +1,7 @@
 # api-smart-diff
 <img alt="npm" src="https://img.shields.io/npm/v/api-smart-diff"> <img alt="npm" src="https://img.shields.io/npm/dm/api-smart-diff?label=npm"> <img alt="npm type definitions" src="https://img.shields.io/npm/types/api-smart-diff"> <img alt="GitHub" src="https://img.shields.io/github/license/udamir/api-smart-diff">
 
-This package provides utils to compute the diff between two API specifications.
+This package provides utils to compute the diff between two API specifications - [try it](https://udamir.github.com/api-smart-diff)
 
 ## Purpose
 - Generate API changelog
