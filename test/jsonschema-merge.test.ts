@@ -6,7 +6,7 @@ const metaKey = Symbol("diff")
 const exampleBefore = new ExampleResource("schema-before.yaml", "JsonSchema")
 const exapmleAfter = new ExampleResource("schema-after.yaml", "JsonSchema")
 
-describe("Test jsonschema merge", () => {
+describe("Test JsonSchema merge", () => {
   it("should merge 2 jsonschema correctly", () => {
     const after = exapmleAfter.clone()
     const merged = exampleBefore.merge(after, { metaKey, arrayMeta: true })
@@ -124,11 +124,14 @@ describe("Test Jsonschema merge options", () => {
 
   it("should be 'non-breaking' change on merge with added enum item", () => {
     const path = ["properties", 'foo', "properties", "baz", "enum", "-"]
+    const value = 50
 
-    const after = example2.clone([addPatch(path, 50)])
+    const after = example2.clone([addPatch(path, value)])
     const merged = example2.merge(after, { metaKey })
-    const meta = resolveObjValue(merged, path.slice(0,-2))[metaKey]
+    const meta = resolveObjValue(merged, path.slice(0, -2))[metaKey]
+    const mergedEnum = resolveObjValue(merged, path.slice(0, -1))
 
+    expect(mergedEnum[4]).toEqual(value)
     expect(meta).toMatchObject({ enum: { array: { 4: { action: "add", type: nonBreaking }}}})
   })
 })
