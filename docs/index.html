@@ -1,13 +1,294 @@
-<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ApiSmartDiff</title>
+  <title>Document</title>
 </head>
 <body>
-  <h1>Documentation will be coon...</h1>
-  <a href="/merge.html">JsonSchema merge demo</a>
-</body>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldgutter.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/yaml/yaml.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldgutter.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/indent-fold.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.min.js"></script>
+
+  <style>
+    .CodeMirror {border: 1px solid silver; border-width: 1px 2px; }
+  </style>
+
+  <span style='float: left; width: 33%; height: 100%; margin-right: 0.5%'>
+    <h2>Before (json or yaml)</h2>
+    <textarea id="before" title="before">
+title: User
+type: object
+properties:
+  name:
+    type: string
+    const: Constant name
+    examples:
+    - Example name
+    - Different name
+    description: The user's full name. This description can be long and should truncate
+      once it reaches the end of the row. If it's not truncating then theres and issue
+      that needs to be fixed. Help!
+  age:
+    type: number
+    minimum: 10
+    maximum: 40
+    multipleOf: 10
+    x-param: qqwertyui
+    default: 20
+    enum:
+    - 10
+    - 30
+    - 20
+    - 40
+    readOnly: true
+  completed_at:
+    type: string
+    format: date-time
+    writeOnly: true
+    pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
+    description: "* Completed At 1 \n * Completed At 1 \n * Completed At 1 "
+  items:
+    type:
+    - 'null'
+    - array
+    items:
+      type:
+      - string
+      - number
+    minItems: 1
+    maxItems: 4
+    description: This description can be long and should truncate once it reaches
+      the end of the row. If it's not truncating then theres and issue that needs
+      to be fixed. Help!
+  email:
+    type: string
+    format: email
+    deprecated: true
+    default: default@email.com
+    minLength: 2
+  plan:
+    anyOf:
+    - type: object
+      properties:
+        foo:
+          type: string
+        bar:
+          type: string
+        baz:
+          type: string
+      deprecated: false
+      example: hi
+      description: "- Plan! \n - Plan!"
+      required:
+      - foo
+      - bar
+    - type: array
+      items:
+        type: integer
+    - type: number
+    - type: string
+
+  permissions:
+    type:
+    - string
+    - object
+    properties:
+      ids:
+        type: array
+        items:
+          type: integer
+  ref:
+    "$ref": "#/properties/permissions"
+patternProperties:
+  "^id_":
+    type: number
+  foo:
+    type: integer
+  _name$:
+    type: string
+required:
+- name
+- age
+- completed_at    
+    </textarea>
+  </span>
+  <span style='float: left; width: 33%; height: 100%; margin-right: 0.5%'>
+    <h2>After (json or yaml)</h2>
+    <textarea id="after" title="after">
+title: User
+type: object
+properties:
+  name:
+    type: string
+    const: Constant name
+    examples:
+    - Different name
+    description: The user's full name. This description can be long and should truncate
+      once it reaches the end of the row. If it's not truncating then theres and issue
+      that needs to be fixed. Help!
+  age:
+    type: string
+    minimum: 20
+    maximum: 30
+    multipleOf: 10
+    default: 20
+    enum:
+    - 10
+    - 20
+    - 30
+    - 40
+    - 50
+    readOnly: false
+  completed_at:
+    type: string
+    format: uuid
+    writeOnly: true
+    pattern: "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]123$"
+    description: "* Completed At 1 \n * Completed At 1"
+  items:
+    type:
+    - 'null'
+    - array
+    items:
+      type:
+      - string
+      - number
+    minItems: 1
+    maxItems: 4
+    description: This can be long and should truncate once it reaches the end of the
+      row. If it's not truncating then theres and issue that needs to be fixed. Help!
+  email:
+    type: string
+    format: email
+    deprecated: false
+    default: default@email1.com
+    minLength: 2
+  plan:
+    anyOf:
+    - type: string
+    - type: object
+      properties:
+        foo:
+          type: string
+        bar:
+          type: number
+        baz:
+          type: boolean
+      deprecated: false
+      example: hi
+      description: "- Plan! \n - Plan!"
+      required:
+      - foo
+      - bar
+    - type: array
+      description: test
+      items:
+        type: integer
+  permissions:
+    type:
+    - string
+    - object
+    properties:
+      ids12:
+        type: array
+        items:
+          type: integer
+  ref:
+    "$ref": "#/properties/permissions"
+patternProperties:
+  "^id_":
+    type: number
+  foo:
+    type: integer
+  _name$:
+    type: number
+required:
+- name
+- age    
+    </textarea>
+  </span>
+  <span id="action" >
+    <button onclick="showResult('merge')">merge</button>
+    <button onclick="showResult('diff')">diff</button>
+    <br>
+    <br>
+    <label for="rules">API type:</label>
+
+    <select name="rules" id="rules">
+      <option value="JsonSchema">JsonSchema</option>
+      <option value="OpenApi3">OpenApi3</option>
+      <option value="AsyncApi2">AsyncApi2</option>
+    </select>
+    <br>
+    <br>
+    <label for="format">Output format:</label>
+    <select name="format" id="format">
+      <option value="yaml">yaml</option>
+      <option value="json">json</option>
+    </select>
+  </span>
+
+  <span id="result" style='float: left; width: 33%'>
+    <h2>Result</h2>
+    <textarea id="merged" title="merged">
+    </textarea>
+  </span>
+  <script id="script">
+    function showResult(type) {
+      document.getElementById("result").hidden = false
+      document.getElementById("action").hidden = true
+      let x, y
+      try {
+        x = JSON.parse(before.getValue())
+      } catch (error) {
+        x = jsyaml.load(before.getValue())
+      }
+      try {
+        y = JSON.parse(after.getValue())
+      } catch (error) {
+        y = jsyaml.load(after.getValue())
+      }
+      const rules = document.getElementById("rules").value
+      const format = document.getElementById("format").value
+
+      const res = type === "merge" ? ApiSmartDiff.apiMerge(x, y, { rules }) : ApiSmartDiff.apiDiff(x, y, { rules })
+      const result = format === "json" ? JSON.stringify(res, null, 2) : jsyaml.dump(res, { forceQuotes: true, noRefs: true })
+      merged.getDoc().setValue(result)
+    }
+    function createCodeMirror(id) {
+      const editor = CodeMirror.fromTextArea(document.getElementById(id), {
+        mode: "yaml",
+        styleActiveLine: true,
+        lineNumbers: true,
+        lineWrapping: true,
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+      });
+      editor.setSize("100%", "90%");
+      return editor
+    }
+
+    function hideResult() {
+      document.getElementById("result").hidden = true
+      document.getElementById("action").hidden = false
+    }
+
+    var before = createCodeMirror("before")
+    before.on('change', hideResult)
+
+    var after = createCodeMirror("after");
+    after.on('change', hideResult)
+
+    var merged = createCodeMirror("merged");
+
+    hideResult()
+  </script>
+ </body>
 </html>
