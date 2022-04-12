@@ -15,6 +15,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/indent-fold.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.min.js"></script>
+  <!-- <script src="../browser/api-smart-diff.min.js"></script> -->
 
   <style>
     .CodeMirror {border: 1px solid silver; border-width: 1px 2px; }
@@ -214,7 +215,8 @@ required:
 - age    
     </textarea>
   </span>
-  <span id="action" >
+  <span id="action" style='float: left; width: 33%'>
+    <h2>Result</h2>
     <button onclick="showResult('merge')">merge</button>
     <button onclick="showResult('diff')">diff</button>
     <br>
@@ -259,7 +261,7 @@ required:
       const format = document.getElementById("format").value
 
       const res = type === "merge" ? ApiSmartDiff.apiMerge(x, y, { rules }) : ApiSmartDiff.apiDiff(x, y, { rules })
-      const result = format === "json" ? JSON.stringify(res, null, 2) : jsyaml.dump(res, { forceQuotes: true, noRefs: true })
+      const result = format === "json" ? JSON.stringify(res, null, 2) : jsyaml.dump(res, { noRefs: true, quotingType: '"' })
       merged.getDoc().setValue(result)
     }
     function createCodeMirror(id) {

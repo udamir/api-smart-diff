@@ -82,7 +82,7 @@ export class MergeContext extends CompareContext<MergeResult> {
     } else {
       value[key] = child.value
       if (child.meta) {
-        value[this.metaKey] = { [key]: child.meta }
+        value[this.metaKey] = { ...value[this.metaKey], [key]: child.meta }
       }
     }
 
