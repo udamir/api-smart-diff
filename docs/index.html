@@ -14,7 +14,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/foldcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/fold/indent-fold.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/api-smart-diff@0.2.18"></script>
+  <script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest"></script>
   <!-- <script src="../browser/api-smart-diff.min.js"></script> -->
 
   <style>
@@ -244,57 +244,61 @@ required:
     </textarea>
   </span>
   <script id="script">
-    function showResult(type) {
-      document.getElementById("result").hidden = false
-      document.getElementById("action").hidden = true
-      let x, y
+    function parseEditor(editor) {
       try {
-        x = JSON.parse(before.getValue())
+        return JSON.parse(editor.getValue());
       } catch (error) {
-        x = jsyaml.load(before.getValue())
+        return jsyaml.load(editor.getValue());
       }
-      try {
-        y = JSON.parse(after.getValue())
-      } catch (error) {
-        y = jsyaml.load(after.getValue())
-      }
-      const rules = document.getElementById("rules").value
-      const format = document.getElementById("format").value
-
-      const res = type === "merge" ? ApiSmartDiff.apiMerge(x, y, { rules }) : ApiSmartDiff.apiDiff(x, y, { rules })
-      let result = format === "yaml" ? jsyaml.dump(res, { noRefs: true, quotingType: '"' }) : JSON.stringify(res, null, 2)
-      if (format === "js") {
-        result = result.replace(/"([^"]+)":/g, '$1:');
-      }
-      merged.getDoc().setValue(result)
     }
-    function createCodeMirror(id) {
+
+    function showResult(type) {
+      document.getElementById("result").hidden = false;
+      document.getElementById("action").hidden = true;
+
+      const x = parseEditor(before)
+      const y = parseEditor(after)
+
+      const rules = document.getElementById("rules").value;
+      const format = document.getElementById("format").value;
+
+      const res = type === "merge" 
+        ? ApiSmartDiff.apiMerge(x, y, { rules })
+        : ApiSmartDiff.apiDiff(x, y, { rules });
+
+      let result = format === "yaml" 
+        ? jsyaml.dump(res, { noRefs: true, quotingType: '"' })
+        : JSON.stringify(res, null, 2);
+
+      result = format === "js" ? result.replace(/"([^"]+)":/g, '$1:') : result;
+      merged.getDoc().setValue(result);
+    }
+
+    function hideResult() {
+      document.getElementById("result").hidden = true;
+      document.getElementById("action").hidden = false;
+    }
+
+    function createCodeMirror(id, readOnly = false) {
       const editor = CodeMirror.fromTextArea(document.getElementById(id), {
         mode: "yaml",
         styleActiveLine: true,
         lineNumbers: true,
         lineWrapping: true,
         foldGutter: true,
+        readOnly,
         gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
       });
       editor.setSize("100%", "90%");
-      return editor
+      !readOnly && editor.on('change', hideResult);
+      return editor;
     }
 
-    function hideResult() {
-      document.getElementById("result").hidden = true
-      document.getElementById("action").hidden = false
-    }
-
-    var before = createCodeMirror("before")
-    before.on('change', hideResult)
-
+    var before = createCodeMirror("before");
     var after = createCodeMirror("after");
-    after.on('change', hideResult)
+    var merged = createCodeMirror("merged", true);
 
-    var merged = createCodeMirror("merged");
-
-    hideResult()
+    hideResult();
   </script>
  </body>
 </html>
