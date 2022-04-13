@@ -3,7 +3,7 @@ import { ObjPath, Diff, CompareOptions } from "./types"
 import { DiffAction } from "./constants"
 import { typeOf } from "./utils"
 
-export const apiDiff = (before: any, after: any, options: CompareOptions): Diff[] => {
+export const apiDiff = (before: any, after: any, options: CompareOptions = {}): Diff[] => {
   const res = compare(before, after, new CompareContext(before, after, options))
   return res.diffs
 }

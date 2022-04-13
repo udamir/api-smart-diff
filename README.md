@@ -1,7 +1,7 @@
 # api-smart-diff
 <img alt="npm" src="https://img.shields.io/npm/v/api-smart-diff"> <img alt="npm" src="https://img.shields.io/npm/dm/api-smart-diff?label=npm"> <img alt="npm type definitions" src="https://img.shields.io/npm/types/api-smart-diff"> <img alt="GitHub" src="https://img.shields.io/github/license/udamir/api-smart-diff">
 
-This package provides utils to compute the diff between two API specifications - [try it](https://udamir.github.io/api-smart-diff/)
+This package provides utils to compute the diff between two API specifications - [online demo](https://udamir.github.io/api-smart-diff/)
 
 ## Purpose
 - Generate API changelog
@@ -38,7 +38,7 @@ npm install api-smart-diff --save
 ```ts
 import { apiDiff } from 'api-smart-diff'
 
-const diff = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
+const diffs = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 // {
 //   action: "add" | "remove" | "replace",
 //   after: 'value in newSpec',
@@ -47,7 +47,7 @@ const diff = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 //   type: "annotation" | "breaking" | "non-breaking" | "unclassified"
 // }
 
-const merge = apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
+const merged = apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
 
 ```
 
@@ -62,10 +62,146 @@ A browser version of `api-smart-diff` is also available via CDN:
 Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiSmartDiff`.
 ```HTML
 <script>
-  var diff = ApiSmartDiff.apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
-  var merge = ApiSmartDiff.apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
+  var diffs = ApiSmartDiff.apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
+  var merged = ApiSmartDiff.apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
 </script>
 ```
+
+## Documentation
+
+Package provides the following public functions:
+
+`apiDiff (before, after, options?: CompareOptions): Array<Diff>`
+ > Calculates the differences between two objects and classify difference in accordinance with specified rules: OpenApi3, AsyncApi2, JsonSchema.
+
+`apiMerge (before, after, options?: MergeOptions): object`
+> Merge two objects and inject difference as meta data. 
+
+### **apiDiff(before, after, options)**
+The apiDiff function calculates the difference between two objects.
+- `before: any` - the origin object
+- `after: any` - the object being compared structurally with the origin object\
+- `options: CompareOptions` [optional] - comparison options
+
+```ts
+type CompareOptions = {
+  rules?: Rules | "OpenApi3" | "AsyncApi2" | "JsonSchema" 
+  trimStrings?: boolean
+  caseSensitive?: boolean
+  strictArrays?: boolean
+  externalRefs?: { [key: string]: any }
+}
+```
+#### *Arguments*
+- `rules` - match and classification rules, custom or predefined.
+- `trimString` - ignore spaces in matching, default `false`
+- `caseSensitive` - ignore case in matching, default `false`
+- `strictArrays` - use srict match algoritm for array items, default `false`
+- `externalRegs` - object with external refs
+
+
+#### *Result*
+Function returns array of differences:
+```ts
+type Diff = {
+  action: "add" | "remove" | "replace"
+  path: Array<string | number>
+  before?: any
+  after?: any
+  type: "breaking" | "non-breaking" | "annotation" | "unclassified"
+}
+```
+
+#### *Example*
+```ts
+const diffs = apiDiff(before, after, { rules: "OpenApi3" })
+if (diffs.length) {
+  // do something with the changes
+}
+```
+
+### **apiMerge(before, after, options)**
+The apiDiff function calculates the difference between two objects.
+- `before: any` - the origin object
+- `after: any` - the object being compared structurally with the origin object\
+- `options: MergeOptions` [optional] - comparison options
+
+```ts
+type MergeOptions<T> = CompareOptions & {
+  arrayMeta?: boolean
+  formatMeta?: (diff: Diff) => T
+  metaKey?: string | symbol
+}
+```
+#### *Arguments*
+Additional to compare options:
+- `arrayMeta` - inject meta to arrays for items changes, default `false`
+- `metaKey` - key for diff metadata, default `$diff`
+- `formatMeta` - custom formatting function for meta
+
+#### *Result*
+Function returns merged object with metadata. Metadata includes merged keys and differences:
+```ts
+type MergedMeta = {
+  [key: string]: MergedKeyMeta | MergedArrayMeta
+}
+
+type MergedKeyMeta = {
+  type: DiffType
+  action: ActionType
+  replaced?: any
+}
+
+type MergedArrayMeta = {
+  array: { [key: number]: MergedArrayMeta }
+}
+```
+
+#### *Example*
+```ts
+const apiKey = Symbol("diff")
+const merged = apiMerge(before, after, { rules: "OpenApi3", apiKey })
+
+// do something with merged object
+```
+
+### **Custom rules**
+Custom rules can be defined as object:
+```ts
+type Rules = {
+  // root rule
+  "/"?: Rule
+
+  // rule for all nested items
+  "/*"?: Rule | Rules | RulesRef
+
+  // rule for specified item
+  [key: `/${string}`]?: Rule | Rules | RulesRef
+
+  // custom match function
+  "#"?: MatchFunc
+}
+
+// Change classifier
+type Rule = [ 
+  DiffType | DiffTypeFunc, // add
+  DiffType | DiffTypeFunc, // remove
+  DiffType | DiffTypeFunc  // replace
+]
+
+// Rules for nested items
+type RulesRef = (before) => Rules
+
+// Custom match function for objects and arrays
+type MatchFunc = (before, after) => boolean
+```
+
+Please check predefined rules in `/src/rules` folder to get examples
+
+## Contributing
+When contributing, keep in mind that it is an objective of api-smart-diff to have no package dependencies. This may change in the future, but for now, no-dependencies.
+
+Please run the unit tests before submitting your PR: npm test. Hopefully your PR includes additional unit tests to illustrate your change/modification!
 
 ## License
 

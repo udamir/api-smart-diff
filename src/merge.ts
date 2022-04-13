@@ -5,7 +5,7 @@ import { classifyDiff } from "./classifier"
 import { compare } from "./compare"
 import { typeOf } from "./utils"
 
-export const apiMerge = (before: any, after: any, options: MergeOptions): any => {
+export const apiMerge = (before: any, after: any, options: MergeOptions = {}): any => {
   const { value } = compare(before, after, new MergeContext(before, after, options))
   return value
 }
