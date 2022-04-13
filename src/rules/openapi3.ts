@@ -1,4 +1,4 @@
-import { breakingIfAfterTrue, mapRules } from "../utils"
+import { breakingIfAfterTrue, matchRule } from "../utils"
 import { jsonSchemaRules } from "./jsonschema"
 import { Rules } from "../types"
 import { 
@@ -7,7 +7,7 @@ import {
   allBreaking,
 } from "../constants"
 
-const pathArrayRules = (rules: Rules) => mapRules(rules, (b: string, a: string) => {
+const pathArrayRules = (rules: Rules) => matchRule(rules, (b: string, a: string) => {
   const beforePath = b.replace(new RegExp("\{.*?\}", "g"), "*")
   const afterPath = a.replace(new RegExp("\{.*?\}", "g"), "*")
   return beforePath === afterPath

@@ -2,11 +2,11 @@ import {
   allAnnotation, allBreaking, allUnclassified, 
   unclassified, addNonBreaking, breaking, nonBreaking
 } from "../constants"
-import { breakingIfAfterTrue, enumRules, objArray } from "../utils"
+import { breakingIfAfterTrue, matchRule, objArray } from "../utils"
 import { jsonSchemaRules } from "."
 import { Rules } from "../types"
 
-const childrenArray = (rules: Rules) => enumRules(rules, (b, a) => {
+const childrenArray = (rules: Rules) => matchRule(rules, (b, a) => {
   if (a.type !== b.type) {
     return false
   }

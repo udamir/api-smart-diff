@@ -1,11 +1,11 @@
 import { Rules, UnclassifiedDiff, Diff } from "./types"
 import { allUnclassified } from "./constants"
-import { getRules } from "./utils"
+import { getPathRules } from "./utils"
 
 export const classifyDiff = (diff: UnclassifiedDiff, source: any, rules: Rules = {}): Diff => {
   const _diff = diff as Diff
 
-  const rule = getRules(rules, [...diff.path, ""], source)
+  const rule = getPathRules(rules, [...diff.path, ""], source)
   const classifier = Array.isArray(rule) ? rule : allUnclassified
 
   const index = ["add", "remove", "replace"].indexOf(diff.action)

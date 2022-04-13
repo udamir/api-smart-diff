@@ -1,6 +1,6 @@
 import { Diff, ObjPath, UnclassifiedDiff, BaseRulesType, CompareOptions, Rules } from "./types"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
-import { buildPath, getPathRuleMeta } from "./utils"
+import { buildPath, getPathMatchFunc } from "./utils"
 import { dereference } from "./dereference"
 import { classifyDiff } from "./classifier"
 
@@ -42,8 +42,8 @@ export class CompareContext<T extends CompareResult> implements CompareOptions {
     return value
   }
 
-  public getPathRuleMeta(path: ObjPath) {
-    return getPathRuleMeta(this.rules, path, this.before)
+  public getPathMatchFunc(path: ObjPath) {
+    return getPathMatchFunc(this.rules, path, this.before)
   }
 
   public dereference(before: any, after: any, objPath: ObjPath): [any, any, () => void] {

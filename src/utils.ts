@@ -1,5 +1,5 @@
-import { Rule, RulesMeta, MatchFunc, Rules, DiffType, ObjPath } from "./types"
-import { breaking, nonBreaking, RuleMetaKey } from "./constants"
+import { Rule, MatchFunc, Rules, DiffType, ObjPath } from "./types"
+import { breaking, nonBreaking } from "./constants"
 
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
 export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)
@@ -20,7 +20,7 @@ export const buildPath = (path: ObjPath): string => {
   return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
 }
 
-export const getRules = (rules: Rules, path: ObjPath, source: any): Rules | Rule | undefined => {
+export const getPathRules = (rules: Rules, path: ObjPath, source: any): Rules | Rule | undefined => {
   let _rules = rules
   let value = source
   for (let key of [...path]) {
@@ -44,14 +44,9 @@ export const getRules = (rules: Rules, path: ObjPath, source: any): Rules | Rule
   return _rules
 }
 
-export const getPathRuleMeta = (rules: Rules, path: ObjPath, source: any): RulesMeta | undefined => {
-  const _rules = getRules(rules, path, source)
-
-  if (_rules && !Array.isArray(_rules) && RuleMetaKey in _rules) {
-    return _rules[RuleMetaKey]
-  }
-
-  return undefined
+export const getPathMatchFunc = (rules: Rules, path: ObjPath, source: any): MatchFunc | undefined => {
+  const _rules = getPathRules(rules, path, source)
+  return (_rules && !Array.isArray(_rules)) ? _rules["#"] : undefined
 }
 
 export const findExternalRefs = (source: any | any[]): string[] => {
@@ -80,17 +75,11 @@ export const findExternalRefs = (source: any | any[]): string[] => {
   return [...refs]
 }
 
-export const enumRules = (rules: Rules, matchItemsFunc: MatchFunc): Rules => {
-  rules[RuleMetaKey] = { matchItemsFunc }
+export const matchRule = (rules: Rules, matchFunc: MatchFunc): Rules => {
+  rules["#"] = matchFunc
   return rules
 }
 
 export const objArray = (key: string, rules: Rules): Rules => {
-  rules[RuleMetaKey] = { matchItemsFunc: (b, a) => a[key] === b[key] }
-  return rules
-}
-
-export const mapRules = (rules: Rules, matchKeysFunc: MatchFunc): Rules => {
-  rules[RuleMetaKey] = { matchKeysFunc }
-  return rules
+  return matchRule(rules, (b, a) => a[key] === b[key])
 }

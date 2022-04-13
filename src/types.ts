@@ -26,17 +26,11 @@ export type RulesRef = (b: any) => Rules
 
 export type MatchFunc = (b: any, a: any) => boolean
 
-export type RulesMeta = {
-  matchItemsFunc?: MatchFunc
-  matchKeysFunc?: MatchFunc
-}
-
 export type Rules = {
   [key: `/${string}`]: Rule | Rules | RulesRef
 } & {
   "/"?: Rule
-} & {
-  [meta: symbol]: RulesMeta
+  "#"?: MatchFunc
 }
 
 export type BaseRulesType = "OpenApi3" | "AsyncApi2" | "JsonSchema"

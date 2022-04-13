@@ -40,10 +40,10 @@ const compareObjects = <T extends CompareResult>(before: any, after: any, ctx: C
 
   const beforeKeys = Object.keys(_before)
   const afterKeys = new Set(Object.keys(_after))
-  const meta = ctx.getPathRuleMeta(objPath)
+  const matchFunc = ctx.getPathMatchFunc(objPath)
   
   for (const key of beforeKeys) {
-    const afterKey = [...afterKeys].find((k) => k === key || (meta?.matchKeysFunc && meta.matchKeysFunc(key, k)))
+    const afterKey = [...afterKeys].find((k) => k === key || (matchFunc && matchFunc(key, k)))
     const path = [...objPath, key]
 
     if (afterKey && afterKey !== key) {
@@ -79,9 +79,9 @@ const compareArrays = <T extends CompareResult>(before: any[], after: any[], ctx
     return ctx.equalResult(before, objPath)
   }
 
-  const meta = ctx.getPathRuleMeta(objPath)
+  const matchFunc = ctx.getPathMatchFunc(objPath)
 
-  if (!ctx.strictArrays && !meta?.matchItemsFunc) {
+  if (!ctx.strictArrays && !matchFunc) {
     return compareEnums(before, after, ctx, objPath)
   }
   const result: CompareResult = { diffs: [] }
@@ -89,8 +89,8 @@ const compareArrays = <T extends CompareResult>(before: any[], after: any[], ctx
 
   for (const i of before.keys()) {
     const path = [...objPath, i]
-    if (meta?.matchItemsFunc) {
-      const j = meta?.matchItemsFunc && [...afterKeys].find((j) => meta.matchItemsFunc!(before[i], after[j]))
+    if (matchFunc) {
+      const j = matchFunc && [...afterKeys].find((j) => matchFunc!(before[i], after[j]))
       if (j === undefined) {
         ctx.mergeResult(result, ctx.diffResult({ path, before: before[i], action: DiffAction.remove }))
       } else {
