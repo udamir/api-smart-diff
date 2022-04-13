@@ -96,7 +96,7 @@ type CompareOptions = {
 - `rules` - match and classification rules, custom or predefined.
 - `trimString` - ignore spaces in matching, default `false`
 - `caseSensitive` - ignore case in matching, default `false`
-- `strictArrays` - use srict match algoritm for array items, default `false`
+- `strictArrays` - use strict match algorithm for array items, default `false`
 - `externalRegs` - object with external refs
 
 
@@ -169,31 +169,25 @@ const merged = apiMerge(before, after, { rules: "OpenApi3", apiKey })
 Custom rules can be defined as object:
 ```ts
 type Rules = {
-  // root rule
+  // root property (or array item) rule
   "/"?: Rule
 
-  // rule for all nested items
-  "/*"?: Rule | Rules | RulesRef
+  // rule for all unspecified properties (or nested array items)
+  "/*"?: Rule | Rules | (before) => Rules
 
-  // rule for specified item
-  [key: `/${string}`]?: Rule | Rules | RulesRef
+  // rule for specified properties
+  [key: `/${string}`]?: Rule | Rules | (before) => Rules
 
-  // custom match function
-  "#"?: MatchFunc
+  // custom match function for object (or array)
+  "#"?: (before, after) => boolean
 }
 
 // Change classifier
 type Rule = [ 
-  DiffType | DiffTypeFunc, // add
-  DiffType | DiffTypeFunc, // remove
-  DiffType | DiffTypeFunc  // replace
+  DiffType | (before, after) => DiffType, // add
+  DiffType | (before, after) => DiffType, // remove
+  DiffType | (before, after) => DiffType  // replace
 ]
-
-// Rules for nested items
-type RulesRef = (before) => Rules
-
-// Custom match function for objects and arrays
-type MatchFunc = (before, after) => boolean
 ```
 
 Please check predefined rules in `/src/rules` folder to get examples
