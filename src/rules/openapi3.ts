@@ -80,12 +80,9 @@ const contentRules: Rules = {
 
 const requestBodiesRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
-  "/*": {
-    "/": [nonBreaking, breaking, breaking],
-    "/description": allAnnotation,
-    "/content": contentRules,
-    "/required": [breaking, nonBreaking, (_, a) => (a ? breaking : nonBreaking)],
-  },
+  "/description": allAnnotation,
+  "/content": contentRules,
+  "/required": [breaking, nonBreaking, (_, a) => (a ? breaking : nonBreaking)],
 }
 
 const responsesRules: Rules = {

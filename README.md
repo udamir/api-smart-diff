@@ -166,7 +166,7 @@ const merged = apiMerge(before, after, { rules: "OpenApi3", apiKey })
 ```
 
 ### **Custom rules**
-Custom rules can be defined as object:
+Custom match and classification rules can be defined as object:
 ```ts
 type Rules = {
   // root property (or array item) rule
@@ -193,9 +193,9 @@ type Rule = [
 Please check predefined rules in `/src/rules` folder to get examples
 
 ## Contributing
-When contributing, keep in mind that it is an objective of api-smart-diff to have no package dependencies. This may change in the future, but for now, no-dependencies.
+When contributing, keep in mind that it is an objective of `api-smart-diff` to have no package dependencies. This may change in the future, but for now, no-dependencies.
 
-Please run the unit tests before submitting your PR: npm test. Hopefully your PR includes additional unit tests to illustrate your change/modification!
+Please run the unit tests before submitting your PR: `npm test`. Hopefully your PR includes additional unit tests to illustrate your change/modification!
 
 ## License
 
