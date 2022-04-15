@@ -72,7 +72,10 @@ Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiS
 Package provides the following public functions:
 
 `apiDiff (before, after, options?: CompareOptions): Array<Diff>`
- > Calculates the differences between two objects and classify difference in accordinance with specified rules: OpenApi3, AsyncApi2, JsonSchema.
+> Calculates the difference list between two objects and classify difference in accordinance with specified rules: OpenApi3, AsyncApi2, JsonSchema.
+
+`apiDiffTree (before, after, options?: CompareOptions): object`
+> Calculates the difference tree between two objects and classify difference in accordinance with specified rules: OpenApi3, AsyncApi2, JsonSchema.
 
 `apiMerge (before, after, options?: MergeOptions): object`
 > Merge two objects and inject difference as meta data. 
@@ -97,7 +100,7 @@ type CompareOptions = {
 - `trimString` - ignore spaces in matching, default `false`
 - `caseSensitive` - ignore case in matching, default `false`
 - `strictArrays` - use strict match algorithm for array items, default `false`
-- `externalRegs` - object with external refs
+- `externalRefs` - object with external refs
 
 
 #### *Result*
@@ -106,6 +109,31 @@ Function returns array of differences:
 type Diff = {
   action: "add" | "remove" | "replace"
   path: Array<string | number>
+  before?: any
+  after?: any
+  type: "breaking" | "non-breaking" | "annotation" | "unclassified"
+}
+```
+
+#### *Example*
+```ts
+const diffs = apiDiff(before, after, { rules: "OpenApi3" })
+if (diffs.length) {
+  // do something with the changes
+}
+```
+
+### **apiDiffTree(before, after, options)**
+The apiDiff function calculates the difference between two objects.
+- `before: any` - the origin object
+- `after: any` - the object being compared structurally with the origin object\
+- `options: CompareOptions` [optional] - comparison options
+
+#### *Result*
+Function returns object with `$diff` key for all differences:
+```ts
+type Diff = {
+  action: "add" | "remove" | "replace"
   before?: any
   after?: any
   type: "breaking" | "non-breaking" | "annotation" | "unclassified"

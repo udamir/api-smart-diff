@@ -3,7 +3,7 @@ import yaml from "js-yaml"
 import path from "path"
 import fs from "fs"
 
-import { apiDiff, apiMerge, BaseRulesType, ObjPath, MergeOptions, Rules } from "../../src"
+import { apiDiff, apiMerge, BaseRulesType, ObjPath, MergeOptions, Rules, apiDiffTree } from "../../src"
 import { buildPath, findExternalRefs } from "../../src/utils"
 import { resolveObjValue } from "../../src/dereference"
 
@@ -37,6 +37,10 @@ export class ExampleResource {
 
   public merge(after: any, options?: MergeOptions) {
     return apiMerge(this.res, after, { ...options, rules: this.rules, externalRefs: this.externalSources })
+  }
+
+  public diffTree(after: any, options?: MergeOptions) {
+    return apiDiffTree(this.res, after, { ...options, rules: this.rules, externalRefs: this.externalSources })
   }
 
   public getValue(path: ObjPath | string) {

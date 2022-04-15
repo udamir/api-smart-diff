@@ -218,7 +218,8 @@ required:
   <span id="action" style='float: left; width: 33%'>
     <h2>Result</h2>
     <button onclick="showResult('merge')">merge</button>
-    <button onclick="showResult('diff')">diff</button>
+    <button onclick="showResult('diff')">diff-list</button>
+    <button onclick="showResult('diffTree')">diff-tree</button>
     <br>
     <br>
     <label for="rules">API type:</label>
@@ -252,19 +253,24 @@ required:
       }
     }
 
-    function showResult(type) {
-      document.getElementById("result").hidden = false;
-      document.getElementById("action").hidden = true;
-
+    function getResultData(type) {
       const x = parseEditor(before)
       const y = parseEditor(after)
 
       const rules = document.getElementById("rules").value;
-      const format = document.getElementById("format").value;
+      switch (type) {
+        case "merge": return ApiSmartDiff.apiMerge(x, y, { rules })
+        case "diff": return ApiSmartDiff.apiDiff(x, y, { rules })
+        case "diffTree": return ApiSmartDiff.apiDiffTree(x, y, { rules })
+      }
+    }
 
-      const res = type === "merge" 
-        ? ApiSmartDiff.apiMerge(x, y, { rules })
-        : ApiSmartDiff.apiDiff(x, y, { rules });
+    function showResult(type) {
+      document.getElementById("result").hidden = false;
+      document.getElementById("action").hidden = true;
+
+      const format = document.getElementById("format").value;
+      const res = getResultData(type)
 
       let result = format === "yaml" 
         ? jsyaml.dump(res, { noRefs: true, quotingType: '"' })
