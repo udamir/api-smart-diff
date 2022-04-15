@@ -142,10 +142,8 @@ type Diff = {
 
 #### *Example*
 ```ts
-const diffs = apiDiff(before, after, { rules: "OpenApi3" })
-if (diffs.length) {
-  // do something with the changes
-}
+const diff = apiDiffTree(before, after, { rules: "OpenApi3" })
+// do something with the changes object
 ```
 
 ### **apiMerge(before, after, options)**
