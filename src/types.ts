@@ -1,15 +1,15 @@
 export type ObjPath = Array<string | number>
 
-export type ActionType = "add" | "remove" | "replace"
+export type ActionType = "add" | "remove" | "replace" | "test"
 
-export type UnclassifiedDiff = {
+export type JsonDiff = {
   action: ActionType
   path: ObjPath
   before?: any
   after?: any
 }
 
-export type Diff = UnclassifiedDiff & {
+export type Diff = JsonDiff & {
   type: DiffType
 }
 
@@ -35,41 +35,43 @@ export type Rules = {
 
 export type BaseRulesType = "OpenApi3" | "AsyncApi2" | "JsonSchema"
 
-export type CompareOptions = {
-  rules?: Rules | BaseRulesType
+export type JsonCompareOptions = {
   trimStrings?: boolean
   caseSensitive?: boolean
   strictArrays?: boolean
-  // circularRef?: boolean
-  externalRefs?: { [key: string]: any }
-}
-
-export type EnumDiff = {
-  added: number[],
-  removed: number[],
-  changed: { 
-    [index: number]: {
-      afterIndex: number
-      diffs: Diff[] 
-    },
-  },
-  unchanged: number[],
-}
-
-export type MergeOptions<T = MergedKeyMeta> = CompareOptions & {
-  arrayMeta?: boolean
-  formatMeta?: (diff: Diff) => T
   metaKey?: string | symbol
 }
 
-export type MergedKeyMeta = {
-  type: DiffType
+export type CompareResult<T extends JsonDiff = JsonDiff> = {
+  diffs: T[]
+  diff?: T
+  diffTree?: any
+}
+
+export type MergeResult<T extends JsonDiff = JsonDiff> = CompareResult<T> & {
+  value: any
+  meta?: any
+}
+
+export type ApiDiffOptions = JsonCompareOptions & {
+  rules?: Rules | BaseRulesType
+  externalRefs?: { [key: string]: any }
+}
+
+export type JsonMergeOptions<T extends JsonDiff = JsonDiff> = JsonCompareOptions & {
+  arrayMeta?: boolean
+  formatMergedMeta?: (diff: T) => any
+}
+
+export type JsonMergedMeta = {
   action: ActionType
   replaced?: any
 }
 
-export type MergedArrayMeta<T = MergedKeyMeta> = {
-  array: { [key: number]: T | MergedArrayMeta }
+export type ApiMergedMeta = JsonMergedMeta & {
+  type: DiffType
 }
 
-// export type MergeResult = [any, (MergedKeyMeta | MergedArrayMeta)?]
+export type MergedArrayMeta<T = JsonMergedMeta> = {
+  array: { [key: number]: T | MergedArrayMeta }
+}

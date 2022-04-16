@@ -1,7 +1,11 @@
+import { ApiDiff } from "./apiDiff"
+
 export * from "./rules/index"
 export * from "./types"
 export * from "./constants"
-export { apiDiff, compare } from "./compare"
-export { apiMerge } from "./merge"
-export { apiDiffTree } from "./difftree"
 export * from "./utils"
+export { ApiDiff } from "./apiDiff"
+
+export const apiDiff = ApiDiff.apiDiff
+export const apiMerge = ApiDiff.apiMerge
+export const apiDiffTree = ApiDiff.apiDiffTree

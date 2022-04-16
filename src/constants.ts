@@ -6,6 +6,7 @@ export enum DiffAction {
   add = "add",
   remove = "remove",
   replace = "replace",
+  test = "test"
 }
 
 export enum ClassifierType {

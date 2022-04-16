@@ -1,19 +1,11 @@
-import { Diff, UnclassifiedDiff, ObjPath, ActionType, BaseRulesType, CompareOptions, Rules } from "./types"
-import { buildPath, getPathMatchFunc, getPathRules } from "./utils"
+import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta } from "./types"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
-import { allUnclassified } from "./constants"
+import { buildPath, getPathMatchFunc, getPathRules } from "./utils"
+import { allUnclassified, DiffAction } from "./constants"
 import { dereference } from "./dereference"
-import { DeepDiff } from "./deepdiff"
-import { DiffAction, DIFF_META_KEY, MergedKeyMeta, MergeOptions, typeOf } from "."
+import { JsonMerge } from "./jsonMerge"
 
-export type CompareResultDetails = {
-  action?: ActionType
-  path: ObjPath
-  before?: any
-  after?: any
-}
-
-export class ApiDiff extends DeepDiff {
+export class ApiDiff extends JsonMerge<Diff> {
   public rules: Rules
 
   public beforeRefs: Set<string> = new Set()
@@ -21,7 +13,7 @@ export class ApiDiff extends DeepDiff {
   public beforeCache: Map<string, any> = new Map()
   public afterCache: Map<string, any> = new Map()
 
-  constructor(public before: any, public after: any, options: CompareOptions) {
+  constructor(public before: any, public after: any, options: ApiDiffOptions) {
     super(before, after, options)
     this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules || {}
     
@@ -32,8 +24,27 @@ export class ApiDiff extends DeepDiff {
     }
   }
 
-  public compare(): Diff[] {
-    return this.compareAny(this.before, this.after) as Diff[]
+  static apiDiff (before: any, after: any, options: ApiDiffOptions = {}): Diff[] {
+    const apiDiff = new ApiDiff(before, after, options)
+    return apiDiff.compare()
+  }
+  
+  static apiDiffTree (before: any, after: any, options: ApiDiffOptions = {}): any {
+    const apiDiff = new ApiDiff(before, after, options)
+    return apiDiff.buildDiffTree()
+  }
+  
+  static apiMerge (before: any, after: any, options: ApiDiffOptions = {}): any {
+    const apiDiff = new ApiDiff(before, after, options)
+    return apiDiff.merge()
+  }
+
+  protected _formatMergeMeta = (diff: Diff): ApiMergedMeta => {
+    return { 
+      type: diff.type,
+      action: diff.action,
+      ...diff.action === DiffAction.replace ? { replaced: diff.before } : {}
+    } 
   }
 
   public dereference(before: any, after: any, objPath: ObjPath): [any, any, () => void] {
@@ -68,7 +79,7 @@ export class ApiDiff extends DeepDiff {
     }
   }
 
-  public classifyDiff (diff: UnclassifiedDiff): Diff {
+  public classifyDiff (diff: JsonDiff): Diff {
     const _diff = diff as Diff
   
     const rule = getPathRules(this.rules, [...diff.path, ""], this.before)
@@ -84,8 +95,8 @@ export class ApiDiff extends DeepDiff {
     return _diff
   }
   
-  public compareResult(res: CompareResultDetails) {
-    return res.action ? [this.classifyDiff(res as any)] : []
+  public compareResult(diff: JsonDiff) {
+    return super.compareResult(this.classifyDiff(diff))
   }
 
   public compareObjects(before: any, after: any, objPath: ObjPath) {
@@ -102,78 +113,4 @@ export class ApiDiff extends DeepDiff {
     const matchFunc = getPathMatchFunc(this.rules, objPath, this.before)
     return super.compareArrays(before, after, objPath, matchFunc)
   }
-}
-
-export class ApiMergeDiff extends ApiDiff {
-  public formatMeta: (diff: Diff) => MergedKeyMeta
-  public metaKey: string | symbol
-  public arrayMeta?: boolean
-  public merged: any
-
-  constructor(public before: any, public after: any, options: MergeOptions) {
-    super(before, after, options)
-    
-    this.formatMeta = options.formatMeta || ((d: Diff) => this._formatMeta(d))
-    this.metaKey = options.metaKey || DIFF_META_KEY
-    this.arrayMeta = options.arrayMeta || false
-  }
-
-  public merge(): any {
-
-  }
-
-  private _formatMeta = (diff: Diff): MergedKeyMeta => {
-    return { 
-      type: diff.type,
-      action: diff.action,
-      ...diff.action === DiffAction.replace ? { replaced: diff.before } : {}
-    } 
-  }
-
-  public compareResult(res: CompareResultDetails): Diff[] {
-    this.mergeCompareResult(res)
-    return super.compareResult(res)
-  }
-
-  public mergeCompareResult(res: CompareResultDetails) {
-    let value = this.merged
-    for (const key of res.path) {
-      value = typeOf(value) === "array" ? value[+key] : value[key]
-      if (value === undefined) {
-        break
-      }
-      // value = dereference(value, obj, new Set(), cache)
-    }
-    return value
-    // const item = getObjVa this.merged
-
-    // let key = child.path[child.path.length - 1]
-    // const array = typeof key === "number"
-    // const value = parent.value ? parent.value : array ? [] : {}
-
-    // key = key === -1 ? value.length : key
-
-    // if (child.diff) {
-    //   if (child.diff.action === DiffAction.remove) {
-    //     value[key] = child.diff.before
-    //   } else {
-    //     value[key] = child.diff.after
-    //   }
-        
-    //   const meta = this.formatMeta(child.diff)
-    //   if (typeOf(value) === "array" && !this.arrayMeta) {
-    //     parent.meta = { array: { ...parent.meta?.array, [key]: meta }}
-    //   } else {
-    //     value[this.metaKey] = { ...value[this.metaKey], [key]: meta }
-    //   }
-    // } else {
-    //   value[key] = child.value
-    //   if (child.meta) {
-    //     value[this.metaKey] = { ...value[this.metaKey], [key]: child.meta }
-    //   }
-    // }
-
-    // parent.value = value
-    // parent.path = child.path.slice(0, -1)
-  } 
 }

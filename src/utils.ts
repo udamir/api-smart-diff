@@ -1,8 +1,13 @@
 import { Rule, MatchFunc, Rules, DiffType, ObjPath } from "./types"
-import { breaking, nonBreaking } from "./constants"
+import { breaking, nonBreaking, DiffAction } from "./constants"
 
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
 export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)
+
+export const added = (path: ObjPath, after: any) => ({ path, after, action: DiffAction.add })
+export const removed = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.remove })
+export const replaced = (path: ObjPath, before: any, after: any) => ({ path, before, after, action: DiffAction.replace })
+export const unchanged = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.test })
 
 export const typeOf = (value: any) => {
   if (Array.isArray(value)) {
