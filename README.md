@@ -40,7 +40,7 @@ import { apiDiff } from 'api-smart-diff'
 
 const diffs = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 // {
-//   action: "add" | "remove" | "replace",
+//   action: "add" | "remove" | "replace" | "rename",
 //   after: 'value in newSpec',
 //   before: 'value in oldSpec',
 //   path: ['path, 'in', 'array', 'format'],
@@ -107,7 +107,7 @@ type CompareOptions = {
 Function returns array of differences:
 ```ts
 type Diff = {
-  action: "add" | "remove" | "replace"
+  action: "add" | "remove" | "replace" | "rename"
   path: Array<string | number>
   before?: any
   after?: any
@@ -133,7 +133,7 @@ The apiDiff function calculates the difference between two objects.
 Function returns object with `$diff` key for all differences:
 ```ts
 type Diff = {
-  action: "add" | "remove" | "replace"
+  action: "add" | "remove" | "replace" | "rename"
   before?: any
   after?: any
   type: "breaking" | "non-breaking" | "annotation" | "unclassified"
@@ -155,7 +155,7 @@ The apiDiff function calculates the difference between two objects.
 ```ts
 type MergeOptions<T> = CompareOptions & {
   arrayMeta?: boolean
-  formatMeta?: (diff: Diff) => T
+  formatMergedMeta?: (diff: T) => any
   metaKey?: string | symbol
 }
 ```
@@ -163,7 +163,7 @@ type MergeOptions<T> = CompareOptions & {
 Additional to compare options:
 - `arrayMeta` - inject meta to arrays for items changes, default `false`
 - `metaKey` - key for diff metadata, default `$diff`
-- `formatMeta` - custom formatting function for meta
+- `formatMergedMeta` - custom formatting function for meta
 
 #### *Result*
 Function returns merged object with metadata. Metadata includes merged keys and differences:
@@ -212,7 +212,7 @@ type Rules = {
 type Rule = [ 
   DiffType | (before, after) => DiffType, // add
   DiffType | (before, after) => DiffType, // remove
-  DiffType | (before, after) => DiffType  // replace
+  DiffType | (before, after) => DiffType  // replace (rename)
 ]
 ```
 
