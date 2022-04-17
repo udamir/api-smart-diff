@@ -3,9 +3,10 @@ import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
 import { buildPath, getPathMatchFunc, getPathRules } from "./utils"
 import { allUnclassified, DiffAction } from "./constants"
 import { dereference } from "./dereference"
-import { JsonMerge } from "./jsonMerge"
+import { JsonCompare } from "./jsonCompare"
+import { MatchFunc } from "."
 
-export class ApiDiff extends JsonMerge<Diff> {
+export class ApiDiff extends JsonCompare<Diff> {
   public rules: Rules
 
   public beforeRefs: Set<string> = new Set()
@@ -13,9 +14,10 @@ export class ApiDiff extends JsonMerge<Diff> {
   public beforeCache: Map<string, any> = new Map()
   public afterCache: Map<string, any> = new Map()
 
-  constructor(public before: any, public after: any, options: ApiDiffOptions) {
+  constructor(public before: any, public after: any, options: ApiDiffOptions = {}) {
     super(before, after, options)
     this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules || {}
+    this.formatMergedMeta = options.formatMergedMeta || this._formatMergeMeta.bind(this)
     
     const externalRefs = options.externalRefs || {}
     for (const ref of Object.keys(externalRefs)) {
@@ -24,19 +26,20 @@ export class ApiDiff extends JsonMerge<Diff> {
     }
   }
 
+  protected getMatchFunc(path: ObjPath): MatchFunc | undefined {
+    return getPathMatchFunc(this.rules, path, this.before) || super.getMatchFunc(path)
+  }
+
   static apiDiff (before: any, after: any, options: ApiDiffOptions = {}): Diff[] {
-    const apiDiff = new ApiDiff(before, after, options)
-    return apiDiff.compare()
+    return new ApiDiff(before, after, options).compare()
   }
   
   static apiDiffTree (before: any, after: any, options: ApiDiffOptions = {}): any {
-    const apiDiff = new ApiDiff(before, after, options)
-    return apiDiff.buildDiffTree()
+    return new ApiDiff(before, after, options).buildDiffTree()
   }
   
   static apiMerge (before: any, after: any, options: ApiDiffOptions = {}): any {
-    const apiDiff = new ApiDiff(before, after, options)
-    return apiDiff.merge()
+    return new ApiDiff(before, after, options).merge()
   }
 
   protected _formatMergeMeta = (diff: Diff): ApiMergedMeta => {
@@ -81,11 +84,15 @@ export class ApiDiff extends JsonMerge<Diff> {
 
   public classifyDiff (diff: JsonDiff): Diff {
     const _diff = diff as Diff
+    if (diff.action === "test") { 
+      return _diff
+    }
   
-    const rule = getPathRules(this.rules, [...diff.path, ""], this.before)
+    const path = diff.action === "rename" ? [...diff.path, "*", ""] : [...diff.path, ""]
+    const rule = getPathRules(this.rules, path, this.before)
     const classifier = Array.isArray(rule) ? rule : allUnclassified
   
-    const index = ["add", "remove", "replace"].indexOf(diff.action)
+    const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
     const changeType = classifier[index]
   
     _diff.type = typeof changeType === "function" 
@@ -100,17 +107,11 @@ export class ApiDiff extends JsonMerge<Diff> {
   }
 
   public compareObjects(before: any, after: any, objPath: ObjPath) {
-    const matchFunc = getPathMatchFunc(this.rules, objPath, this.before)
     const [_before, _after, clearCache] = this.dereference(before, after, objPath)
 
-    const result = super.compareObjects(_before, _after, objPath, matchFunc)
+    const result = super.compareObjects(_before, _after, objPath)
     clearCache()
 
     return result
-  }
-
-  public compareArrays(before: any[], after: any[], objPath: ObjPath) {
-    const matchFunc = getPathMatchFunc(this.rules, objPath, this.before)
-    return super.compareArrays(before, after, objPath, matchFunc)
   }
 }

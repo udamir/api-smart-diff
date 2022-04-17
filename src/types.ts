@@ -1,6 +1,6 @@
 export type ObjPath = Array<string | number>
 
-export type ActionType = "add" | "remove" | "replace" | "test"
+export type ActionType = "add" | "remove" | "replace" | "test" | "rename"
 
 export type JsonDiff = {
   action: ActionType
@@ -24,7 +24,23 @@ export type DiffTypeFunc = (before: any, after: any) => DiffType
 export type Rule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
 export type RulesRef = (b: any) => Rules
 
-export type MatchFunc = (b: any, a: any) => boolean
+export type MatchContext = {
+  path: ObjPath
+  before: {
+    key: string | number
+    value: any
+    parent: any
+    source: any
+  }
+  after: {
+    key: string | number
+    value: any
+    parent: any
+    source: any
+  }
+}
+
+export type MatchFunc = (ctx: MatchContext) => boolean
 
 export type Rules = {
   [key: `/${string}`]: Rule | Rules | RulesRef
@@ -35,32 +51,27 @@ export type Rules = {
 
 export type BaseRulesType = "OpenApi3" | "AsyncApi2" | "JsonSchema"
 
-export type JsonCompareOptions = {
+export type JsonCompareOptions<T extends JsonDiff = JsonDiff> = {
   trimStrings?: boolean
   caseSensitive?: boolean
   strictArrays?: boolean
+  matchRules?: { [path: string]: MatchFunc }
   metaKey?: string | symbol
+  arrayMeta?: boolean
+  formatMergedMeta?: (diff: T) => any
 }
 
 export type CompareResult<T extends JsonDiff = JsonDiff> = {
   diffs: T[]
   diff?: T
   diffTree?: any
-}
-
-export type MergeResult<T extends JsonDiff = JsonDiff> = CompareResult<T> & {
-  value: any
-  meta?: any
+  value?: any
+  parentMeta?: any
 }
 
 export type ApiDiffOptions = JsonCompareOptions & {
   rules?: Rules | BaseRulesType
   externalRefs?: { [key: string]: any }
-}
-
-export type JsonMergeOptions<T extends JsonDiff = JsonDiff> = JsonCompareOptions & {
-  arrayMeta?: boolean
-  formatMergedMeta?: (diff: T) => any
 }
 
 export type JsonMergedMeta = {

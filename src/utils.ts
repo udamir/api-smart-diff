@@ -7,6 +7,7 @@ export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)
 export const added = (path: ObjPath, after: any) => ({ path, after, action: DiffAction.add })
 export const removed = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.remove })
 export const replaced = (path: ObjPath, before: any, after: any) => ({ path, before, after, action: DiffAction.replace })
+export const renamed = (path: ObjPath, before: any, after: any) => ({ path, before, after, action: DiffAction.rename })
 export const unchanged = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.test })
 
 export const typeOf = (value: any) => {
@@ -86,5 +87,5 @@ export const matchRule = (rules: Rules, matchFunc: MatchFunc): Rules => {
 }
 
 export const objArray = (key: string, rules: Rules): Rules => {
-  return matchRule(rules, (b, a) => a[key] === b[key])
+  return matchRule(rules, ({ before, after }) => after.value[key] === before.value[key])
 }

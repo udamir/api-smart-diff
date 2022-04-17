@@ -79,7 +79,7 @@ describe("Test JsonSchema diff", () => {
     const diff = example.diff(after)
 
     expect(diff.length).toEqual(1)
-    expect(diff).toMatchObject([{ path: ["required", -1], after: value, type: breaking }])
+    expect(diff).toMatchObject([{ path, after: value, type: breaking }])
   })
 
   it("change type in ref should be 'breaing' change", () => {
@@ -121,12 +121,12 @@ describe("Test JsonSchema diff", () => {
   })
 
   it("should be 'non-breaking' change on add enum item", () => {
-    const path = ["properties", 'foo', "properties", "baz", "enum"]
+    const path = ["properties", 'foo', "properties", "baz", "enum", 4]
 
-    const after = example.clone([addPatch([...path, "-"], 50)])
+    const after = example.clone([addPatch(path, 50)])
     const diff = example.diff(after)
 
     expect(diff.length).toEqual(1)
-    expect(diff).toMatchObject([{ path: [...path, -1], after: 50, type: nonBreaking }])
+    expect(diff).toMatchObject([{ path, after: 50, type: nonBreaking }])
   })
 })

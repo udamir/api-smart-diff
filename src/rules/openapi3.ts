@@ -7,9 +7,9 @@ import {
   allBreaking,
 } from "../constants"
 
-const pathArrayRules = (rules: Rules) => matchRule(rules, (b: string, a: string) => {
-  const beforePath = b.replace(new RegExp("\{.*?\}", "g"), "*")
-  const afterPath = a.replace(new RegExp("\{.*?\}", "g"), "*")
+const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
+  const beforePath = String(before.key).replace(new RegExp("\{.*?\}", "g"), "*")
+  const afterPath = String(after.key).replace(new RegExp("\{.*?\}", "g"), "*")
   return beforePath === afterPath
 })
 

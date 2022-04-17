@@ -15,7 +15,7 @@ describe("Test openapi 3 diff", () => {
     const diff = exampleResource.diff(after)
     expect(diff.length).toEqual(1)
     expect(diff).toMatchObject([{
-      path: ["servers", -1],
+      path,
       after: value,
       type: nonBreaking
     }])
@@ -30,7 +30,7 @@ describe("Test openapi 3 diff", () => {
     const diff = exampleResource.diff(after)
     expect(diff.length).toEqual(2)
     expect(diff).toMatchObject([
-      { path: ["paths", "/pet/{petId}/uploadImage"], after: "/pet/{pet}/uploadImage", type: nonBreaking },
+      { path: ["paths"], before: "/pet/{petId}/uploadImage", after: "/pet/{pet}/uploadImage", type: nonBreaking },
       { path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"], type: breaking } // should be non-breaking
     ])
   })

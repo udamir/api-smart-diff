@@ -6,7 +6,7 @@ import { breakingIfAfterTrue, matchRule, objArray } from "../utils"
 import { jsonSchemaRules } from "."
 import { Rules } from "../types"
 
-const childrenArray = (rules: Rules) => matchRule(rules, (b, a) => {
+const childrenArray = (rules: Rules) => matchRule(rules, ({ before: { value: b }, after: { value: a } }) => {
   if (a.type !== b.type) {
     return false
   }

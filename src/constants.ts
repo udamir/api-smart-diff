@@ -6,6 +6,7 @@ export enum DiffAction {
   add = "add",
   remove = "remove",
   replace = "replace",
+  rename = "rename",
   test = "test"
 }
 
