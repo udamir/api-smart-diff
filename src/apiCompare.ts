@@ -6,7 +6,7 @@ import { dereference } from "./dereference"
 import { JsonCompare } from "./jsonCompare"
 import { MatchFunc } from "."
 
-export class ApiDiff extends JsonCompare<Diff> {
+export class ApiCompare extends JsonCompare<Diff> {
   public rules: Rules
 
   public beforeRefs: Set<string> = new Set()
@@ -31,15 +31,15 @@ export class ApiDiff extends JsonCompare<Diff> {
   }
 
   static apiDiff (before: any, after: any, options: ApiDiffOptions = {}): Diff[] {
-    return new ApiDiff(before, after, options).compare()
+    return new ApiCompare(before, after, options).compare()
   }
   
   static apiDiffTree (before: any, after: any, options: ApiDiffOptions = {}): any {
-    return new ApiDiff(before, after, options).buildDiffTree()
+    return new ApiCompare(before, after, options).buildDiffTree()
   }
   
   static apiMerge (before: any, after: any, options: ApiDiffOptions = {}): any {
-    return new ApiDiff(before, after, options).merge()
+    return new ApiCompare(before, after, options).merge()
   }
 
   protected _formatMergeMeta = (diff: Diff): ApiMergedMeta => {
