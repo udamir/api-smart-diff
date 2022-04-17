@@ -1,7 +1,6 @@
 import { ObjPath, JsonCompareOptions, MatchFunc, JsonDiff, CompareResult, JsonMergedMeta } from "./types"
-import { typeOf, replaced, unchanged, added, removed, renamed } from "./utils"
+import { typeOf, replaced, unchanged, added, removed, renamed, buildPath } from "./utils"
 import { DiffAction, DIFF_META_KEY } from "./constants"
-import { buildPath } from "."
 
 export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<D> = CompareResult<D>> {
   public trimStrings?: boolean
@@ -46,6 +45,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
   }
 
   protected getMatchFunc(path: ObjPath): MatchFunc | undefined {
+    // TODO: support masked path
     const strPath = buildPath(path)
     return this.matchRules[strPath]
   }

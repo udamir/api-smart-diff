@@ -1,10 +1,9 @@
-import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta } from "./types"
+import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc } from "./types"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
 import { buildPath, getPathMatchFunc, getPathRules } from "./utils"
 import { allUnclassified, DiffAction } from "./constants"
 import { dereference } from "./dereference"
 import { JsonCompare } from "./jsonCompare"
-import { MatchFunc } from "."
 
 export class ApiCompare extends JsonCompare<Diff> {
   public rules: Rules
