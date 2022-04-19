@@ -65,7 +65,6 @@ export type CompareResult<T extends JsonDiff = JsonDiff> = {
   diffs: T[]
   diff?: T
   diffTree?: any
-  value?: any
   parentMeta?: any
 }
 

@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource } from "./helpers"
-import { breaking, nonBreaking } from "../src"
+import { breaking, DiffAction, nonBreaking } from "../src"
 
 const exampleResource = new ExampleResource("petstore.yaml", "OpenApi3")
 
@@ -30,7 +30,7 @@ describe("Test openapi 3 diff", () => {
     const diff = exampleResource.diff(after)
     expect(diff.length).toEqual(2)
     expect(diff).toMatchObject([
-      { path: ["paths"], before: "/pet/{petId}/uploadImage", after: "/pet/{pet}/uploadImage", type: nonBreaking },
+      { path: ["paths"], before: "/pet/{petId}/uploadImage", after: "/pet/{pet}/uploadImage", type: nonBreaking, action: DiffAction.rename },
       { path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"], type: breaking } // should be non-breaking
     ])
   })

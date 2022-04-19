@@ -1,4 +1,4 @@
-import { annotation, breaking, DiffAction, serviceNodeRules } from "../src"
+import { annotation, breaking, DiffAction, nonBreaking, serviceNodeRules } from "../src"
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 
 const metaKey = Symbol("diff")
@@ -43,5 +43,16 @@ describe("Test service-node merge", () => {
 
     const meta = merged.children[0].data.responses[2].contents[0].schema.required[metaKey]
     expect(meta).toMatchObject({ 2: { action: DiffAction.add, type: breaking } })
+  })
+
+  it("should be breaking change in meta (rename path)", () => {
+    const after = exampleResource.clone([replacePatch(["children", 0, "data", "path"], "/test")])
+    const merged = exampleResource.merge(after, { metaKey, arrayMeta: true })
+
+    const meta = merged.children[metaKey]
+    expect(meta).toMatchObject({ 
+      0: { action: DiffAction.remove, type: breaking },
+      11: { action: DiffAction.add, type: nonBreaking } 
+    })
   })
 })

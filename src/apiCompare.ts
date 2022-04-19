@@ -88,7 +88,7 @@ export class ApiCompare extends JsonCompare<Diff> {
     }
   
     const path = diff.action === "rename" ? [...diff.path, "*", ""] : [...diff.path, ""]
-    const rule = getPathRules(this.rules, path, this.before)
+    const rule = getPathRules(this.rules, path, this.merged)
     const classifier = Array.isArray(rule) ? rule : allUnclassified
   
     const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
@@ -105,10 +105,10 @@ export class ApiCompare extends JsonCompare<Diff> {
     return super.compareResult(this.classifyDiff(diff))
   }
 
-  public compareObjects(before: any, after: any, objPath: ObjPath) {
+  public compareObjects(before: any, after: any, objPath: ObjPath, merged: any) {
     const [_before, _after, clearCache] = this.dereference(before, after, objPath)
 
-    const result = super.compareObjects(_before, _after, objPath)
+    const result = super.compareObjects(_before, _after, objPath, merged)
     clearCache()
 
     return result
