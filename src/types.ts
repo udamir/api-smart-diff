@@ -55,7 +55,9 @@ export type JsonCompareOptions<T extends JsonDiff = JsonDiff> = {
   trimStrings?: boolean
   caseSensitive?: boolean
   strictArrays?: boolean
-  matchRules?: { [path: string]: MatchFunc }
+  matchRules?: {
+    [path: string]: MatchFunc
+  }
   metaKey?: string | symbol
   arrayMeta?: boolean
   formatMergedMeta?: (diff: T) => any
@@ -70,7 +72,9 @@ export type CompareResult<T extends JsonDiff = JsonDiff> = {
 
 export type ApiDiffOptions = JsonCompareOptions & {
   rules?: Rules | BaseRulesType
-  externalRefs?: { [key: string]: any }
+  externalRefs?: {
+    [key: string]: any
+  }
 }
 
 export type JsonMergedMeta = {
@@ -83,5 +87,7 @@ export type ApiMergedMeta = JsonMergedMeta & {
 }
 
 export type MergedArrayMeta<T = JsonMergedMeta> = {
-  array: { [key: number]: T | MergedArrayMeta }
+  array: {
+    [key: number]: T | MergedArrayMeta<T>
+  }
 }
