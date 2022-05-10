@@ -2,7 +2,7 @@ import { ObjPath, JsonCompareOptions, MatchFunc, JsonDiff, CompareResult, JsonMe
 import { typeOf, replaced, unchanged, added, removed, renamed, buildPath } from "./utils"
 import { DiffAction, DIFF_META_KEY } from "./constants"
 
-type EnumCompareResult<D extends JsonDiff = JsonDiff> = { value: any, res: CompareResult<D> }
+type EnumCompareResult<D extends JsonDiff = JsonDiff> = { value: any, res: CompareResult<D>, diffs?: number }
 
 export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<D> = CompareResult<D>> {
   public trimStrings?: boolean
@@ -236,7 +236,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
           afterDiffs = { value: _merged.value, res }
           break
         }
-        afterDiffs[j] = { value: _merged.value, res }
+        afterDiffs[j] = { value: _merged.value, res, diffs: typeof before[i] === typeof after[j] ? res.diffs.length : -1 }
       }
       beforeDiffs.push(afterDiffs)
     }
@@ -250,9 +250,9 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
         result[i] = itemRes.res
       } else {
         // find item with min diff count
-        const afterIndexes = [ ...Array(after.length).keys() ]
+        const afterIndexes = [...Array(after.length).keys()].filter((a) => (itemRes[a]?.diffs || 0) >= 0)
         
-        const minDiffs = afterIndexes.sort((a, b) => (itemRes[a]?.res.diffs.length || 0) - (itemRes[b]?.res.diffs.length || 0))
+        const minDiffs = afterIndexes.sort((a, b) => (itemRes[a]?.diffs || 0) - (itemRes[b]?.diffs || 0))
         for (const j of after.keys()) {
           let minDiffIndex = minDiffs[j]
           if (afterEquals.has(minDiffIndex)) { continue }

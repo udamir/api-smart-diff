@@ -1,6 +1,24 @@
 import { apiDiff, apiMerge, DiffAction } from "../src"
 
 describe("Test array merge", () => {
+  it("should be correct merge with mixed types array", () => {
+    const before = {
+      arr: [
+        { a: 1, b: 2},  
+        { a: 1, b: 3},  
+      ]
+    }
+    
+    const after = {
+      arr: [
+        1
+      ]
+    }
+
+    const merged = apiMerge(before, after, { strictArrays: false })
+    expect(merged.arr.length).toBe(3)
+  })
+  
   it("should be correct diff with array", () => {
     const before = {
       arr: [
