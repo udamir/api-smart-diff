@@ -45,7 +45,7 @@ export class ApiCompare extends JsonCompare<Diff> {
     return { 
       type: diff.type,
       action: diff.action,
-      ...diff.action === DiffAction.replace ? { replaced: diff.before } : {}
+      ...diff.action === DiffAction.replace || diff.action === DiffAction.rename ? { replaced: diff.before } : {},
     } 
   }
 

@@ -29,7 +29,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
   protected _formatMergeMeta = (diff: D): JsonMergedMeta => {
     return { 
       action: diff.action,
-      ...diff.action === DiffAction.replace ? { replaced: diff.before } : {}
+      ...diff.action === DiffAction.replace || diff.action === DiffAction.rename ? { replaced: diff.before } : {},
     } 
   }
 
@@ -85,15 +85,17 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
         res.diffs.push(diff)
         if (array && !this.arrayMeta) {
           if (res.parentMeta === undefined) { 
-            res.parentMeta = {} 
+            res.parentMeta = { } 
           }
           res.parentMeta[i] = this.formatMergedMeta(diff)
         } else {
-          this.setMeta(merged, i, this.formatMergedMeta(diff))
+          if (diff.action === DiffAction.rename) {
+            this.setMeta(merged, diff.after, this.formatMergedMeta(diff))
+          } else {
+            this.setMeta(merged, i, this.formatMergedMeta(diff))
+          }
         }
-        if (i !== (array ? +key : key)) {
-          continue
-        }
+        if (i !== (array ? +key : key)) { continue }
       } else {
         if (diffs.length) {
           res.diffTree[key] = diffTree
