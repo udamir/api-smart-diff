@@ -10,11 +10,17 @@ export const replaced = (path: ObjPath, before: any, after: any) => ({ path, bef
 export const renamed = (path: ObjPath, before: any, after: any) => ({ path, before, after, action: DiffAction.rename })
 export const unchanged = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.test })
 
+export const isEmptyObject = (obj:any) => {
+  for (const key in obj)
+    return false
+  return true
+}
+
 export const typeOf = (value: any) => {
   if (Array.isArray(value)) {
     return "array"
   }
-  return typeof value == null ? "null" : typeof value
+  return value == null ? "null" : typeof value
 }
 
 export const parsePath = (path: string): string[] => {
@@ -88,4 +94,28 @@ export const matchRule = (rules: Rules, matchFunc: MatchFunc): Rules => {
 
 export const objArray = (key: string, rules: Rules): Rules => {
   return matchRule(rules, ({ before, after }) => after.value[key] === before.value[key])
+}
+
+export const getValueByPath = (obj: any, objPath: ObjPath) => {
+  let value = obj
+  for (const key of objPath) {
+    value = typeOf(value) === "array" ? value[+key] : value[key]
+    if (value === undefined) {
+      break
+    }
+  }
+  return value
+}
+
+export const mergeValues = (value: any, patch: any) => {
+  if (Array.isArray(value)) {
+    return Array.isArray(patch) ? value.push(...patch) : value
+  } else if (typeof value === "object" && typeof patch === "object") {
+    for(const key of Reflect.ownKeys(patch)) {
+      value[key] = mergeValues(value[key], patch[key])
+    }
+    return value
+  } else {
+    return patch
+  }
 }

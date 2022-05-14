@@ -1,28 +1,8 @@
 openapi: 3.0.0
-servers:
-  - description: SwaggerHub API Auto Mocking
-    url: https://virtserver.swaggerhub.com/anshul10s/pet-store/1.0.0
-info:
-  description: |
-    This is a sample Petstore server.
-  version: "1.0.0"
-  title: Swagger Petstore
-  termsOfService: 'http://swagger.io/terms/'
-  contact:
-    email: apiteam@swagger.io
-  license:
-    name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
-tags:
-  - name: store
-    description: Access to Petstore orders
 paths:
-  /store/inventory:
+  /inventory:
     get:
-      tags:
-        - store
-      summary: Returns pet inventories by status
-      description: Returns a map of status codes to quantities. Available, reserved, sold is must in respone. Other keys can still be there.
+      summary: Returns inventory
       operationId: getInventory
       responses:
         '200':
@@ -30,17 +10,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  $ref: 'http://swagger.io#/components/schemas/Inventory'
-                  x-key-property :
-                    $ref: 'http://swagger.io/api#/components/schemas/InvStatus'
-externalDocs:
-  description: Find out more about Swagger
-  url: 'http://swagger.io'
+                $ref: '#/components/schemas/Inventory'
 components:
   schemas:
-    InvStatus:
+    Status:
       type: string
       enum:
         - available
@@ -51,13 +24,21 @@ components:
       properties:
         id:
           type: string
-        details:
-          type: count
+        group:
+          $ref: "#/components/schemas/Group"
+        status:
+          $ref: "#/components/schemas/Status"
         extra_info:
-          type: string
+          $ref: "common.yaml#/components/schemas/Info"
     Group:
       type: object
       properties:
+        name:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: "#/components/schemas/Inventory"
         parent:
           $ref: "#/components/schemas/Group"
       

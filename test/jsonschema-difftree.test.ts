@@ -1,6 +1,5 @@
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
-import { annotation, breaking, DiffAction, DIFF_META_KEY, nonBreaking, unclassified } from "../src"
-import { resolveObjValue } from "../src/dereference"
+import { annotation, breaking, DiffAction, DIFF_META_KEY, getValueByPath, nonBreaking, unclassified } from "../src"
 
 const exampleBefore = new ExampleResource("schema-before.yaml", "JsonSchema")
 const exapmleAfter = new ExampleResource("schema-after.yaml", "JsonSchema")
@@ -96,7 +95,7 @@ describe("Test Jsonschema diffTree options", () => {
 
     const after = example2.clone([removePatch(path)])
     const diffTree = example2.diffTree(after)
-    const meta = resolveObjValue(diffTree, path.slice(0,-1))[metaKey]
+    const meta = getValueByPath(diffTree, path.slice(0,-1))[metaKey]
 
     expect(meta).toMatchObject({ 2: { action: "remove", type: breaking }})
   })
@@ -107,7 +106,7 @@ describe("Test Jsonschema diffTree options", () => {
 
     const after = example2.clone([replacePatch(path, 50)])
     const diffTree = example2.diffTree(after)
-    const meta = resolveObjValue(diffTree, path.slice(0,-1))[metaKey]
+    const meta = getValueByPath(diffTree, path.slice(0,-1))[metaKey]
 
     expect(meta).toMatchObject({ 3: { action: "replace", before: oldValue, type: breaking }})
   })
@@ -118,7 +117,7 @@ describe("Test Jsonschema diffTree options", () => {
 
     const after = example2.clone([addPatch(path, value)])
     const diffTree = example2.diffTree(after)
-    const meta = resolveObjValue(diffTree, path.slice(0, -1))[metaKey]
+    const meta = getValueByPath(diffTree, path.slice(0, -1))[metaKey]
 
     expect(meta).toMatchObject({ 4: { action: "add", type: nonBreaking }})
   })

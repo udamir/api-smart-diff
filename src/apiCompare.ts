@@ -1,8 +1,7 @@
-import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc } from "./types"
+import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc, CompareResult } from "./types"
+import { buildPath, getPathMatchFunc, getPathRules, getValueByPath, isEmptyObject, mergeValues, parsePath } from "./utils"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
-import { buildPath, getPathMatchFunc, getPathRules } from "./utils"
 import { allUnclassified, DiffAction } from "./constants"
-import { dereference } from "./dereference"
 import { JsonCompare } from "./jsonCompare"
 
 export class ApiCompare extends JsonCompare<Diff> {
@@ -12,6 +11,7 @@ export class ApiCompare extends JsonCompare<Diff> {
   public afterRefs: Set<string> = new Set()
   public beforeCache: Map<string, any> = new Map()
   public afterCache: Map<string, any> = new Map()
+  public compareCache: Map<string, { result: CompareResult<Diff>, merged: any }> = new Map()
 
   constructor(public before: any, public after: any, options: ApiDiffOptions = {}) {
     super(before, after, options)
@@ -49,25 +49,42 @@ export class ApiCompare extends JsonCompare<Diff> {
     } 
   }
 
-  public dereference(before: any, after: any, objPath: ObjPath): [any, any, () => void] {
+  public dereference(source: "before" | "after", value: any, objPath: ObjPath): [any, () => void] {
     const ref = "#" + buildPath(objPath)
-  
-    this.beforeRefs.add(ref)
-    this.afterRefs.add(ref)
-  
-    const _before = dereference(before, this.before, this.beforeRefs, this.beforeCache)
-    const _after = dereference(after, this.after, this.afterRefs, this.afterCache)
+
+    const [refs, cache] = source === "before" 
+      ? [this.beforeRefs, this.beforeCache] 
+      : [this.afterRefs, this.afterCache]
+    
+
+    const { $ref, ...rest } = value
 
     const clearCache = () => {
       // remove refs
-      before.$ref && this.beforeRefs.delete(before.$ref)
-      after.$ref && this.afterRefs.delete(after.$ref)
-
-      this.beforeRefs.delete(ref)
-      this.afterRefs.delete(ref)
+      $ref && refs.delete($ref)
+      refs.delete(ref)
     }
 
-    return [_before, _after, clearCache]
+    if (refs.has($ref)) {
+      return [value, clearCache]
+    }
+
+    refs.add(ref)
+
+    if ($ref) {
+      refs.add($ref)
+      const [external, path] = $ref.split("#")
+  
+      // resolve external obj 
+      if (external && !cache.has(external)) {
+        return [value, clearCache]
+      }
+
+      const refValue = getValueByPath(external ? cache.get(external) : this[source], parsePath(path))
+      return [!isEmptyObject(rest) ? mergeValues(refValue, rest) : refValue, clearCache]
+    }
+
+    return [value, clearCache]
   }
 
   private getBaseRules (name: BaseRulesType): Rules {
@@ -106,10 +123,30 @@ export class ApiCompare extends JsonCompare<Diff> {
   }
 
   public compareObjects(before: any, after: any, objPath: ObjPath, merged: any) {
-    const [_before, _after, clearCache] = this.dereference(before, after, objPath)
+    const { $ref: beforeRef, ...$before} = before
+    const { $ref: afterRef, ...$after} = before
+    const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + buildPath(objPath)
 
+    const compareCache = this.compareCache.get(compareRefsId)
+    if (compareCache && (isEmptyObject($before) && isEmptyObject($after) || !beforeRef && !afterRef)) {
+      mergeValues(merged, compareCache.merged)
+      const diffs = compareCache.result.diffs.map((diff) => ({ ...diff, path: [...objPath, ...diff.path] }))
+      return { ...compareCache.result, diffs }
+    }
+
+    const [_before, clearBeforeCache ] = this.dereference("before", before, objPath)
+    const [_after, clearAfterCache] = this.dereference("after", after, objPath)
+
+    // compare $before and $after
     const result = super.compareObjects(_before, _after, objPath, merged)
-    clearCache()
+
+    if (beforeRef && afterRef && isEmptyObject($before) && isEmptyObject($after)) {
+      const diffs = result.diffs.map((diff) => ({ ...diff, path: diff.path.slice(objPath.length) }))
+      this.compareCache.set(compareRefsId, { result: { ...result, diffs }, merged })
+    }
+
+    clearAfterCache()
+    clearBeforeCache()
 
     return result
   }

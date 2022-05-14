@@ -1,6 +1,5 @@
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
-import { annotation, breaking, DiffAction, nonBreaking, unclassified } from "../src"
-import { resolveObjValue } from "../src/dereference"
+import { annotation, breaking, DiffAction, getValueByPath, nonBreaking, unclassified } from "../src"
 
 const metaKey = Symbol("diff")
 const exampleBefore = new ExampleResource("schema-before.yaml", "JsonSchema")
@@ -106,7 +105,7 @@ describe("Test Jsonschema merge options", () => {
 
     const after = example2.clone([removePatch(path)])
     const merged = example2.merge(after, { metaKey, arrayMeta: true })
-    const meta = resolveObjValue(merged, path.slice(0,-1))[metaKey]
+    const meta = getValueByPath(merged, path.slice(0,-1))[metaKey]
 
     expect(meta).toMatchObject({ 2: { action: "remove", type: breaking }})
   })
@@ -117,7 +116,7 @@ describe("Test Jsonschema merge options", () => {
 
     const after = example2.clone([replacePatch(path, 50)])
     const merged = example2.merge(after, { metaKey, arrayMeta: true })
-    const meta = resolveObjValue(merged, path.slice(0,-1))[metaKey]
+    const meta = getValueByPath(merged, path.slice(0,-1))[metaKey]
 
     expect(meta).toMatchObject({ 3: { action: "replace", replaced: oldValue, type: breaking }})
   })
@@ -128,8 +127,8 @@ describe("Test Jsonschema merge options", () => {
 
     const after = example2.clone([addPatch(path, value)])
     const merged = example2.merge(after, { metaKey })
-    const meta = resolveObjValue(merged, path.slice(0, -2))[metaKey]
-    const mergedEnum = resolveObjValue(merged, path.slice(0, -1))
+    const meta = getValueByPath(merged, path.slice(0, -2))[metaKey]
+    const mergedEnum = getValueByPath(merged, path.slice(0, -1))
 
     expect(mergedEnum[4]).toEqual(value)
     expect(meta).toMatchObject({ enum: { array: { 4: { action: "add", type: nonBreaking }}}})

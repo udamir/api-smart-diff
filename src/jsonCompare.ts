@@ -1,5 +1,5 @@
 import { ObjPath, JsonCompareOptions, MatchFunc, JsonDiff, CompareResult, JsonMergedMeta } from "./types"
-import { typeOf, replaced, unchanged, added, removed, renamed, buildPath } from "./utils"
+import { typeOf, replaced, unchanged, added, removed, renamed, buildPath, isEmptyObject } from "./utils"
 import { DiffAction, DIFF_META_KEY } from "./constants"
 
 type EnumCompareResult<D extends JsonDiff = JsonDiff> = { value: any, res: CompareResult<D>, diffs?: number }
@@ -144,7 +144,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
   public compareObjects(before: any, after: any, path: ObjPath, merged: any): T {
     const result: { [key: string]: CompareResult<D> } = {}
 
-    if (Object.keys(before).length === 0 && Object.keys(after).length === 0) {
+    if (isEmptyObject(before) && isEmptyObject(after)) {
       return this.compareResult(unchanged(path, before))
     }
 

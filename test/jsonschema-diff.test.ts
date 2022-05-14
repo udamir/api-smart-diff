@@ -94,7 +94,7 @@ describe("Test JsonSchema diff", () => {
     expect(diff).toMatchObject([
       { path: ["properties", "name", "type"], before: oldValue, after: value, type: breaking },
       { path: ["properties", "foo",  "properties", "bar", "type"], before: oldValue, after: value, type: breaking },
-      { path, before: oldValue, after: value, type: unclassified },
+      { path, before: oldValue, after: value, type: breaking },
     ])
   })
 
