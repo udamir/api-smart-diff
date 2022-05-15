@@ -1,5 +1,5 @@
 import { breakingIf, breakingIfAfterTrue } from "../utils"
-import { Rule, Rules } from "../types"
+import { DiffTypeFunc, Rule, Rules } from "../types"
 import {
   breaking, nonBreaking, addNonBreaking, 
   allAnnotation, allBreaking, allUnclassified,
@@ -36,6 +36,8 @@ const multipleOfClassifier: Rule = [
   (b, a) => breakingIf(!!(b % a))
 ]
 
+const nonBreakingIfDefault: DiffTypeFunc = (_, key, __, p) => p?.properties && p?.properties[key]?.default !== undefined ? nonBreaking : breaking
+
 export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/": rootRule,
   "/title": allAnnotation,
@@ -46,7 +48,7 @@ export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/exclusiveMinimum": exclusiveClassifier,
   "/maxLength": maxClassifier,
   "/minLength": minClassifier,
-  "/pattern": [breaking, nonBreaking, breaking], // Regex.test before vs after ?
+  "/pattern": [breaking, nonBreaking, breaking], // TODO: Compare Regex before vs after
   "/maxItems": maxClassifier,
   "/minItems": minClassifier,
   "/uniqueItems": booleanClassifier,
@@ -54,7 +56,7 @@ export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/minProperties": minClassifier,
   "/required": {
     "/": onlyAddBreaking,
-    "/*": [breaking, nonBreaking, breaking],
+    "/*": [nonBreakingIfDefault, nonBreaking, nonBreakingIfDefault],
   },
   "/enum": {
     "/": [breaking, nonBreaking, breaking],

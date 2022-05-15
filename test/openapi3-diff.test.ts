@@ -31,7 +31,7 @@ describe("Test openapi 3 diff", () => {
     expect(diff.length).toEqual(2)
     expect(diff).toMatchObject([
       { path: ["paths"], before: "/pet/{petId}/uploadImage", after: "/pet/{pet}/uploadImage", type: nonBreaking, action: DiffAction.rename },
-      { path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"], type: breaking } // should be non-breaking
+      { path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"], type: nonBreaking }
     ])
   })
 

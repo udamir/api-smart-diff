@@ -82,6 +82,17 @@ describe("Test JsonSchema diff", () => {
     expect(diff).toMatchObject([{ path, after: value, type: breaking }])
   })
 
+  it("add of required property should be 'non-breaing' change if property has default value", () => {
+    const path = ["required", 1]
+    const value = "age"
+
+    const after = example.clone([addPatch(path, value), addPatch(["properties", "age", "default"], 10)])
+    const diff = example.diff(after)
+
+    expect(diff.length).toEqual(2)
+    expect(diff).toMatchObject([{ path, after: value, type: nonBreaking}, { after: 10, type: nonBreaking, action: "add" }])
+  })
+
   it("change type in ref should be 'breaing' change", () => {
     const path = ["$refs", "NameType", "type"]
     const oldValue = example.getValue(path)

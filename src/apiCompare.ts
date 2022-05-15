@@ -111,8 +111,13 @@ export class ApiCompare extends JsonCompare<Diff> {
     const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
     const changeType = classifier[index]
   
+    const parentPath = diff.path.slice(0, diff.path.length - (diff.action === "add" || diff.action === "remove" ? 2 : 1))  
+    const befor = getValueByPath(this.before, parentPath)
+    // TODO: convert before path to after path in case of rename
+    const after = getValueByPath(this.after, parentPath) 
+
     _diff.type = typeof changeType === "function" 
-      ? changeType(diff.before, diff.after)
+      ? changeType(diff.before, diff.after, befor, after)
       : changeType
   
     return _diff

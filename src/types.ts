@@ -19,7 +19,7 @@ export type AddDiffType = DiffType | DiffTypeFunc
 export type RemoveDiffType = DiffType | DiffTypeFunc
 export type ReplaceDiffType = DiffType | DiffTypeFunc
 
-export type DiffTypeFunc = (before: any, after: any) => DiffType
+export type DiffTypeFunc = (before: any, after: any, beforeParent: any, afterParent: any) => DiffType
 
 export type Rule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
 export type RulesRef = (b: any) => Rules

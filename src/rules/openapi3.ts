@@ -38,7 +38,7 @@ const parametersRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/*": {
     "/": [nonBreaking, breaking, breaking],
-    "/name": [nonBreaking, breaking, breaking],
+    "/name": [nonBreaking, breaking, (_, __, b) => b?.in === "path" ? nonBreaking : breaking ],
     "/in": [nonBreaking, breaking, breaking],
     "/description": allAnnotation,
     "/required": [breaking, nonBreaking, breakingIfAfterTrue],
