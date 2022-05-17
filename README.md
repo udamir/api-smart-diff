@@ -210,10 +210,19 @@ type Rules = {
 
 // Change classifier
 type Rule = [ 
-  DiffType | (before, after) => DiffType, // add
-  DiffType | (before, after) => DiffType, // remove
-  DiffType | (before, after) => DiffType  // replace (rename)
+  DiffType | (ctx: IChangeContext) => DiffType, // add
+  DiffType | (ctx: IChangeContext) => DiffType, // remove
+  DiffType | (ctx: IChangeContext) => DiffType  // replace (rename)
 ]
+
+// Current path Change context
+interface IChageContext {
+  before: any // before value
+  after: any // after value
+  up: (n?: number) => IChageContext // get parent Change Context
+  root: () => IChageContext // get root Change context
+}
+
 ```
 
 Please check predefined rules in `/src/rules` folder to get examples

@@ -19,7 +19,14 @@ export type AddDiffType = DiffType | DiffTypeFunc
 export type RemoveDiffType = DiffType | DiffTypeFunc
 export type ReplaceDiffType = DiffType | DiffTypeFunc
 
-export type DiffTypeFunc = (before: any, after: any, beforeParent: any, afterParent: any) => DiffType
+export interface IChageContext {
+  before: any
+  after: any
+  up: (n?: number) => IChageContext
+  root: () => IChageContext
+}
+
+export type DiffTypeFunc = (ctx: IChageContext) => DiffType
 
 export type Rule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
 export type RulesRef = (b: any) => Rules

@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource } from "./helpers"
-import { breaking, DiffAction, nonBreaking } from "../src"
+import { DiffAction, nonBreaking } from "../src"
 
 const exampleResource = new ExampleResource("petstore.yaml", "OpenApi3")
 
@@ -43,5 +43,17 @@ describe("Test openapi 3 diff", () => {
 
     const merged = exampleResource.merge(after)
     expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}/uploadImage"]: { action: DiffAction.rename, replaced: "/pet/{petId}/uploadImage", type: nonBreaking } })
+  })
+
+  it("should classify required change after rename", () => {
+    const after = exampleResource.clone()
+    after.paths["/pet/{pet}"] = after.paths["/pet/{petId}"]
+    delete after.paths["/pet/{petId}"]
+    after.components.schemas.Pet.required[0] = "id"
+    after.components.schemas.Pet.properties.id.default = 0
+
+    const merged = exampleResource.merge(after)
+    expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}"]: { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking } })
+    expect(merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array[0]).toMatchObject({ action: DiffAction.replace, replaced: "name", type: nonBreaking })
   })
 })

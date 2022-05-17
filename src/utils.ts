@@ -1,8 +1,8 @@
-import { Rule, MatchFunc, Rules, DiffType, ObjPath } from "./types"
+import { Rule, MatchFunc, Rules, DiffType, ObjPath, DiffTypeFunc } from "./types"
 import { breaking, nonBreaking, DiffAction } from "./constants"
 
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
-export const breakingIfAfterTrue = (_: any, a: any): DiffType => breakingIf(a)
+export const breakingIfAfterTrue: DiffTypeFunc = (ctx): DiffType => breakingIf(ctx.after)
 
 export const added = (path: ObjPath, after: any) => ({ path, after, action: DiffAction.add })
 export const removed = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.remove })
@@ -96,6 +96,18 @@ export const objArray = (key: string, rules: Rules): Rules => {
   return matchRule(rules, ({ before, after }) => after.value[key] === before.value[key])
 }
 
+export const resolveRef = (val: any, source: any, cache: any) => {
+  const { $ref, ...rest } = val
+  if ($ref) {
+    const [external, path] = $ref.split("#")
+    if (external && !cache.has(external)) { return val }
+    const value = getValueByPath(external ? cache.get(external) : source, parsePath(path))
+    return !isEmptyObject(rest) ? mergeValues(value, rest) : value
+  } else {
+    return val
+  }
+}
+
 export const getValueByPath = (obj: any, objPath: ObjPath) => {
   let value = obj
   for (const key of objPath) {
@@ -105,6 +117,21 @@ export const getValueByPath = (obj: any, objPath: ObjPath) => {
     }
   }
   return value
+}
+
+export const setValueByPath = (obj: any, objPath: ObjPath, value: any, i = 0) => {
+  if (i >= objPath.length) { return }
+  
+  const key = objPath[i]
+  if (typeof obj[key] !== "object") {
+    obj[key] = {}
+  }
+
+  if (i === objPath.length - 1) {
+    obj[key] = value
+  } else {
+    setValueByPath(obj[key], objPath, value, i + 1)
+  }
 }
 
 export const mergeValues = (value: any, patch: any) => {

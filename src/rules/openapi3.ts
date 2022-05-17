@@ -38,7 +38,7 @@ const parametersRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/*": {
     "/": [nonBreaking, breaking, breaking],
-    "/name": [nonBreaking, breaking, (_, __, b) => b?.in === "path" ? nonBreaking : breaking ],
+    "/name": [nonBreaking, breaking, (ctx) => ctx.up().before?.in === "path" ? nonBreaking : breaking ],
     "/in": [nonBreaking, breaking, breaking],
     "/description": allAnnotation,
     "/required": [breaking, nonBreaking, breakingIfAfterTrue],
@@ -82,7 +82,7 @@ const requestBodiesRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/description": allAnnotation,
   "/content": contentRules,
-  "/required": [breaking, nonBreaking, (_, a) => (a ? breaking : nonBreaking)],
+  "/required": [breaking, nonBreaking, (ctx) => (ctx.after ? breaking : nonBreaking)],
 }
 
 const responsesRules: Rules = {

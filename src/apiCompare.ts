@@ -1,8 +1,11 @@
 import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc, CompareResult } from "./types"
-import { buildPath, getPathMatchFunc, getPathRules, getValueByPath, isEmptyObject, mergeValues, parsePath } from "./utils"
+import { buildPath, getPathMatchFunc, getPathRules, isEmptyObject, mergeValues, resolveRef, setValueByPath } from "./utils"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
-import { allUnclassified, DiffAction } from "./constants"
+import { allUnclassified, DiffAction, unclassified } from "./constants"
 import { JsonCompare } from "./jsonCompare"
+import { ChangeContext } from "./changeContext"
+
+const $renamed = Symbol("renamed")
 
 export class ApiCompare extends JsonCompare<Diff> {
   public rules: Rules
@@ -12,6 +15,7 @@ export class ApiCompare extends JsonCompare<Diff> {
   public beforeCache: Map<string, any> = new Map()
   public afterCache: Map<string, any> = new Map()
   public compareCache: Map<string, { result: CompareResult<Diff>, merged: any }> = new Map()
+  public renamedPath: any = {}
 
   constructor(public before: any, public after: any, options: ApiDiffOptions = {}) {
     super(before, after, options)
@@ -56,35 +60,21 @@ export class ApiCompare extends JsonCompare<Diff> {
       ? [this.beforeRefs, this.beforeCache] 
       : [this.afterRefs, this.afterCache]
     
-
-    const { $ref, ...rest } = value
-
+    
     const clearCache = () => {
       // remove refs
-      $ref && refs.delete($ref)
+      value.$ref && refs.delete(value.$ref)
       refs.delete(ref)
     }
 
-    if (refs.has($ref)) {
+    if (refs.has(value.$ref)) {
       return [value, clearCache]
     }
 
     refs.add(ref)
-
-    if ($ref) {
-      refs.add($ref)
-      const [external, path] = $ref.split("#")
-  
-      // resolve external obj 
-      if (external && !cache.has(external)) {
-        return [value, clearCache]
-      }
-
-      const refValue = getValueByPath(external ? cache.get(external) : this[source], parsePath(path))
-      return [!isEmptyObject(rest) ? mergeValues(refValue, rest) : refValue, clearCache]
-    }
-
-    return [value, clearCache]
+          
+    value.$ref && refs.add(value.$ref)
+    return [resolveRef(value, this[source], cache), clearCache]
   }
 
   private getBaseRules (name: BaseRulesType): Rules {
@@ -110,20 +100,57 @@ export class ApiCompare extends JsonCompare<Diff> {
   
     const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
     const changeType = classifier[index]
-  
-    const parentPath = diff.path.slice(0, diff.path.length - (diff.action === "add" || diff.action === "remove" ? 2 : 1))  
-    const befor = getValueByPath(this.before, parentPath)
-    // TODO: convert before path to after path in case of rename
-    const after = getValueByPath(this.after, parentPath) 
 
-    _diff.type = typeof changeType === "function" 
-      ? changeType(diff.before, diff.after, befor, after)
-      : changeType
+    try {
+      _diff.type = typeof changeType === "function" 
+        ? changeType(new ChangeContext(this, diff.path))
+        : changeType
+    
+      return _diff      
+    } catch (error) {
+      _diff.type = unclassified
+      return _diff
+    }
+  }
+
+  public resolvePath = (source: "before" | "after", objPath: ObjPath) => {
+    const cache = source === "before" ? this.beforeCache : this.afterCache
+
+    let value = this[source]
+    for (const key of objPath) {
+      const _value = Array.isArray(value) ? value[+key] : value[key]
+      if (_value === undefined && value.$ref) {
+        value = resolveRef(value, this[source], cache)
+        value = Array.isArray(value) ? value[+key] : value[key]
+      } else {
+        value = _value
+      }
+      if (value === undefined) {
+        break
+      }
+    }
+
+    return value.$ref ? resolveRef(value, this[source], cache) : value
+  }
   
-    return _diff
+  public getRenamedPath (objPath: ObjPath) {
+    const renamedPath = [...objPath]
+    let _path = this.renamedPath
+    for (let i = 0; i < objPath.length; i++) {
+      const key = objPath[i]
+      if (_path[key] === undefined) { break }
+      _path = _path[key]
+      if (_path[$renamed]) {
+        renamedPath[i] = _path[$renamed]
+      }
+    }
+    return renamedPath
   }
   
   public compareResult(diff: JsonDiff) {
+    if (diff.action === DiffAction.rename) {
+      setValueByPath(this.renamedPath, [ ...diff.path, diff.before, $renamed], diff.after)
+    }
     return super.compareResult(this.classifyDiff(diff))
   }
 
