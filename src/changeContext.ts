@@ -14,16 +14,16 @@ export class ChangeContext implements IChageContext {
     return this._engine.resolvePath("after", renamedPath)
   }
 
+  public get up() {
+    return (n = 1) => new ChangeContext(this._engine, this._path.slice(0,-n))
+  }
+
+  public get root() {
+    return new ChangeContext(this._engine, [])
+  }
+
   constructor(engine: ApiCompare, path: ObjPath) {
     this._engine = engine
     this._path = path
-  }
-
-  public up(n = 1) {
-    return new ChangeContext(this._engine, this._path.slice(0,-n))
-  }
-
-  public root() {
-    return new ChangeContext(this._engine, [])
   }
 }

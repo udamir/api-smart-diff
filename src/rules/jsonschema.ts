@@ -9,13 +9,13 @@ import {
 const maxClassifier: Rule = [
   breaking, 
   nonBreaking, 
-  (ctx) => breakingIf(ctx.before > ctx.after)
+  ({ before, after }) => breakingIf(before > after)
 ]
 
 const minClassifier: Rule = [
   breaking,
   nonBreaking,
-  (ctx) => breakingIf(ctx.before < ctx.after)
+  ({ before, after }) => breakingIf(before < after)
 ]
 
 const exclusiveClassifier: Rule = [
@@ -33,12 +33,10 @@ const booleanClassifier: Rule = [
 const multipleOfClassifier: Rule = [
   breaking,
   nonBreaking,
-  (ctx) => breakingIf(!!(ctx.before % ctx.after))
+  ({ before, after }) => breakingIf(!!(before % after))
 ]
 
-const nonBreakingIfDefault: DiffTypeFunc = (ctx) => {
-  return ctx.up(2).after?.properties[ctx.after]?.default !== undefined ? nonBreaking : breaking
-}
+const nonBreakingIfDefault: DiffTypeFunc = ({ after, up }) => up(2).after?.properties?.[after]?.default !== undefined ? nonBreaking : breaking
 
 export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/": rootRule,

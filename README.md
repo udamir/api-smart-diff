@@ -219,8 +219,8 @@ type Rule = [
 interface IChageContext {
   before: any // before value
   after: any // after value
+  root: IChageContext // get root Change context
   up: (n?: number) => IChageContext // get parent Change Context
-  root: () => IChageContext // get root Change context
 }
 
 ```

@@ -23,7 +23,7 @@ export interface IChageContext {
   before: any
   after: any
   up: (n?: number) => IChageContext
-  root: () => IChageContext
+  root: IChageContext
 }
 
 export type DiffTypeFunc = (ctx: IChageContext) => DiffType
