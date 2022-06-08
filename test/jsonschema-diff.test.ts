@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
-import { annotation, breaking, nonBreaking, unclassified } from "../src"
+import { annotation, breaking, nonBreaking } from "../src"
 
 const example = new ExampleResource("jsonschema.yaml", "JsonSchema")
 

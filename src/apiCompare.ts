@@ -1,5 +1,5 @@
 import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc, CompareResult } from "./types"
-import { buildPath, getPathMatchFunc, getPathRules, isEmptyObject, mergeValues, resolveRef, setValueByPath } from "./utils"
+import { getPathMatchFunc, getPathRules, isEmptyObject, mergeValues, PathPointer, resolveRef, setValueByPath } from "./utils"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
 import { allUnclassified, DiffAction, unclassified } from "./constants"
 import { JsonCompare } from "./jsonCompare"
@@ -29,7 +29,7 @@ export class ApiCompare extends JsonCompare<Diff> {
     }
   }
 
-  protected getMatchFunc(path: ObjPath): MatchFunc | undefined {
+  protected getMatchFunc(path: PathPointer): MatchFunc | undefined {
     return getPathMatchFunc(this.rules, path, this.before) || super.getMatchFunc(path)
   }
 
@@ -53,8 +53,8 @@ export class ApiCompare extends JsonCompare<Diff> {
     } 
   }
 
-  public dereference(source: "before" | "after", value: any, objPath: ObjPath): [any, () => void] {
-    const ref = "#" + buildPath(objPath)
+  public dereference(source: "before" | "after", value: any, objPath: PathPointer): [any, () => void] {
+    const ref = "#" + objPath.ref
 
     const [refs, cache] = source === "before" 
       ? [this.beforeRefs, this.beforeCache] 
@@ -154,10 +154,10 @@ export class ApiCompare extends JsonCompare<Diff> {
     return super.compareResult(this.classifyDiff(diff))
   }
 
-  public compareObjects(before: any, after: any, objPath: ObjPath, merged: any) {
+  public compareObjects(before: any, after: any, objPath: PathPointer, merged: any) {
     const { $ref: beforeRef, ...$before} = before
     const { $ref: afterRef, ...$after} = before
-    const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + buildPath(objPath)
+    const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + objPath.ref
 
     const compareCache = this.compareCache.get(compareRefsId)
     if (compareCache && (isEmptyObject($before) && isEmptyObject($after) || !beforeRef && !afterRef)) {
@@ -173,7 +173,7 @@ export class ApiCompare extends JsonCompare<Diff> {
     const result = super.compareObjects(_before, _after, objPath, merged)
 
     if (beforeRef && afterRef && isEmptyObject($before) && isEmptyObject($after)) {
-      const diffs = result.diffs.map((diff) => ({ ...diff, path: diff.path.slice(objPath.length) }))
+      const diffs = result.diffs.map((diff) => ({ ...diff, path: diff.path.slice(objPath.items.length) }))
       this.compareCache.set(compareRefsId, { result: { ...result, diffs }, merged })
     }
 

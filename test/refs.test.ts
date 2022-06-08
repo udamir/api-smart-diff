@@ -1,5 +1,4 @@
-import { addPatch, ExampleResource, replacePatch } from "./helpers"
-import { breaking } from "../src"
+import { addPatch, ExampleResource } from "./helpers"
 
 const example = new ExampleResource("externalref.yaml", "OpenApi3")
 

@@ -1,5 +1,5 @@
-import { ObjPath, JsonCompareOptions, MatchFunc, JsonDiff, CompareResult, JsonMergedMeta } from "./types"
-import { typeOf, replaced, unchanged, added, removed, renamed, buildPath, isEmptyObject } from "./utils"
+import { JsonCompareOptions, MatchFunc, JsonDiff, CompareResult, JsonMergedMeta } from "./types"
+import { typeOf, replaced, unchanged, added, removed, renamed, isEmptyObject, PathPointer } from "./utils"
 import { DiffAction, DIFF_META_KEY } from "./constants"
 
 type EnumCompareResult<D extends JsonDiff = JsonDiff> = { value: any, res: CompareResult<D>, diffs?: number }
@@ -40,18 +40,18 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     obj[this.diffKey][key] = meta
   }
 
-  private checkMatch(path: ObjPath, before: any, after: any, bKey: string | number, aKey: string | number): boolean {
+  private checkMatch(path: PathPointer, before: any, after: any, bKey: string | number, aKey: string | number): boolean {
     const matchFunc = this.getMatchFunc(path)
     return matchFunc ? matchFunc({
-      path,
+      path: path.items,
       before: { key: bKey, value: before[bKey], parent: before, source: this.before },
       after: { key: aKey, value: after[aKey], parent: after, source: this.after }
     }) : false
   }
 
-  protected getMatchFunc(path: ObjPath): MatchFunc | undefined {
+  protected getMatchFunc(path: PathPointer): MatchFunc | undefined {
     // TODO: support masked path
-    const strPath = buildPath(path)
+    const strPath = path.ref // buildPath(path)
     return this.matchRules[strPath]
   }
 
@@ -120,7 +120,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     return res as T
   }
 
-  public compareAny(before: any, after: any, path: ObjPath = [], merged: any = this._merged, key: string | number = "value"): T {
+  public compareAny(before: any, after: any, path = new PathPointer(), merged: any = this._merged, key: string | number = "value"): T {
     if (typeOf(before) !== typeOf(after)) {
       merged[key] = after
       return this.compareResult(replaced(path, before, after))
@@ -143,7 +143,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     }
   }
 
-  public compareObjects(before: any, after: any, path: ObjPath, merged: any): T {
+  public compareObjects(before: any, after: any, path: PathPointer, merged: any): T {
     const result: { [key: string]: CompareResult<D> } = {}
 
     if (isEmptyObject(before) && isEmptyObject(after)) {
@@ -163,19 +163,19 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
 
       if (afterKey === undefined) {
         // deleted key
-        const diff = removed([...path, key], before[key])
+        const diff = removed(path.childPath(key), before[key])
         merged[key] = this.mergeValue(diff)
         result[key] = this.compareResult(diff)
       } else {
         // updated key value
-        result[key] = this.compareAny(before[key], after[afterKey], [...path, key], merged, afterKey)
+        result[key] = this.compareAny(before[key], after[afterKey], path.childPath(key), merged, afterKey)
         afterKeys.delete(afterKey)
       } 
     }
 
     for (const key of afterKeys) {
       // added key
-      const diff = added([...path, key], after[key])
+      const diff = added(path.childPath(key), after[key])
       merged[key] = this.mergeValue(diff)
       result[key] = this.compareResult(diff)
     }
@@ -183,7 +183,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     return this.mergeResults(result, merged)
   }
 
-  public compareArrays(before: any[], after: any[], path: ObjPath, merged: any): T {
+  public compareArrays(before: any[], after: any[], path: PathPointer, merged: any): T {
     if (before.length === 0 && after.length === 0) {
       return this.compareResult(unchanged(path, before))
     }
@@ -196,7 +196,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     const afterKeys = new Set(after.keys())
 
     for (const i of before.keys()) {
-      const itemPath = [...path, i]
+      const itemPath = path.childPath(i)
       const j = matchFunc ? [...afterKeys].find((k) => this.checkMatch(path, before, after, i, k)) : i
       if (j === undefined || j >= after.length) {
         const diff = removed(itemPath, before[i])
@@ -210,7 +210,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
 
     let i = before.length
     for (const key of afterKeys) {
-      const diff = added([...path, i], after[key])
+      const diff = added(path.childPath(i), after[key])
       merged[i] = this.mergeValue(diff)
       result[i++] = this.compareResult(diff)
     }
@@ -218,7 +218,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     return this.mergeResults(result, merged, true)
   }
 
-  public compareEnums(before: any[], after: any[], path: ObjPath, merged: any): T {
+  public compareEnums(before: any[], after: any[], path: PathPointer, merged: any): T {
     const result: { [key: number]: CompareResult<D> } = {}
 
     const itemsDiffs = []
@@ -231,7 +231,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
       for (const j of after.keys()) {
         if (afterEquals.has(j)) { continue }
         const _merged: any = {}
-        const res = this.compareAny(before[i], after[j], [...path, i], _merged)
+        const res = this.compareAny(before[i], after[j], path.childPath(i), _merged)
         if (!res.diffs.length) {
           afterEquals.add(j)
           beforeEquals.add(i)
@@ -277,7 +277,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
         }
 
         if (!beforeEquals.has(i)) {
-          const diff = removed([...path, i], before[i])
+          const diff = removed(path.childPath(i), before[i])
           merged[i] = this.mergeValue(diff)
           result[i] = this.compareResult(diff)
         }
@@ -287,7 +287,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     let i = before.length
     for (let j of after.keys()) {
       if (!afterEquals.has(j)) {
-        const diff = added([...path, i], after[j])
+        const diff = added(path.childPath(i), after[j])
         merged[i] = this.mergeValue(diff)
         result[i++] = this.compareResult(diff)
       }

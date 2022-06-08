@@ -1,14 +1,48 @@
 import { Rule, MatchFunc, Rules, DiffType, ObjPath, DiffTypeFunc } from "./types"
 import { breaking, nonBreaking, DiffAction } from "./constants"
 
+export type PathItem = string | number
+
+export class PathPointer implements Iterable<PathItem> {
+  public escapedKey: string
+  public items: PathItem[] = []
+
+  public get ref(): string {
+    return this.parent ? this.parent.ref + "/" + this.escapedKey : this.escapedKey
+  }
+
+  [Symbol.iterator]() : Iterator<PathItem> {
+    let i = 0
+    return {
+      next: () => ({ 
+        done: !(i < this.items.length),
+        value: this.items[i++]
+      })
+    }
+  }
+
+  constructor(public key?: string | number, public parent?: PathPointer) {
+    if (key === undefined) {
+      this.escapedKey = ""
+    } else {
+      this.escapedKey = typeof key === "string" ? key.replace(new RegExp("~1", "g"), "/") : String(key)
+      this.items = parent ? [...parent.items, key] : [key]
+    }
+  }
+
+  public childPath(key: string | number): PathPointer {
+    return new PathPointer(key, this)
+  }
+}
+
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
 export const breakingIfAfterTrue: DiffTypeFunc = ({ after }): DiffType => breakingIf(after)
 
-export const added = (path: ObjPath, after: any) => ({ path, after, action: DiffAction.add })
-export const removed = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.remove })
-export const replaced = (path: ObjPath, before: any, after: any) => ({ path, before, after, action: DiffAction.replace })
-export const renamed = (path: ObjPath, before: any, after: any) => ({ path, before, after, action: DiffAction.rename })
-export const unchanged = (path: ObjPath, before: any) => ({ path, before, action: DiffAction.test })
+export const added = (path: PathPointer, after: any) => ({ path: path.items, after, action: DiffAction.add })
+export const removed = (path: PathPointer, before: any) => ({ path: path.items, before, action: DiffAction.remove })
+export const replaced = (path: PathPointer, before: any, after: any) => ({ path: path.items, before, after, action: DiffAction.replace })
+export const renamed = (path: PathPointer, before: any, after: any) => ({ path: path.items, before, after, action: DiffAction.rename })
+export const unchanged = (path: PathPointer, before: any) => ({ path: path.items, before, action: DiffAction.test })
 
 export const isEmptyObject = (obj:any) => {
   for (const key in obj)
@@ -56,8 +90,8 @@ export const getPathRules = (rules: Rules, path: ObjPath, source: any): Rules | 
   return _rules
 }
 
-export const getPathMatchFunc = (rules: Rules, path: ObjPath, source: any): MatchFunc | undefined => {
-  const _rules = getPathRules(rules, path, source)
+export const getPathMatchFunc = (rules: Rules, path: PathPointer, source: any): MatchFunc | undefined => {
+  const _rules = getPathRules(rules, path.items, source)
   return (_rules && !Array.isArray(_rules)) ? _rules["#"] : undefined
 }
 
