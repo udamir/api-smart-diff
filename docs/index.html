@@ -237,6 +237,10 @@ required:
       <option value="json">json</option>
       <option value="js">js</option>
     </select>
+    <br>
+    <br>
+    <label for="format">Resolve unchanged refs (on merge):</label>
+    <input type="checkbox" id="resolveUnchangedRefs">
   </span>
 
   <span id="result" style='float: left; width: 33%'>
@@ -258,8 +262,9 @@ required:
       const y = parseEditor(after)
 
       const rules = document.getElementById("rules").value;
+      const resolveUnchangedRefs = document.getElementById("resolveUnchangedRefs").checked;
       switch (type) {
-        case "merge": return ApiSmartDiff.apiMerge(x, y, { rules })
+        case "merge": return ApiSmartDiff.apiMerge(x, y, { rules, resolveUnchangedRefs })
         case "diff": return ApiSmartDiff.apiDiff(x, y, { rules })
         case "diffTree": return ApiSmartDiff.apiDiffTree(x, y, { rules })
       }

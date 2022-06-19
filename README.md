@@ -154,6 +154,7 @@ The apiDiff function calculates the difference between two objects.
 
 ```ts
 type MergeOptions<T> = CompareOptions & {
+  resolveUnchangedRefs?: boolean
   arrayMeta?: boolean
   formatMergedMeta?: (diff: T) => any
   metaKey?: string | symbol
@@ -162,6 +163,7 @@ type MergeOptions<T> = CompareOptions & {
 #### *Arguments*
 Additional to compare options:
 - `arrayMeta` - inject meta to arrays for items changes, default `false`
+- `resolveUnchangedRefs` - resolve refs even if no changes, default `false`
 - `metaKey` - key for diff metadata, default `$diff`
 - `formatMergedMeta` - custom formatting function for meta
 

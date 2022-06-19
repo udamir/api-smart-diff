@@ -29,7 +29,7 @@ describe("Test refs in openapi 3", () => {
       }
     }
     
-    const merged = example.merge(example.clone())
+    const merged = example.merge(example.clone(), { resolveUnchangedRefs: true })
     expect(merged.components.schemas.Inventory.properties.extra_info).toMatchObject(Info)
   })
 

@@ -16,11 +16,13 @@ export class ApiCompare extends JsonCompare<Diff> {
   public afterCache: Map<string, any> = new Map()
   public compareCache: Map<string, { result: CompareResult<Diff>, merged: any }> = new Map()
   public renamedPath: any = {}
+  public resolveUnchangedRefs: boolean
 
   constructor(public before: any, public after: any, options: ApiDiffOptions = {}) {
     super(before, after, options)
     this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules || {}
     this.formatMergedMeta = options.formatMergedMeta || this._formatMergeMeta.bind(this)
+    this.resolveUnchangedRefs = options.resolveUnchangedRefs || false
     
     const externalRefs = options.externalRefs || {}
     for (const ref of Object.keys(externalRefs)) {
@@ -161,6 +163,9 @@ export class ApiCompare extends JsonCompare<Diff> {
 
     const compareCache = this.compareCache.get(compareRefsId)
     if (compareCache && (isEmptyObject($before) && isEmptyObject($after) || !beforeRef && !afterRef)) {
+      if (!compareCache.result.diffs.length && !this.resolveUnchangedRefs) {
+        return super.compareObjects(before, after, objPath, merged)
+      } 
       mergeValues(merged, compareCache.merged)
       const diffs = compareCache.result.diffs.map((diff) => ({ ...diff, path: [...objPath, ...diff.path] }))
       return { ...compareCache.result, diffs }
@@ -169,8 +174,10 @@ export class ApiCompare extends JsonCompare<Diff> {
     const [_before, clearBeforeCache ] = this.dereference("before", before, objPath)
     const [_after, clearAfterCache] = this.dereference("after", after, objPath)
 
+    const _merged = Array.isArray(merged) ? [] : {}
+
     // compare $before and $after
-    const result = super.compareObjects(_before, _after, objPath, merged)
+    let result = super.compareObjects(_before, _after, objPath, merged)
 
     if (beforeRef && afterRef && isEmptyObject($before) && isEmptyObject($after)) {
       const diffs = result.diffs.map((diff) => ({ ...diff, path: diff.path.slice(objPath.items.length) }))
@@ -179,6 +186,17 @@ export class ApiCompare extends JsonCompare<Diff> {
 
     clearAfterCache()
     clearBeforeCache()
+
+    if (beforeRef && beforeRef === afterRef && !result.diffs.length && !this.resolveUnchangedRefs) {
+      if (Array.isArray(merged)) {
+        merged.length = 0
+      } else {
+        Object.keys(merged).forEach(key => delete merged[key]);
+      }
+      result = super.compareObjects(before, after, objPath, merged)
+    } else {
+      mergeValues(merged, _merged)
+    }
 
     return result
   }
