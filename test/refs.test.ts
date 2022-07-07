@@ -1,4 +1,4 @@
-import { addPatch, ExampleResource } from "./helpers"
+import { addPatch, ExampleResource, replacePatch } from "./helpers"
 
 const example = new ExampleResource("externalref.yaml", "OpenApi3")
 
@@ -31,6 +31,21 @@ describe("Test refs in openapi 3", () => {
     
     const merged = example.merge(example.clone(), { resolveUnchangedRefs: true })
     expect(merged.components.schemas.Inventory.properties.extra_info).toMatchObject(Info)
+  })
+
+})
+
+
+const example2 = new ExampleResource("сircularref.yaml", "JsonSchema")
+
+describe("Test circular refs", () => {
+  it("changes circular refs should be merged", () => {
+    const path = ["definitions", "baz", "properties", "new", "$ref"]
+    const value = "#/definitions/baz"
+
+    const after = example2.clone([replacePatch(path, value)])
+    const diff = example2.diff(after)
+    expect(diff.length).toEqual(2)
   })
 
 })

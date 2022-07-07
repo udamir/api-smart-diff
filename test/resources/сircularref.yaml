@@ -1,0 +1,12 @@
+type: object
+properties:
+  baz:
+    $ref: "#/definitions/baz"
+  new:
+    $ref: "#"
+definitions:
+  baz:
+    properties:
+      new:
+        $ref: "#"
+    type: object

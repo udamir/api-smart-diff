@@ -69,7 +69,7 @@ export class ApiCompare extends JsonCompare<Diff> {
       refs.delete(ref)
     }
 
-    if (refs.has(value.$ref)) {
+    if (refs.has(value.$ref) || value.$ref === "#") {
       return [value, clearCache]
     }
 
@@ -158,7 +158,7 @@ export class ApiCompare extends JsonCompare<Diff> {
 
   public compareObjects(before: any, after: any, objPath: PathPointer, merged: any) {
     const { $ref: beforeRef, ...$before} = before
-    const { $ref: afterRef, ...$after} = before
+    const { $ref: afterRef, ...$after} = after
     const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + objPath.ref
 
     const compareCache = this.compareCache.get(compareRefsId)
