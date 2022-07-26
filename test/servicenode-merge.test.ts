@@ -1,4 +1,4 @@
-import { annotation, breaking, DiffAction, nonBreaking, serviceNodeRules } from "../src"
+import { annotation, breaking, DiffAction, nonBreaking, serviceNodeRules, unclassified } from "../src"
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 
 const metaKey = Symbol("diff")
@@ -53,6 +53,16 @@ describe("Test service-node merge", () => {
     expect(meta).toMatchObject({ 
       0: { action: DiffAction.remove, type: breaking },
       11: { action: DiffAction.add, type: nonBreaking } 
+    })
+  })
+
+  it("should be replace change on mediaType change", () => {
+    const after = exampleResource.clone([replacePatch(["children", 0, "data", "responses", 0, "contents", 0, "mediaType"], "*/*")])
+    const merged = exampleResource.merge(after, { metaKey, arrayMeta: true })
+
+    const meta = merged.children[0].data.responses[0].contents[0][metaKey]
+    expect(meta).toMatchObject({ 
+      mediaType: { action: DiffAction.replace, type: unclassified },
     })
   })
 })

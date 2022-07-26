@@ -19,10 +19,25 @@ const childrenArray = (rules: Rules) => matchRule(rules, ({ before: { value: b }
   }
 })
 
+export const contentMediaTypeRules = (rules: Rules): Rules => matchRule(rules, ({ before, after }) => {
+  const [ afterMediaType = "" ] = String(after.value.mediaType).split(";")
+  const [ beforeMediaType = "" ] = String(before.value.mediaType).split(";")
+
+  const [ afterType, afterSubType ] = afterMediaType.split("/")
+  const [ beforeType, beforeSubType ] = beforeMediaType.split("/")
+
+  if (afterType !== beforeType && afterType !== "*" && beforeType !== "*") { return false }
+  if (afterSubType !== beforeSubType && afterSubType !== "*" && beforeSubType !== "*") { return false }
+
+  return true
+})
+
 const paramRules: Rules = {
   '/name': [nonBreaking, breaking, breaking],
   '/style': allUnclassified,
   '/description': allAnnotation,
+  '/examples': allAnnotation,
+  '/schema': jsonSchemaRules(allBreaking),
   '/explode': allUnclassified,
   '/required': [breaking, nonBreaking, breakingIfAfterTrue],
   '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
@@ -33,11 +48,11 @@ const paramsRules: Rules = {
   '/*': paramRules
 }
 
-const contentsRules: Rules = {
+const contentsRules: Rules = contentMediaTypeRules({
   '/': addNonBreaking, 
   '/*': {
-    '/': [nonBreaking, breaking, breaking],
-    '/mediaType': [nonBreaking, breaking, breaking],
+    '/': [nonBreaking, breaking, unclassified],
+    '/mediaType': [nonBreaking, breaking, unclassified],
     '/schema': jsonSchemaRules(allBreaking),
     '/examples': objArray("key", {
       "/": allAnnotation,
@@ -45,7 +60,7 @@ const contentsRules: Rules = {
     }),
     '/encodings': [nonBreaking, breaking, breaking],
   }
-}
+})
 
 const requestRules: Rules = {
   '/path': objArray("name", paramsRules),
@@ -61,7 +76,7 @@ const requestRules: Rules = {
   '/cookie': objArray("name", paramsRules),
   '/body': {
     '/': [nonBreaking, breaking, breaking],
-    '/contents': objArray("mediaType", contentsRules),
+    '/contents': contentsRules,
     '/required': [breaking, nonBreaking, breakingIfAfterTrue],
     '/description': allAnnotation
   },
@@ -73,6 +88,7 @@ const headersRules: Rules = {
     '/name': [nonBreaking, breaking, breaking],
     '/style': allUnclassified,
     '/description': allAnnotation,
+    '/schema': jsonSchemaRules(allBreaking),
     '/explode': allUnclassified,
     '/required': [breaking, nonBreaking, breakingIfAfterTrue],
     '/deprecated': [breaking, nonBreaking, breakingIfAfterTrue],
@@ -84,7 +100,7 @@ const responsesRules: Rules = {
   "/*": {
     "/": addNonBreaking,
     '/code': allUnclassified,
-    '/contents': objArray("mediaType", contentsRules),
+    '/contents': contentsRules,
     '/headers': objArray("name", headersRules),
     '/description': allAnnotation
   }
