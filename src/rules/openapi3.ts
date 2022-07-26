@@ -13,6 +13,19 @@ const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) =>
   return beforePath === afterPath
 })
 
+const contentMediaTypeRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
+  const [ afterMediaType = "" ] = String(after.key).split(";")
+  const [ beforeMediaType = "" ] = String(before.key).split(";")
+
+  const [ afterType, afterSubType ] = afterMediaType.split("/")
+  const [ beforeType, beforeSubType ] = beforeMediaType.split("/")
+
+  if (afterType !== beforeType && afterType !== "*" && beforeType !== "*") { return false }
+  if (afterSubType !== beforeSubType && afterSubType !== "*" && beforeSubType !== "*") { return false }
+
+  return true
+})
+
 const serversRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/*": {
@@ -40,6 +53,7 @@ const parametersRules: Rules = {
     "/": [nonBreaking, breaking, breaking],
     "/name": [nonBreaking, breaking, (ctx) => ctx.up().before?.in === "path" ? nonBreaking : breaking ],
     "/in": [nonBreaking, breaking, breaking],
+    "/schema": jsonSchemaRules(allBreaking),
     "/description": allAnnotation,
     "/required": [breaking, nonBreaking, breakingIfAfterTrue],
     "/deprecated": [breaking, nonBreaking, breakingIfAfterTrue],
@@ -67,16 +81,16 @@ const encodingRules: Rules = {
   },
 }
 
-const contentRules: Rules = {
+const contentRules: Rules = contentMediaTypeRules({
   "/": [nonBreaking, breaking, breaking],
   "/*": {
-    "/": [nonBreaking, breaking, breaking],
+    "/": [nonBreaking, breaking, unclassified],
     "/schema": jsonSchemaRules(allBreaking),
     "/example": allAnnotation,
     "/examples": allAnnotation,
     "/encoding": encodingRules,
   },
-}
+})
 
 const requestBodiesRules: Rules = {
   "/": [nonBreaking, breaking, breaking],

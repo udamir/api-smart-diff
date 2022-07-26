@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource } from "./helpers"
-import { DiffAction, nonBreaking } from "../src"
+import { annotation, DiffAction, nonBreaking, unclassified } from "../src"
 
 const exampleResource = new ExampleResource("petstore.yaml", "OpenApi3")
 
@@ -55,5 +55,22 @@ describe("Test openapi 3 diff", () => {
     const merged = exampleResource.merge(after)
     expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}"]: { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking } })
     expect(merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array[0]).toMatchObject({ action: DiffAction.replace, replaced: "name", type: nonBreaking })
+  })
+
+  it("should add rename diff on media type rename", () => {
+    const after = exampleResource.clone()
+    after.paths["/pet"].put.requestBody.content["application/*"] = after.paths["/pet"].put.requestBody.content["application/json"]
+    delete after.paths["/pet"].put.requestBody.content["application/json"]
+
+    const merged = exampleResource.merge(after)
+    expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({ ["application/*"]: { action: DiffAction.rename, replaced: "application/json", type: unclassified } })
+  })
+
+  it("should classify operation parameter schema change", () => {
+    const after = exampleResource.clone()
+    after.paths["/pet/findByStatus"].get.parameters[0].schema.description = "Status list"
+
+    const merged = exampleResource.merge(after)
+    expect(merged.paths["/pet/findByStatus"].get.parameters[0].schema.$diff).toMatchObject({ description: { action: DiffAction.add, type: annotation } })
   })
 })
