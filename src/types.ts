@@ -56,8 +56,6 @@ export type Rules = {
   "#"?: MatchFunc
 }
 
-export type BaseRulesType = "OpenApi3" | "AsyncApi2" | "JsonSchema"
-
 export type JsonCompareOptions<T extends JsonDiff = JsonDiff> = {
   trimStrings?: boolean
   caseSensitive?: boolean
@@ -79,7 +77,7 @@ export type CompareResult<T extends JsonDiff = JsonDiff> = {
 
 export type ApiDiffOptions = JsonCompareOptions & {
   resolveUnchangedRefs?: boolean
-  rules?: Rules | BaseRulesType
+  rules?: Rules
   externalRefs?: {
     [key: string]: any
   }

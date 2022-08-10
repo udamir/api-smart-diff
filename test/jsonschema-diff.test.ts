@@ -1,7 +1,7 @@
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 import { annotation, breaking, nonBreaking } from "../src"
 
-const example = new ExampleResource("jsonschema.yaml", "JsonSchema")
+const example = new ExampleResource("jsonschema.yaml")
 
 describe("Test JsonSchema diff", () => {
   it("replace of 'title' property should be 'annotation' change", () => {

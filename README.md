@@ -38,7 +38,7 @@ npm install api-smart-diff --save
 ```ts
 import { apiDiff } from 'api-smart-diff'
 
-const diffs = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
+const diffs = apiDiff(oldSpec, newSpec)
 // {
 //   action: "add" | "remove" | "replace" | "rename",
 //   after: 'value in newSpec',
@@ -47,7 +47,7 @@ const diffs = apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
 //   type: "annotation" | "breaking" | "non-breaking" | "unclassified"
 // }
 
-const merged = apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
+const merged = apiMerge(oldSpec, newSpec)
 
 ```
 
@@ -62,8 +62,8 @@ A browser version of `api-smart-diff` is also available via CDN:
 Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiSmartDiff`.
 ```HTML
 <script>
-  var diffs = ApiSmartDiff.apiDiff(oldSpec, newSpec, { rules: "OpenApi3" })
-  var merged = ApiSmartDiff.apiMerge(oldSpec, newSpec, { rules: "OpenApi3" })
+  var diffs = ApiSmartDiff.apiDiff(oldSpec, newSpec)
+  var merged = ApiSmartDiff.apiMerge(oldSpec, newSpec)
 </script>
 ```
 
@@ -72,10 +72,10 @@ Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiS
 Package provides the following public functions:
 
 `apiDiff (before, after, options?: CompareOptions): Array<Diff>`
-> Calculates the difference list between two objects and classify difference in accordinance with specified rules: OpenApi3, AsyncApi2, JsonSchema.
+> Calculates the difference list between two objects and classify difference in accordinance with before document type: OpenApi3, AsyncApi2, JsonSchema.
 
 `apiDiffTree (before, after, options?: CompareOptions): object`
-> Calculates the difference tree between two objects and classify difference in accordinance with specified rules: OpenApi3, AsyncApi2, JsonSchema.
+> Calculates the difference tree between two objects and classify difference in accordinance with before document type: OpenApi3, AsyncApi2, JsonSchema.
 
 `apiMerge (before, after, options?: MergeOptions): object`
 > Merge two objects and inject difference as meta data. 
@@ -88,7 +88,7 @@ The apiDiff function calculates the difference between two objects.
 
 ```ts
 type CompareOptions = {
-  rules?: Rules | "OpenApi3" | "AsyncApi2" | "JsonSchema" 
+  rules?: Rules
   trimStrings?: boolean
   caseSensitive?: boolean
   strictArrays?: boolean
@@ -96,7 +96,7 @@ type CompareOptions = {
 }
 ```
 #### *Arguments*
-- `rules` - match and classification rules, custom or predefined.
+- `rules` - custom match and classification rules
 - `trimString` - ignore spaces in matching, default `false`
 - `caseSensitive` - ignore case in matching, default `false`
 - `strictArrays` - use strict match algorithm for array items, default `false`
@@ -117,7 +117,7 @@ type Diff = {
 
 #### *Example*
 ```ts
-const diffs = apiDiff(before, after, { rules: "OpenApi3" })
+const diffs = apiDiff(before, after)
 if (diffs.length) {
   // do something with the changes
 }
@@ -142,7 +142,7 @@ type Diff = {
 
 #### *Example*
 ```ts
-const diff = apiDiffTree(before, after, { rules: "OpenApi3" })
+const diff = apiDiffTree(before, after)
 // do something with the changes object
 ```
 
@@ -188,7 +188,7 @@ type MergedArrayMeta = {
 #### *Example*
 ```ts
 const apiKey = Symbol("diff")
-const merged = apiMerge(before, after, { rules: "OpenApi3", apiKey })
+const merged = apiMerge(before, after, { apiKey })
 
 // do something with merged object
 ```

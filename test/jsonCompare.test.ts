@@ -2,7 +2,7 @@ import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 import { DiffAction, DIFF_META_KEY } from "../src/constants"
 import { JsonCompare } from "../src/jsonCompare"
 
-const example = new ExampleResource("jsonschema.yaml", "JsonSchema")
+const example = new ExampleResource("jsonschema.yaml")
 
 describe("Test 'compare' method in JsonCompare", () => {
   it("should be 'replace' diff on value change", () => {

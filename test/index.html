@@ -53,7 +53,7 @@
     const y = JSON.parse(JSON.stringify(x))
     y.info.title = "aaaaa"
 
-    const diff = ApiSmartDiff.syncApiDiff(x, y, "OpenApi3")
+    const diff = ApiSmartDiff.apiDiff(x, y)
     console.log(diff)
   </script>
 </body>

@@ -1,8 +1,8 @@
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 import { annotation, breaking, DiffAction, DIFF_META_KEY, getValueByPath, nonBreaking, unclassified } from "../src"
 
-const exampleBefore = new ExampleResource("schema-before.yaml", "JsonSchema")
-const exapmleAfter = new ExampleResource("schema-after.yaml", "JsonSchema")
+const exampleBefore = new ExampleResource("schema-before.yaml")
+const exapmleAfter = new ExampleResource("schema-after.yaml")
 
 describe("Test JsonSchema difftree", () => {
   const metaKey = DIFF_META_KEY
@@ -60,7 +60,7 @@ describe("Test JsonSchema difftree", () => {
   })
 })
 
-const example2 = new ExampleResource("jsonschema.yaml", "JsonSchema")
+const example2 = new ExampleResource("jsonschema.yaml")
 
 describe("Test Jsonschema diffTree options", () => {
   const metaKey = DIFF_META_KEY

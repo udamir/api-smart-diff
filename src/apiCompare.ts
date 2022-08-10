@@ -1,4 +1,4 @@
-import { Diff, ObjPath, BaseRulesType, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc, CompareResult } from "./types"
+import { Diff, ObjPath, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc, CompareResult } from "./types"
 import { getPathMatchFunc, getPathRules, isEmptyObject, mergeValues, PathPointer, resolveRef, setValueByPath } from "./utils"
 import { asyncApi2Rules, jsonSchemaRules, openapi3Rules } from "./rules"
 import { allUnclassified, DiffAction, unclassified } from "./constants"
@@ -20,7 +20,7 @@ export class ApiCompare extends JsonCompare<Diff> {
 
   constructor(public before: any, public after: any, options: ApiDiffOptions = {}) {
     super(before, after, options)
-    this.rules = typeof options.rules === "string" ? this.getBaseRules(options.rules) : options.rules || {}
+    this.rules = options.rules || this.calcApiRules(before)
     this.formatMergedMeta = options.formatMergedMeta || this._formatMergeMeta.bind(this)
     this.resolveUnchangedRefs = options.resolveUnchangedRefs || false
     
@@ -79,15 +79,12 @@ export class ApiCompare extends JsonCompare<Diff> {
     return [resolveRef(value, this[source], cache), clearCache]
   }
 
-  private getBaseRules (name: BaseRulesType): Rules {
-    switch (name) {
-      case "OpenApi3":
-        return openapi3Rules
-      case "AsyncApi2":
-        return asyncApi2Rules
-      case "JsonSchema":
-        return jsonSchemaRules()
-    }
+  private calcApiRules (data: any): Rules {
+    if (typeof data !== "object" || !data) { return jsonSchemaRules() }
+  
+    if (/3.+/.test(data?.openapi || "")) return openapi3Rules
+    if (/2.+/.test(data?.asyncapi || "")) return asyncApi2Rules
+    return jsonSchemaRules()
   }
 
   public classifyDiff (diff: JsonDiff): Diff {

@@ -2,8 +2,8 @@ import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 import { annotation, breaking, DiffAction, getValueByPath, nonBreaking, unclassified } from "../src"
 
 const metaKey = Symbol("diff")
-const exampleBefore = new ExampleResource("schema-before.yaml", "JsonSchema")
-const exapmleAfter = new ExampleResource("schema-after.yaml", "JsonSchema")
+const exampleBefore = new ExampleResource("schema-before.yaml")
+const exapmleAfter = new ExampleResource("schema-after.yaml")
 
 describe("Test JsonSchema merge", () => {
   it("should merge 2 jsonschema correctly", () => {
@@ -60,7 +60,7 @@ describe("Test JsonSchema merge", () => {
   })
 })
 
-const example2 = new ExampleResource("jsonschema.yaml", "JsonSchema")
+const example2 = new ExampleResource("jsonschema.yaml")
 
 describe("Test Jsonschema merge options", () => {
   it("should be 'annotation' change in meta on replace of 'title' property", () => {

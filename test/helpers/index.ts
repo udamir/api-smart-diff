@@ -3,14 +3,14 @@ import yaml from "js-yaml"
 import path from "path"
 import fs from "fs"
 
-import { apiDiff, apiMerge, BaseRulesType, ObjPath, Rules, apiDiffTree, ApiDiffOptions } from "../../src"
+import { apiDiff, apiMerge, ObjPath, Rules, apiDiffTree, ApiDiffOptions } from "../../src"
 import { buildPath, findExternalRefs, getValueByPath, parsePath } from "../../src/utils"
 
 export class ExampleResource {
   private res: any = {}
   public externalSources: any = {}
 
-  constructor(private filename: string, public rules: BaseRulesType | Rules) {
+  constructor(private filename: string, public rules?: Rules) {
     const resPath = path.join(__dirname, "../resources/", this.filename)
     const data = fs.readFileSync(resPath, "utf8")
     if (new RegExp(".(yaml|YAML|yml|YML)$", "g").test(filename)) {

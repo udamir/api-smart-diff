@@ -1,7 +1,7 @@
 import { addPatch, ExampleResource } from "./helpers"
 import { annotation, DiffAction, nonBreaking, unclassified } from "../src"
 
-const exampleResource = new ExampleResource("petstore.yaml", "OpenApi3")
+const exampleResource = new ExampleResource("petstore.yaml")
 
 describe("Test openapi 3 diff", () => {
   it("add servers should be non-breaking change", () => {

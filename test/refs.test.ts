@@ -1,6 +1,6 @@
 import { addPatch, ExampleResource, replacePatch } from "./helpers"
 
-const example = new ExampleResource("externalref.yaml", "OpenApi3")
+const example = new ExampleResource("externalref.yaml")
 
 describe("Test refs in openapi 3", () => {
   it("all external sources should be found", () => {
@@ -35,8 +35,7 @@ describe("Test refs in openapi 3", () => {
 
 })
 
-
-const example2 = new ExampleResource("сircularref.yaml", "JsonSchema")
+const example2 = new ExampleResource("сircularref.yaml")
 
 describe("Test circular refs", () => {
   it("changes circular refs should be merged", () => {
