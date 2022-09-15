@@ -13,6 +13,10 @@ const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) =>
   return beforePath === afterPath
 })
 
+const paramArrayRules = (rules: Rules) => matchRule(rules, ({ before: { value: b }, after: { value: a } }) => {
+  return b.in === a.in && (b.in === "path" || b.name === a.name)
+})
+
 const contentMediaTypeRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
   const [ afterMediaType = "" ] = String(after.key).split(";")
   const [ beforeMediaType = "" ] = String(before.key).split(";")
@@ -47,7 +51,7 @@ const serversRules: Rules = {
   },
 }
 
-const parametersRules: Rules = {
+const parametersRules: Rules = paramArrayRules({
   "/": [nonBreaking, breaking, breaking],
   "/*": {
     "/": [nonBreaking, breaking, breaking],
@@ -58,7 +62,7 @@ const parametersRules: Rules = {
     "/required": [breaking, nonBreaking, breakingIfAfterTrue],
     "/deprecated": [breaking, nonBreaking, breakingIfAfterTrue],
   },
-}
+})
 
 const headersRules: Rules = {
   "/": [nonBreaking, breaking, breaking],

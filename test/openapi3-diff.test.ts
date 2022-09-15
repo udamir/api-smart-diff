@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource } from "./helpers"
-import { annotation, DiffAction, nonBreaking, unclassified } from "../src"
+import { annotation, breaking, DiffAction, nonBreaking, unclassified } from "../src"
 
 const exampleResource = new ExampleResource("petstore.yaml")
 
@@ -64,6 +64,17 @@ describe("Test openapi 3 diff", () => {
 
     const merged = exampleResource.merge(after)
     expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({ ["application/*"]: { action: DiffAction.rename, replaced: "application/json", type: unclassified } })
+  })
+
+  it("should not add rename diff on query parameter name change", () => {
+    const after = exampleResource.clone()
+    after.paths["/user/login"].get.parameters[0].name = "login"
+
+    const merged = exampleResource.merge(after)
+    expect(merged.paths["/user/login"].get.$diff).toMatchObject({ parameters: { array: {
+      0: { action: DiffAction.remove, type: breaking },
+      2: { action: DiffAction.add, type: nonBreaking }
+    }}})
   })
 
   it("should classify operation parameter schema change", () => {
