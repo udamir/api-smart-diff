@@ -33,6 +33,7 @@ export const contentMediaTypeRules = (rules: Rules): Rules => matchRule(rules, (
 })
 
 const paramRules: Rules = {
+  '/': addNonBreaking, 
   '/name': [nonBreaking, breaking, breaking],
   '/style': allUnclassified,
   '/description': allAnnotation,
@@ -85,6 +86,7 @@ const requestRules: Rules = {
 const headersRules: Rules = {
   '/': allUnclassified,
   '/*': {
+    "/": addNonBreaking,
     '/name': [nonBreaking, breaking, breaking],
     '/style': allUnclassified,
     '/description': allAnnotation,

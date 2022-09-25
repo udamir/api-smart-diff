@@ -233,6 +233,7 @@ required:
       <option value="JsonSchema">JsonSchema</option>
       <option value="OpenApi3">OpenApi3</option>
       <option value="AsyncApi2">AsyncApi2</option>
+      <option value="ServiceNode">ServiceNode</option>
     </select>
     <br>
     <br>
@@ -266,7 +267,8 @@ required:
       const x = parseEditor(before)
       const y = parseEditor(after)
 
-      const rules = document.getElementById("rules").value;
+      let rules = document.getElementById("rules").value;
+      rules = rules === "ServiceNode" ? ApiSmartDiff.serviceNodeRules : rules
       const resolveUnchangedRefs = document.getElementById("resolveUnchangedRefs").checked;
       switch (type) {
         case "merge": return ApiSmartDiff.apiMerge(x, y, { rules, resolveUnchangedRefs })
