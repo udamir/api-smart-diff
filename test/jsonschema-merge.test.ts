@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
-import { annotation, breaking, DiffAction, getValueByPath, nonBreaking, unclassified } from "../src"
+import { annotation, breaking, deprecate, DiffAction, getValueByPath, nonBreaking, unclassified } from "../src"
 
 const metaKey = Symbol("diff")
 const exampleBefore = new ExampleResource("schema-before.yaml")
@@ -33,7 +33,7 @@ describe("Test JsonSchema merge", () => {
     })
     expect(merged.properties.email[metaKey]).toMatchObject({ 
       default: { type: breaking, action: DiffAction.replace },
-      deprecated: { type: nonBreaking, action: DiffAction.replace },
+      deprecated: { type: deprecate, action: DiffAction.replace },
     })
     expect(merged.properties.items[metaKey]).toMatchObject({ 
       description: { type: annotation, action: DiffAction.replace },

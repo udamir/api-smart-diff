@@ -84,4 +84,45 @@ describe("Test openapi 3 diff", () => {
     const merged = exampleResource.merge(after)
     expect(merged.paths["/pet/findByStatus"].get.parameters[0].schema.$diff).toMatchObject({ description: { action: DiffAction.add, type: annotation } })
   })
+
+  it("should classify as non-breaking remove of operation security", () => {
+    const after = exampleResource.clone()
+    after.paths["/user/createWithList"].post.security = [{}]
+
+    const diffs = exampleResource.diff(after)
+    expect(diffs).toMatchObject([{ type: nonBreaking }])
+  })
+
+  it("should classify as non-breaking set operation security equal to default", () => {
+    const after = exampleResource.clone()
+    after.paths["/user/createWithList"].post.security = [{ api_key: []}]
+
+    const diffs = exampleResource.diff(after)
+    expect(diffs).toMatchObject([{ type: nonBreaking }])
+  })
+
+  it("should classify as non-breaking set to default operation security if equal to default", () => {
+    const after = exampleResource.clone()
+    delete after.paths["/pet/{petId}"].get.security
+
+    const diffs = exampleResource.diff(after)
+    expect(diffs).toMatchObject([{ type: nonBreaking }])
+  })
+
+  it("should classify as breaking set to default operation security if not equal to default", () => {
+    const after = exampleResource.clone()
+    delete after.paths["/pet/findByTags"].get.security
+
+    const diffs = exampleResource.diff(after)
+    expect(diffs).toMatchObject([{ type: breaking }])
+  })
+  
+  it("should classify as breaking set to default operation security if not equal to default", () => {
+    const after = exampleResource.clone()
+    after.paths["/user/{username}"].get.security = [{ petstore_auth: [] }]
+
+    const diffs = exampleResource.diff(after)
+    expect(diffs).toMatchObject([{ type: breaking }])
+  })
+
 })

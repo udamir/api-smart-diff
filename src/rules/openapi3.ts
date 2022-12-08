@@ -1,10 +1,10 @@
-import { breakingIfAfterTrue, matchRule } from "../utils"
+import { breakingIfAfterTrue, emptySecurity, includeSecurity, matchRule } from "../utils"
 import { jsonSchemaRules } from "./jsonschema"
 import { Rules } from "../types"
 import { 
   breaking, nonBreaking, unclassified, 
   allAnnotation, addNonBreaking, 
-  allBreaking,
+  allBreaking, allNonBreaking, allDeprecate,
 } from "../constants"
 
 const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
@@ -31,7 +31,7 @@ const contentMediaTypeRules = (rules: Rules) => matchRule(rules, ({ before, afte
 })
 
 const serversRules: Rules = {
-  "/": [nonBreaking, breaking, breaking],
+  "/": allAnnotation,
   "/*": {
     "/": [nonBreaking, breaking, breaking],
     "/url": [nonBreaking, breaking, breaking],
@@ -44,7 +44,7 @@ const serversRules: Rules = {
           "/": [nonBreaking, breaking, breaking],
           "/*": [nonBreaking, breaking, breaking],
         },
-        "/default": [breaking, breaking, breaking],
+        "/default": [nonBreaking, nonBreaking, breaking],
         "/description": allAnnotation,
       },
     },
@@ -59,8 +59,8 @@ const parametersRules: Rules = paramArrayRules({
     "/in": [nonBreaking, breaking, breaking],
     "/schema": jsonSchemaRules(allBreaking),
     "/description": allAnnotation,
-    "/required": [breaking, nonBreaking, breakingIfAfterTrue],
-    "/deprecated": [breaking, nonBreaking, breakingIfAfterTrue],
+    "/required": [breaking, nonBreaking, (ctx) => ctx.up().after.schema?.default ? nonBreaking : breakingIfAfterTrue(ctx)],
+    "/deprecated": allDeprecate,
   },
 })
 
@@ -70,7 +70,7 @@ const headersRules: Rules = {
     "/": [nonBreaking, breaking, breaking],
     "/description": allAnnotation,
     "/required": [breaking, nonBreaking, breakingIfAfterTrue],
-    "/deprecated": [breaking, nonBreaking, breakingIfAfterTrue],
+    "/deprecated": allDeprecate,
   },
 }
 
@@ -100,7 +100,7 @@ const requestBodiesRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/description": allAnnotation,
   "/content": contentRules,
-  "/required": [breaking, nonBreaking, (ctx) => (ctx.after ? breaking : nonBreaking)],
+  "/required": [breaking, nonBreaking, breakingIfAfterTrue],
 }
 
 const responsesRules: Rules = {
@@ -113,9 +113,30 @@ const responsesRules: Rules = {
   },
 }
 
-const securityRules: Rules = {
-  "/": [breaking, nonBreaking, unclassified],
-  "/*": [breaking, nonBreaking, unclassified],
+const globalSecurityRules: Rules = {
+  "/": [
+    (ctx) => !emptySecurity(ctx.after) ? breaking : nonBreaking, 
+    nonBreaking, 
+    (ctx) => includeSecurity(ctx.after, ctx.before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
+  "/*": [
+    (ctx) => ctx.up().before.length ? nonBreaking : breaking, 
+    (ctx) => ctx.up().after.length ? breaking : nonBreaking, 
+    (ctx) => includeSecurity(ctx.up().after, ctx.up().before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
+}
+
+const operationSecurityRules: Rules = {
+  "/": [
+    (ctx) => emptySecurity(ctx.after) || includeSecurity(ctx.after, ctx.root.before.security) ? nonBreaking : breaking, 
+    (ctx) => includeSecurity(ctx.root.after.security, ctx.before) ? nonBreaking : breaking,
+    (ctx) => includeSecurity(ctx.after, ctx.before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
+  "/*": [
+    (ctx) => ctx.up().before.length ? nonBreaking : breaking, 
+    (ctx) => ctx.up().after.length ? breaking : nonBreaking, 
+    (ctx) => includeSecurity(ctx.up().after, ctx.up().before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
 }
 
 const operationRules: Rules = {
@@ -124,19 +145,19 @@ const operationRules: Rules = {
   "/summary": allAnnotation,
   "/description": allAnnotation,
   "/externalDocs": allAnnotation,
-  "/operationId": [nonBreaking, breaking, breaking],
+  "/operationId": allAnnotation,
   "/parameters": parametersRules,
   "/requestBody": requestBodiesRules,
   "/responses": responsesRules,
-  "/deprecated": [breaking, nonBreaking, breakingIfAfterTrue],
-  "/security": securityRules,
+  "/deprecated": allDeprecate,
+  "/security": operationSecurityRules,
   "/servers": serversRules,
 }
 
 export const openapi3Rules: Rules = {
-  "/openapi": [nonBreaking, breaking, breaking],
+  "/openapi": allAnnotation,
   "/info": {
-    "/": [nonBreaking, breaking, breaking],
+    "/": allAnnotation,
     "/title": allAnnotation,
     "/description": allAnnotation,
     "/termsOfService": allAnnotation,
@@ -161,7 +182,7 @@ export const openapi3Rules: Rules = {
     },
   }),
   "/components": {
-    "/": [nonBreaking, nonBreaking, nonBreaking],
+    "/": allNonBreaking,
     "/schemas": {
       "/": [nonBreaking, breaking, breaking],
       "/*": jsonSchemaRules(addNonBreaking),
@@ -195,7 +216,7 @@ export const openapi3Rules: Rules = {
       },
     },
   },
-  "/security": securityRules,
+  "/security": globalSecurityRules,
   "/tags": allAnnotation,
   "/externalDocs": allAnnotation,
 }

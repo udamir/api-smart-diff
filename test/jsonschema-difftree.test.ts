@@ -1,5 +1,5 @@
 import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
-import { annotation, breaking, DiffAction, DIFF_META_KEY, getValueByPath, nonBreaking, unclassified } from "../src"
+import { annotation, breaking, deprecate, DiffAction, DIFF_META_KEY, getValueByPath, nonBreaking, unclassified } from "../src"
 
 const exampleBefore = new ExampleResource("schema-before.yaml")
 const exapmleAfter = new ExampleResource("schema-after.yaml")
@@ -33,7 +33,7 @@ describe("Test JsonSchema difftree", () => {
     })
     expect(diffTree.properties.email[metaKey]).toMatchObject({ 
       default: { type: breaking, action: DiffAction.replace },
-      deprecated: { type: nonBreaking, action: DiffAction.replace },
+      deprecated: { type: deprecate, action: DiffAction.replace },
     })
     expect(diffTree.properties.items[metaKey]).toMatchObject({ 
       description: { type: annotation, action: DiffAction.replace },

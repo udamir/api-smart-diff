@@ -1,11 +1,8 @@
-import { breakingIf, breakingIfAfterTrue, matchRule } from "../utils"
+import { breakingIf, breakingIfAfterTrue, emptySecurity, includeSecurity, matchRule } from "../utils"
 import { DiffTypeFunc, Rule, Rules } from "../types"
 import { 
-  breaking, nonBreaking, unclassified, 
-  allAnnotation, addNonBreaking, 
-  allBreaking,
-  allUnclassified,
-  onlyAddBreaking,
+  breaking, nonBreaking, allAnnotation, addNonBreaking, 
+  allBreaking, allUnclassified, onlyAddBreaking, allDeprecate,
 } from "../constants"
 
 const maxClassifier: Rule = [
@@ -37,6 +34,33 @@ const multipleOfClassifier: Rule = [
   nonBreaking,
   ({ before, after }) => breakingIf(!!(before % after))
 ]
+
+
+const globalSecurityRules: Rules = {
+  "/": [
+    (ctx) => !emptySecurity(ctx.after) ? breaking : nonBreaking, 
+    nonBreaking, 
+    (ctx) => includeSecurity(ctx.after, ctx.before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
+  "/*": [
+    (ctx) => ctx.up().before.length ? nonBreaking : breaking, 
+    (ctx) => ctx.up().after.length ? breaking : nonBreaking, 
+    (ctx) => includeSecurity(ctx.up().after, ctx.up().before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
+}
+
+const operationSecurityRules: Rules = {
+  "/": [
+    (ctx) => includeSecurity(ctx.after, ctx.root.before.security) ? nonBreaking : breaking, 
+    (ctx) => includeSecurity(ctx.root.after.security, ctx.before) ? nonBreaking : breaking,
+    (ctx) => includeSecurity(ctx.after, ctx.before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
+  "/*": [
+    (ctx) => ctx.up().before.length ? nonBreaking : breaking, 
+    (ctx) => ctx.up().after.length ? breaking : nonBreaking, 
+    (ctx) => includeSecurity(ctx.up().after, ctx.up().before) || emptySecurity(ctx.after) ? nonBreaking : breaking
+  ],
+}
 
 const nonBreakingIfDefault: DiffTypeFunc = ({ after, up }) => 
   up(2).after?.properties?.[after]?.default !== undefined ? nonBreaking : breaking
@@ -172,11 +196,6 @@ const responsesRules: Rules = {
   },
 }
 
-const securityRules: Rules = {
-  "/": [breaking, nonBreaking, unclassified],
-  "/*": [breaking, nonBreaking, unclassified],
-}
-
 const operationRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/tags": allAnnotation,
@@ -194,8 +213,8 @@ const operationRules: Rules = {
   }),
   "/parameters": parametersRules,
   "/responses": responsesRules,
-  "/deprecated": [breaking, nonBreaking, breakingIfAfterTrue],
-  "/security": securityRules  
+  "/deprecated": allDeprecate,
+  "/security": operationSecurityRules  
 }
 
 export const swagger2Rules: Rules = {
@@ -249,7 +268,7 @@ export const swagger2Rules: Rules = {
       "/scopes": [breaking, nonBreaking, breaking],
     },
   },
-  "/security": securityRules,
+  "/security": globalSecurityRules,
   "/tags": allAnnotation,
   "/externalDocs": allAnnotation,
 }

@@ -14,10 +14,11 @@ export enum ClassifierType {
   breaking = "breaking",
   nonBreaking = "non-breaking",
   annotation = "annotation",
-  unclassified = "unclassified"
+  unclassified = "unclassified",
+  deprecate = "deprecate"
 }
 
-export const { breaking, nonBreaking, unclassified, annotation } = ClassifierType
+export const { breaking, nonBreaking, unclassified, annotation, deprecate } = ClassifierType
 
 // predefined classifiers
 export const allNonBreaking: Rule = [nonBreaking, nonBreaking, nonBreaking]
@@ -26,3 +27,4 @@ export const onlyAddBreaking: Rule = [breaking, nonBreaking, nonBreaking]
 export const addNonBreaking: Rule = [nonBreaking, breaking, breaking]
 export const allUnclassified: Rule = [unclassified, unclassified, unclassified]
 export const allAnnotation: Rule = [annotation, annotation, annotation]
+export const allDeprecate: Rule = [deprecate, deprecate, deprecate]

@@ -13,7 +13,7 @@ export type Diff = JsonDiff & {
   type: DiffType
 }
 
-export type DiffType = "breaking" | "non-breaking" | "annotation" | "unclassified"
+export type DiffType = "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecate"
 
 export type AddDiffType = DiffType | DiffTypeFunc
 export type RemoveDiffType = DiffType | DiffTypeFunc
