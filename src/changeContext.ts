@@ -1,7 +1,7 @@
 import { ApiCompare } from "./apiCompare"
-import { IChageContext, ObjPath } from "./types"
+import { IChangeContext, ObjPath } from "./types"
 
-export class ChangeContext implements IChageContext {
+export class ChangeContext implements IChangeContext {
   private _path: ObjPath
   private _engine: ApiCompare
 
