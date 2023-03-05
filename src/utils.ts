@@ -169,9 +169,7 @@ export const setValueByPath = (obj: any, objPath: ObjPath, value: any, i = 0) =>
 }
 
 export const mergeValues = (value: any, patch: any) => {
-  if (Array.isArray(value)) {
-    return Array.isArray(patch) ? value.push(...patch) : value
-  } else if (typeof value === "object" && typeof patch === "object" && patch) {
+  if (!Array.isArray(value) && typeof value === "object" && typeof patch === "object" && patch) {
     for(const key of Reflect.ownKeys(patch)) {
       value[key] = mergeValues(value[key], patch[key])
     }

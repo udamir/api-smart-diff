@@ -1586,19 +1586,6 @@ copy-descriptor@^0.1.0:
   resolved "https://registry.yarnpkg.com/copy-descriptor/-/copy-descriptor-0.1.1.tgz#676f6eb3c39997c2ee1ac3a924fd6124748f578d"
   integrity sha512-XgZ0pFcakEUlbwQEVNg3+QAis1FyTL3Qel9FYy8pSkQqoG3PNoT0bOCQtOXcOkur21r2Eq2kI+IE+gsmAEVlYw==
 
-core-types-graphql@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/core-types-graphql/-/core-types-graphql-2.0.0.tgz#252d7ab6c4df137664733bcc1300d06e1c4a3c99"
-  integrity sha512-qTvz97/qJkT9sweM1DkED7wivE5UMfUegCpicUIxNPvi6oc0bt0IoVO1blGTlAFYS6zPVSK2aJKtFG+/CLCX8A==
-  dependencies:
-    core-types "^2.0.1"
-    graphql "^16.6.0"
-
-core-types@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/core-types/-/core-types-2.0.1.tgz#9f6171425e5b563bb6bfcd1d0d12f0c9f9a911a4"
-  integrity sha512-05MuJwygKpihoZ6+qfVxNSAtkbWVCWTt1Xg5UbMXfVvq7OV7x+RtjOZzZ5kRBaiRneixIuIfdYKP52xX1i2gpw==
-
 core-util-is@~1.0.0:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/core-util-is/-/core-util-is-1.0.3.tgz#a6042d3634c2b27e9328f837b965fac83808db85"
@@ -2335,18 +2322,15 @@ globals@^11.1.0:
   resolved "https://registry.yarnpkg.com/globals/-/globals-11.12.0.tgz#ab8795338868a0babd8525758018c2a7eb95c42e"
   integrity sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA==
 
+gqlapi@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/gqlapi/-/gqlapi-0.0.4.tgz#db890a3e0333d29842aa8ee51356ec6cf04a5a0c"
+  integrity sha512-sWI0unez5fq0GA71XjKDbwvIcVyofyw0teqoGdaeWp9GHRxDjssSv1EQ9fmTXPS7JtGuDDGTAq4lCUhwNw9Izg==
+
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.2.4:
   version "4.2.10"
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.10.tgz#147d3a006da4ca3ce14728c7aefc287c367d7a6c"
   integrity sha512-9ByhssR2fPVsNZj478qUUbKfmL0+t5BDVyjShtyZZLiK7ZDAArFFfopyOTj0M05wE2tJPisA4iTnnXl2YoPvOA==
-
-graphql-2-json-schema@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/graphql-2-json-schema/-/graphql-2-json-schema-0.10.0.tgz#2c9e2be3965d9b5b82cde7e1a6c6adfa0269bb56"
-  integrity sha512-rpV74HE2ZLC2J+aWJqF+6+yfhu2KRmT1bPXI972dLymAdM1CWGbo835sk3ledBnVf77JIsMIRnrc9HvOSda67g==
-  dependencies:
-    json5 "^2.2.0"
-    lodash "^4.17.20"
 
 graphql@^16.6.0:
   version "16.6.0"
@@ -3270,7 +3254,7 @@ json-schema-traverse@^0.4.1:
   resolved "https://registry.yarnpkg.com/json-schema-traverse/-/json-schema-traverse-0.4.1.tgz#69f6a87d9513ab8bb8fe63bdb0979c448e684660"
   integrity sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==
 
-json5@2.x, json5@^2.1.2, json5@^2.2.0, json5@^2.2.2:
+json5@2.x, json5@^2.1.2, json5@^2.2.2:
   version "2.2.3"
   resolved "https://registry.yarnpkg.com/json5/-/json5-2.2.3.tgz#78cd6f1a19bdc12b73db5ad0c61efd66c1e29283"
   integrity sha512-XmOWe7eyHYH14cLdVPoyg+GOH3rYX++KpzrylJwSW98t3Nk+U8XOl8FWKOgwtzdb8lXGf6zYwDUzeHMWfxasyg==
@@ -3367,7 +3351,7 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
-lodash@4.x, lodash@^4.17.20, lodash@^4.7.0:
+lodash@4.x, lodash@^4.7.0:
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -4840,7 +4824,7 @@ ts-jest@^26.1.0:
     semver "7.x"
     yargs-parser "20.x"
 
-ts-loader@^8.0.8:
+ts-loader@^8.4.0:
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/ts-loader/-/ts-loader-8.4.0.tgz#e845ea0f38d140bdc3d7d60293ca18d12ff2720f"
   integrity sha512-6nFY3IZ2//mrPc+ImY3hNWx1vCHyEhl6V+wLmL4CZcm6g1CqX7UKrkc6y0i4FwcfOhxyMPCfaEvh20f4r9GNpw==
