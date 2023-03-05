@@ -14,7 +14,7 @@ This package provides utils to compute the diff between two Json based API docum
 - [AsyncApi 2.1](https://www.asyncapi.com/docs/specifications/v2.1.0)
 - [JsonSchema](https://json-schema.org/draft/2020-12/json-schema-core.html)
 - [Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)
-- ~~graphql~~ (Roadmap)
+- GraphQL via [GraphApi](https://github.com/udamir/graphapi)
 - ~~gRPC~~ (Roadmap)
 
 ## Features

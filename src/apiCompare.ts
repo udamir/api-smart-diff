@@ -1,6 +1,6 @@
 import { Diff, ObjPath, Rules, ApiDiffOptions, JsonDiff, ApiMergedMeta, MatchFunc, CompareResult } from "./types"
 import { getPathMatchFunc, getPathRules, isEmptyObject, mergeValues, PathPointer, resolveRef, setValueByPath } from "./utils"
-import { asyncApi2Rules, jsonSchemaRules, openapi3Rules, swagger2Rules } from "./rules"
+import { asyncApi2Rules, graphapiRules, jsonSchemaRules, openapi3Rules, swagger2Rules } from "./rules"
 import { allUnclassified, DiffAction, unclassified } from "./constants"
 import { JsonCompare } from "./jsonCompare"
 import { ChangeContext } from "./changeContext"
@@ -85,6 +85,7 @@ export class ApiCompare extends JsonCompare<Diff> {
     if (/3.+/.test(data?.openapi || "")) return openapi3Rules
     if (/2.+/.test(data?.asyncapi || "")) return asyncApi2Rules
     if (/2.+/.test(data?.swagger || "")) return swagger2Rules
+    if (data?.graphapi) return graphapiRules
     return jsonSchemaRules()
   }
 
