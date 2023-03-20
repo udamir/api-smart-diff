@@ -21,6 +21,7 @@ This package provides utils to compute the diff between two Json based API docum
 - Generate diff for supported specifications
 - Generate merged spec with changes in metadata 
 - Classify all changes as breaking, non-breaking, annotation
+- Human-readable change description (OpenApi only)
 - Supports custom classification rules
 - Supports custom match rules for array items and object keys
 - Resolves all $ref pointers, including external and circular
@@ -191,6 +192,16 @@ const apiKey = Symbol("diff")
 const merged = apiMerge(before, after, { apiKey })
 
 // do something with merged object
+```
+
+### Human-readable change description example
+
+```ts
+import { apiDiff, changeDoc, changeOpenApiRules } from "api-smart-diff"
+
+const diff = apiDiff(before, after, { 
+  formatMergedMeta: (diff) => ({ ...diff, description: changeDoc(diff, before, after, changeOpenApiRules) })
+})
 ```
 
 ### **Custom rules**
