@@ -7,24 +7,15 @@ const actions: Record<string, "Added" | "Deleted" | "Changed"> = {
   "remove": "Deleted"
 }
 
-const targetProperty = (path: ObjPath, from: number) => {
-  let target = ""
-  for (let i = from; i < path.length; i++ ) {
-    const key = path[i] 
-    if (typeof key === "number") {
-      target += ".[]"
-      continue
-    } else if (["oneOf", "anyOf", "not", "allOf", "items", "properties"].includes(key)) {
-      continue
-    }
-
-    if (target) {
-      target += "." + key
-    } else {
-      target = key
-    }
+const targetProperty = (path: ObjPath, from: number, prefix = ""): string => {
+  if (from >= path.length) { return prefix }
+  if (path[from] === "properties" && from < path.length) {
+    prefix += prefix ? "." + String(path[from+1]) : String(path[from+1]) 
+    return targetProperty(path, from + 2, prefix)
+  } else if (path[from] === "items") {
+    prefix += "[]"
   }
-  return target
+  return targetProperty(path, from + 1, prefix) 
 }
 
 const validatorRule = (location: string, index: number): ChangeDocRuleRef => ({ action, key, path }) => {
@@ -52,6 +43,11 @@ const propertyRule = (target: string, location: string, index: number): ChangeDo
   `[${actions[action]}] ${target}property \`${targetProperty(path, index)}\` in ${location}`
 
 
+const operationMethods = (node: any) => {
+  const methods = Object.keys(node).filter(key => ["get", "post", "put", "head", "delete", "patch", "connect", "trace", "options"].includes(key.toLocaleLowerCase()))
+  return (methods.length > 1 ? "methods `" : "method `") + methods.join("`, `") + "`"
+}
+
 const changeSchemaRules = (location: string, index: number): ChangeDocRules => ({
   // property
   "/": propertyRule("", location, index),
@@ -70,10 +66,7 @@ const changeSchemaRules = (location: string, index: number): ChangeDocRules => (
   "/maxProperties": validatorRule(location, index),
   "/minProperties": validatorRule(location, index),
   // items
-  "/items": {
-    "/": ({ action, path }) => `[${actions[action]}] Type of property items \`${targetProperty(path, index)}\` in ${location}`,
-    "/*": () => changeSchemaRules(location, index)
-  },
+  "/items": () => changeSchemaRules(location, index),
   // properties
   "/properties": {
     "/": ({ action, path, node }) => `[${actions[action]}] properties ${propertyList(node, path, index)} in ${location}`,
@@ -82,7 +75,10 @@ const changeSchemaRules = (location: string, index: number): ChangeDocRules => (
   // type
   "/type": propertyRule("Type of ", location, index),
   // required
-  "/required": ({ action, node, path }) => `[${actions[action]}] Required ${requiredList(node, path, index)} in ${location}`,
+  "/required": {
+    "/": ({ action, node, path }) => `[${actions[action]}] Required ${requiredList(node, path, index)} in ${location}`,
+    "/*": ({ action, parent, key }) => `[${actions[action]}] Required property \`${parent[key]}\` in ${location}`,
+  },
   // value
   "/format": propertyRule("Value format for ", location, index),
   "/default": propertyRule("Default value for ", location, index),
@@ -99,23 +95,28 @@ const changeSchemaRules = (location: string, index: number): ChangeDocRules => (
   "/not": () => changeSchemaRules(location, index),
 })
 
+export const changeDocParametersRules: ChangeDocRules = {
+  "/": ({ action, node }) => `[${actions[action]}] ${node.map((param: any) => `${param.in} parameter \`${param.name}\``).join(", ")}`,
+  "/*": {
+    // [Deleted] Required query parameter `filter`
+    "/": ({ action, node }) => `[${actions[action]}] ${node.required ? "Required " : ""}${node.in} parameter \`${node.name}\``,
+    // [Changed] Required status to query parameter `filter`
+    "/*": ({ parent }) => `[Changed] ${parent.required ? "Required " : ""}${parent.in} parameter \`${parent.name}\``,
+    // [Added] Required status in query parameter `filter`
+    "/required": ({ action, parent }) => `[${actions[action]}] Required status in ${parent.in} parameter \`${parent.name}\``,
+    // [Added] Deprecation status to query parameter `filter`
+    "/deprecated": ({ action, parent }) => `[${actions[action]}] Deprecated status in ${parent.in} parameter \`${parent.name}\``,
+  }
+}
+
 export const changeDocOpenApiRules: ChangeDocRules = {
   "/paths": {
     "/*": {
+      "/": ({ action, node }) => `[${actions[action]}] operation ${operationMethods(node)}`,
+      "/parameters": changeDocParametersRules,
       "/*": {
-        "/parameters": {
-          "/": ({ action, node }) => `[${actions[action]}] ${node.map((param: any) => `${param.in} parameter \`${param.name}\``).join(", ")}`,
-          "/*": {
-            // [Deleted] Required query parameter `filter`
-            "/": ({ action, node }) => `[${actions[action]}] ${node.required ? "Required " : ""}${node.in} parameter \`${node.name}\``,
-            // [Changed] Required status to query parameter `filter`
-            "/*": ({ parent }) => `[Changed] ${parent.required ? "Required " : ""}${parent.in} parameter \`${parent.name}\``,
-            // [Added] Required status to query parameter `filter`
-            "/required": ({ action, node }) => `[${actions[action]}] Required status to ${node.in} parameter \`${node.name}\``,
-            // [Added] Deprecation status to query parameter `filter`
-            "/deprecated": ({ action, node }) => `[${actions[action]}] Deprecated status to ${node.in} parameter \`${node.name}\``,
-          }
-        },
+        "/": ({ action }) => `[${actions[action]}] operation`,
+        "/parameters": changeDocParametersRules,
         "/requestBody": {
           // [Removed] Body content in Request
           "/": ({ action }) => `[${actions[action]}] Body content in Request`,

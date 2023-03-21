@@ -2,18 +2,32 @@ import { ChangeDocContext, ChangeDocRules } from "./types"
 import { getValueByPath } from "../utils"
 import { Diff } from "../types"
 
+const dereference = (node: any, source: any): any => {
+  if (Array.isArray(node)) {
+    return node.map((item) => dereference(item, source))
+  } else if (typeof node === "object" && node) {
+    const { $ref, ...rest } = node
+    if ($ref) {
+      const path = $ref.split("/").slice(1)
+      return { ...getValueByPath(source, path), ...rest }
+    } else {
+      return node
+    }
+  }
+  return node
+}
+
 const resolve = (node: any, key: string | number, ctx: ChangeDocContext): any => {
   if (!node || key === undefined) { return }
   if (key in node) {
     return node[key]
   } else if ("$ref" in node) {
-    node = getValueByPath(ctx.source, node.$ref.split("/").slice(1))
-    return resolve(node, key, ctx)
+    return resolve(dereference(node, ctx.source), key, ctx)
   }
 }
 
 const getChangeRule = (rules: ChangeDocRules, ctx: ChangeDocContext, index = 0): string => {
-  const { node, path } = ctx
+  const { node, path, parent } = ctx
   let key = path[index]
 
   if (index === path.length) {
@@ -33,8 +47,8 @@ const getChangeRule = (rules: ChangeDocRules, ctx: ChangeDocContext, index = 0):
     const _ctx: ChangeDocContext = index === path.length ? ctx : {
       ...ctx,
       key: path[index],
-      node: resolve(node, path[index], ctx),
-      parent: node
+      node: dereference(resolve(node, path[index], ctx), ctx.source),
+      parent: node,
     }
 
     if (typeof rule === "function") {
