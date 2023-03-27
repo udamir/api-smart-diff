@@ -136,7 +136,11 @@ export const resolveRef = (val: any, source: any, cache: any) => {
     const [external, path] = $ref.split("#")
     if (external && !cache.has(external)) { return val }
     const value = getValueByPath(external ? cache.get(external) : source, parsePath(path))
-    return !isEmptyObject(rest) ? mergeValues(value, rest) : value
+    if (value === undefined) {
+      return val
+    } else {
+      return !isEmptyObject(rest) ? mergeValues(value, rest) : value
+    }
   } else {
     return val
   }
