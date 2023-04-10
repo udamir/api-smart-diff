@@ -75,7 +75,7 @@ export type CompareResult<T extends JsonDiff = JsonDiff> = {
   parentMeta?: any
 }
 
-export type ApiDiffOptions = JsonCompareOptions & {
+export type ApiDiffOptions = JsonCompareOptions<Diff> & {
   resolveUnchangedRefs?: boolean
   rules?: Rules
   externalRefs?: {

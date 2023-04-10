@@ -16,7 +16,7 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
 
   public get merged() { return this._merged.value }
 
-  constructor(public before: any, public after: any, options: JsonCompareOptions = {}) {
+  constructor(public before: any, public after: any, options: JsonCompareOptions<D> = {}) {
     this.trimStrings = options.trimStrings 
     this.caseSensitive = options.caseSensitive 
     this.strictArrays = options.strictArrays

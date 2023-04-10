@@ -197,10 +197,10 @@ const merged = apiMerge(before, after, { apiKey })
 ### Human-readable change description example
 
 ```ts
-import { apiDiff, changeDoc, changeOpenApiRules } from "api-smart-diff"
+import { apiDiff, changeDoc, changeDocOpenApiRules } from "api-smart-diff"
 
 const diff = apiDiff(before, after, { 
-  formatMergedMeta: (diff) => ({ ...diff, description: changeDoc(diff, before, after, changeOpenApiRules) })
+  formatMergedMeta: (diff) => ({ ...diff, description: changeDoc(diff, before, after, changeDocOpenApiRules) })
 })
 ```
 
