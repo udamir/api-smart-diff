@@ -1,15 +1,15 @@
 import { breakingIfAfterTrue, emptySecurity, includeSecurity, matchRule } from "../utils"
 import { jsonSchemaRules } from "./jsonschema"
-import { Rules } from "../types"
+import { Rules, Rule } from "../types"
 import { 
   breaking, nonBreaking, unclassified, 
   allAnnotation, addNonBreaking, 
-  allBreaking, allNonBreaking, allDeprecate,
+  allBreaking, allNonBreaking, allDeprecate, annotation,
 } from "../constants"
 
 const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
-  const beforePath = String(before.key).replace(new RegExp("\{.*?\}", "g"), "*")
-  const afterPath = String(after.key).replace(new RegExp("\{.*?\}", "g"), "*")
+  const beforePath: string = String(before.key).replace(new RegExp("\{.*?\}", "g"), "*")
+  const afterPath: string = String(after.key).replace(new RegExp("\{.*?\}", "g"), "*")
   return beforePath === afterPath
 })
 
@@ -51,17 +51,46 @@ const serversRules: Rules = {
   },
 }
 
+const paramSchemaRules = (param: any): Rules => {
+  if (param?.in === "query") {
+    const { style = "form" } = param
+    if (style === "form") {
+      return {
+        ...jsonSchemaRules(allBreaking),
+        "/type": [breaking, nonBreaking, ({ before, after }) => before === "object" || before === "array" || after === "object" ? breaking : nonBreaking ]
+      }
+    }
+    return jsonSchemaRules(allBreaking)
+  } else {
+    return jsonSchemaRules(allBreaking)
+  }
+}
+
+const parameterStyleRule: Rule = [
+  ({ after }) => after === "form" ? annotation : breaking, 
+  ({ before }) => before === "form" ? annotation : breaking,
+  breaking
+]
+
+const parameterExplodeRule = (style = "form"): Rule => [
+  ({ after }) => (after && style === "form") || (!after && style !== "form") ? annotation : breaking, 
+  ({ before }) => (before && style === "form") || (!before && style !== "form") ? annotation : breaking,
+  breaking
+]
+
 const parametersRules: Rules = paramArrayRules({
   "/": [nonBreaking, breaking, breaking],
-  "/*": {
+  "/*": (param) => ({
     "/": [nonBreaking, breaking, breaking],
     "/name": [nonBreaking, breaking, (ctx) => ctx.up().before?.in === "path" ? nonBreaking : breaking ],
     "/in": [nonBreaking, breaking, breaking],
-    "/schema": jsonSchemaRules(allBreaking),
+    "/schema": paramSchemaRules(param),
+    "/explode": parameterExplodeRule(param?.style),
+    "/style": parameterStyleRule,
     "/description": allAnnotation,
     "/required": [breaking, nonBreaking, (ctx) => ctx.up().after.schema?.default ? nonBreaking : breakingIfAfterTrue(ctx)],
     "/deprecated": allDeprecate,
-  },
+  }),
 })
 
 const headersRules: Rules = {
