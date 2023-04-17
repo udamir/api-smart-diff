@@ -194,12 +194,14 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
     }
     const result: { [key: number]: CompareResult<D> } = {}
     const afterKeys = new Set(after.keys())
+    const removedItems: number[] = []
 
     for (const i of before.keys()) {
       const itemPath = path.childPath(i)
       const j = matchFunc ? [...afterKeys].find((k) => this.checkMatch(path, before, after, i, k)) : i
       if (j === undefined || j >= after.length) {
         const diff = removed(itemPath, before[i])
+        removedItems.push(i)
         merged[i] = this.mergeValue(diff)
         result[i] = this.compareResult(diff)
       } else {
@@ -210,9 +212,19 @@ export class JsonCompare<D extends JsonDiff = JsonDiff, T extends CompareResult<
 
     let i = before.length
     for (const key of afterKeys) {
-      const diff = added(path.childPath(i), after[key])
-      merged[i] = this.mergeValue(diff)
-      result[i++] = this.compareResult(diff)
+      if (removedItems.length) {
+        // replace removed
+        const index = removedItems.splice(0,1).pop()!
+        const diff = result[index].diff!
+        diff.action = DiffAction.replace
+        diff.after = after[key]
+        merged[index] = this.mergeValue(diff)
+        result[index] = this.compareResult(diff)
+      } else {
+        const diff = added(path.childPath(i), after[key])
+        merged[i] = this.mergeValue(diff)
+        result[i++] = this.compareResult(diff)
+      }
     }
 
     return this.mergeResults(result, merged, true)

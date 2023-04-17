@@ -1,4 +1,4 @@
-import { Rule, MatchFunc, Rules, DiffType, ObjPath, DiffTypeFunc } from "./types"
+import { Rule, MatchFunc, Rules, DiffType, ObjPath, DiffTypeFunc, JsonDiff } from "./types"
 import { breaking, nonBreaking, DiffAction } from "./constants"
 
 export type PathItem = string | number
@@ -38,11 +38,11 @@ export class PathPointer implements Iterable<PathItem> {
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
 export const breakingIfAfterTrue: DiffTypeFunc = ({ after }): DiffType => breakingIf(after)
 
-export const added = (path: PathPointer, after: any) => ({ path: path.items, after, action: DiffAction.add })
-export const removed = (path: PathPointer, before: any) => ({ path: path.items, before, action: DiffAction.remove })
-export const replaced = (path: PathPointer, before: any, after: any) => ({ path: path.items, before, after, action: DiffAction.replace })
-export const renamed = (path: PathPointer, before: any, after: any) => ({ path: path.items, before, after, action: DiffAction.rename })
-export const unchanged = (path: PathPointer, before: any) => ({ path: path.items, before, action: DiffAction.test })
+export const added = (path: PathPointer, after: any): JsonDiff => ({ path: path.items, after, action: DiffAction.add })
+export const removed = (path: PathPointer, before: any): JsonDiff => ({ path: path.items, before, action: DiffAction.remove })
+export const replaced = (path: PathPointer, before: any, after: any): JsonDiff => ({ path: path.items, before, after, action: DiffAction.replace })
+export const renamed = (path: PathPointer, before: any, after: any): JsonDiff => ({ path: path.items, before, after, action: DiffAction.rename })
+export const unchanged = (path: PathPointer, before: any): JsonDiff => ({ path: path.items, before, action: DiffAction.test })
 
 export const isEmptyObject = (obj:any) => {
   for (const key in obj)

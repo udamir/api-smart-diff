@@ -72,8 +72,7 @@ describe("Test openapi 3 diff", () => {
 
     const merged = exampleResource.merge(after)
     expect(merged.paths["/user/login"].get.$diff).toMatchObject({ parameters: { array: {
-      0: { action: DiffAction.remove, type: breaking },
-      2: { action: DiffAction.add, type: nonBreaking }
+      0: { action: DiffAction.replace, type: breaking }
     }}})
   })
 

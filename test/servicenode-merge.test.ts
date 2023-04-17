@@ -51,8 +51,7 @@ describe("Test service-node merge", () => {
 
     const meta = merged.children[metaKey]
     expect(meta).toMatchObject({ 
-      0: { action: DiffAction.remove, type: breaking },
-      11: { action: DiffAction.add, type: nonBreaking } 
+      0: { action: DiffAction.replace, type: breaking }
     })
   })
 
