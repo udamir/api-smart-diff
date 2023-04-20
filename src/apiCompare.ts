@@ -56,6 +56,10 @@ export class ApiCompare extends JsonCompare<Diff> {
   }
 
   public dereference(source: "before" | "after", value: any, objPath: PathPointer): [any, () => void] {
+    if (!value.$ref || typeof value.$ref !== "string") {
+      return [value, () => {}]
+    }
+    
     const ref = "#" + objPath.ref
 
     const [refs, cache] = source === "before" 
@@ -155,31 +159,61 @@ export class ApiCompare extends JsonCompare<Diff> {
     return super.compareResult(this.classifyDiff(diff))
   }
 
-  public compareObjects(before: any, after: any, objPath: PathPointer, merged: any) {
-    const { $ref: beforeRef, ...$before} = before
-    const { $ref: afterRef, ...$after} = after
-    const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + objPath.ref
+  public mergeAllOf(source: "before" | "after", value: any, objPath: PathPointer) {
+    if (!value.allOf || !Array.isArray(value.allOf)) { return value }
 
-    const compareCache = this.compareCache.get(compareRefsId)
-    if (compareCache && (isEmptyObject($before) && isEmptyObject($after) || !beforeRef && !afterRef)) {
-      if (!compareCache.result.diffs.length && !this.resolveUnchangedRefs) {
-        return super.compareObjects(before, after, objPath, merged)
-      } 
-      mergeValues(merged, compareCache.merged)
-      const diffs = compareCache.result.diffs.map((diff) => ({ ...diff, path: [...objPath, ...diff.path] }))
-      return { ...compareCache.result, diffs }
+    const { allOf, ...result } = value
+
+    const allOfPointer = new PathPointer("allOf", objPath)
+
+    for (let i = 0; i < allOf.length; i++) {
+      const itemPointer = new PathPointer(i, allOfPointer)
+      const merged = this.mergeAllOf(source, allOf[i], itemPointer)
+
+      const [_dereferened, clearCache] = this.dereference(source, merged, itemPointer)
+      clearCache()
+      mergeValues(result, _dereferened)
     }
 
-    const [_before, clearBeforeCache ] = this.dereference("before", before, objPath)
-    const [_after, clearAfterCache] = this.dereference("after", after, objPath)
+    return result
+  }
+
+  public compareObjects(before: any, after: any, objPath: PathPointer, merged: any): CompareResult<Diff> {
+    const mergedBefore = this.mergeAllOf("before", before, objPath)
+    const mergedAfter = this.mergeAllOf("after", after, objPath)
+
+    const { $ref: beforeRef, ...$before} = mergedBefore
+    const { $ref: afterRef, ...$after} = mergedAfter
+
+    if (!beforeRef && !afterRef) {
+      return super.compareObjects(mergedBefore, mergedAfter, objPath, merged)
+    }
+
+    if (beforeRef && afterRef) {
+      const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + objPath.ref
+      
+      const compareCache = this.compareCache.get(compareRefsId)
+      if (compareCache && (isEmptyObject($before) && isEmptyObject($after) || !beforeRef && !afterRef)) {
+        if (!compareCache.result.diffs.length && !this.resolveUnchangedRefs) {
+          return super.compareObjects(mergedBefore, mergedAfter, objPath, merged)
+        } 
+        mergeValues(merged, compareCache.merged)
+        const diffs = compareCache.result.diffs.map((diff) => ({ ...diff, path: [...objPath, ...diff.path] }))
+        return { ...compareCache.result, diffs }
+      }
+    }
+
+    const [_before, clearBeforeCache ] = this.dereference("before", mergedBefore, objPath)
+    const [_after, clearAfterCache] = this.dereference("after", mergedAfter, objPath)
 
     const _merged = Array.isArray(merged) ? [] : {}
 
     // compare $before and $after
-    let result = super.compareObjects(_before, _after, objPath, merged)
+    let result = this.compareObjects(_before, _after, objPath, merged)
 
     if (beforeRef && afterRef && isEmptyObject($before) && isEmptyObject($after)) {
       const diffs = result.diffs.map((diff) => ({ ...diff, path: diff.path.slice(objPath.items.length) }))
+       const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + objPath.ref
       this.compareCache.set(compareRefsId, { result: { ...result, diffs }, merged })
     }
 
@@ -192,7 +226,7 @@ export class ApiCompare extends JsonCompare<Diff> {
       } else {
         Object.keys(merged).forEach(key => delete merged[key]);
       }
-      result = super.compareObjects(before, after, objPath, merged)
+      result = super.compareObjects(mergedBefore, mergedAfter, objPath, merged)
     } else {
       mergeValues(merged, _merged)
     }

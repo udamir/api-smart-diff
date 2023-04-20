@@ -157,4 +157,14 @@ describe("Test openapi 3 diff", () => {
     const diffs = exampleResource.diff(after)
     expect(diffs).toMatchObject([{ type: nonBreaking }, { type: nonBreaking }])
   }) 
+
+  it("should do not find changes with allOf diff", () => {
+    const after = exampleResource.clone()
+    const { xml, ...rest } = after.components.schemas.Order
+    after.components.schemas.Order = {
+      ...rest, allOf: [ { xml }]
+    }
+    const diffs = exampleResource.diff(after)
+    expect(diffs.length).toEqual(0)
+  })
 })
