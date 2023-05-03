@@ -185,22 +185,20 @@ export class ApiCompare extends JsonCompare<Diff> {
     const { $ref: beforeRef, ...$before} = mergedBefore
     const { $ref: afterRef, ...$after} = mergedAfter
 
+    const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + objPath.ref
+    
+    const compareCache = this.compareCache.get(compareRefsId)
+    if (compareCache && (isEmptyObject($before) && isEmptyObject($after) || !beforeRef && !afterRef)) {
+      if (!compareCache.result.diffs.length && !this.resolveUnchangedRefs) {
+        return super.compareObjects(mergedBefore, mergedAfter, objPath, merged)
+      } 
+      mergeValues(merged, compareCache.merged)
+      const diffs = compareCache.result.diffs.map((diff) => ({ ...diff, path: [...objPath, ...diff.path] }))
+      return { ...compareCache.result, diffs }
+    }
+    
     if (!beforeRef && !afterRef) {
       return super.compareObjects(mergedBefore, mergedAfter, objPath, merged)
-    }
-
-    if (beforeRef && afterRef) {
-      const compareRefsId = beforeRef ? beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}` : "#" + objPath.ref
-      
-      const compareCache = this.compareCache.get(compareRefsId)
-      if (compareCache && (isEmptyObject($before) && isEmptyObject($after) || !beforeRef && !afterRef)) {
-        if (!compareCache.result.diffs.length && !this.resolveUnchangedRefs) {
-          return super.compareObjects(mergedBefore, mergedAfter, objPath, merged)
-        } 
-        mergeValues(merged, compareCache.merged)
-        const diffs = compareCache.result.diffs.map((diff) => ({ ...diff, path: [...objPath, ...diff.path] }))
-        return { ...compareCache.result, diffs }
-      }
     }
 
     const [_before, clearBeforeCache ] = this.dereference("before", mergedBefore, objPath)

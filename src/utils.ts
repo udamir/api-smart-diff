@@ -197,3 +197,25 @@ export const includeSecurity = (value: Array<any> = [], items: Array<any> = []) 
 
   return true
 }
+
+const pathMask = {
+  slash: /\//g,
+  tilde: /~/g,
+  escapedSlash: /~1/g,
+  escapedTilde: /~0/g
+}
+
+
+export const parsePointer = (pointer: string): string[] => {
+  return pointer.split("/").map((i) => decodeURIComponent(i.replace(pathMask.escapedSlash, "/").replace(pathMask.escapedTilde, "~"))).slice(1)
+}
+
+export const buildRef = (path: ObjPath, fileName = ""): string => {
+  if (!path.length) { return fileName || "#" }
+  return fileName + "#" + buildPointer(path)
+}
+
+export const buildPointer = (path: ObjPath): string => {
+  if (!path.length) { return "" }
+  return "/" + path.map((i) => encodeURIComponent((String(i).replace(pathMask.tilde, "~0").replace(pathMask.slash, "~1")))).join("/")
+}

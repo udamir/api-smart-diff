@@ -3,7 +3,7 @@ import { DiffTypeFunc, Rule, Rules } from "../types"
 import {
   breaking, nonBreaking, addNonBreaking, 
   allAnnotation, allBreaking, allUnclassified,
-  onlyAddBreaking, allDeprecate,
+  onlyAddBreaking, allDeprecated,
 } from "../constants"
 
 const maxClassifier: Rule = [
@@ -103,7 +103,7 @@ export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/example": allAnnotation,
   "/examples": allAnnotation,
   "/externalDocs": allAnnotation,
-  "/deprecated": allDeprecate,
+  "/deprecated": allDeprecated,
   "/xml": {
     // TODO
     "/": allUnclassified,
