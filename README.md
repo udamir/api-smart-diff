@@ -45,7 +45,7 @@ const diffs = apiDiff(oldSpec, newSpec)
 //   after: 'value in newSpec',
 //   before: 'value in oldSpec',
 //   path: ['path, 'in', 'array', 'format'],
-//   type: "annotation" | "breaking" | "non-breaking" | "unclassified" | "deprecate"
+//   type: "annotation" | "breaking" | "non-breaking" | "unclassified" | "deprecated"
 // }
 
 const merged = apiMerge(oldSpec, newSpec)
@@ -112,7 +112,7 @@ type Diff = {
   path: Array<string | number>
   before?: any
   after?: any
-  type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecate"
+  type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"
 }
 ```
 
@@ -137,7 +137,7 @@ type Diff = {
   action: "add" | "remove" | "replace" | "rename"
   before?: any
   after?: any
-  type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecate"
+  type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"
 }
 ```
 

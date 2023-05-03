@@ -2,7 +2,7 @@ import { breakingIf, breakingIfAfterTrue, emptySecurity, includeSecurity, matchR
 import { DiffTypeFunc, Rule, Rules } from "../types"
 import { 
   breaking, nonBreaking, allAnnotation, addNonBreaking, 
-  allBreaking, allUnclassified, onlyAddBreaking, allDeprecate,
+  allBreaking, allUnclassified, onlyAddBreaking, allDeprecated,
 } from "../constants"
 
 const maxClassifier: Rule = [
@@ -213,7 +213,7 @@ const operationRules: Rules = {
   }),
   "/parameters": parametersRules,
   "/responses": responsesRules,
-  "/deprecated": allDeprecate,
+  "/deprecated": allDeprecated,
   "/security": operationSecurityRules  
 }
 

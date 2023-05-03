@@ -4,7 +4,7 @@ import { Rules, Rule } from "../types"
 import { 
   breaking, nonBreaking, unclassified, 
   allAnnotation, addNonBreaking, 
-  allBreaking, allNonBreaking, allDeprecate, annotation,
+  allBreaking, allNonBreaking, allDeprecated, annotation,
 } from "../constants"
 
 const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
@@ -89,7 +89,7 @@ const parametersRules: Rules = paramArrayRules({
     "/style": parameterStyleRule,
     "/description": allAnnotation,
     "/required": [breaking, nonBreaking, (ctx) => ctx.up().after.schema?.default ? nonBreaking : breakingIfAfterTrue(ctx)],
-    "/deprecated": allDeprecate,
+    "/deprecated": allDeprecated,
   }),
 })
 
@@ -99,7 +99,7 @@ const headersRules: Rules = {
     "/": [nonBreaking, breaking, breaking],
     "/description": allAnnotation,
     "/required": [breaking, nonBreaking, breakingIfAfterTrue],
-    "/deprecated": allDeprecate,
+    "/deprecated": allDeprecated,
   },
 }
 
@@ -178,7 +178,7 @@ const operationRules: Rules = {
   "/parameters": parametersRules,
   "/requestBody": requestBodiesRules,
   "/responses": responsesRules,
-  "/deprecated": allDeprecate,
+  "/deprecated": allDeprecated,
   "/security": operationSecurityRules,
   "/servers": serversRules,
 }
