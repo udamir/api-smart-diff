@@ -1,6 +1,6 @@
 import { mergeValues } from "../utils"
 
-export type MergeRule = (prev: any, next: any) => any 
+export type MergeRule = (...args: any[]) => any 
 
 export type MergeRules = {
   [key: `/${string}`]: MergeRule
@@ -18,7 +18,6 @@ const intersect: MergeRule = (...args) => args.slice(1).reduce((r, v) => r.filte
 const mergeTypes: MergeRule = (...args) => {
   const arrayTypes = args.map((a) => Array.isArray(a) ? a : [a])
   const types = intersect(...arrayTypes)
-    reduce((r, v) => r.filter((t: string) => Array.isArray(v) ? v.includes(t) : t === v ), )
   return types.length === 1 ? types[0] : types.length ? types : undefined
 }
 
