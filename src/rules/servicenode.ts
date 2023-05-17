@@ -3,7 +3,7 @@ import {
   unclassified, addNonBreaking, breaking, nonBreaking
 } from "../constants"
 import { breakingIfAfterTrue, matchRule, objArray } from "../utils"
-import { jsonSchemaRules } from "."
+import { jsonSchemaRules } from "./jsonschema"
 import { Rules } from "../types"
 
 const childrenArray = (rules: Rules) => matchRule(rules, ({ before: { value: b }, after: { value: a } }) => {
