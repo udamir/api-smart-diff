@@ -50,7 +50,7 @@ export const isEmptyObject = (obj:any) => {
   return true
 }
 
-export const typeOf = (value: any) => {
+export const typeOf = (value: unknown): string  => {
   if (Array.isArray(value)) {
     return "array"
   }

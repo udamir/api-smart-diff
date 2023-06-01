@@ -58,7 +58,7 @@ export const crawl = <T>(data: any, ctx: CrawlContext<T>, hooks: MaybeArray<Craw
   const node = ctx.node[ctx.key]
 
   if (Array.isArray(value)) {
-    for (let i = 0; i < value.length; i++) {
+    for (const i of value.keys()) {
       const _ctx = { ...ctx, state, path: [...ctx.path, i], key: i, node }
       crawl(value[i], _ctx, hooks)
     }

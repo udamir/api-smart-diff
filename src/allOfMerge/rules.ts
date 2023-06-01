@@ -13,7 +13,7 @@ const minValue: MergeRule = (...args) => Math.min(...args)
 const maxValue: MergeRule = (...args) => Math.max(...args)
 const mergeEnum: MergeRule = (...args) => [...new Set(mergeArray(...args)).values()]
 const mergePattern: MergeRule = (...args) => args.reduce((r, v) => `${r}(?=${v})`, '')
-const intersect: MergeRule = (...args) => args.slice(1).reduce((r, v) => r.filter((t: string) => v.includes(t)), args[0])
+const intersect: MergeRule = (a, ...args) => args.reduce((r, v) => r.filter((t: string) => v.includes(t)), a)
 
 const mergeTypes: MergeRule = (...args) => {
   const arrayTypes = args.map((a) => Array.isArray(a) ? a : [a])
@@ -21,7 +21,17 @@ const mergeTypes: MergeRule = (...args) => {
   return types.length === 1 ? types[0] : types.length ? types : undefined
 }
 
+const mergeAllOf: MergeRule = (...args) => {
+
+}
 const mergeObjects: MergeRule = (a, ...args) => args.reduce((r, v) => mergeValues(r, v), a)
+const mergeJsonSchemas: MergeRule = (...args) => {
+
+}
+
+const mergeProperties: MergeRule = (...args) => {
+  jsonSchemaMergeRules()
+}
 
 export const jsonSchemaMergeRules = (): MergeRules => ({
   "/title": first,
@@ -40,10 +50,11 @@ export const jsonSchemaMergeRules = (): MergeRules => ({
   "/enum": mergeEnum,
   "/type": mergeTypes,
   "/not": mergeArray,
+  "/allOf": mergeAllOf,
   "/oneOf": mergeArray,
   "/anyOf": mergeArray,
   "/items": () => jsonSchemaMergeRules(),
-  "/properties": () => jsonSchemaMergeRules(),
+  "/properties": mergeProperties(),
   "/additionalProperties": () => jsonSchemaMergeRules(),
   "/description": first,
   "/format": first,
@@ -58,4 +69,5 @@ export const jsonSchemaMergeRules = (): MergeRules => ({
   "/externalDocs": first,
   "/deprecated": alternative,
   "/xml": mergeObjects,
+  "/*": first,
 })

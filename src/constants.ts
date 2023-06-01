@@ -2,13 +2,13 @@ import { Rule } from "./types"
 
 export const DIFF_META_KEY = "$diff"
 
-export enum DiffAction {
-  add = "add",
-  remove = "remove",
-  replace = "replace",
-  rename = "rename",
-  test = "test"
-}
+export const DiffAction = {
+  add: "add",
+  remove: "remove",
+  replace: "replace",
+  rename: "rename",
+  test: "test"
+} as const
 
 export enum ClassifierType {
   breaking = "breaking",
