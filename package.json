@@ -1,6 +1,6 @@
 {
   "name": "api-smart-diff",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "description": "Generate the diff between two API specifications (OpenAPI, AsyncAPI, JsonSchema)",
   "module": "dist/esm/index.js",
   "main": "dist/cjs/index.js",
