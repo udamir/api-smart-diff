@@ -183,7 +183,7 @@ const operationRules: Rules = {
   "/servers": serversRules,
 }
 
-const openapi3MethodRules: Rules = {
+export const openapi3MethodRules: Rules = {
   "/": [nonBreaking, breaking, nonBreaking],
   "/summary": allAnnotation,
   "/description": allAnnotation,
@@ -250,15 +250,4 @@ export const openapi3Rules: Rules = {
   "/security": globalSecurityRules,
   "/tags": allAnnotation,
   "/externalDocs": allAnnotation,
-}
-
-const anyMethodMatchRules = (rules: Rules) => matchRule(rules, () => true)
-const anyArrayMatchRules = (rules: Rules) => anyMethodMatchRules(rules)
-
-export const openapi3SingleOperationRules = {
-  ...openapi3Rules,
-  "/paths": anyArrayMatchRules({
-    "/": [nonBreaking, breaking, breaking],
-    "/*": anyMethodMatchRules(openapi3MethodRules),
-  }),
 }
