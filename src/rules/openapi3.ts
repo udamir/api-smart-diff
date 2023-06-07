@@ -1,9 +1,9 @@
 import { breakingIfAfterTrue, emptySecurity, includeSecurity, matchRule } from "../utils"
 import { jsonSchemaRules } from "./jsonschema"
 import { Rules, Rule } from "../types"
-import { 
-  breaking, nonBreaking, unclassified, 
-  allAnnotation, addNonBreaking, 
+import {
+  breaking, nonBreaking, unclassified,
+  allAnnotation, addNonBreaking,
   allBreaking, allNonBreaking, allDeprecated, annotation,
 } from "../constants"
 
@@ -144,26 +144,26 @@ const responsesRules: Rules = {
 
 const globalSecurityRules: Rules = {
   "/": [
-    (ctx) => !emptySecurity(ctx.after) ? breaking : nonBreaking, 
-    nonBreaking, 
+    (ctx) => !emptySecurity(ctx.after) ? breaking : nonBreaking,
+    nonBreaking,
     (ctx) => includeSecurity(ctx.after, ctx.before) || emptySecurity(ctx.after) ? nonBreaking : breaking
   ],
   "/*": [
-    (ctx) => ctx.up().before.length ? nonBreaking : breaking, 
-    (ctx) => ctx.up().after.length ? breaking : nonBreaking, 
+    (ctx) => ctx.up().before.length ? nonBreaking : breaking,
+    (ctx) => ctx.up().after.length ? breaking : nonBreaking,
     (ctx) => includeSecurity(ctx.up().after, ctx.up().before) || emptySecurity(ctx.after) ? nonBreaking : breaking
   ],
 }
 
 const operationSecurityRules: Rules = {
   "/": [
-    (ctx) => emptySecurity(ctx.after) || includeSecurity(ctx.after, ctx.root.before.security) ? nonBreaking : breaking, 
+    (ctx) => emptySecurity(ctx.after) || includeSecurity(ctx.after, ctx.root.before.security) ? nonBreaking : breaking,
     (ctx) => includeSecurity(ctx.root.after.security, ctx.before) ? nonBreaking : breaking,
     (ctx) => includeSecurity(ctx.after, ctx.before) || emptySecurity(ctx.after) ? nonBreaking : breaking
   ],
   "/*": [
-    (ctx) => ctx.up().before.length ? nonBreaking : breaking, 
-    (ctx) => ctx.up().after.length ? breaking : nonBreaking, 
+    (ctx) => ctx.up().before.length ? nonBreaking : breaking,
+    (ctx) => ctx.up().after.length ? breaking : nonBreaking,
     (ctx) => includeSecurity(ctx.up().after, ctx.up().before) || emptySecurity(ctx.after) ? nonBreaking : breaking
   ],
 }
@@ -183,6 +183,15 @@ const operationRules: Rules = {
   "/servers": serversRules,
 }
 
+export const openapi3MethodRules: Rules = {
+  "/": [nonBreaking, breaking, nonBreaking],
+  "/summary": allAnnotation,
+  "/description": allAnnotation,
+  "/*": operationRules,
+  "/servers": serversRules,
+  "/parameters": parametersRules,
+}
+
 export const openapi3Rules: Rules = {
   "/openapi": allAnnotation,
   "/info": {
@@ -191,7 +200,7 @@ export const openapi3Rules: Rules = {
     "/description": allAnnotation,
     "/termsOfService": allAnnotation,
     "/contact": allAnnotation,
-    "/licence": {
+    "/license": {
       "/": [nonBreaking, breaking, breaking],
       "/name": [breaking, breaking, breaking],
       "/url": [breaking, nonBreaking, nonBreaking],
@@ -201,14 +210,7 @@ export const openapi3Rules: Rules = {
   "/servers": serversRules,
   "/paths": pathArrayRules({
     "/": [nonBreaking, breaking, breaking],
-    "/*": {
-      "/": [nonBreaking, breaking, nonBreaking],
-      "/summary": allAnnotation,
-      "/description": allAnnotation,
-      "/*": operationRules,
-      "/servers": serversRules,
-      "/parameters": parametersRules,
-    },
+    "/*": openapi3MethodRules,
   }),
   "/components": {
     "/": allNonBreaking,
