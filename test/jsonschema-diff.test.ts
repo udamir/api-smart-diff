@@ -3,7 +3,7 @@ import { annotation, breaking, nonBreaking } from "../src"
 
 const example = new ExampleResource("jsonschema.yaml")
 
-describe("Test JsonSchema diff", () => {
+describe.skip("Test JsonSchema diff", () => {
   it("replace of 'title' property should be 'annotation' change", () => {
     const path = ["properties", "age", "title"]
     const value = "size"

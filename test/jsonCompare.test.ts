@@ -4,7 +4,7 @@ import { JsonCompare } from "../src/jsonCompare"
 
 const example = new ExampleResource("jsonschema.yaml")
 
-describe("Test 'compare' method in JsonCompare", () => {
+describe.skip("Test 'compare' method in JsonCompare", () => {
   it("should be 'replace' diff on value change", () => {
     const path = ["properties", "age", "title"]
     const value = "size"

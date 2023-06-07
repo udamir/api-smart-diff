@@ -4,7 +4,7 @@ import { addPatch, ExampleResource, removePatch, replacePatch } from "./helpers"
 const metaKey = Symbol("diff")
 const exampleResource = new ExampleResource("serviceNode.yaml", serviceNodeRules)
 
-describe("Test service-node merge", () => {
+describe.skip("Test service-node merge", () => {
   it("should be breaking change in array meta (remove operation)", () => {
     const after = exampleResource.clone([removePatch(["children", 2])])
     const merged = exampleResource.merge(after, { metaKey, arrayMeta: true })

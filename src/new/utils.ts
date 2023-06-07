@@ -1,7 +1,7 @@
 import { DiffAction } from "../constants";
 import { ObjPath } from "../types";
 import { JsonMergeResult, jsonMerge } from "./jsonMerge";
-import { Diff, FormatDiffFunc, MapKeysResult, MergeMeta } from "./types";
+import { Diff, FormatDiffFunc, MergeMeta } from "./types";
 
 // export const mapKeys = <T>(before: JsonNode, after: JsonNode): MapKeysResult<number> => {
 

@@ -27,8 +27,8 @@ export type JsonCompareOptions<T = Diff> = {
 
 
 export interface DiffState {
-  path: ObjPath
-  node: JsonNode
+  aPath: ObjPath
+  aNode: JsonNode
   keyMap: Record<string | number, string | number>
 }
 

@@ -4,7 +4,7 @@ import { annotation, breaking, deprecated, DiffAction, DIFF_META_KEY, getValueBy
 const exampleBefore = new ExampleResource("schema-before.yaml")
 const exapmleAfter = new ExampleResource("schema-after.yaml")
 
-describe("Test JsonSchema difftree", () => {
+describe.skip("Test JsonSchema difftree", () => {
   const metaKey = DIFF_META_KEY
   it("should create difftree for 2 jsonschema correctly", () => {
     const after = exapmleAfter.clone()

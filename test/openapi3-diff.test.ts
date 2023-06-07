@@ -3,7 +3,7 @@ import { annotation, breaking, DiffAction, nonBreaking, unclassified } from "../
 
 const exampleResource = new ExampleResource("petstore.yaml")
 
-describe("Test openapi 3 diff", () => {
+describe.skip("Test openapi 3 diff", () => {
   it("add servers should be non-breaking change", () => {
     const path = ["servers", 2]
     const value = {

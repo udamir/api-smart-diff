@@ -1,6 +1,6 @@
 import { changeFactory, createMergeMeta } from "./utils"
 import { Diff, JsonNode, MergeState } from "./types"
-import { CrawlHook, clone } from "./crawler"
+import { CloneHook, CloneState, clone } from "./crawler"
 import { DIFF_META_KEY } from "../constants"
 import { ClassifyRules } from "./rules/types"
 import { mapArraysKeysRule } from "./rules/mapping/array"
@@ -13,7 +13,7 @@ export interface JsonMergeResult<T extends Diff> {
 
 interface MergeFactoryResult<T extends Diff> {
   diffs: T[]
-  hook: CrawlHook<MergeState<T>>
+  hook: CloneHook<MergeState<T>>
 }
 
 export type MergeOptions<T extends Diff> = {
@@ -33,7 +33,6 @@ export type MergeOptions<T extends Diff> = {
 }
 
 const useMergeFactory = <T extends Diff>(
-  data: unknown,
   options: MergeOptions<T> = {}
 ): MergeFactoryResult<T> => {
 
@@ -41,18 +40,14 @@ const useMergeFactory = <T extends Diff>(
   const change = changeFactory<T>()
   const { arrayMeta, metaKey = DIFF_META_KEY } = options
 
-  const rootState: MergeState<T> = { path: [], node: { "#": data }, keyMap: { "#": "#" }, nodeDiffs: diffs } 
-
-  const hook: CrawlHook<MergeState<T>> = (before: any, ctx) => {
-    const state = ctx.state ? ctx.state : rootState
-
-    const { keyMap, nodeDiffs, node: aNode, path: aPath } = state!
+  const hook: CloneHook<MergeState<T>> = (before: any, ctx) => {
+    const { keyMap, nodeDiffs, aNode, aPath } = ctx.state
 
     const akey = keyMap[ctx.key]
     const after = aNode[akey]
 
     if (typeof before !== typeof after) {
-      ctx.node[akey] = after
+      aNode[akey] = after
       nodeDiffs.push(change.replaced(ctx.path, before, after))
       return null
     }
@@ -79,7 +74,7 @@ const useMergeFactory = <T extends Diff>(
       const exitHook = () => {
         diffs.push(..._nodeDiffs)
 
-        const _nodeItem = ctx.node[ctx.key]      
+        const _nodeItem = ctx.state.aNode[ctx.key]      
         added.forEach((key) => _nodeItem[key] = after[key])
         
         if (!_nodeDiffs.length || (Array.isArray(value) && arrayMeta)) { return }
@@ -87,13 +82,13 @@ const useMergeFactory = <T extends Diff>(
         _nodeItem[metaKey] = createMergeMeta(_nodeDiffs, ctx.path) 
       }
 
-      const _state = { keyMap: mapped, path: [...aPath, akey], node: after, nodeDiffs: _nodeDiffs }
+      const _state: CloneState<MergeState<T>> = { ...ctx.state, keyMap: mapped, aPath: [...aPath, akey], aNode: after, nodeDiffs: _nodeDiffs }
 
       return { value, state: _state, exitHook }
     }
     
     if (before !== after) {
-      ctx.node[akey] = after
+      aNode[akey] = after
       nodeDiffs.push(change.replaced(ctx.path, before, after))
     } 
 
@@ -108,9 +103,11 @@ export const jsonMerge = <T extends Diff = Diff>(
   after: unknown,
   options: MergeOptions<T> = {}
 ): JsonMergeResult<T> => {
-  const { diffs, hook } = useMergeFactory<T>(after, options)
+  const { diffs, hook } = useMergeFactory<T>(options)
+  
+  const rootState: MergeState<T> = { aPath: [], aNode: { "#": after }, keyMap: { "#": "#" }, nodeDiffs: diffs } 
 
-  const merged = clone<MergeState<T>>(before, hook)
+  const merged = clone<MergeState<T>>(before, hook, rootState)
 
   return { diffs, merged }
 }

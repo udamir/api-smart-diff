@@ -13,9 +13,7 @@ export type JsonMapTreeRuleFunc<T> = (ctx: JsonMapTreeCrawlContext) => JsonMapTr
 export type JsonMapTreeRulesFunc<T> = (ctx: JsonMapTreeCrawlContext) => JsonMapTreeRules<T>
 
 export type JsonMapTreeRules<T> = {
-  [key: `/${string}`]: JsonMapTreeRule<T> | JsonMapTreeRuleFunc<T>  | JsonMapTreeRules<T> | JsonMapTreeRulesFunc<T>
-} | {
-  "/"?: JsonMapTreeRule<T> | JsonMapTreeRuleFunc<T>
+  [key: `/${string}` | "/"]: JsonMapTreeRule<T> | JsonMapTreeRuleFunc<T>  | JsonMapTreeRules<T> | JsonMapTreeRulesFunc<T>
 }
 
 export const findPathRules = <T>(

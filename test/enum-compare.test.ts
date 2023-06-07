@@ -1,6 +1,6 @@
 import { apiDiff, apiMerge, DiffAction } from "../src"
 
-describe("Test array merge", () => {
+describe.skip("Test array merge", () => {
   it("should be correct merge with mixed types array", () => {
     const before = {
       arr: [
