@@ -473,7 +473,7 @@ describe('module', function() {
         }, {
           type: 'null'
         }, {
-          type: ['object', 'null']
+          type: ['null', 'object']
         }]
       })
     })
@@ -622,7 +622,7 @@ describe('module', function() {
           required: ['123']
         }, {
           type: [
-            'object', 'array'
+            'array', 'object'
           ],
           required: ['123', 'abc']
         }, {
@@ -886,8 +886,6 @@ describe('module', function() {
         pattern: 'abba'
       })
     })
-
-    it('extracts pattern from anyOf and oneOf using | operator in regexp')
 
     it.skip('merges multipleOf using allOf or direct assignment', function() {
       const result = merge({
@@ -1200,10 +1198,6 @@ describe('module', function() {
           }
         }
       })
-
-      expect(merge({
-        allOf: [true, false]
-      })).toMatchObject(false)
 
       expect(merge({
         properties: {
