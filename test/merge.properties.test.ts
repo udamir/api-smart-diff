@@ -398,6 +398,7 @@ describe('properties', function() {
             type: 'string',
             minLength: 6
           },
+
           allowed123: {
             type: 'string',
             maxLength: 10

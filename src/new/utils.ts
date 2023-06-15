@@ -5,6 +5,17 @@ import { Diff, FormatDiffFunc, MergeMeta } from "./types";
 
 // export const mapKeys = <T>(before: JsonNode, after: JsonNode): MapKeysResult<number> => {
 
+export class MapArray<K, V> extends Map<K, Array<V>> {
+  public add(key: K, value: V): this {
+    const arr = this.get(key)
+    if (arr) {
+      arr.push(value)
+    } else {
+      this.set(key, [value])
+    }
+    return this
+  }
+}
 
 export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>) => {
   const formatDiff = formatDiffFunc ? formatDiffFunc : ((diff: Diff) => diff as T)

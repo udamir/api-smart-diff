@@ -24,7 +24,7 @@ export type CloneState<T> = {
 
 export type CloneHook<T> = SyncCrawlHook<CloneState<T>>
 
-export type SyncCrawlHook<T> = (value: unknown, ctx: CrawlContext<T>) => | CrawlHookResponse<T> | null
+export type SyncCrawlHook<T> = (value: unknown, ctx: CrawlContext<T>) => CrawlHookResponse<T> | null
 
 export const clone = <T>(data: any, hooks: CloneHook<T> | CloneHook<T>[] = [], _state = {} as T) => {
   hooks = Array.isArray(hooks) ? hooks : [hooks]

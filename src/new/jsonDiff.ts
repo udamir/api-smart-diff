@@ -1,5 +1,5 @@
 import { changeFactory } from "./utils"
-import { CrawlHook, crawl } from "./crawler"
+import { SyncCrawlHook, syncCrawl } from "./crawler"
 import { Diff, DiffState } from "./types"
 import { ApiDiffOptions } from "../types"
 import { typeOf } from "../utils"
@@ -11,17 +11,15 @@ export const jsonDiff = <T extends Diff = Diff>(
   after: unknown,
   options: ApiDiffOptions = {}
 ): T[] => {
-  const rootB = { "#": before }
-  const rootA = { "#": after }
   const diffs: T[] = []
   const change = changeFactory<T>()
 
-  const hook: CrawlHook<DiffState> = (b: any, ctx) => {
+  const hook: SyncCrawlHook<DiffState> = (b: any, ctx) => {
     const { state, ...ctxB } = ctx
-    const { keyMap, ...ctxA } = state!
+    const { keyMap, aNode, aPath } = state!
 
     const keyA = keyMap[ctxB.key]
-    const a = ctxA.node[keyA]
+    const a = aNode[keyA]
 
     if (typeOf(b) !== typeOf(a)) {
       diffs.push(change.replaced(ctxB.path, b, a))
@@ -39,7 +37,7 @@ export const jsonDiff = <T extends Diff = Diff>(
           k1 !== k2 && diffs.push(change.renamed(ctxB.path, k1, k2)))
       }
 
-      return { value: b, state: { keyMap: mapped, path: [...ctxA.path, keyA], node: a } }
+      return { value: b, state: { keyMap: mapped, aPath: [...aPath, keyA], aNode: a } }
     }
     
     if (b !== a) {
@@ -48,16 +46,8 @@ export const jsonDiff = <T extends Diff = Diff>(
 
     return null
   }
-
-  const ctx = {
-    path: [],
-    key: "#",
-    root: rootB,
-    node: rootB,
-    state: { path: [], node: rootA, keyMap: { "#": "#" } }
-  }
   
-  crawl<DiffState>(before, ctx, hook)
+  syncCrawl<DiffState>(before, hook, { aPath: [], aNode: { "#": after }, keyMap: { "#": "#" } })
 
   return diffs
 }

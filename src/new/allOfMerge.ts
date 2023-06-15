@@ -112,7 +112,7 @@ export const allOfResolverHook = (source: any): CloneHook<{}> => {
     const resolvedAllOfItems = allOfItems.map((item) => isRefNode(item) ? resolveRefNode(source, item) : item)
 
     try {
-      const mergedNode = mergeJsonSchema(...flattenAllOf(resolvedAllOfItems, source))
+      const mergedNode = mergeJsonSchema(flattenAllOf(resolvedAllOfItems, source), { jsonSchemaMergeArgs: [] })
       return { value: mergedNode, exitHook }
     } catch (error) {
       const args = findNodeToDelete(ctx.path)
