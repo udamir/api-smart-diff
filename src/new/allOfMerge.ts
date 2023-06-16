@@ -1,8 +1,7 @@
-
 import { CloneHook, clone, isObject } from "./crawler"
 import { isRefNode, resolveRefNode } from "./resolver"
 import { buildPointer } from "../utils"
-import { jsonSchemaMergeRules, mergeJsonSchema, removeDuplicates } from "./rules/merge/jsonschema"
+import { isEqual, jsonSchemaMergeRules, jsonSchemaMergeResolver, MergeContext } from "./rules/merge/jsonschema"
 import { ObjPath } from "../types"
 
 const flattenAllOf = (items: any[], source: any): any[] => {
@@ -28,6 +27,18 @@ const flattenAllOf = (items: any[], source: any): any[] => {
   }
 
   return result
+}
+
+export const removeDuplicates = <T>(array: T[]): T[] => {
+  const uniqueItems: T[] = [];
+
+  for (const item of array) {
+    if (!uniqueItems.some((uniqueItem) => isEqual(uniqueItem, item))) {
+      uniqueItems.push(item);
+    }
+  }
+
+  return uniqueItems;
 }
 
 const getAllOfRule = (path: ObjPath) => {
@@ -98,7 +109,7 @@ export const allOfResolverHook = (source: any): CloneHook<{}> => {
     if (!rules) { return { value, exitHook } }
 
     // skip if no allOf
-    if (!isObject(value) || !value.allOf || !Array.isArray(value.allOf)) { 
+    if (!isObject(value) || !value.allOf) { 
       return { value, exitHook }
     }
 
@@ -108,11 +119,24 @@ export const allOfResolverHook = (source: any): CloneHook<{}> => {
     }
 
     const { allOf, ...sibling } = value
-    const allOfItems = Object.keys(sibling).length ? [sibling, ...allOf] : allOf
+
+    // remove allOf from scheam if is wrong type or empty
+    if (!Array.isArray(allOf) || !allOf.length) {
+      return { value: sibling, exitHook }
+    }
+
+    const allOfItems = Object.keys(sibling).length ? [...allOf, sibling] : allOf
     const resolvedAllOfItems = allOfItems.map((item) => isRefNode(item) ? resolveRefNode(source, item) : item)
 
     try {
-      const mergedNode = mergeJsonSchema(flattenAllOf(resolvedAllOfItems, source), { jsonSchemaMergeArgs: [] })
+      const ctx: MergeContext = {
+        allOfItems: [],
+        jsonSchemaMergeRules: jsonSchemaMergeRules(),
+        onError: (msg) => {
+          throw new Error(msg)
+        }
+      }
+      const mergedNode = jsonSchemaMergeResolver(flattenAllOf(resolvedAllOfItems, source), ctx)
       return { value: mergedNode, exitHook }
     } catch (error) {
       const args = findNodeToDelete(ctx.path)
@@ -127,7 +151,7 @@ export const allOfResolverHook = (source: any): CloneHook<{}> => {
 
 export const merge = (value: any, source?: any) => {
 
-  const hook = allOfResolverHook(source)
+  const hook = allOfResolverHook(source || value)
 
   return clone(value, hook, {})
 }

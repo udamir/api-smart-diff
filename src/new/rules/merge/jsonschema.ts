@@ -1,45 +1,48 @@
 import { mergeValues } from "../../../utils"
 import { MapArray } from "../../utils"
 
+export type JsonSchema = any
+
 export interface MergeContext {
-  jsonSchemaMergeArgs: any[]
+  allOfItems: JsonSchema[]
+  jsonSchemaMergeRules: MergeRules
   onError?: (msg: string) => void
 }
 
-export type MergeFunc = (args: any[], ctx: MergeContext) => any 
+export type MergeResolver = (args: any[], ctx: MergeContext) => any 
 export type MergeRulesFunc = () => MergeRules 
-export type MergeRule = { "$": MergeFunc }
+export type MergeRule = { "$": MergeResolver }
 export type MergeRules = {
   [key: `/${string}` | "/"]: MergeRules | MergeRulesFunc
 } | MergeRule
 
-const getPropertiesForMerge = (args: any[]) => {
+const getPropertiesForMerge = (allOfItems: JsonSchema[]) => {
   const properties: any[] = []
 
-  for (const obj of args) {
-    if (!("properties" in obj)) { continue }
-    const ownProperties = new Set(Object.keys(obj.properties))
+  for (const schema of allOfItems) {
+    if (!("properties" in schema)) { continue }
+    const ownProperties = new Set(Object.keys(schema.properties))
     const additionalPropertiesSchema = new MapArray<string, any>()
 
     // all "properties" should be filtered with "patternProperties" 
     // all non-comman properties should be merged with "additionalProperties" schema
     for (const prop of ownProperties.values()) {
-      for (const obj2 of args) {
-        if (obj2 == obj || (obj2.properties && prop in obj2.properties)) { continue }
+      for (const _schema of allOfItems) {
+        if (_schema == schema || (_schema.properties && prop in _schema.properties)) { continue }
 
-        if ("patternProperties" in obj2 && obj2.patternProperties) {
-          for (const pattern of Object.keys(obj2.patternProperties)) {
+        if ("patternProperties" in _schema && _schema.patternProperties) {
+          for (const pattern of Object.keys(_schema.patternProperties)) {
             if (new RegExp(pattern).test(prop)) { continue }
             // remove property if name is not match pattern
             ownProperties.delete(prop)
           }
-        } else if ("additionalProperties" in obj2) {
-          if (obj2.additionalProperties === false) {
+        } else if ("additionalProperties" in _schema) {
+          if (_schema.additionalProperties === false) {
             // filter all restricted properties
             ownProperties.delete(prop)
-          } else if (typeof obj2.additionalProperties === "object") {
+          } else if (typeof _schema.additionalProperties === "object") {
             // store additionalProperties schema for property
-            additionalPropertiesSchema.add(prop, obj2.additionalProperties)
+            additionalPropertiesSchema.add(prop, _schema.additionalProperties)
           }
         }
       }
@@ -50,9 +53,9 @@ const getPropertiesForMerge = (args: any[]) => {
     const props: Record<string, any> = {}
     for (const prop of ownProperties.values()) {
       if (additionalPropertiesSchema.has(prop)) {
-        props[prop] = { allOf: [obj.properties[prop], ...additionalPropertiesSchema.get(prop)!]}
+        props[prop] = { allOf: [schema.properties[prop], ...additionalPropertiesSchema.get(prop)!]}
       } else {
-        props[prop] = obj.properties[prop]
+        props[prop] = schema.properties[prop]
       }
     }
     properties.push(props)
@@ -61,18 +64,18 @@ const getPropertiesForMerge = (args: any[]) => {
   return properties
 }
 
-const getPatternPropertiesForMerge = (args: any[]) => {
+const getPatternPropertiesForMerge = (allOfItems: JsonSchema[]) => {
   const patternProperties: any[] = []
 
-  for(const obj of args) {
-    if (!("patternProperties" in obj)) { continue }
-    const patterns = new Set(Object.keys(obj.patternProperties))
+  for(const schema of allOfItems) {
+    if (!("patternProperties" in schema)) { continue }
+    const patterns = new Set(Object.keys(schema.patternProperties))
 
-    for(const obj2 of args) {
-      if (obj2 == obj) { continue }
-      if ("additionalProperties" in obj2 && !obj2.additionalProperties) {
+    for(const _schema of allOfItems) {
+      if (_schema == schema) { continue }
+      if ("additionalProperties" in _schema && !_schema.additionalProperties) {
         for (const pattern of patterns.values()) {
-          if (obj2.patternProperties && pattern in obj2.patternProperties) { continue }
+          if (_schema.patternProperties && pattern in _schema.patternProperties) { continue }
           patterns.delete(pattern)
         }
       }
@@ -81,7 +84,7 @@ const getPatternPropertiesForMerge = (args: any[]) => {
     if (!patterns.size) { continue }
     const props: Record<string, any> = {}
     for (const prop of patterns.values()) {
-      props[prop] = obj.patternProperties[prop]
+      props[prop] = schema.patternProperties[prop]
     }
     patternProperties.push(props)
   }
@@ -89,26 +92,26 @@ const getPatternPropertiesForMerge = (args: any[]) => {
   return patternProperties
 }
 
-const getObjectPropertiesForMerge = (args: any[]): Record<string, any[]> => {
-  const props: Record<string, any[]> = {}
+const getAllOfItemsMap = (allOfItems: JsonSchema[]): Record<string, any[]> => {
+  const result: Record<string, any[]> = {}
 
-  for (const obj of args) {
-    for (const prop of Object.keys(obj)) {
-      if (Array.isArray(props[prop])) {
-        props[prop].push(obj[prop])
+  for (const schema of allOfItems) {
+    for (const key of Object.keys(schema)) {
+      if (Array.isArray(result[key])) {
+        result[key].push(schema[key])
       } else {
-        props[prop] = [obj[prop]]
+        result[key] = [schema[key]]
       }
     }
   }
-  return props
+  return result
 }
 
-export const mergeJsonSchema: MergeFunc = (args: any[]) => {
+export const jsonSchemaMergeResolver: MergeResolver = (args: any[], ctx) => {
   if (args.includes(false)) { return false }
   
   const result: Record<string, any> = {}
-  const keys = getObjectPropertiesForMerge(args)
+  const keys = getAllOfItemsMap(args)
 
   if ("properties" in keys) {
     keys.properties = getPropertiesForMerge(args)
@@ -136,7 +139,7 @@ export const mergeJsonSchema: MergeFunc = (args: any[]) => {
       throw new Error(`Merge rule not found for key: ${key}`)
     }
 
-    const merged = _args.length > 1 ? mergeFunc(_args, { jsonSchemaMergeArgs: args }) : _args[0]
+    const merged = _args.length > 1 ? mergeFunc(_args, { ...ctx, allOfItems: args }) : _args[0]
 
     if (merged === undefined) {
       throw new Error('Could not merge values of :"' + key + '". They are probably incompatible. Values: \n' + JSON.stringify(_args))
@@ -148,12 +151,13 @@ export const mergeJsonSchema: MergeFunc = (args: any[]) => {
   return result
 }
 
-const first: MergeFunc = ([a]) => a
-const alternative: MergeFunc = (args) => args.reduce((r, v) =>  r || v, false)
+const first: MergeResolver = ([a]) => a
+const last: MergeResolver = (args) => args[args.length-1]
+const alternative: MergeResolver = (args) => args.reduce((r, v) =>  r || v, false)
 
-const minValue: MergeFunc = (args) => Math.min(...args)
-const maxValue: MergeFunc = (args) => Math.max(...args)
-const mergeEnum: MergeFunc = (args, ctx) => {
+const minValue: MergeResolver = (args) => Math.min(...args)
+const maxValue: MergeResolver = (args) => Math.max(...args)
+const mergeEnum: MergeResolver = (args, ctx) => {
   const items = args.map((v) => v.map((p: any) => JSON.stringify(p)))
   const result = intersectItems(items, ctx).map((v: string) => JSON.parse(v)).sort()
   if (!result.length) {
@@ -161,22 +165,22 @@ const mergeEnum: MergeFunc = (args, ctx) => {
   }
   return result
 }
-const mergePattern: MergeFunc = (args) => args.length > 1 ? args.reduce((r, v) => `${r}(?=${v})`, '') : args[0]
-const intersectItems: MergeFunc = ([a, ...args]) => args.reduce((r, v) => r.filter((t: string) => v.includes(t)), a)
+const mergePattern: MergeResolver = (args) => args.length > 1 ? args.reduce((r, v) => `${r}(?=${v})`, '') : args[0]
+const intersectItems: MergeResolver = ([a, ...args]) => args.reduce((r, v) => r.filter((t: string) => v.includes(t)), a)
 
-const mergeTypes: MergeFunc = (args, ctx) => {
+const mergeTypes: MergeResolver = (args, ctx) => {
   const arrayTypes = args.map((a) => Array.isArray(a) ? a : [a])
   const types = intersectItems(arrayTypes, ctx)
   return types.length === 1 ? types[0] : types.length ? types : undefined
 }
 
-const equal: MergeFunc = ([a, ...args]) => args.find((v) => !isEqual(v, a)) ? undefined : a
+const equal: MergeResolver = ([a, ...args]) => args.find((v) => !isEqual(v, a)) ? undefined : a
 
-const mergeObjects: MergeFunc = ([a, ...args]) => args.reduce((r, v) => mergeValues(r, v), a)
+const mergeObjects: MergeResolver = ([a, ...args]) => args.reduce((r, v) => mergeValues(r, v), a)
 
-const mergeProperties: MergeFunc = (args, ctx) => {
+const propertiesMergeResolver: MergeResolver = (args) => {
   const result: Record<string, any> = {}
-  const props = getObjectPropertiesForMerge(args)
+  const props = getAllOfItemsMap(args)
 
   for (const [prop, items] of Object.entries(props)) {
     if (items.includes(false)) {
@@ -189,7 +193,7 @@ const mergeProperties: MergeFunc = (args, ctx) => {
   return result
 }
 
-const mergeStringItems: MergeFunc = (args) => {
+const mergeStringItems: MergeResolver = (args) => {
   const uniqueStrings: Set<string> = new Set();
 
   // Iterate through each array and add its strings to the set
@@ -202,14 +206,15 @@ const mergeStringItems: MergeFunc = (args) => {
   // Convert the set back to an array and return it
   return Array.from(uniqueStrings).sort()
 } 
-const mergeArray: MergeFunc = (args) => findCombinations(args).map((v) => ({ allOf: v }))
 
-const mergeNot: MergeFunc = (args) => ({ anyOf: args })
-const mergeMultipleOf: MergeFunc = (args) => calculateLCM(args)
+const mergeArray: MergeResolver = (args) => findCombinations(args).map((v) => ({ allOf: v }))
 
-const mergeDependencies: MergeFunc = (args, ctx) => {
+const mergeNot: MergeResolver = (args) => ({ anyOf: args })
+const mergeMultipleOf: MergeResolver = (args) => calculateLCM(args)
+
+const dependenciesMergeResolver: MergeResolver = (args, ctx) => {
   const result: Record<string, any> = {}
-  const props = getObjectPropertiesForMerge(args)
+  const props = getAllOfItemsMap(args)
 
   for (const [prop, items] of Object.entries(props)) {
     const required = items.reduce((r, v) => r && Array.isArray(v), true)
@@ -225,10 +230,10 @@ const mergeDependencies: MergeFunc = (args, ctx) => {
   return result
 }
 
-const mergeItems: MergeFunc = (args, ctx) => {
+const itemsMergeResolver: MergeResolver = (args, ctx) => {
   // if all "items" are not array, merge items as JsonSchema
   const arrayItems = args.reduce((r, v) => Array.isArray(v) || r, false)
-  if (!arrayItems) { return mergeJsonSchema(args, ctx) }
+  if (!arrayItems) { return jsonSchemaMergeResolver(args, ctx) }
 
   // if any of "items" is array, additionalItems should also be merged with "items"
   const mergeItems: any[] = []
@@ -239,9 +244,10 @@ const mergeItems: MergeFunc = (args, ctx) => {
   // map of additionalItems schemas required for 
   const additionalItemsSchema = new MapArray<number, any>()
 
-  for(const obj of ctx.jsonSchemaMergeArgs) {
-    // schema from additionalItems should be merged with all "items" with index greater then length of "items" in current schema
-    // additionalItems should be ignored if no "items" in current schema or "items" in object
+  for(const obj of ctx.allOfItems) {
+    // Schema from additionalItems should be merged with all "items" 
+    // with index greater then length of "items" in current schema
+    // "additionalItems" should be ignored if no "items" in current schema or "items" in object
     if ("additionalItems" in obj && obj.additionalItems && "items" in obj && Array.isArray(obj.items)) { 
       additionalItemsSchema.add(obj.items.length, obj.additionalItems)
     } 
@@ -258,10 +264,8 @@ const mergeItems: MergeFunc = (args, ctx) => {
     }
   }
 
-  const items: any[] = [] // new Array(Math.min(maxItemsLength, itemsLimit)).fill({ allOf: [] })
-  for (let i = 0; i < Math.min(maxItemsLength, itemsLimit); i++) {
-    items.push({ allOf: [] })
-  }
+  const len = Math.min(maxItemsLength, itemsLimit)
+  const items: any[] = [...Array(len)].map(() => ({ allOf: [] }))
 
   // "items" of array type should be merged with additionalItems schema if 
   for (const item of mergeItems) {
@@ -271,7 +275,7 @@ const mergeItems: MergeFunc = (args, ctx) => {
       continue 
     }
 
-    for (let j = 0; j < items.length; j++) {
+    for (let j = 0; j < len; j++) {
       const allOf = []
       // copy all additionalItems schemas for merge via allOf
       for (let k = 0; k <= j; k++) {
@@ -291,12 +295,12 @@ const mergeItems: MergeFunc = (args, ctx) => {
   return items
 }
 
-const mergeAdditionalItems: MergeFunc = (args, ctx) => {
+const additionalItemsMergeResolver: MergeResolver = (args, ctx) => {
   const additionalItems: any[] = []
   const itemsSchema: any[] = []
 
   // "additionalItems" schema should be merged with object "items" schemas
-  for (const obj of ctx.jsonSchemaMergeArgs) {
+  for (const obj of ctx.allOfItems) {
     // store object "items"
     if ("items" in obj && !Array.isArray(obj.items)) {
       itemsSchema.push(obj.items)
@@ -312,10 +316,10 @@ const mergeAdditionalItems: MergeFunc = (args, ctx) => {
     additionalItems.forEach((item) => item.allOf = itemsSchema)
   }
 
-  return mergeJsonSchema(additionalItems, ctx)
+  return jsonSchemaMergeResolver(additionalItems, ctx)
 }
 
-export const jsonSchemaMergeRules = (draft: string = "06", mergeFunc = mergeJsonSchema): MergeRules => ({
+export const jsonSchemaMergeRules = (draft: string = "06", mergeResolver = jsonSchemaMergeResolver): MergeRules => ({
   "/maximum": { $: minValue },
   "/exclusiveMaximum": { $: alternative },
   "/minimum": { $: maxValue },
@@ -332,31 +336,31 @@ export const jsonSchemaMergeRules = (draft: string = "06", mergeFunc = mergeJson
   "/enum": { $: mergeEnum },
   "/type": { $: mergeTypes },
   "/allOf": {
-    "/*": () => jsonSchemaMergeRules(draft),
+    "/*": () => jsonSchemaMergeRules(draft, mergeResolver),
     $: mergeArray,
   },
   "/not": { $: mergeNot },
   "/oneOf": {
-    "/*": () => jsonSchemaMergeRules(draft),
+    "/*": () => jsonSchemaMergeRules(draft, mergeResolver),
     $: mergeArray,
   },
   "/anyOf": {
-    "/*": () => jsonSchemaMergeRules(draft),
+    "/*": () => jsonSchemaMergeRules(draft, mergeResolver),
     $: mergeArray,
   },
   "/properties": {
-    "/*": () => jsonSchemaMergeRules(draft),
-    $: mergeProperties,
+    "/*": () => jsonSchemaMergeRules(draft, mergeResolver),
+    $: propertiesMergeResolver,
   },
   "/items": {
-    "/": () => jsonSchemaMergeRules(draft, mergeItems),
-    "/*": () => jsonSchemaMergeRules(draft),
+    "/": () => jsonSchemaMergeRules(draft, itemsMergeResolver),
+    "/*": () => jsonSchemaMergeRules(draft, mergeResolver),
   },
-  "/additionalProperties": () => jsonSchemaMergeRules(draft),
-  "/additionalItems": () => jsonSchemaMergeRules(draft, mergeAdditionalItems),
+  "/additionalProperties": () => jsonSchemaMergeRules(draft, mergeResolver),
+  "/additionalItems": () => jsonSchemaMergeRules(draft, additionalItemsMergeResolver),
   "/patternProperties": { 
-    "/*": () => jsonSchemaMergeRules(draft),
-    $: mergeProperties,
+    "/*": () => jsonSchemaMergeRules(draft, mergeResolver),
+    $: propertiesMergeResolver,
   },
   "/pattern": { $: mergePattern },
   "/nullable": { $: alternative },
@@ -367,31 +371,37 @@ export const jsonSchemaMergeRules = (draft: string = "06", mergeFunc = mergeJson
   "/examples": { $: mergeObjects },
   "/deprecated": { $: alternative },
   ...draft === "06" ? { 
-    "/propertyNames": () => jsonSchemaMergeRules(draft),
-    "/contains": () => jsonSchemaMergeRules(draft),
+    "/propertyNames": () => jsonSchemaMergeRules(draft, mergeResolver),
+    "/contains": () => jsonSchemaMergeRules(draft, mergeResolver),
     "/dependencies": { 
-      "/*": () => jsonSchemaMergeRules(draft),
-      $: mergeDependencies
+      "/*": () => jsonSchemaMergeRules(draft, mergeResolver),
+      $: dependenciesMergeResolver
     },
     "/const": { $: equal },
     "/exclusiveMaximum": { $: minValue },
     "/exclusiveMinimum": { $: maxValue },
+    "/definitions": {
+      '/*': () => jsonSchemaMergeRules(draft, mergeResolver),
+    },
   } : {},
   "/xml": { $: mergeObjects },
-  // "/externalDocs": { $: first },
-  // "/description": { $: first },
-  // "/title": { $: first },
-  // "/format": { $: first },
-  // "/default": { $: first },
-  "/*": { $: first },
-  $: mergeFunc,
+  // "/externalDocs": { $: last },
+  // "/description": { $: last },
+  // "/title": { $: last },
+  // "/format": { $: last },
+  // "/default": { $: last },
+  "/*": { $: last },
+  "/defs": {
+    '/*': () => jsonSchemaMergeRules(draft, mergeResolver),
+  },
+  $: mergeResolver,
 })
 
 
 // utils 
-const isEqual = (a: any, b: any) => JSON.stringify(a) == JSON.stringify(b)
+export const isEqual = (a: any, b: any) => JSON.stringify(a) == JSON.stringify(b)
 
-function findMultiplierForInteger(number: number): number {
+export const findMultiplierForInteger = (number: number): number => {
   let multiplier = 1;
 
   while (number * multiplier % 1 !== 0) {
@@ -410,19 +420,7 @@ function calculateGCD(a: number, b: number): number {
   return b === 0 ? a : calculateGCD(b, a % b);
 }
 
-export const removeDuplicates = <T>(array: T[]): T[] => {
-  const uniqueItems: T[] = [];
-
-  for (const item of array) {
-    if (!uniqueItems.some((uniqueItem) => isEqual(uniqueItem, item))) {
-      uniqueItems.push(item);
-    }
-  }
-
-  return uniqueItems;
-}
-
-function findCombinations(vectors: any[][]): any[][] {
+export const findCombinations = (vectors: any[][]): any[][] => {
   if (vectors.length === 0) {
     return [[]]; // Base case: empty vector, return an empty combination
   }
