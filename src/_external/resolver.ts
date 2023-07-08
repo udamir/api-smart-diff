@@ -1,4 +1,4 @@
-import { isObject } from "./crawler";
+import { isObject } from "json-crawl"
 
 export interface RefNode {
   $ref: string

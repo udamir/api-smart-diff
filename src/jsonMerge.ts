@@ -1,10 +1,12 @@
+import { CloneHook, CloneState, syncClone } from "json-crawl"
+
 import { changeFactory, createMergeMeta } from "./utils"
 import { Diff, JsonNode, MergeState } from "./types"
-import { CloneHook, CloneState, clone } from "./crawler"
+
 import { DIFF_META_KEY } from "../constants"
-import { ClassifyRules } from "./rules/types"
-import { mapArraysKeysRule } from "./rules/mapping/array"
-import { mapObjectKeysRule } from "./rules/mapping/object"
+import { ComapareRules } from "./rules/types"
+import { mapArraysKeysRule } from "./resolvers/array"
+import { mapObjectKeysRule } from "./resolvers/object"
 
 export interface JsonMergeResult<T extends Diff> {
   diffs: T[]
@@ -25,7 +27,7 @@ export type MergeOptions<T extends Diff> = {
     [key: string]: any
   }
   rules?: {
-    classify: ClassifyRules
+    classify: ComapareRules
     // match: JsonMapTreeRules<MatchRule>
     // diffDoc: JsonMapTreeRules<MatchRule>
   }
@@ -107,7 +109,7 @@ export const jsonMerge = <T extends Diff = Diff>(
   
   const rootState: MergeState<T> = { aPath: [], aNode: { "#": after }, keyMap: { "#": "#" }, nodeDiffs: diffs } 
 
-  const merged = clone<MergeState<T>>(before, hook, rootState)
+  const merged = syncClone<MergeState<T>>(before, hook, rootState)
 
   return { diffs, merged }
 }

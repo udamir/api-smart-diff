@@ -36,9 +36,9 @@
   "devDependencies": {
     "@types/jest": "^26.0.0",
     "@types/js-yaml": "^4.0.5",
-    "graphql": "^16.6.0",
     "fast-json-patch": "^3.1.1",
     "gqlapi": "0.0.4",
+    "graphql": "^16.6.0",
     "jest": "^26.0.1",
     "js-yaml": "^4.1.0",
     "ts-jest": "^26.1.0",
@@ -67,5 +67,8 @@
       "<rootDir>/dist/"
     ],
     "collectCoverage": true
+  },
+  "dependencies": {
+    "json-crawl": "^0.2.0"
   }
 }

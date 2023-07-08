@@ -1,4 +1,4 @@
-import { MapKeysResult } from "../types"
+import { MapKeysResult } from "../rules/types"
 
 export const mapObjectKeysRule = (before: object, after: object): MapKeysResult<string> => {
 

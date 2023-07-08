@@ -1,15 +1,18 @@
-import { changeFactory } from "./utils"
-import { SyncCrawlHook, syncCrawl } from "./crawler"
-import { Diff, DiffState } from "./types"
-import { ApiDiffOptions } from "../types"
-import { typeOf } from "../utils"
-import { mapArraysKeysRule } from "./rules/mapping/array"
-import { mapObjectKeysRule } from "./rules/mapping/object"
+import { SyncCrawlHook, syncCrawl } from "json-crawl"
+
+import { changeFactory, typeOf } from "./utils"
+
+import { Diff, DiffState, JsonCompareOptions } from "./types"
+
+import { mapArraysKeysRule } from "./resolvers/array"
+import { mapObjectKeysRule } from "./resolvers/object"
+import { ComapareRules } from "./rules/types"
+import { jsonSchemaRules } from "./rules/compare"
 
 export const jsonDiff = <T extends Diff = Diff>(
   before: unknown,
   after: unknown,
-  options: ApiDiffOptions = {}
+  options: JsonCompareOptions = {}
 ): T[] => {
   const diffs: T[] = []
   const change = changeFactory<T>()
@@ -47,7 +50,10 @@ export const jsonDiff = <T extends Diff = Diff>(
     return null
   }
   
-  syncCrawl<DiffState>(before, hook, { aPath: [], aNode: { "#": after }, keyMap: { "#": "#" } })
+  syncCrawl<DiffState, ComapareRules>(before, hook, { 
+    state: { aPath: [], aNode: { "#": after }, keyMap: { "#": "#" } },
+    rules: options.rules || jsonSchemaRules()
+  })
 
   return diffs
 }

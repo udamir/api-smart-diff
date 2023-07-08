@@ -1,4 +1,4 @@
-import { MapKeysResult } from "../types";
+import { MapKeysResult } from "../rules/types";
 
 export const mapArraysKeysRule = (before: Array<any>, after: Array<any>): MapKeysResult<number> => {
   const length = Math.abs(before.length - after.length)
