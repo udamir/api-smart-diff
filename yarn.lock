@@ -897,6 +897,13 @@ ajv@^6.1.0, ajv@^6.10.2:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+allof-merge@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/allof-merge/-/allof-merge-0.2.0.tgz#202c4a3a89353586fb6d2b2ff2ab4ec4c0882274"
+  integrity sha512-UIwA9K3Cpw6XiDT40E8m1svj04fUXABifKq1qVj5FF8eNuZed83ORN0H9q8lfTr1cB71dRhVj0UpzIqWf0sO/w==
+  dependencies:
+    json-crawl "^0.2.0"
+
 ansi-escapes@^4.2.1:
   version "4.3.2"
   resolved "https://registry.yarnpkg.com/ansi-escapes/-/ansi-escapes-4.3.2.tgz#6b2291d1db7d98b6521d5f1efa42d0f3a9feb65e"
@@ -3238,6 +3245,11 @@ jsesc@^2.5.1:
   version "2.5.2"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
   integrity sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==
+
+json-crawl@^0.2.0:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/json-crawl/-/json-crawl-0.2.3.tgz#8750ca0497ad438b6785bf2881b643be3e653c85"
+  integrity sha512-nBAqXIKqQ9CKAXHVwoDPeW6/o7AoKFJjjM0LcgLWujvTVDJjNScVJPUj0Gf9NIzuMKH8DH08Lrj+sdkl8vngaA==
 
 json-parse-better-errors@^1.0.2:
   version "1.0.2"

@@ -66,14 +66,12 @@ const getChangeRule = (rules: ChangeDocRules, ctx: ChangeDocContext, index = 0):
 }
 
 export const changeDoc = (diff: Diff, before: any, after: any, rules: ChangeDocRules): string => {
-  if (diff.type !== "annotation" && diff.type !== "unclassified") {
-    const source = diff.action === "add" ? after : before
-    try {
-      return getChangeRule(rules, { ...diff, node: source, source, key: "" })
-    } catch (error) {
-      console.error(error)
-      return ""
-    }
+  if (diff.path.includes("allOf") || diff.path.includes("oneOf") || diff.path.includes("anyOf")) { return "" }
+  if (diff.type === "annotation" || diff.type === "unclassified") { return "" }
+  const source = diff.action === "add" ? after : before
+  try {
+    return getChangeRule(rules, { ...diff, node: source, source, key: "" })
+  } catch (error) {
+    return ""
   }
-  return ""
 }

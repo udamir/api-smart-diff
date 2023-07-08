@@ -33,14 +33,29 @@ const requiredList = (required: string[], path: ObjPath, index: number) => {
   return (required.length > 1 ? "properties " : "property ") + required.map((prop) => mark(targetProperty([...path, "properties", prop], index))).join(", ")
 }
 
+const requiredProperty = (name: string, path: ObjPath, index: number) => {
+  let target = targetProperty(path, index)
+  return mark(target ? `${target}.${name}` : name)
+}
+
 const propertyRule = (target: string, location: string, index: number): ChangeDocRuleRef => ({ action, path }) => 
-  `${actions[action]} ${target}property ${mark(targetProperty(path, index))} in ${location}`
+  `${actions[action]} ${target ? target + " " + dir(action) + " " : ""}property ${mark(targetProperty(path, index))} in ${location}`
 
 
 const operationMethods = (node: any) => {
   const methods = Object.keys(node).filter(key => ["get", "post", "put", "head", "delete", "patch", "connect", "trace", "options"].includes(key.toLocaleLowerCase())).map(mark)
   return (methods.length > 1 ? "methods " : "method ") + methods.join(", ")
 }
+
+const dir = (action: string) => {
+  if (action === "add") {
+    return "to"
+  } else if (action === "remove") {
+    return "from"
+  } else {
+    return "of"
+  }
+} 
 
 const changeSchemaRules = (location: string, index: number): ChangeDocRules => ({
   // property
@@ -67,25 +82,25 @@ const changeSchemaRules = (location: string, index: number): ChangeDocRules => (
     "/*": () => changeSchemaRules(location, index)
   },
   // type
-  "/type": propertyRule("Type of ", location, index),
+  "/type": propertyRule("Type", location, index),
   // required
   "/required": {
-    "/": ({ action, node, path }) => `${actions[action]} Required ${requiredList(node, path, index)} in ${location}`,
-    "/*": ({ action, parent, key }) => `${actions[action]} Required property ${mark(parent[key])} in ${location}`,
+    "/": ({ action, node, path }) => `${actions[action]} Required status ${dir(action)} ${requiredList(node, path, index)} in ${location}`,
+    "/*": ({ action, parent, key, path }) => `${actions[action]} Required status ${dir(action)} property ${requiredProperty(parent[key], path, index)} in ${location}`,
   },
   // value
-  "/format": propertyRule("Value format for ", location, index),
-  "/default": propertyRule("Default value for ", location, index),
-  "/nullable": propertyRule("Possbile nullable value for ", location, index),
-  "/enum": propertyRule("Possbile values for ", location, index),
+  "/format": propertyRule("Value format", location, index),
+  "/default": propertyRule("Default value", location, index),
+  "/nullable": propertyRule("Possbile nullable value", location, index),
+  "/enum": propertyRule("Possbile values", location, index),
   // status
-  "/readOnly": propertyRule("Readonly status to ", location, index),
-  "/writeOnly": propertyRule("Wrightonly status to ", location, index),
-  "/deprecated": propertyRule("Deprecated status to ", location, index),
+  "/readOnly": propertyRule("Readonly status", location, index),
+  "/writeOnly": propertyRule("Wrightonly status", location, index),
+  "/deprecated": propertyRule("Deprecated status", location, index),
   // polymorph
   "/allOf": () => changeSchemaRules(location, index),
-  "/oneOf": () => changeSchemaRules(location, index),
-  "/anyOf": () => changeSchemaRules(location, index),
+  "/oneOf": { "/*": () => changeSchemaRules(location, index) },
+  "/anyOf": { "/*": () => changeSchemaRules(location, index) },
   "/not": () => changeSchemaRules(location, index),
 })
 
@@ -97,9 +112,9 @@ export const changeDocParametersRules: ChangeDocRules = {
     // [Changed] Required status to query parameter `filter`
     "/*": ({ parent }) => `${actions.replace} ${parent.required ? "Required " : ""}${parent.in} parameter ${mark(parent.name)}`,
     // [Added] Required status in query parameter `filter`
-    "/required": ({ action, parent }) => `${actions[action]} Required status in ${parent.in} parameter ${mark(parent.name)}`,
+    "/required": ({ action, parent }) => `${actions[action]} Required status ${dir(action)} ${parent.in} parameter ${mark(parent.name)}`,
     // [Added] Deprecation status to query parameter `filter`
-    "/deprecated": ({ action, parent }) => `${actions[action]} Deprecated status in ${parent.in} parameter ${mark(parent.name)}`,
+    "/deprecated": ({ action, parent }) => `${actions[action]} Deprecated status ${dir(action)} ${parent.in} parameter ${mark(parent.name)}`,
   }
 }
 
@@ -145,9 +160,9 @@ export const changeDocOpenApiRules: ChangeDocRules = {
                 // [Changed] Required status to query parameter `filter`
                 "/*": ({ node, key, path }) => `${actions.replace} ${node.required ? "required " : ""}Header parameter ${mark(key)} in Response ${path[4]}`,
                 // [Added] Required status to query parameter `filter`
-                "/required": ({ action, key, path }) => `${actions[action]} Required status to Header parameter ${mark(key)} in Response ${path[4]}`,
+                "/required": ({ action, key, path }) => `${actions[action]} Required status ${dir(action)} Header parameter ${mark(key)} in Response ${path[4]}`,
                 // [Added] Deprecation status to query parameter `filter`
-                "/deprecated": ({ action, path, key }) => `${actions[action]} Deprecated status to Header parameter ${mark(key)} in Response ${path[4]}`,
+                "/deprecated": ({ action, path, key }) => `${actions[action]} Deprecated status ${dir(action)} Header parameter ${mark(key)} in Response ${path[4]}`,
               }
             },
             "/content": {
