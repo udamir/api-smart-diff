@@ -44,6 +44,7 @@ export type ComapareRules = CrawlRules<{
 
 
 export interface MapKeysResult<T extends string | number> {
+  value: Record<T, any> | null
   added: Array<T>
   removed: Array<T>
   mapped: Record<T, T>

@@ -21,7 +21,7 @@ export const jsonDiff = <T extends Diff = Diff>(
     const { state, ...ctxB } = ctx
     const { keyMap, aNode, aPath } = state!
 
-    const keyA = keyMap[ctxB.key]
+    const keyA = ctx.path.length ? keyMap[ctxB.key] : "#"
     const a = aNode[keyA]
 
     if (typeOf(b) !== typeOf(a)) {
@@ -30,7 +30,7 @@ export const jsonDiff = <T extends Diff = Diff>(
     }
 
     if (a && b && typeof b === "object" && typeof a === "object") {    
-      const { added, removed, mapped } = Array.isArray(b) && Array.isArray(a) ? mapArraysKeysRule(b, a) : mapObjectKeysRule(b, a)
+      const { value, added, removed, mapped } = Array.isArray(b) && Array.isArray(a) ? mapArraysKeysRule(b, a) : mapObjectKeysRule(b, a)
 
       diffs.push(...added.map((key) => change.added(ctxB.path, a[key])))
       diffs.push(...removed.map((key) => change.removed(ctxB.path, b[key])))
@@ -40,7 +40,7 @@ export const jsonDiff = <T extends Diff = Diff>(
           k1 !== k2 && diffs.push(change.renamed(ctxB.path, k1, k2)))
       }
 
-      return { value: b, state: { keyMap: mapped, aPath: [...aPath, keyA], aNode: a } }
+      return { value, state: { keyMap: mapped, aPath: [...aPath, keyA], aNode: a } }
     }
     
     if (b !== a) {

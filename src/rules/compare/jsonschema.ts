@@ -126,15 +126,25 @@ export const jsonSchemaRules = (draft: string = ""): ComapareRules => ({
   "/nullable": { $: booleanClassifier },
   "/discriminator": {
     // TODO
-    $$: allUnclassified,
+    $: allUnclassified,
     "/propertyName": { $: allUnclassified },
     "/mapping": { $: allUnclassified },
   },
   "/readOnly": { $: booleanClassifier },
   "/writeOnly": { $: booleanClassifier },
   "/example": { $: allAnnotation },
-  "/examples": { $$: allAnnotation },
-  "/externalDocs": { $$: allAnnotation },
-  "/deprecated": { $$: allDeprecated },
-  "/xml": { $$: allUnclassified },
+  "/examples": { 
+    "/**": { $: allAnnotation },
+    $: allAnnotation,
+  },
+  "/externalDocs": { 
+    "/**": { $: allAnnotation },
+    $: allAnnotation 
+  },
+  "/deprecated": { $: allDeprecated },
+  "/xml": { 
+    "/**": { $: allUnclassified },
+    $: allUnclassified
+  },
+  "/**": { $: allUnclassified }
 })

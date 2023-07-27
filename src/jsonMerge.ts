@@ -1,9 +1,9 @@
-import { CloneHook, CloneState, syncClone } from "json-crawl"
+import { SyncCloneHook, CloneState, syncClone } from "json-crawl"
 
 import { changeFactory, createMergeMeta } from "./utils"
 import { Diff, JsonNode, MergeState } from "./types"
 
-import { DIFF_META_KEY } from "../constants"
+import { DIFF_META_KEY } from "./constants"
 import { ComapareRules } from "./rules/types"
 import { mapArraysKeysRule } from "./resolvers/array"
 import { mapObjectKeysRule } from "./resolvers/object"
@@ -15,7 +15,7 @@ export interface JsonMergeResult<T extends Diff> {
 
 interface MergeFactoryResult<T extends Diff> {
   diffs: T[]
-  hook: CloneHook<MergeState<T>>
+  hook: SyncCloneHook<MergeState<T>>
 }
 
 export type MergeOptions<T extends Diff> = {
@@ -42,7 +42,7 @@ const useMergeFactory = <T extends Diff>(
   const change = changeFactory<T>()
   const { arrayMeta, metaKey = DIFF_META_KEY } = options
 
-  const hook: CloneHook<MergeState<T>> = (before: any, ctx) => {
+  const hook: SyncCloneHook<MergeState<T>> = (before: any, ctx) => {
     const { keyMap, nodeDiffs, aNode, aPath } = ctx.state
 
     const akey = keyMap[ctx.key]
@@ -109,7 +109,7 @@ export const jsonMerge = <T extends Diff = Diff>(
   
   const rootState: MergeState<T> = { aPath: [], aNode: { "#": after }, keyMap: { "#": "#" }, nodeDiffs: diffs } 
 
-  const merged = syncClone<MergeState<T>>(before, hook, rootState)
+  const merged = syncClone<MergeState<T>>(before, hook, { state: rootState })
 
   return { diffs, merged }
 }
