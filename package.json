@@ -15,7 +15,7 @@
   "scripts": {
     "build": "tsc && tsc --module commonjs --outDir dist/cjs",
     "test": "jest --verbose",
-    "prepublish": "rm -r dist || true && npm run build && npm run build:web",
+    "prepublish": "rm -r dist || true && npm run build",
     "test:coverage": "jest --verbose --coverage",
     "build:web": "webpack"
   },
