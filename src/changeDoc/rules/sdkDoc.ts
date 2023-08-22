@@ -1,10 +1,30 @@
 import { ObjPath } from "../../types"
+import { getValueByPath } from "../../utils";
 import { ChangeDocRuleRef, ChangeDocRules } from "../types"
 
 const actions: Record<string, "[Added]" | "[Deleted]" | "[Changed]"> = {
   "add": "[Added]",
   "replace": "[Changed]",
   "remove": "[Deleted]"
+}
+
+function breakingChange(type: string, isBreaking: boolean){
+  if(type !== "breaking" && isBreaking){
+      return "[Breaking] ";
+  }
+  return "";
+}
+
+function getBreakingTag(){
+  return "[Breaking] ";
+}
+
+function getNodeFromPath(source: any, path: Array<string | number>){
+  let res = source;
+  path.forEach((item: string | number) => {
+    res = res[item];
+  })
+  return res;
 }
 
 const targetProperty = (path: ObjPath, from: number, prefix = ""): string => {
@@ -38,14 +58,42 @@ const requiredProperty = (name: string, path: ObjPath, index: number) => {
   return mark(target ? `${target}.${name}` : name)
 }
 
-const propertyRule = (target: string, location: string, index: number): ChangeDocRuleRef => ({ action, path }) => 
-  `${actions[action]} ${target ? target + " " + dir(action) + " " : ""}property ${mark(targetProperty(path, index))} in ${location}`
+const propertyRule = (target: string, location: string, index: number): ChangeDocRuleRef => (data) => {
 
+  // Finding name of schema
+  let schemaName = "";
 
-const operationMethods = (node: any) => {
-  const methods = Object.keys(node).filter(key => ["get", "post", "put", "head", "delete", "patch", "connect", "trace", "options"].includes(key.toLocaleLowerCase())).map(mark)
-  return (methods.length > 1 ? "methods " : "method ") + methods.join(", ")
+  let currentPathIndex = 0;
+  let currentPath = data.path;
+  let currentSchema = data.source;
+
+  while(currentPathIndex < currentPath.length){
+    currentSchema = getValueByPath(data.source, currentPath.slice(0, currentPathIndex+1));
+    currentPathIndex++;
+    if(currentSchema.hasOwnProperty("$ref")){
+      let newSchemaPath = currentSchema["$ref"].split("/").slice(1);
+      schemaName = currentSchema["$ref"].split("/").slice(-1)[0];
+      // currentSchema = getValueByPath(data.source, newSchemaPath);
+      currentPath = newSchemaPath.concat(currentPath.slice(currentPathIndex));
+      currentPathIndex = 2;
+    }
+  }
+  
+  return `${actions[data.action]} ${target ? target + `${data.before ? ` from ${mark(data.before)}`: ''}${data.after ? ` ${data.action !== 'add' ? 'to ' : ''}${mark(data.after)}` : ''}` + " " + dir(data.action) + " " : ""}property ${mark(targetProperty(data.path, index))} of schema ${mark(schemaName)} in ${location}`
 }
+
+// const propertyRule = (target: string, location: string, index: number): ChangeDocRuleRef => (data) => {
+//   delete data.source
+//   console.log(data);
+//   return `${actions[data.action]} ${target ? target + " " + dir(data.action) + " " : ""}property ${mark(targetProperty(data.path, index))}${data.before? ` from \`${data.before}\``: ""} in ${location}`
+//   return `${actions[data.action]} ${target ? target : ""}${data.before? ` from \`${data.before}\``: ""}${data.after ? ` to \`${data.after}\``: ""} of property ${mark(targetProperty(data.path, index))} in ${location}`
+// }
+
+
+// const operationMethods = (node: any) => {
+//   const methods = Object.keys(node).filter(key => ["get", "post", "put", "head", "delete", "patch", "connect", "trace", "options"].includes(key.toLocaleLowerCase())).map(mark)
+//   return (methods.length > 1 ? "methods " : "method ") + methods.join(", ")
+// }
 
 const dir = (action: string) => {
   if (action === "add") {
@@ -104,27 +152,106 @@ const changeSchemaRules = (location: string, index: number): ChangeDocRules => (
   "/not": () => changeSchemaRules(location, index),
 })
 
-export const changeDocParametersRules: ChangeDocRules = {
-  "/": ({ action, node }) => `${actions[action]} ${node.map((param: any) => `${param.in} parameter ${mark(param.name)}`).join(", ")}`,
+const parameterArrayChangeDoc = (data: any) => {
+  let changedParamObj: any[] = [];
+
+  let change = "";
+  // Whole parameter object changed (parameter array)
+  if(data.after) changedParamObj = changedParamObj.concat(data.after);
+  if(data.before) changedParamObj = changedParamObj.concat(data.before);
+  
+  let isFirst = true;
+  for(const param of changedParamObj){
+    const isBreaking = param.required ? true : false;
+    if(isFirst){
+        isFirst = false;
+    }
+    else{
+        change += "- ";
+    }
+    change += `${breakingChange(data.type, isBreaking)}${actions[data.action]}${param.required ? " Required" : ""} \`${param.in}\` parameter \`${param.name}\` (type: \`${param.schema.type}\`)\n`;
+  }
+  return change
+};
+
+const parameterChangeDoc = (data: any) => {
+  if(data.action == "replace"){
+    let change = ``;
+    if(data.before.name === data.after.name){
+      const isRequiredChanged = data.before.required !== data.after.required && data.before.required !== undefined && data.after.required !== undefined;
+      const isLocationChanged = data.before.in !== data.after.in;
+      const isTypeChanged = data.before.schema.type !== data.after.schema.type && data.before.schema.type !== undefined && data.after.schema.type;
+      
+      change += `${breakingChange(data.type, true)}${actions[data.action]}`;
+      let isFirst = true;
+      if(isRequiredChanged){
+        change += ` type from ${data.before.type} to ${data.after.type}`
+        isFirst = false;
+      }
+      if(isLocationChanged){
+        if(!isFirst) change += ",";
+        isFirst = false;
+        change += ` location from ${data.before.in} to ${data.after.in}`
+      }
+      if(isTypeChanged){
+        if(!isFirst) change += ",";
+        isFirst = false;
+        change += ` type from ${data.before.schema.type} to ${data.after.schema.type}`
+      }
+      
+      change += ` of parameter ${data.before.name}`;
+    }
+    else{
+      // change += `${breakingChange(data.type, true)}${actions['add']}`;
+      if(data.before){
+        change += `${breakingChange(data.type, true)}${actions['remove']}`;
+        change += `${data.before.required ? " Required" : ""} \`${data.before.in}\` parameter \`${data.before.name}\` (type: \`${data.before.schema.type}\`)`
+      }
+      if(data.after){
+        if(change !== ""){
+          change += `\n\n- ${data.after.required ? getBreakingTag(): ""}`;
+        }
+        else{
+          change += `${breakingChange(data.type, true)}`;
+        }
+        change += `${actions['add']}`;
+        change += `${data.after.required ? " Required" : ""} \`${data.after.in}\` parameter \`${data.after.name}\` (type: \`${data.after.schema.type}\`)`
+      }
+    }
+    return change;
+  }
+  else{
+    const param = data.before ?? data.after;
+    const isBreaking = param.required ? true : false;
+    return `${breakingChange(data.type, isBreaking)}${actions[data.action]}${param.required ? " Required" : ""} \`${param.in}\` parameter \`${param.name}\` (type: \`${param.schema.type}\`)\n`;
+  }
+}
+
+const changeDocParametersRules: ChangeDocRules = {
+  "/": parameterArrayChangeDoc,
   "/*": {
     // [Deleted] Required query parameter `filter`
-    "/": ({ action, node }) => `${actions[action]} ${node.required ? "Required " : ""}${node.in} parameter ${mark(node.name)}`,
+    "/": parameterChangeDoc,
     // [Changed] Required status to query parameter `filter`
-    "/*": ({ parent }) => `${actions.replace} ${parent.required ? "Required " : ""}${parent.in} parameter ${mark(parent.name)}`,
+    // "/*": parameterChangeDoc,
+    // "/*": ({ parent }) => `${actions.replace} ${parent.required ? "Required " : ""}${parent.in} parameter ${mark(parent.name)}`,
     // [Added] Required status in query parameter `filter`
-    "/required": ({ action, parent }) => `${actions[action]} Required status ${dir(action)} ${parent.in} parameter ${mark(parent.name)}`,
+    "/required": (data) => `${actions[data.action]} Required status ${dir(data.action)} ${data.parent.in} parameter ${mark(data.parent.name)}`,
+    // "/default": (data) => ``,
     // [Added] Deprecation status to query parameter `filter`
     "/deprecated": ({ action, parent }) => `${actions[action]} Deprecated status ${dir(action)} ${parent.in} parameter ${mark(parent.name)}`,
   }
 }
 
-export const changeDocOpenApiRules: ChangeDocRules = {
+export const changeDocSDKRules: ChangeDocRules = {
   "/paths": {
     "/*": {
-      "/": ({ action, node }) => `${actions[action]} operation ${operationMethods(node)}`,
+      "/": ({ action, key }) => `${actions[action]} method \`${key}\`\n`,
+      // "/": ({ action, node }) => `${actions[action]} operation ${operationMethods(node)}`,
       "/parameters": changeDocParametersRules,
       "/*": {
-        "/": ({ action }) => `${actions[action]} operation`,
+        // "/": ({ action }) => `${actions[action]} operation`,
+        "/": ({ action, node }) => `${actions[action]} method \`${node.operationId}\`\n`,
         "/parameters": changeDocParametersRules,
         "/requestBody": {
           // [Removed] Body content in Request
@@ -138,14 +265,19 @@ export const changeDocOpenApiRules: ChangeDocRules = {
               // [Add] Body content (application/json) in Request body
               "/": ({ action, path }) => `${actions[action]} Body content (${path[5]}) in Request`,
               // [Added] `groups.[].lastVersion` property in Request body content (application/json)
-              "/schema": ({ path }) => changeSchemaRules(`Request body content (${path[5]})`, 7),
+              "/schema": ({ path }) => changeSchemaRules(`request body`, 7),
               // TODO: encoding
               "/encoding": ({ action, path }) => `${actions[path.length === 8 ? action : "replace"]} Encoding of Response ${path[4]} content (${path[6]})`,
             }
           }
         },
         // [Add] Deprecated status
-        "/deprecated": ({ action }) => `${actions[action]} Deprecated status`,
+        "/deprecated": (data) => {
+          if(data.action === "add" || (data.action === "replace" && data.after === true)){
+            return "[Note] This method is deprecated and it will be removed in future versions."
+          }
+          return `${actions[data.action]} Deprecated status${data.before ? ` from ${data.before}`: ""}${data.after ? ` to ${data.after}`: ""}`
+        },
         // TODO: security
         "/security": ({ action, path }) => `${actions[path.length === 4 ? action : "replace"]} Security in Request`,
         "/responses": {
@@ -172,14 +304,52 @@ export const changeDocOpenApiRules: ChangeDocRules = {
                 // [Add] Content (application/json) in Response 200
                 "/": ({ action, path }) => `${actions[action]} Content (${path[6]}) in Response ${path[4]}`,
                 // [Added] `groups.[].lastVersion` property in response 200 content
-                "/schema": ({ path }) => changeSchemaRules(`Response ${path[4]} content (${path[6]})`, 8),
+                "/schema": ({ path }) => changeSchemaRules(`response with status code ${path[4]}`, 8),
                 // TODO: encoding
                 "/encoding": ({ action, path }) => `${actions[path.length === 8 ? action : "replace"]} Encoding of Response ${path[4]} content (${path[6]})`,
               }
             },
           }
+        },
+        "/operationId": (data) => `${actions[data.action]} operationId${data.before ? ` from \`${data.before}\`` : ""}${data.after ? ` to \`${data.after}\`` : ""}`,
+        "/methodType": (data) => `${actions[data.action]} http method type ${data.before ? `from \`${data.before}\`` : ""} ${data.after ? `To \`${data.after}\`` : ""}`,
+        "/path": (data) => {
+          const beforePath = String(data.before).replace(new RegExp("\{.*?\}", "g"), "*")
+          const afterPath = String(data.after).replace(new RegExp("\{.*?\}", "g"), "*")
+          if(beforePath !== afterPath){
+              return `${actions[data.action]} Path ${data.before ? "From \`" + data.before + "\`" : ""} ${data.after ? "To \`" + data.after + "\`" : ""}`
+          }
+          return "";
         }
       }
+    }
+  },
+  "/components": {
+    "/schemas": {
+      "/*": {
+       //Schema changed
+        "/": (data) => `${breakingChange(data.type, false)}${actions[data.action]} schema \`${data.key}\``,
+       //property of schema changed
+       "/properties": {
+          
+         
+          //inside parameter
+          "/*": {
+            // parameter added or deleted
+          // "/": `parameter added`,
+            "/": (data) => {
+              return `${breakingChange(data.type, false)}${actions[data.action]} parameter \`${data.key}\` in ${data.path[2]}`
+            },
+            "/type": (data) => `${breakingChange(data.type, false)} ${actions[data.action]} type of property \`${data.path[data.path.length - 2]}\` from \`${data.before}\` to \`${data.after}\` in schema \`${data.path[data.path.length - 4]}\``
+          },
+        },
+      //   "/*": (data) => {
+      //     delete data.source
+      //     console.log(data)
+      //     return `${breakingChange(data.type, false)} ${actions[data.action]} `
+      //  }
+      }
+      
     }
   }
 }

@@ -6,10 +6,30 @@ import {
   allAnnotation, addNonBreaking,
   allBreaking, allNonBreaking, allDeprecated, annotation,
 } from "../constants"
+import fs from "fs"
 
-const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
-  const beforePath: string = String(before.key).replace(new RegExp("\{.*?\}", "g"), "*")
-  const afterPath: string = String(after.key).replace(new RegExp("\{.*?\}", "g"), "*")
+const methodMatchRule = (rules: Rules) => matchRule(rules, (data) => {
+  if(data.before.key === data.after.key){
+    return true;
+  }
+  else{
+    const beforePath: string = String(data.before.value.methodTypePlaceHolder.path).replace(new RegExp("\{.*?\}", "g"), "*")
+    const afterPath: string = String(data.after.value.methodTypePlaceHolder.path).replace(new RegExp("\{.*?\}", "g"), "*")
+
+    if(beforePath === afterPath){
+      return true;
+    }
+    else{
+      return false;
+    }
+  }
+
+})
+
+const pathArrayRules = (rules: Rules) => matchRule(rules, (data) => {
+  console.log(data)
+  const beforePath: string = String(data.before.key).replace(new RegExp("\{.*?\}", "g"), "*")
+  const afterPath: string = String(data.after.key).replace(new RegExp("\{.*?\}", "g"), "*")
   return beforePath === afterPath
 })
 
@@ -17,7 +37,7 @@ const paramArrayRules = (rules: Rules) => matchRule(rules, ({ before: { value: b
   return b.in === a.in && (b.in === "path" || b.name === a.name)
 })
 
-const contentMediaTypeRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
+const contentMediaTypeRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {  
   const [ afterMediaType = "" ] = String(after.key).split(";")
   const [ beforeMediaType = "" ] = String(before.key).split(";")
 
@@ -82,7 +102,7 @@ const parametersRules: Rules = paramArrayRules({
   "/": [nonBreaking, breaking, breaking],
   "/*": (param) => ({
     "/": [nonBreaking, breaking, breaking],
-    "/name": [nonBreaking, breaking, (ctx) => ctx.up().before?.in === "path" ? nonBreaking : breaking ],
+    "/name": [breaking, breaking, breaking ],
     "/in": [nonBreaking, breaking, breaking],
     "/schema": paramSchemaRules(param),
     "/explode": parameterExplodeRule(param?.style),
@@ -174,7 +194,9 @@ const operationRules: Rules = {
   "/summary": allAnnotation,
   "/description": allAnnotation,
   "/externalDocs": allAnnotation,
-  "/operationId": allAnnotation,
+  "/operationId": allBreaking,
+  "/path": allNonBreaking,
+  "/methodType": allNonBreaking,
   "/parameters": parametersRules,
   "/requestBody": requestBodiesRules,
   "/responses": responsesRules,
@@ -184,7 +206,7 @@ const operationRules: Rules = {
 }
 
 const openapi3MethodRules: Rules = {
-  "/": [nonBreaking, breaking, nonBreaking],
+  "/": [nonBreaking, breaking, breaking],
   "/summary": allAnnotation,
   "/description": allAnnotation,
   "/*": operationRules,
@@ -208,7 +230,7 @@ export const sdkRules: Rules = {
     "/version": allAnnotation,
   },
   "/servers": serversRules,
-  "/paths": pathArrayRules({
+  "/paths": methodMatchRule({
     "/": [nonBreaking, breaking, breaking],
     "/*": openapi3MethodRules,
   }),
