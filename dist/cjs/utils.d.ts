@@ -1,0 +1,34 @@
+import { Rule, MatchFunc, Rules, DiffType, ObjPath, DiffTypeFunc, JsonDiff } from "./types";
+export type PathItem = string | number;
+export declare class PathPointer implements Iterable<PathItem> {
+    key?: string | number | undefined;
+    parent?: PathPointer | undefined;
+    escapedKey: string;
+    items: PathItem[];
+    get ref(): string;
+    [Symbol.iterator](): Iterator<PathItem>;
+    constructor(key?: string | number | undefined, parent?: PathPointer | undefined);
+    childPath(key: string | number): PathPointer;
+}
+export declare const breakingIf: (v: boolean) => DiffType;
+export declare const breakingIfAfterTrue: DiffTypeFunc;
+export declare const added: (path: PathPointer, after: any) => JsonDiff;
+export declare const removed: (path: PathPointer, before: any) => JsonDiff;
+export declare const replaced: (path: PathPointer, before: any, after: any) => JsonDiff;
+export declare const renamed: (path: PathPointer, before: any, after: any) => JsonDiff;
+export declare const unchanged: (path: PathPointer, before: any) => JsonDiff;
+export declare const isEmptyObject: (obj: any) => boolean;
+export declare const typeOf: (value: any) => "string" | "number" | "bigint" | "boolean" | "symbol" | "undefined" | "object" | "function" | "array" | "null";
+export declare const parsePath: (path: string) => string[];
+export declare const buildPath: (path: ObjPath) => string;
+export declare const getPathRules: (rules: Rules, path: ObjPath, source: any) => Rules | Rule | undefined;
+export declare const getPathMatchFunc: (rules: Rules, path: PathPointer, source: any) => MatchFunc | undefined;
+export declare const findExternalRefs: (source: any | any[]) => string[];
+export declare const matchRule: (rules: Rules, matchFunc: MatchFunc) => Rules;
+export declare const objArray: (key: string, rules: Rules) => Rules;
+export declare const resolveRef: (val: any, source: any, cache: any) => any;
+export declare const getValueByPath: (obj: any, objPath: ObjPath) => any;
+export declare const setValueByPath: (obj: any, objPath: ObjPath, value: any, i?: number) => void;
+export declare const mergeValues: (value: any, patch: any) => any;
+export declare const emptySecurity: (value?: Array<any>) => boolean;
+export declare const includeSecurity: (value?: Array<any>, items?: Array<any>) => boolean;

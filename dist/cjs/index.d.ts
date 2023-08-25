@@ -1,0 +1,12 @@
+import { ApiCompare } from "./apiCompare";
+export * from "./rules/index";
+export * from "./types";
+export * from "./constants";
+export * from "./utils";
+export * from "./changeDoc";
+export * from "./changeDoc/rules";
+export { ApiCompare } from "./apiCompare";
+export { JsonCompare } from "./jsonCompare";
+export declare const apiDiff: typeof ApiCompare.apiDiff;
+export declare const apiMerge: typeof ApiCompare.apiMerge;
+export declare const apiDiffTree: typeof ApiCompare.apiDiffTree;
