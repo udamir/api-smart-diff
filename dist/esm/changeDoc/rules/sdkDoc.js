@@ -68,6 +68,12 @@ const propertyRule = (target, location, index) => (data) => {
             currentPathIndex = 2;
         }
     }
+    if (typeof (data.before) === "object" && !Array.isArray(data.before)) {
+        data.before = undefined;
+    }
+    if (typeof (data.after) === "object" && !Array.isArray(data.after)) {
+        data.after = undefined;
+    }
     return `${actions[data.action]} ${target ? target + `${data.before ? ` from ${mark(data.before)}` : ''}${data.after ? ` ${data.action !== 'add' ? 'to ' : ''}${mark(data.after)}` : ''}` + " " + dir(data.action) + " " : ""}property ${mark(targetProperty(data.path, index))} of schema ${mark(schemaName)} in ${location}`;
 };
 // const propertyRule = (target: string, location: string, index: number): ChangeDocRuleRef => (data) => {
@@ -125,11 +131,11 @@ const changeSchemaRules = (location, index) => ({
     // value
     "/format": propertyRule("Value format", location, index),
     "/default": propertyRule("Default value", location, index),
-    "/nullable": propertyRule("Possbile nullable value", location, index),
-    "/enum": propertyRule("Possbile values", location, index),
+    "/nullable": propertyRule("Possible nullable value", location, index),
+    "/enum": propertyRule("Possible values", location, index),
     // status
     "/readOnly": propertyRule("Readonly status", location, index),
-    "/writeOnly": propertyRule("Wrightonly status", location, index),
+    "/writeOnly": propertyRule("WriteOnly status", location, index),
     "/deprecated": propertyRule("Deprecated status", location, index),
     // polymorph
     "/allOf": () => changeSchemaRules(location, index),
