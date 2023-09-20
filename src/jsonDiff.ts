@@ -1,13 +1,9 @@
 import { SyncCrawlHook, syncCrawl } from "json-crawl"
 
+import type { Diff, DiffState, JsonCompareOptions } from "./types"
+import { mapArraysKeysRule, mapObjectKeysRule } from "./resolvers"
+import { ComapareRules, jsonSchemaRules } from "./rules"
 import { changeFactory, typeOf } from "./utils"
-
-import { Diff, DiffState, JsonCompareOptions } from "./types"
-
-import { mapArraysKeysRule } from "./resolvers/array"
-import { mapObjectKeysRule } from "./resolvers/object"
-import { ComapareRules } from "./rules/types"
-import { jsonSchemaRules } from "./rules/compare"
 
 export const jsonDiff = <T extends Diff = Diff>(
   before: unknown,
