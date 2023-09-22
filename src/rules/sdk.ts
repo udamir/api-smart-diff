@@ -13,8 +13,8 @@ const methodMatchRule = (rules: Rules) => matchRule(rules, (data) => {
     return true;
   }
   else{
-    const beforePath: string = String(data.before.value.methodTypePlaceHolder.path).replace(new RegExp("\{.*?\}", "g"), "*")
-    const afterPath: string = String(data.after.value.methodTypePlaceHolder.path).replace(new RegExp("\{.*?\}", "g"), "*")
+    const beforePath: string = String(data.before.value.methodTypePlaceHolder.path + data.before.value.methodTypePlaceHolder.methodType).replace(new RegExp("\{.*?\}", "g"), "*")
+    const afterPath: string = String(data.after.value.methodTypePlaceHolder.path + data.after.value.methodTypePlaceHolder.methodType).replace(new RegExp("\{.*?\}", "g"), "*")    
 
     if(beforePath === afterPath){
       return true;

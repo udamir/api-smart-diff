@@ -67,7 +67,7 @@ const propertyRule = (target: string, location: string, index: number): ChangeDo
   let currentPath = data.path;
   let currentSchema = data.source;
 
-  while(currentPathIndex < currentPath.length){
+  while(currentPathIndex < currentPath.length-1){
     currentSchema = getValueByPath(data.source, currentPath.slice(0, currentPathIndex+1));
     currentPathIndex++;
     if(currentSchema.hasOwnProperty("$ref")){

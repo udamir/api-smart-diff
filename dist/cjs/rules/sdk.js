@@ -9,8 +9,8 @@ const methodMatchRule = (rules) => (0, utils_1.matchRule)(rules, (data) => {
         return true;
     }
     else {
-        const beforePath = String(data.before.value.methodTypePlaceHolder.path).replace(new RegExp("\{.*?\}", "g"), "*");
-        const afterPath = String(data.after.value.methodTypePlaceHolder.path).replace(new RegExp("\{.*?\}", "g"), "*");
+        const beforePath = String(data.before.value.methodTypePlaceHolder.path + data.before.value.methodTypePlaceHolder.methodType).replace(new RegExp("\{.*?\}", "g"), "*");
+        const afterPath = String(data.after.value.methodTypePlaceHolder.path + data.after.value.methodTypePlaceHolder.methodType).replace(new RegExp("\{.*?\}", "g"), "*");
         if (beforePath === afterPath) {
             return true;
         }

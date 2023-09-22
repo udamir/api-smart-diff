@@ -57,7 +57,7 @@ const propertyRule = (target, location, index) => (data) => {
     let currentPathIndex = 0;
     let currentPath = data.path;
     let currentSchema = data.source;
-    while (currentPathIndex < currentPath.length) {
+    while (currentPathIndex < currentPath.length - 1) {
         currentSchema = (0, utils_1.getValueByPath)(data.source, currentPath.slice(0, currentPathIndex + 1));
         currentPathIndex++;
         if (currentSchema.hasOwnProperty("$ref")) {
