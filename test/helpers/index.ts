@@ -1,4 +1,6 @@
 import { applyOperation, Operation } from "fast-json-patch"
+import { buildFromSchema } from "gqlapi"
+import { buildSchema } from "graphql"
 import yaml from "js-yaml"
 import path from "path"
 import fs from "fs"
@@ -16,6 +18,13 @@ export class ExampleResource {
     if (new RegExp(".(yaml|YAML|yml|YML)$", "g").test(filename)) {
       try {
         this.res = yaml.load(data)
+      } catch (e) {
+        console.log(e)
+      }
+    } else if (new RegExp(".(graphql|gql)$", "g").test(filename)) {
+      try {
+        const schema = buildSchema(data, { noLocation: true })
+        this.res = buildFromSchema(schema)
       } catch (e) {
         console.log(e)
       }

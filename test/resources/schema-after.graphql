@@ -1,0 +1,143 @@
+""""""
+directive @cacheControl(maxAge: Int, scope: CacheControlScope) on FIELD_DEFINITION | OBJECT | INTERFACE
+
+""""""
+type Query2 {
+  """"""
+  continents: [Continent]
+  """"""
+  continent(code: String): Continent
+  """"""
+  countries: [Country]
+  """"""
+  country(code: String): Country
+  """"""
+  languages: [Language]
+  """"""
+  language(code: String): Language
+}
+
+""""""
+type Continent {
+  """"""
+  code: String
+  """"""
+  name: String
+  """"""
+  countries: [Country]
+}
+
+""""""
+type Country {
+  """"""
+  code: String
+  """"""
+  name: String
+  """"""
+  native: String
+  """"""
+  phone: String
+  """"""
+  continent: Continent
+  """"""
+  currency: String
+  """"""
+  languages: [Language]
+  """"""
+  emoji: String
+  """"""
+  emojiU: String
+  """"""
+  states: [State]
+}
+
+""""""
+type Language {
+  """"""
+  code: String
+  """"""
+  name: String
+  """"""
+  native: String
+  """"""
+  rtl: Int
+}
+
+""""""
+type State {
+  """"""
+  code: String
+  """"""
+  name: String
+  """"""
+  country: Country
+}
+
+""""""
+enum CacheControlScope {
+  """"""
+  PUBLIC
+  """"""
+  PRIVATE
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
+
+type Tweet {
+    id: ID
+    # The tweet text. No more than 140 characters!
+    body: String
+    # When the tweet was published
+    date: Date
+    # Who published the tweet
+    Author: User
+    # Views, retweets, likes, etc
+    Stats: Stat
+}
+
+type User {
+    id: ID!
+    username: String
+    first_name: String
+    full_name: String
+    name: String @deprecated
+    last_name: String
+    avatar_url: Url
+}
+
+type Stat {
+    views: Int
+    retweets: Int
+    likes: Int
+    responses: Int
+}
+
+type Notification {
+    id: ID
+    date: Date
+    type: String
+}
+
+type Meta {
+    count: Int
+}
+
+scalar Url
+scalar Date
+
+type Query {
+    Tweet(id: ID!): Tweet
+    Tweets(limit: Int, skip: Int, sort_field: String, sort_order: String): [Tweet]
+    TweetsMeta: Meta
+    User(id: ID!): User
+    Notifications(limit: Int): [Notification]
+}
+
+type Mutation {
+    createTweet (
+        body: String
+    ): Tweet
+    deleteTweet(id: ID!): Tweet
+    markTweetRead(id: ID!): Boolean
+}

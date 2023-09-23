@@ -1,135 +1,36 @@
-import { addNonBreaking, allAnnotation, allUnclassified, breaking, nonBreaking } from "../constants"
-import { jsonSchemaRules } from "./jsonschema"
-import { breakingIfAfterTrue } from "../utils"
+import { addNonBreaking, allAnnotation, allUnclassified } from "../constants"
+import { graphSchemaRules } from "./graphSchema"
 import { Rules } from "../types"
-
-export const graphApiOperationRules: Rules = {
-  "/title": allAnnotation,
-  "/description": allAnnotation,
-  "/args": {
-    "/*": () => graphApiInputValueRules
-  },
-  "/response": () => graphApiTypesRules,
-  "/directives": {
-    "/*": () => graphApiDirectiveRules
-  }
-}
-
-const graphApiDirectiveRules: Rules = {
-  "/meta": allAnnotation  
-}
-
-// Base Type
-const graphApiBaseTypeRules: Rules = {
-  ...jsonSchemaRules(addNonBreaking),
-  "/description": allAnnotation,
-  "/directives": {
-    "/*": () => graphApiDirectiveRules
-  }
-}
-
-// Named Type
-const graphApiNamedTypeRules: Rules = {
-  ...graphApiBaseTypeRules,
-  "/title": allAnnotation,
-}
-
-// SCALAR
-const graphApiScalarRules: Rules = {
-  ...graphApiNamedTypeRules,
-  "/specifiedByURL": allAnnotation
-}
-
-const graphApiObjectRules: Rules = {
-  ...graphApiNamedTypeRules,
-  "/properties": {
-    "/*": () => graphApiFieldRules
-  }
-}
-
-const graphApiUnionRules: Rules = {
-  ...graphApiNamedTypeRules,
-  "/oneOf": {
-    "/": [breaking, nonBreaking, breaking],
-    "/*": () => graphApiObjectRules,
-  },
-}
-
-const graphApiEnumRules: Rules = {
-  ...graphApiNamedTypeRules,
-  "/oneOf": {
-    "/": [breaking, nonBreaking, breaking],
-    "/*": () => graphApiScalarRules,
-  },
-}
-
-const graphApiInputValueRules: Rules = {
-  "/title": allAnnotation,
-  "/description": allAnnotation,
-  "/required": [breaking, nonBreaking, breakingIfAfterTrue],
-  "/schema": () => graphApiTypesRules,
-  "/default": addNonBreaking,
-  "/directives": {
-    "/*": () => graphApiDirectiveRules
-  }
-}
-
-const graphApiInputObjectRules: Rules = {
-  ...graphApiNamedTypeRules,
-  "/inputFields": {
-    "/*": graphApiInputValueRules
-  }
-}
-
-const graphApiListRules: Rules = {
-  ...graphApiNamedTypeRules,
-  "/items": () => graphApiTypesRules
-}
-
-const graphApiFieldRules: Rules = {
-  ...graphApiBaseTypeRules,
-  "/args": {
-    "/*": () => graphApiInputValueRules
-  }
-}
-
-export const graphApiTypesRules: Rules = {
-  ...graphApiScalarRules,
-  ...graphApiObjectRules,
-  ...graphApiUnionRules,
-  ...graphApiListRules,
-  ...graphApiInputObjectRules
-}
 
 export const graphapiRules: Rules = {
   "/queries": {
-    "/*": graphApiOperationRules
+    "/*": graphSchemaRules(addNonBreaking)
   },
   "/mutations": {
-    "/*": graphApiOperationRules
+    "/*": graphSchemaRules(addNonBreaking)
   },
   "/subscriptions": {
-    "/*": graphApiOperationRules
+    "/*": graphSchemaRules(addNonBreaking)
   },
 
   "/components": {
     "/scalars": {
-      "/*": graphApiScalarRules,
+      "/*": graphSchemaRules(addNonBreaking),
     },
     "/objects": {
-      "/*": graphApiObjectRules,
+      "/*": graphSchemaRules(addNonBreaking),
     },
     "/interfaces": {
-      "/*": graphApiObjectRules,
+      "/*": graphSchemaRules(addNonBreaking),
     },
     "/unions": {
-      "/*": graphApiUnionRules,
+      "/*": graphSchemaRules(addNonBreaking),
     },
     "/enums": {
-      "/*": graphApiEnumRules,
+      "/*": graphSchemaRules(addNonBreaking),
     },
     "/inputObjects": {
-      "/*": graphApiInputObjectRules,
+      "/*": graphSchemaRules(addNonBreaking),
     },
     "/directives": {
       "/*": {
@@ -138,10 +39,7 @@ export const graphapiRules: Rules = {
         "/description": allAnnotation,
         "/locations": allAnnotation,
         "/repeatable": allUnclassified,  
-        "/args": {
-          "/": addNonBreaking,
-          "/*": graphApiInputValueRules,
-        },
+        "/args": graphSchemaRules(addNonBreaking), // TODO breaking if required args without default value
       },
     },
   }
