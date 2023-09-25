@@ -47,7 +47,7 @@ const getChangeRule = (rules: ChangeDocRules, ctx: ChangeDocContext, index = 0):
     const _ctx: ChangeDocContext = index === path.length ? ctx : {
       ...ctx,
       key: path[index],
-      node: dereference(resolve(node, path[index], ctx), ctx.source),
+      node: (index === path.length - 1 && ctx.action === "add") ? ctx.after : dereference(resolve(node, path[index], ctx), ctx.source),
       parent: node,
     }
 

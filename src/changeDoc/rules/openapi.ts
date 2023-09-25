@@ -38,8 +38,11 @@ const requiredProperty = (name: string, path: ObjPath, index: number) => {
   return mark(target ? `${target}.${name}` : name)
 }
 
-const propertyRule = (target: string, location: string, index: number): ChangeDocRuleRef => ({ action, path }) => 
-  `${actions[action]} ${target ? target + " " + dir(action) + " " : ""}property ${mark(targetProperty(path, index))} in ${location}`
+const propertyRule = (target: string, location: string, index: number): ChangeDocRuleRef => ({ action, path }) => {
+  const property = targetProperty(path, index)
+  const propertyLocation = property && property !== "[]" ? `property ${mark(property)} in ` : ""
+  return `${actions[action]} ${target ? target + " " + dir(action) + " " : ""}${propertyLocation}${location}` 
+}
 
 
 const operationMethods = (node: any) => {
