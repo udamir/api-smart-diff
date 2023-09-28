@@ -22,7 +22,10 @@ const graphApiDirectiveRules = (rootRule: Rule = allUnclassified): Rules => ({
 const graphEnumValueRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/": rootRule,
   "/description": allAnnotation,
-  "/deprecationReason": allDeprecated,
+  "/deprecated": {
+    "/": allDeprecated,
+    "/reason": allAnnotation
+  }
 })
 
 export const graphSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
@@ -58,7 +61,10 @@ export const graphSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   "/default": [nonBreaking, breaking, breaking],
   "/nullable": booleanClassifier,
   "/example": allAnnotation,
-  "/deprecated": allDeprecated,
+  "/deprecated": {
+    "/": allDeprecated,
+    "/reason": allAnnotation
+  },
 
   "/directives": {
     "/*": graphApiDirectiveRules(addNonBreaking),
