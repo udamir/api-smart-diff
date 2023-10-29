@@ -1,7 +1,7 @@
 import { JsonPath } from "json-crawl"
 
-import { ComapareRules } from "./rules/types"
 import { ClassifierType, DiffAction } from "./constants"
+import { CompareRules } from "./rules/types"
 
 export type ActionType = keyof typeof DiffAction
 export type DiffType = typeof ClassifierType[keyof typeof ClassifierType]
@@ -12,6 +12,13 @@ export type Diff = {
   before?: any
   after?: any
   type?: DiffType
+  description?: string
+}
+
+export type DiffMeta = {
+  action: ActionType
+  type?: DiffType
+  replaced?: any
 }
 
 export type JsonCompareOptions<T = Diff> = {
@@ -22,25 +29,31 @@ export type JsonCompareOptions<T = Diff> = {
   arrayMeta?: boolean
   formatDiff?: (diff: Diff) => T
   resolveUnchangedRefs?: boolean
-  rules?: ComapareRules
+  rules?: CompareRules
   externalRefs?: {
     [key: string]: any
   }
 }
 
-export interface DiffState {
-  aPath: JsonPath
-  aNode: JsonNode
-  keyMap: Record<string | number, string | number>
-}
-
-
 export type FormatDiffFunc<T extends Diff = Diff> = (diff: Diff) => T
+export type NodeRoot = { "#": any }
+export type KeyMapping<T extends string | number> = Record<T, T>
 
-export interface MergeState<T extends Diff> extends DiffState {
-  nodeDiffs: T[]
+export interface MergeState {
+  keyMap: KeyMapping<any> // parent keys mappings
+  aPath: JsonPath         // after path 
+  aNode: JsonNode         // after Node
+  bNode: JsonNode         // before Node 
+  mNode: JsonNode         // merged Node
+  nodeDiffs: Diff[]       // parent diffs
+  root: { 
+    before: NodeRoot      // before root Node
+    after: NodeRoot       // after root Node
+    merged: NodeRoot      // merged root Node
+  }
 }
 
-export type MergeMeta<T extends Diff> = Record<string, T | T[]>
 
-export type JsonNode = Record<any, any>
+export type MergeMeta = Record<string, Diff | Diff[]>
+
+export type JsonNode = Record<string | number, unknown>

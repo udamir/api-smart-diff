@@ -1,28 +1,26 @@
 import { CrawlRules, JsonPath } from "json-crawl"
+
 import { Diff } from "../types"
 
 export type DiffType = "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"
 
-export type AddDiffType = DiffType | DiffTypeFunc
-export type RemoveDiffType = DiffType | DiffTypeFunc
-export type ReplaceDiffType = DiffType | DiffTypeFunc
+export type DiffTypeClassifier = (ctx: ComapreContext) => DiffType
 
-export interface ChangeContext {
-  before: any
-  after: any
-  up: (n?: number) => ChangeContext
-  root: ChangeContext
-}
+export type ClassifyRule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
+export type AddDiffType = DiffType | DiffTypeClassifier
+export type RemoveDiffType = DiffType | DiffTypeClassifier
+export type ReplaceDiffType = DiffType | DiffTypeClassifier
 
 export type ComapreContext = {
-  path: JsonPath
   before: {
+    path: JsonPath
     key: string | number
     value: any
     parent: any
     source: any
   }
   after: {
+    path: JsonPath
     key: string | number
     value: any
     parent: any
@@ -30,49 +28,30 @@ export type ComapreContext = {
   }
 }
 
-export type ComapreRule = (ctx: ComapreContext) => Diff[]
+export type CompareResolver = (ctx: ComapreContext) => { diffs: Diff[], merged: any }
 
-export type DiffTypeFunc = (ctx: ChangeContext) => DiffType
+export type TransformationResolver = (before: unknown, after: unknown) => [unknown, unknown]
 
-export type ClassifyRule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
+export type MappingResolver<T extends string | number> = T extends string ? MappingObjectResolver : MappingArrayResolver
+export type MappingObjectResolver = (before: Record<string, unknown>, after: Record<string, unknown>) => MapKeysResult<string>
+export type MappingArrayResolver = (before: Array<unknown>, after: Array<unknown>) => MapKeysResult<number>
 
-export type ComapareRules = CrawlRules<{
+export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => string
+
+export type CrawlRule = {
   $?: ClassifyRule      // classifier for current node
   $$?: ClassifyRule     // classifier for current and all child nodes
-  "#"?: ComapreRule   // match rules for current node
-}>
+  compare?: CompareResolver      // compare handler for current node
+  transformers?: TransformationResolver[]
+  mapping?: MappingResolver<string | number>
+  annotate?: ChangeAnnotationResolver
+}
 
+export type CompareRules = CrawlRules<CrawlRule>
 
 export interface MapKeysResult<T extends string | number> {
-  value: Record<T, any> | null
+  value: Record<T, unknown> | null
   added: Array<T>
   removed: Array<T>
   mapped: Record<T, T>
-}
-
-export type AnnotationRule = {
-  "%"?: AnnotationRuleRef | string    // annotation rule for change in current node
-  "%%"?: AnnotationRuleRef            // annotation rule for change in child node
-}
-export type AnnotationRuleRef = (ctx: ChangeAnnotationContext) => string
-export type AnnotationRules = CrawlRules<AnnotationRule> 
-
-export interface ChangeAnnotationContext extends ChangeContext {
-  diff: Diff
-}
-
-
-export type ChangeDocResolver = (ctx: ChangeDocContext) => string
-
-export type ChangeDocRule = {
-  "%"?: string | ChangeDocResolver
-}
-
-export type ChangeDocRules = CrawlRules<ChangeDocRule>
-
-export interface ChangeDocContext extends Diff {
-  key: string | number
-  node: any
-  parent?: any
-  source: any // source before (replace, delete) | after (add)
 }

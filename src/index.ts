@@ -1,2 +1,1 @@
-export * from "./jsonDiff"
-export * from "./jsonMerge"
+export * from "./compare"

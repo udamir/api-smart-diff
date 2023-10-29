@@ -1,6 +1,6 @@
-import { MapKeysResult } from "../rules/types";
+import { MappingResolver } from "../rules"
 
-export const mapArraysKeysRule = (before: Array<any>, after: Array<any>): MapKeysResult<number> => {
+export const mapArraysKeysRule: MappingResolver<number> = (before, after) => {
   const length = Math.abs(before.length - after.length)
   const arr = Array.from({ length: Math.min(before.length, after.length) }, ((_, i) => i))
   return {

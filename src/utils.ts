@@ -1,16 +1,34 @@
 import { JsonPath } from "json-crawl"
-import { DiffAction } from "./constants"
 
 import { Diff, FormatDiffFunc, MergeMeta } from "./types"
-
-// import { JsonMergeResult, jsonMerge } from "./jsonMerge";
-// export const mapKeys = <T>(before: JsonNode, after: JsonNode): MapKeysResult<number> => {
+import { DiffAction } from "./constants"
   
 export const typeOf = (value: unknown): string  => {
   if (Array.isArray(value)) {
     return "array"
   }
   return value == null ? "null" : typeof value
+}
+
+export const objectKeys = <T extends {}>(value: T): (keyof T)[] => {
+  return Object.keys(value) as (keyof T)[]
+}
+
+export const filterObj = <T extends {}>(value: T, func: (key: number | string | symbol, obj: T) => boolean ): Partial<T> => {
+  const result: Partial<T> = {}
+  for (const key of objectKeys(value)) {
+    if (!func(key, value)) { continue }
+    result[key] = value[key]
+  }
+  return result
+}
+
+export const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null
+}
+
+export const isArray = (value: unknown): value is Array<unknown> => {
+  return Array.isArray(value)
 }
 
 export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>) => {
@@ -23,16 +41,17 @@ export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>
   }
 }
 
-export const createMergeMeta = <T extends Diff>(diffs: T[], path: JsonPath): MergeMeta<T> => {
-  const meta: any = {}
+export const createMergeMeta = (diffs: Diff[], path: JsonPath): MergeMeta => {
+  const meta: MergeMeta = {}
 
   for (const diff of diffs) {
+    const key = diff.path[path.length]
     if (diff.path.length === path.length + 1) {
-      const key = diff.path[diff.path.length - 1]
       meta[key] = diff
     } else {
-      const key = diff.path[diff.path.length - 2]
-      meta[key] = Array.isArray(meta[key]) ? meta[key].push(diff) : [diff]
+      // diff in array
+      const item = meta[key]
+      meta[key] = Array.isArray(item) ? [...item, diff] : [diff]
     }
   }
 
