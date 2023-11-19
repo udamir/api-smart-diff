@@ -1,8 +1,6 @@
 import { CrawlRules, JsonPath } from "json-crawl"
 
-import { Diff } from "../types"
-
-export type DiffType = "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"
+import type { Diff, DiffType, ComapreOptions, CompareResult } from "./compare"
 
 export type DiffTypeClassifier = (ctx: ComapreContext) => DiffType
 
@@ -16,21 +14,23 @@ export type ComapreContext = {
     path: JsonPath
     key: string | number
     value: any
-    parent: any
-    source: any
+    parent: unknown
+    root: unknown
   }
   after: {
     path: JsonPath
     key: string | number
     value: any
-    parent: any
-    source: any
+    parent: unknown
+    root: unknown
   }
+  options: ComapreOptions
 }
 
-export type CompareResolver = (ctx: ComapreContext) => { diffs: Diff[], merged: any }
+export type CompareResolver = (ctx: ComapreContext) => CompareResult | void
 
-export type TransformationResolver = (before: unknown, after: unknown) => [unknown, unknown]
+export type TransformationResolver = (value: unknown, other: unknown) => unknown
+export type CompareTransformationResolver = (before: unknown, after: unknown) => [unknown, unknown]
 
 export type MappingResolver<T extends string | number> = T extends string ? MappingObjectResolver : MappingArrayResolver
 export type MappingObjectResolver = (before: Record<string, unknown>, after: Record<string, unknown>) => MapKeysResult<string>
@@ -38,19 +38,17 @@ export type MappingArrayResolver = (before: Array<unknown>, after: Array<unknown
 
 export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => string
 
-export type CrawlRule = {
+export type ComapreRule = {
   $?: ClassifyRule      // classifier for current node
-  $$?: ClassifyRule     // classifier for current and all child nodes
   compare?: CompareResolver      // compare handler for current node
-  transformers?: TransformationResolver[]
+  transformers?: CompareTransformationResolver[]
   mapping?: MappingResolver<string | number>
   annotate?: ChangeAnnotationResolver
 }
 
-export type CompareRules = CrawlRules<CrawlRule>
+export type CompareRules = CrawlRules<ComapreRule>
 
 export interface MapKeysResult<T extends string | number> {
-  value: Record<T, unknown> | null
   added: Array<T>
   removed: Array<T>
   mapped: Record<T, T>

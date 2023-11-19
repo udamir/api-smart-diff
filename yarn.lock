@@ -938,6 +938,13 @@ ajv@^6.12.3:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+allof-merge@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/allof-merge/-/allof-merge-0.5.2.tgz#4ab81e1e55f49b715c938780856a90c66838220b"
+  integrity sha512-R9636ChAUz6bc6/UAFVwT+tmkPbT29T1T/3HGaXlKHFgISyb4IEHV9OCvYKVQn5fFTtXkga0SBXIQx084Am3gA==
+  dependencies:
+    json-crawl "^0.2.6"
+
 ansi-align@^3.0.0:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/ansi-align/-/ansi-align-3.0.1.tgz#0cdf12e111ace773a86e9a1fad1225c43cb19a59"
@@ -3094,6 +3101,11 @@ jsesc@^2.5.1:
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-2.5.2.tgz#80564d2e483dacf6e8ef209650a67df3f0c283a4"
   integrity sha512-OYu7XEzjkCQ3C5Ps3QIZsQfNpqoJyZZA99wd9aWd05NCtC5pWOkShK2mkL6HXQR6/Cy2lbNdPlZBpuQHXE63gA==
 
+json-crawl@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/json-crawl/-/json-crawl-0.2.6.tgz#9fe9717a47d7d10c27db746afbd10a52dd4faba2"
+  integrity sha512-RGIqnFKadWxySzKPFBciJhem5hGnRDFkfvhBPuH0f59kXmr8j2GlVyGvn8Kw9DdT3D7XKebCX61QQL8Um47dyA==
+
 json-crawl@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/json-crawl/-/json-crawl-0.3.1.tgz#8c22be7e9e82b1dc5dedbe67e7943e0225ae503e"
@@ -5057,6 +5069,7 @@ word-wrap@~1.2.3:
   integrity sha512-Hz/mrNwitNRh/HUAtM/VT/5VH+ygD6DV7mYKZAtHOrbs8U7lvPS6xf7EJKMF0uW1KJCl0H701g3ZGus+muE5vQ==
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

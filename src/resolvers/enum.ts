@@ -1,34 +1,32 @@
+import { MapKeysResult, MappingResolver } from "../types"
 
 
-// export const mapEnumItemsRule = <T extends Diff>(before: Array<any>, after: Array<any>): MapKeysResult<number> => {
+export const mapSimpleEnumItemsRule: MappingResolver<number> = (before, after) => {
 
-//   const afterEquals = new Set<number>()
-//   const beforeEquals = new Set<number>()
+  const result: MapKeysResult<number> = {
+    added: [],
+    removed: [],
+    mapped: {}
+  }
 
-//   for (const i of before.keys()) {
-//     let afterDiffs: JsonMergeResult<T>[] | JsonMergeResult<T> = []
+  const afterItems = [...after]
+  const mappedIndex = new Set(after.keys())
 
-//     for (const j of after.keys()) {
-//       if (afterEquals.has(j)) { continue }
-//       const res = jsonMerge<T>(before[i], after[j])
-//       if (!res.diffs.length) {
-//         afterEquals.add(j)
-//         beforeEquals.add(i)
-//         afterDiffs = res
-//         break
-//       }
-//       afterDiffs[j] = { value: _merged.value, res, diffs: typeof before[i] === typeof after[j] ? res.diffs.length : -1 }
-//     }
-//     beforeDiffs.push(afterDiffs)
-//   }
+  for (let i = 0; i < before.length; i++) {
+    const _afterIndex = afterItems.indexOf(before[i])
+    
+    if (_afterIndex < 0) {
+      // removed item
+      result.removed.push(i)
+    } else {
+      // mapped items
+      result.mapped[i] = _afterIndex
+      mappedIndex.delete(_afterIndex)
+    }
+  }
 
-//   const length = Math.abs(before.length - after.length)
-//   const arr = Array.from({ length: Math.min(before.length, after.length) }, ((_, i) => i))
+  // added items
+  mappedIndex.forEach((i) => result.added.push(i))
 
-
-//   return {
-//     added: before.length > after.length ? Array.from({length}, (_, i) => after.length + i) : [],
-//     removed: before.length < after.length ? Array.from({length}, (_, i) => before.length + i) : [],
-//     mapped: arr.reduce((res, i) => { res[i] = i; return res }, {} as Record<number, number>)
-//   }
-// }
+  return result
+}

@@ -78,6 +78,7 @@
     "collectCoverage": true
   },
   "dependencies": {
+    "allof-merge": "^0.5.2",
     "json-crawl": "^0.3.1"
   }
 }

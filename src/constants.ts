@@ -1,4 +1,4 @@
-import { ClassifyRule } from "./rules"
+import { ClassifyRule } from "./types"
 
 export const DIFF_META_KEY = "$diff"
 

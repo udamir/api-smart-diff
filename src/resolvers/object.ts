@@ -1,9 +1,8 @@
-import { MapKeysResult, MappingResolver } from "../rules"
+import { MapKeysResult, MappingResolver } from "../types"
 
 export const mapObjectKeysRule: MappingResolver<string> = (before, after) => {
 
   const result: MapKeysResult<string> = {
-    value: {},
     added: [],
     removed: [],
     mapped: {}
@@ -14,7 +13,6 @@ export const mapObjectKeysRule: MappingResolver<string> = (before, after) => {
   for (const key of Object.keys(before)) {
     if (afterKeys.has(key)) {
       result.mapped[key] = key
-      result.value![key] = (before as any)[key]
       afterKeys.delete(key)
     } else {
       result.removed.push(key)

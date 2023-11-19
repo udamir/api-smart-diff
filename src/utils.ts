@@ -1,7 +1,7 @@
 import { JsonPath } from "json-crawl"
 
-import { Diff, FormatDiffFunc, MergeMeta } from "./types"
-import { DiffAction } from "./constants"
+import { Diff, DiffMeta, FormatDiffFunc, MergeArrayMeta, MergeMeta } from "./types"
+import { DiffAction, unclassified } from "./constants"
   
 export const typeOf = (value: unknown): string  => {
   if (Array.isArray(value)) {
@@ -41,18 +41,21 @@ export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>
   }
 }
 
-export const createMergeMeta = (diffs: Diff[], path: JsonPath): MergeMeta => {
+export const convertDiffToMeta = (diff: Diff): DiffMeta => {
+  return {
+    action: diff.action,
+    type: diff.type ?? unclassified,
+    ...diff.action === "replace" ? { replaced: diff.before } : {}
+  }
+}
+
+export const createMergeMeta = (diffs: Diff[]): MergeMeta => {
   const meta: MergeMeta = {}
 
   for (const diff of diffs) {
-    const key = diff.path[path.length]
-    if (diff.path.length === path.length + 1) {
-      meta[key] = diff
-    } else {
-      // diff in array
-      const item = meta[key]
-      meta[key] = Array.isArray(item) ? [...item, diff] : [diff]
-    }
+    const _meta = convertDiffToMeta(diff)
+    const key = diff.path[diff.path.length - 1]
+    meta[key] = _meta
   }
 
   return meta
