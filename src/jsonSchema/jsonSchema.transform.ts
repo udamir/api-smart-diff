@@ -64,16 +64,16 @@ export const transformCombinary: CompareTransformationResolver = (before, after)
   }
 }
 
-export const transformAdditionalItems = compareTransformationFactory((value) => {
-  if (typeof value !== "object" || !value) {
+export const transformAdditionalItems = compareTransformationFactory((value, other) => {
+  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
     return value
   }
 
   const { additionalItems, ...rest } = value as any
-  // transform additionalItems: true into additionalItems with type: any
-  if ("type" in value && value.type === "array" && additionalItems === true) {
-    return { ...value, additionalItems: { type: "any" } }
-  }
+  // // transform additionalItems: true into additionalItems with type: any
+  // if ("type" in value && value.type === "array" && additionalItems === true) {
+  //   return { ...value, additionalItems: { type: "any" } }
+  // }
 
   // remove additionalItems: false
   if (!additionalItems) {
@@ -246,14 +246,17 @@ export const transformTypeOfArray = compareTransformationFactory((value) => {
     return value
   }
 
+  const { defs, definitions, ...rest } = value as any
   if (typeSet.size === 1) {
     const [type] = [...typeSet.values()]
     return {
       ...filterObj(value, (key) => typeof key === "string" && (jsonSchemaTypeProps[type].includes(key) || key.startsWith("x-"))),
       type,
+      ...defs ? { defs } : {},
+      ...definitions ? { definitions } : {},
     }
   } else {
-    const { defs, definitions, ...rest } = value as any
+
     return {
       anyOf: [...typeSet.values()].map((type) => ({
         ...filterObj(rest, (key) => typeof key === "string" && (jsonSchemaTypeProps[type].includes(key) || key.startsWith("x-"))),
@@ -303,7 +306,7 @@ export const filterValidProps = compareTransformationFactory((value) => {
 })
 
 export const jsonSchemaTransformers = [
-  filterValidProps,
+  // filterValidProps,
   transformAdditionalItems,
   transformItems,
   transformAdditionalProperties,

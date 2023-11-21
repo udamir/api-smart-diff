@@ -25,12 +25,12 @@ describe("jsonschema diff tree tests", () => {
         title: "test1",
         type: "string",
         enum: ["a", "d", "c", "b"],
-        example: "a",
+        examples: ["a"],
       })
       expect(merged[metaKey]).toMatchObject({
         title: { action: "replace", replaced: "test" },
         enum: { array: { 1: { action: "add" }}},
-        example: { action: "remove" }
+        examples: { action: "remove" }
       })
     })
 
@@ -240,11 +240,45 @@ describe("jsonschema diff tree tests", () => {
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(2)
+      expect(merged).toMatchObject(after)
+      expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 1: { action: "add"}}} })
+      expect(merged.oneOf[2][metaKey]).toMatchObject({
+        required: { array: { 0: { action: "add" }}}
+      })
     })
 
-    it.skip("should create diff tree from jsonSchema with nested oneOf obejct", () => {
+    it("should merge jsonSchema with nested oneOf obejct", () => {
       const before = {
+        type: "object",
+        required: ["id"],
+        oneOf: [
+          {
+            title: "opt1",
+            properties: {
+              id: {
+                type: "string",
+              },
+              name: {
+                type: "string",
+              },
+            },
+          },
+          {
+            title: "opt3",
+            properties: {
+              id: {
+                type: "number",
+              },
+              name: {
+                type: "string",
+              },
+            },
+          },
+        ],
+      }
+
+      const after = {
         type: "object",
         required: ["id"],
         oneOf: [
@@ -288,15 +322,18 @@ describe("jsonschema diff tree tests", () => {
         ],
       }
 
-      const { diffs, merged } = compareJsonSchema(before, before, { metaKey })
+      const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(1)
+      expect(merged).toMatchObject(after)
+      expect(merged.oneOf[0][metaKey]).toMatchObject({
+        oneOf: { array: { 1: { action: "add" }}}
+      })
     })
-
   })
 
   describe("schema with array", () => {
-    it("should create diff tree from simple jsonSchema (array type change)", () => {
+    it("should merge simple jsonSchema (array type change)", () => {
       const before = {
         type: "array",
         items: {
@@ -306,17 +343,26 @@ describe("jsonschema diff tree tests", () => {
 
       const after = {
         type: "array",
-        items: {
-          type: "number",
-        },
+        items: [
+          {
+            type: "number",
+          }
+        ],
+        additionalItems: {
+          type: "string"
+        }
       }
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(1)
+      expect(merged).toMatchObject(after)
+      expect(merged.items[0][metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "string" }
+      })
     })
 
-    it("should create diff tree from simple jsonSchema (type change to array)", () => {
+    it("should merge simple jsonSchema (type change to array)", () => {
       const before = {
         type: "number",
       }
@@ -330,10 +376,15 @@ describe("jsonschema diff tree tests", () => {
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(2)
+      expect(merged).toMatchObject(after)
+      expect(merged[metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "number" },
+        items: { action: "add" },
+      })
     })
 
-    it("should create tree from jsonSchema with array items", () => {
+    it("should merge jsonSchema with array items", () => {
       const before = {
         type: "array",
         items: [
@@ -356,10 +407,16 @@ describe("jsonschema diff tree tests", () => {
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(2)
+      expect(merged[metaKey]).toMatchObject({
+        items: { array: { 1: { action: "remove" }}},
+      })
+      expect(merged.items[0][metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "string" },
+      })
     })
 
-    it("should create tree from jsonSchema with array items", () => {
+    it("should merge jsonSchema with array items", () => {
       const before = {
         type: "array",
         items: [
@@ -377,10 +434,16 @@ describe("jsonschema diff tree tests", () => {
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(2)
+      expect(merged[metaKey]).toMatchObject({
+        items: { array: { 
+          0: { action: "remove" },
+          1: { action: "remove" }
+        }},
+      })
     })
 
-    it("should create diff tree from jsonSchema with array items change", () => {
+    it("should merge jsonSchema with array items change", () => {
       const before: any = {
         type: "array",
         items: [
@@ -399,7 +462,6 @@ describe("jsonschema diff tree tests", () => {
         }
       }
 
-      // TODO: api-smart-diff fix needed - expected result:
       const expectedMerged = {
         type: "array",
         items: [
@@ -407,29 +469,29 @@ describe("jsonschema diff tree tests", () => {
             type: "string",
           },
           {
-            type: "boolean",
+            type: "string",
           },
         ],
         additionalItems: {
           type: "string",
-        },
-        $diff: {
-          items: {
-            1: {
-              action: 'remove'
-            }
-          }
         }
       }
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(2)
+      expect(merged).toMatchObject(expectedMerged)
+      expect(merged.items[1][metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "boolean" },
+      })
+      expect(merged[metaKey]).toMatchObject({
+        additionalItems: { action: "add" },
+      })
     })
   })
 
   describe("schema with references", () => {
-    it("should create diff tree for jsonSchema with refs", () => {
+    it("should merge jsonSchema with refs", () => {
       const before = {
         type: "object",
         properties: {
@@ -438,10 +500,6 @@ describe("jsonschema diff tree tests", () => {
         defs: {
           id: {
             title: "id",
-            type: "string",
-          },
-          name: {
-            title: "name",
             type: "string",
           },
         },
@@ -467,10 +525,32 @@ describe("jsonschema diff tree tests", () => {
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(4)
+      expect(merged).toMatchObject({
+        ...after,
+        properties: {
+          id: {
+            title: "id",
+            type: "number",
+          },
+          name: { $ref: "#/defs/name" },
+        }
+      })
+      expect(merged.properties[metaKey]).toMatchObject({
+        name: { action: "add" },
+      })
+      expect(merged.defs[metaKey]).toMatchObject({
+        name: { action: "add" },
+      })
+      expect(merged.defs.id[metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "string" },
+      })
+      expect(merged.properties.id[metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "string" },
+      })
     })
 
-    it("should create diff tree for jsonSchema with refs change", () => {
+    it("should merge jsonSchema with refs change", () => {
       const before = {
         type: "object",
         properties: {
@@ -507,55 +587,58 @@ describe("jsonschema diff tree tests", () => {
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-      expect(diffs.length).toEqual(3)
+      expect(diffs.length).toEqual(4)
+      expect(merged).toMatchObject({
+        ...after,
+        properties: {
+          id: {
+            title: "id",
+            type: "number",
+          },
+          name: {
+            title: "name",
+            type: "string",
+          }
+        }
+      })
+      expect(merged.properties.name[metaKey]).toMatchObject({
+        title: { action: "add" },
+      })
+      expect(merged.defs[metaKey]).toMatchObject({
+        name: { action: "add" },
+      })
+      expect(merged.defs.id[metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "string" },
+      })
+      expect(merged.properties.id[metaKey]).toMatchObject({
+        type: { action: "replace", replaced: "string" },
+      })
     })
 
-    it("should create diff tree for jsonSchema with cycle refs", () => {
+    it("should merge jsonSchema with cycle refs", () => {
       const before = {
         type: "object",
         properties: {
-          model: { $ref: "#/defs/model" },
-        },
-        defs: {
           id: {
             title: "id",
             type: "string",
           },
-          model: {
-            type: "object",
-            properties: {
-              id: {
-                $ref: "#/defs/id",
-              },
-              parent: {
-                $ref: "#/defs/model",
-              },
-            },
-          },
-        },
+          parent: { $ref: "#" },
+        }
       }
 
       const after = {
         type: "object",
+        required: ['id'],
         properties: {
-          model: { $ref: "#/defs/model" },
-        },
-        defs: {
           id: {
             title: "id",
             type: "string",
           },
-          model: {
-            type: "object",
-            required: ['id'],
-            properties: {
-              id: {
-                $ref: "#/defs/id",
-              },
-            },
-          },
-        },
+          parent: { $ref: "#" },
+        }
       }
+      
 
       const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
@@ -564,7 +647,7 @@ describe("jsonschema diff tree tests", () => {
   })
 
   describe("schema with broken reference", () => {
-    it("should create tree for jsonSchema with broken refs", () => {
+    it("should merge jsonSchema with broken refs", () => {
       const before = {
         type: "object",
         properties: {

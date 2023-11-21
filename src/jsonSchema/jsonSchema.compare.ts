@@ -45,20 +45,20 @@ export const compareCombinary: CompareResolver = ({ before, after, options }) =>
     afterMatched.delete(compared.after)
     beforeMached.delete(compared.before)
     _merged[compared.after] = compared.merged
-    _diffs.push(...compared.diffs.map((diff) => ({ ...diff, path: [...before.path, compared.before, ...diff.path] })))
+    _diffs.push(...compared.diffs.map((diff) => ({ ...diff, path: [compared.before, ...diff.path] })))
   }
 
   const arrayMetaDiffs: Diff[] = []
   for (const i of beforeMached.values()) {
     _merged.push(before.value[i])
-    const diff = change.removed([...before.path, i], before.value[i])
+    const diff = change.removed([i], before.value[i])
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
 
   for (const j of afterMatched.values()) {
     _merged[j] = after.value[j]
-    const diff = change.added([...after.path, j], after.value[j])
+    const diff = change.added([j], after.value[j])
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
@@ -68,7 +68,7 @@ export const compareCombinary: CompareResolver = ({ before, after, options }) =>
     _merged[metaKey] = rootArrayMeta
   }
 
-  return { diffs: _diffs, merged: _merged, ...(!arrayMeta && rootArrayMeta) ? { rootMergeMeta: { array: rootArrayMeta } } : {} }
+  return { diffs: _diffs, merged: _merged, ...(!arrayMeta && Object.keys(rootArrayMeta).length) ? { rootMergeMeta: { array: rootArrayMeta } } : {} }
 }
 
 export const createCompareRefsResolver = (): CompareResolver => {
@@ -86,16 +86,16 @@ export const createCompareRefsResolver = (): CompareResolver => {
 
   const resolver: CompareResolver = ({ before, after, options }) => {
     // check if current path has already been compared via $refs
-    const compareRefsId = getCompareId(buildPath(before.path), buildPath(after.path))
+    let compareRefsId = getCompareId(buildPath(before.path), buildPath(after.path))
     if (compareCache.has(compareRefsId)) {
       return compareCache.get(compareRefsId)
     }
 
-    if (!isRefNode(before.value) || !isRefNode(after.value)) { return }
+    if (!isRefNode(before.value) && !isRefNode(after.value)) { return }
     
     // compare $refs
     if (isRefNode(before.value) && isRefNode(after.value)) {
-      const compareRefsId = getCompareId(before.value.$ref, after.value.$ref)
+      compareRefsId = getCompareId(before.value.$ref, after.value.$ref)
       
       if (compareCache.has(compareRefsId)) {
         return compareCache.get(compareRefsId)

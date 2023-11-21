@@ -13,9 +13,11 @@ export interface MergeFactoryResult {
 
 const createContext = (before: any, after: any, ctx: CrawlContext<MergeState>, options: ComapreOptions): ComapreContext => {
   const { keyMap, bNode, aNode, aPath, root } = ctx.state
+  const akey = keyMap[ctx.key ?? "#"]
+  const afterPath = (aPath.length || akey !== "#") ? [...aPath, akey] : []
   return {
     before: { key: ctx.key, path: ctx.path, parent: bNode, value: before, root: root.before["#"] },
-    after: { key: keyMap[ctx.key], path: aPath, parent: aNode, value: after, root: root.after["#"] },
+    after: { key: keyMap[ctx.key], path: afterPath, parent: aNode, value: after, root: root.after["#"] },
     options
   }
 }
@@ -49,21 +51,22 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
 
     // transform values before comparison
     const data: [unknown, unknown] = [ctx.value, aNode[akey]]
-    const [before, after] = transformers?.reduce((res, t) => t(...res), data) ?? data
+    const [before, after] = !isArray(ctx.value) && transformers ? transformers.reduce((res, t) => t(...res), data) : data
     // save transformed values to root nodes
     bNode[bkey] = before
     aNode[akey] = after
-    if (aPath.length || akey !== "#") {
-      aPath.push(akey)
-    }
 
     // compare via custom handler
     const compared = compare?.(createContext(before, after, ctx, options))
     if (compared) {
       const { diffs, merged, rootMergeMeta } = compared
-      _diffs.push(...diffs.map((diff) => ({ ...diff, path: [...aPath, akey, ...diff.path]})))
+
+      _diffs.push(...(aPath.length || akey !== "#") 
+        ? diffs.map((diff) => ({ ...diff, path: [...aPath, akey, ...diff.path]}))
+        : diffs 
+      )
       if (rootMergeMeta) { 
-        parentMeta[akey] = { array: rootMergeMeta }
+        parentMeta[akey] = rootMergeMeta
       }
       return mergedResult(mNode, akey, merged)
     }
@@ -107,7 +110,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       const _state: MergeState<string | number> = { 
         ...ctx.state,
         keyMap: mapped,
-        aPath: [...aPath],
+        aPath: (aPath.length || akey !== "#") ? [...aPath, akey] : [],
         bNode: before,
         aNode: after,
         parentMeta: nodeMeta,
