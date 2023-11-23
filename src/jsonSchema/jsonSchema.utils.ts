@@ -1,8 +1,10 @@
-import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
-import { ClassifyRule, DiffType, DiffTypeClassifier } from "../types"
-import { JsonSchemaNodeType } from "./jsonSchema.types"
-import { breaking, nonBreaking } from "../constants"
+import { isRefNode, parseRef, resolveRefNode } from "allof-merge"
 import { JsonPath } from "json-crawl"
+
+import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
+import type { ClassifyRule, DiffType, DiffTypeClassifier } from "../types"
+import type { JsonSchemaNodeType } from "./jsonSchema.types"
+import { breaking, nonBreaking } from "../constants"
 
 export function isAllOfNode(value: any): value is { allOf: any[] } {
   return value && value.allOf && Array.isArray(value.allOf)
@@ -72,4 +74,35 @@ export const multipleOfClassifier: ClassifyRule = [
 
 export const buildPath = (path: JsonPath): string => {
   return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
+}
+
+
+export const isCycleRef = ($ref: string, path: string, refs: Record<string, string[]>) => {
+  if (!$ref) { return false }
+  // cycle refs
+  // 1. $ref already included in refs
+  if (refs[$ref]?.find((p) => path.startsWith(p))) {
+    return true
+  }
+  // 2. path starts from $ref
+  if (path.startsWith($ref)) {
+    return true
+  }
+
+  return false
+}
+
+export const getCompareId = (beforeRef: string, afterRef: string): string => {
+  return beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}`
+}
+
+export const resolveRef = (node: unknown, source: unknown) => {
+  if (!isRefNode(node)) { return node }
+
+  return resolveRefNode(source, node)
+}
+
+export const getRef = ($ref?: string) => {
+  if (!$ref) { return "" }
+  return parseRef($ref).normalized ?? ""
 }

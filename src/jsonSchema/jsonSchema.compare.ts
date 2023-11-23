@@ -1,9 +1,7 @@
-import { isRefNode, resolveRefNode } from "allof-merge"
-
+import { buildPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
 import { changeFactory, convertDiffToMeta, createMergeMeta, isArray } from "../utils"
 import type { CompareResolver, CompareResult, Diff } from "../types"
 import { compareJsonSchema } from "./jsonSchema"
-import { buildPath } from "./jsonSchema.utils"
 import { DIFF_META_KEY } from "../constants"
 
 export const compareCombinary: CompareResolver = ({ before, after, options }) => {
@@ -73,29 +71,37 @@ export const compareCombinary: CompareResolver = ({ before, after, options }) =>
 
 export const createCompareRefsResolver = (): CompareResolver => {
   const compareCache = new Map<string, CompareResult>()
-
-  const getCompareId = (beforeRef: string, afterRef: string): string => {
-    return beforeRef === afterRef ? beforeRef : `${beforeRef}:${afterRef}`
-  }
-
-  const resolveRef = (node: unknown, source: unknown) => {
-    if (!isRefNode(node)) { return node }
-
-    return resolveRefNode(source, node)
-  }
+  const aRefs: Record<string, string[]> = {}
+  const bRefs: Record<string, string[]> = {}
 
   const resolver: CompareResolver = ({ before, after, options }) => {
     // check if current path has already been compared via $refs
-    let compareRefsId = getCompareId(buildPath(before.path), buildPath(after.path))
+    const bPath = buildPath(before.path)
+    const aPath = buildPath(after.path)
+
+    let compareRefsId = getCompareId(bPath, aPath)
     if (compareCache.has(compareRefsId)) {
       return compareCache.get(compareRefsId)
     }
 
-    if (!isRefNode(before.value) && !isRefNode(after.value)) { return }
-    
+    // normalize ref
+    const bRef = getRef(before.value.$ref)
+    const aRef = getRef(after.value.$ref)
+
+    if (!bRef && !aRef) { return }
+
+    // skip if cycle ref
+    if (isCycleRef(bRef, `#${bPath}`, bRefs) || isCycleRef(aRef, `#${aPath}`, aRefs)) {
+      return
+    }
+
+    // save refs to refs history
+    bRef && (bRefs[bRef] = [...bRefs[bRef] ?? [], `#${bPath}`])
+    aRef && (aRefs[aRef] = [...aRefs[aRef] ?? [], `#${aPath}`])
+
     // compare $refs
-    if (isRefNode(before.value) && isRefNode(after.value)) {
-      compareRefsId = getCompareId(before.value.$ref, after.value.$ref)
+    if (bRef && aRef) {
+      compareRefsId = getCompareId(bRef, aRef)
       
       if (compareCache.has(compareRefsId)) {
         return compareCache.get(compareRefsId)
@@ -103,14 +109,21 @@ export const createCompareRefsResolver = (): CompareResolver => {
     }
       
     // compare $refs content
-    const _before = resolveRef(before.value, before.root)
-    const _after = resolveRef(after.value, after.root)
+    const _before = resolveRef(before.value, options.sources?.before)
+    const _after = resolveRef(after.value, options.sources?.after)
     
+    if (_before === undefined || _after === undefined) {
+      return
+    }
+
+    // compare content
     const result = compareJsonSchema(_before, _after, options)
 
-    if (isRefNode(before.value) && isRefNode(after.value)) {
+    // save compare result
+    if (bRef && aRef) {
       compareCache.set(compareRefsId, result)
     }
+
     return result
   }
 

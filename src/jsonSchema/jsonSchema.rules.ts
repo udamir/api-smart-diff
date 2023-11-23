@@ -7,19 +7,21 @@ import {
 } from "./jsonSchema.utils"
 import { annotationChange, customChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
 import { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types/rules"
+import { compareCombinary, createCompareRefsResolver } from "./jsonSchema.compare"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 import { jsonSchemaTransformers } from "./jsonSchema.transform"
 import { mapSimpleEnumItemsRule } from "../resolvers/enum"
-import { compareCombinary, createCompareRefsResolver } from "./jsonSchema.compare"
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
 
 export const jsonSchemaRules = ({ rootRule = {}, draft = "draft-06", reversClassifier = false }: JsonSchemaRulesOptions = {}): CompareRules => {
+  // important to createCompareRefResolver once for cycle refs cache
+  rootRule.compare = rootRule.compare ?? createCompareRefsResolver()
+
   return {
     ...rootRule,
     transformers: [...jsonSchemaTransformers, ...rootRule?.transformers ?? []],
-    compare: createCompareRefsResolver(),
 
     "/title": annotationRule,
     "/multipleOf": simpleRule(multipleOfClassifier, validationChange),
@@ -51,29 +53,29 @@ export const jsonSchemaRules = ({ rootRule = {}, draft = "draft-06", reversClass
       "/*": { $: [nonBreaking, breaking, breaking] },
     },
     "/not": {
-      "/": () => jsonSchemaRules({ rootRule: { $: allBreaking }, draft, reversClassifier }),
+      "/": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allBreaking }, draft, reversClassifier }),
     },
     "/allOf": {
       "/": { $: [breaking, nonBreaking, breaking] },
-      "/*": () => jsonSchemaRules({ rootRule: { $: allBreaking }, draft, reversClassifier }),
+      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allBreaking }, draft, reversClassifier }),
       compare: compareCombinary
     },
     "/oneOf": {
       "/": { $: [breaking, nonBreaking, breaking] },
-      "/*": () => jsonSchemaRules({ rootRule: { $: allNonBreaking }, draft, reversClassifier }),
+      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
       compare: compareCombinary
     },
     "/anyOf": {
       "/": { $: [breaking, nonBreaking, breaking] },
-      "/*": () => jsonSchemaRules({ rootRule: { $: allNonBreaking }, draft, reversClassifier }),
+      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
       compare: compareCombinary
     },
-    "/items": () => jsonSchemaRules({ rootRule: { $: allNonBreaking }, draft, reversClassifier }),
+    "/items": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
     "/properties": {
       "/": { $: [breaking, nonBreaking, breaking] },
-      "/*": () => jsonSchemaRules({ rootRule: { $: allNonBreaking }, draft, reversClassifier }),
+      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
     },
-    "/additionalProperties": () => jsonSchemaRules({ rootRule: { $: allNonBreaking }, draft, reversClassifier }),
+    "/additionalProperties": () => jsonSchemaRules({ ...rootRule, rootRule: { $: allNonBreaking }, draft, reversClassifier }),
     "/description": annotationRule,
     "/format": { $: [breaking, nonBreaking, breaking], annotate: customChangeAnnotation("value format") },
     "/default": { $: [nonBreaking, breaking, breaking], annotate: customChangeAnnotation("default value") },
