@@ -38,9 +38,9 @@ export const jsonSchemaRules = ({ rootRule = {}, draft = "draft-06", reversClass
     "/maxProperties": simpleRule(maxClassifier, validationChange),
     "/minProperties": simpleRule(minClassifier, validationChange),
     "/required": {
-      "/": { $: onlyAddBreaking },
+      $: onlyAddBreaking,
       mapping: mapSimpleEnumItemsRule,
-      // "/*": { $: [nonBreakingIfDefault, nonBreaking, nonBreakingIfDefault] },
+      // TODO: "/*": { $: [nonBreakingIfDefault, nonBreaking, nonBreakingIfDefault] },
     },
     "/enum": {
       "/*": { $: [nonBreaking, breaking, breaking] },
@@ -49,30 +49,28 @@ export const jsonSchemaRules = ({ rootRule = {}, draft = "draft-06", reversClass
       annotate: customChangeAnnotation("possbile values")
     },
     "/type": {
-      "/": { $: [breaking, nonBreaking, breaking] },
+      $: [breaking, nonBreaking, breaking],
       "/*": { $: [nonBreaking, breaking, breaking] },
     },
-    "/not": {
-      "/": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allBreaking }, draft, reversClassifier }),
-    },
+    "/not": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allBreaking }, draft, reversClassifier }),
     "/allOf": {
-      "/": { $: [breaking, nonBreaking, breaking] },
+      $: [breaking, nonBreaking, breaking],
       "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allBreaking }, draft, reversClassifier }),
       compare: compareCombinary
     },
     "/oneOf": {
-      "/": { $: [breaking, nonBreaking, breaking] },
+      $: [breaking, nonBreaking, breaking],
       "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
       compare: compareCombinary
     },
     "/anyOf": {
-      "/": { $: [breaking, nonBreaking, breaking] },
+      $: [breaking, nonBreaking, breaking],
       "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
       compare: compareCombinary
     },
     "/items": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
     "/properties": {
-      "/": { $: [breaking, nonBreaking, breaking] },
+      $: [breaking, nonBreaking, breaking],
       "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
     },
     "/additionalProperties": () => jsonSchemaRules({ ...rootRule, rootRule: { $: allNonBreaking }, draft, reversClassifier }),

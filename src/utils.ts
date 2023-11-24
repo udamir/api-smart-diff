@@ -1,7 +1,7 @@
-import { JsonPath } from "json-crawl"
+import { CrawlRulesKey, JsonPath, getNodeRules } from "json-crawl"
 
-import { Diff, DiffMeta, FormatDiffFunc, MergeArrayMeta, MergeMeta } from "./types"
-import { DiffAction, unclassified } from "./constants"
+import type { ComapreContext, CompareRules, CompareRulesFunc, Diff, DiffMeta, FormatDiffFunc, MergeMeta } from "./types"
+import { DiffAction, allUnclassified, unclassified } from "./constants"
   
 export const typeOf = (value: unknown): string  => {
   if (Array.isArray(value)) {
@@ -31,13 +31,41 @@ export const isArray = (value: unknown): value is Array<unknown> => {
   return Array.isArray(value)
 }
 
+export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
+  const { rules } = ctx.options
+  const key: CrawlRulesKey = diff.action === "rename" ? "/*" : `/${diff.path[diff.path.length - 1]}`
+  const _rules: CompareRules | undefined = diff.action === "replace" ? rules : getNodeRules(rules, key, ctx.before.path)
+  const rule = _rules?.$
+
+  if (!rule || diff.action === "test") { 
+    return { ...diff, type: unclassified }
+  }
+
+  const classifier = Array.isArray(rule) ? rule : allUnclassified
+
+  const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
+  const changeType = classifier[index]
+
+  try {
+    if (typeof changeType === "function") {
+      return { ...diff, type: changeType(ctx) }
+    } else {
+      return { ...diff, type: changeType }
+    }
+
+  } catch (error) {
+    return { ...diff, type: unclassified }
+  }
+}
+
 export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>) => {
   const formatDiff = formatDiffFunc ? formatDiffFunc : ((diff: Diff) => diff as T)
+
   return {
-    added: (path: JsonPath, after: unknown): T => formatDiff({ path, after, action: DiffAction.add }),
-    removed: (path: JsonPath, before: unknown): T => formatDiff({ path, before, action: DiffAction.remove }),
-    replaced: (path: JsonPath, before: unknown, after: unknown): T => formatDiff({ path, before, after, action: DiffAction.replace }),
-    renamed: (path: JsonPath, before: unknown, after: unknown): T => formatDiff({ path, before, after, action: DiffAction.rename }),
+    added: (path: JsonPath, after: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, after, action: DiffAction.add }, ctx), ctx),
+    removed: (path: JsonPath, before: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, before, action: DiffAction.remove }, ctx), ctx),
+    replaced: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, before, after, action: DiffAction.replace }, ctx), ctx),
+    renamed: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, before, after, action: DiffAction.rename }, ctx), ctx),
   }
 }
 

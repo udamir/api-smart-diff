@@ -1,7 +1,7 @@
 import { JsonPath } from "json-crawl"
 
 import { ClassifierType, DiffAction } from "../constants"
-import { CompareRules } from "./rules"
+import { ComapreContext, CompareRules } from "./rules"
 
 export type ActionType = keyof typeof DiffAction
 export type DiffType = typeof ClassifierType[keyof typeof ClassifierType]
@@ -56,7 +56,7 @@ export type ComapreOptions = {
 }
 
 
-export type FormatDiffFunc<T extends Diff = Diff> = (diff: Diff) => T
+export type FormatDiffFunc<T extends Diff = Diff> = (diff: Diff, ctx: ComapreContext) => T
 export type NodeRoot = { "#": any }
 export type KeyMapping<T extends string | number> = T extends string ? Record<string, string> : Record<number, number>
 

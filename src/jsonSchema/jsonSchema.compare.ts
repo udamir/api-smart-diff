@@ -1,15 +1,19 @@
+import { getNodeRules } from "json-crawl"
+
 import { buildPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
 import { changeFactory, convertDiffToMeta, createMergeMeta, isArray } from "../utils"
 import type { CompareResolver, CompareResult, Diff } from "../types"
+import { jsonSchemaDiffFormat } from "./jsonSchema.format"
 import { compareJsonSchema } from "./jsonSchema"
 import { DIFF_META_KEY } from "../constants"
 
-export const compareCombinary: CompareResolver = ({ before, after, options }) => {
+export const compareCombinary: CompareResolver = (ctx) => {
+  const { before, after, options } = ctx
   const { arrayMeta, metaKey = DIFF_META_KEY } = options
 
-  const change = changeFactory()
+  const change = changeFactory(jsonSchemaDiffFormat)
   if (!isArray(before.value) || !isArray(after.value)) {
-    const diff = change.replaced(before.path, before.value, after.value)
+    const diff = change.replaced(before.path, before.value, after.value, ctx)
     return { diffs: [diff], merged: after.value, rootMergeMeta: convertDiffToMeta(diff) }
   }
   // match combinaries
@@ -19,13 +23,15 @@ export const compareCombinary: CompareResolver = ({ before, after, options }) =>
   const _merged: any = []
   const _diffs: Diff[] = []
 
+  const rules = getNodeRules(options.rules, "*", before.path)
+
   // compare all combinations, find min diffs
   for (const i of before.value.keys()) {
     const _before = before.value[i]
     for (const j of after.value.keys()) {
       if (!afterMatched.has(j)) { continue }
       const _after = after.value[j]
-      const { diffs, merged } = compareJsonSchema(_before, _after, options)
+      const { diffs, merged } = compareJsonSchema(_before, _after, {...options, rules })
       if (!diffs.length) {
         afterMatched.delete(j)
         beforeMached.delete(i)
@@ -49,14 +55,14 @@ export const compareCombinary: CompareResolver = ({ before, after, options }) =>
   const arrayMetaDiffs: Diff[] = []
   for (const i of beforeMached.values()) {
     _merged.push(before.value[i])
-    const diff = change.removed([i], before.value[i])
+    const diff = change.removed([i], before.value[i], ctx)
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
 
   for (const j of afterMatched.values()) {
     _merged[j] = after.value[j]
-    const diff = change.added([j], after.value[j])
+    const diff = change.added([j], after.value[j], ctx)
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }

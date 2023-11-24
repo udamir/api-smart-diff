@@ -1,6 +1,6 @@
-import { CrawlRules, JsonPath } from "json-crawl"
+import { CrawlRules, CrawlRulesFunc, JsonPath } from "json-crawl"
 
-import type { Diff, DiffType, ComapreOptions, CompareResult } from "./compare"
+import type { Diff, DiffType, ComapreOptions, CompareResult, MergeState } from "./compare"
 
 export type DiffTypeClassifier = (ctx: ComapreContext) => DiffType
 
@@ -38,7 +38,7 @@ export type MappingArrayResolver = (before: Array<unknown>, after: Array<unknown
 
 export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => string
 
-export type ComapreRule = {
+export type CompareRule = {
   $?: ClassifyRule      // classifier for current node
   compare?: CompareResolver      // compare handler for current node
   transformers?: CompareTransformationResolver[]
@@ -46,7 +46,8 @@ export type ComapreRule = {
   annotate?: ChangeAnnotationResolver
 }
 
-export type CompareRules = CrawlRules<ComapreRule>
+export type CompareRules = CrawlRules<CompareRule, MergeState>
+export type CompareRulesFunc = CrawlRulesFunc<CompareRule, MergeState>
 
 export interface MapKeysResult<T extends string | number> {
   added: Array<T>
