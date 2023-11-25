@@ -46,7 +46,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
 
   const hook: SyncCrawlHook<MergeState, CompareRule> = (crawlContext) => {
     const { rules = {}, state, value, key: bkey = "#", path: bPath } = crawlContext
-    const { transformers, compare, mapping } = rules
+    const { transform, compare, mapping } = rules
     const { keyMap, parentMeta, bNode, aNode, aPath, mNode } = state
 
     const akey = keyMap[bkey]
@@ -58,7 +58,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
 
     // transform values before comparison
     const data: [unknown, unknown] = [value, aNode[akey]]
-    const [before, after] = !isArray(value) && transformers ? transformers.reduce((res, t) => t(...res), data) : data
+    const [before, after] = !isArray(value) && transform ? transform.reduce((res, t) => t(...res), data) : data
     // save transformed values to root nodes
     bNode[bkey] = before
     aNode[akey] = after

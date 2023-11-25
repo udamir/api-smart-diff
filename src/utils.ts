@@ -1,6 +1,6 @@
-import { CrawlRulesKey, JsonPath, getNodeRules } from "json-crawl"
+import { CrawlRulesKey, getNodeRules } from "json-crawl"
 
-import type { ComapreContext, CompareRules, CompareRulesFunc, Diff, DiffMeta, FormatDiffFunc, MergeMeta } from "./types"
+import type { ChangeFactory, ComapreContext, CompareRules, Diff, DiffMeta, FormatDiffFunc, MergeMeta } from "./types"
 import { DiffAction, allUnclassified, unclassified } from "./constants"
   
 export const typeOf = (value: unknown): string  => {
@@ -58,14 +58,14 @@ export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
   }
 }
 
-export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>) => {
+export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>): ChangeFactory<T> => {
   const formatDiff = formatDiffFunc ? formatDiffFunc : ((diff: Diff) => diff as T)
 
   return {
-    added: (path: JsonPath, after: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, after, action: DiffAction.add }, ctx), ctx),
-    removed: (path: JsonPath, before: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, before, action: DiffAction.remove }, ctx), ctx),
-    replaced: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, before, after, action: DiffAction.replace }, ctx), ctx),
-    renamed: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext): T => formatDiff(classifyDiff({ path, before, after, action: DiffAction.rename }, ctx), ctx),
+    added: (path, after, ctx) => formatDiff(classifyDiff({ path, after, action: DiffAction.add }, ctx), ctx),
+    removed: (path, before, ctx) => formatDiff(classifyDiff({ path, before, action: DiffAction.remove }, ctx), ctx),
+    replaced: (path, before, after, ctx) => formatDiff(classifyDiff({ path, before, after, action: DiffAction.replace }, ctx), ctx),
+    renamed: (path, before, after, ctx) => formatDiff(classifyDiff({ path, before, after, action: DiffAction.rename }, ctx), ctx),
   }
 }
 

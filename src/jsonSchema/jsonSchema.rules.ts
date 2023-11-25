@@ -15,13 +15,11 @@ import { mapSimpleEnumItemsRule } from "../resolvers/enum"
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
 
-export const jsonSchemaRules = ({ rootRule = {}, draft = "draft-06", reversClassifier = false }: JsonSchemaRulesOptions = {}): CompareRules => {
-  // important to createCompareRefResolver once for cycle refs cache
-  rootRule.compare = rootRule.compare ?? createCompareRefsResolver()
-
-  return {
-    ...rootRule,
-    transformers: [...jsonSchemaTransformers, ...rootRule?.transformers ?? []],
+export const jsonSchemaRules = ({ transform = [], draft = "draft-06", reversClassifier = false }: JsonSchemaRulesOptions = {}): CompareRules => {
+  const rules = {
+    // important to createCompareRefResolver once for cycle refs cache
+    compare: createCompareRefsResolver(),
+    transform: [...jsonSchemaTransformers, ...transform],
 
     "/title": annotationRule,
     "/multipleOf": simpleRule(multipleOfClassifier, validationChange),
@@ -52,28 +50,28 @@ export const jsonSchemaRules = ({ rootRule = {}, draft = "draft-06", reversClass
       $: [breaking, nonBreaking, breaking],
       "/*": { $: [nonBreaking, breaking, breaking] },
     },
-    "/not": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allBreaking }, draft, reversClassifier }),
+    "/not": () => ({ ...rules, $: allBreaking }),
     "/allOf": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allBreaking }, draft, reversClassifier }),
+      "/*": () => ({ ...rules, $: allBreaking }),
       compare: compareCombinary
     },
     "/oneOf": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
+      "/*": () => ({ ...rules, $: allNonBreaking }),
       compare: compareCombinary
     },
     "/anyOf": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
+      "/*": () => ({ ...rules, $: allNonBreaking }),
       compare: compareCombinary
     },
-    "/items": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
+    "/items": () => ({ ...rules, $: allNonBreaking }),
     "/properties": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => jsonSchemaRules({ rootRule: { ...rootRule, $: allNonBreaking }, draft, reversClassifier }),
+      "/*": () => ({ ...rules, $: allNonBreaking }),
     },
-    "/additionalProperties": () => jsonSchemaRules({ ...rootRule, rootRule: { $: allNonBreaking }, draft, reversClassifier }),
+    "/additionalProperties": () => ({ ...rules, $: allNonBreaking }),
     "/description": annotationRule,
     "/format": { $: [breaking, nonBreaking, breaking], annotate: customChangeAnnotation("value format") },
     "/default": { $: [nonBreaking, breaking, breaking], annotate: customChangeAnnotation("default value") },
@@ -107,4 +105,6 @@ export const jsonSchemaRules = ({ rootRule = {}, draft = "draft-06", reversClass
     } : {},
     "/**": { $: allUnclassified }
   }
+
+  return rules
 }

@@ -29,8 +29,8 @@ export type ComapreContext = {
 
 export type CompareResolver = (ctx: ComapreContext) => CompareResult | void
 
-export type TransformationResolver = (value: unknown, other: unknown) => unknown
-export type CompareTransformationResolver = (before: unknown, after: unknown) => [unknown, unknown]
+export type TransformResolver = (value: unknown, other: unknown) => unknown
+export type CompareTransformResolver = (before: unknown, after: unknown) => [unknown, unknown]
 
 export type MappingResolver<T extends string | number> = T extends string ? MappingObjectResolver : MappingArrayResolver
 export type MappingObjectResolver = (before: Record<string, unknown>, after: Record<string, unknown>) => MapKeysResult<string>
@@ -41,7 +41,7 @@ export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => stri
 export type CompareRule = {
   $?: ClassifyRule      // classifier for current node
   compare?: CompareResolver      // compare handler for current node
-  transformers?: CompareTransformationResolver[]
+  transform?: CompareTransformResolver[]
   mapping?: MappingResolver<string | number>
   annotate?: ChangeAnnotationResolver
 }

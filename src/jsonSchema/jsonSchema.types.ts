@@ -1,13 +1,13 @@
 
 import { jsonSchemaTypes, jsonSchemaVersion } from "./jsonSchema.consts"
-import type { CompareRule } from "../types"
+import type { CompareTransformResolver } from "../types"
 
 export type JsonSchemaNodeType = typeof jsonSchemaTypes[number]
 
 export type JsonSchemaVersion = typeof jsonSchemaVersion[number]
 
 export type JsonSchemaRulesOptions = {
-  rootRule?: CompareRule
+  transform?: CompareTransformResolver[]
   draft?: JsonSchemaVersion
   reversClassifier?: boolean
 }

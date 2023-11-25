@@ -55,7 +55,6 @@ export type ComapreOptions = {
   }
 }
 
-
 export type FormatDiffFunc<T extends Diff = Diff> = (diff: Diff, ctx: ComapreContext) => T
 export type NodeRoot = { "#": any }
 export type KeyMapping<T extends string | number> = T extends string ? Record<string, string> : Record<number, number>
@@ -79,3 +78,10 @@ export type MergeArrayMeta = { array: Record<number, DiffMeta | MergeArrayMeta> 
 export type MergeMeta = Record<string | number, DiffMeta | MergeArrayMeta>
 
 export type JsonNode<T extends string | number = string> = T extends string ? Record<string | number, unknown> : Array<unknown>
+
+export interface ChangeFactory<T extends Diff = Diff> {
+  added: (path: JsonPath, after: unknown, ctx: ComapreContext) => T
+  removed: (path: JsonPath, before: unknown, ctx: ComapreContext) => T
+  replaced: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => T
+  renamed: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => T
+}
