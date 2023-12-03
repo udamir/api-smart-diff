@@ -1,8 +1,8 @@
 import type { ComapreOptions, CompareResult } from "../types"
-import { jsonSchemaRules } from "./jsonSchema.rules"
+import { openapi3Rules } from "./openapi3.rules"
 import { compare } from "../compare"
 
-export const compareJsonSchema = (before: unknown, after: unknown, options: ComapreOptions = {}): CompareResult => {
+export const compareOpenApi = (before: unknown, after: unknown, options: ComapreOptions = {}): CompareResult => {
  
   // set default options
   const _options = {
@@ -11,7 +11,7 @@ export const compareJsonSchema = (before: unknown, after: unknown, options: Coma
       before: options.sources?.before ?? before,
       after: options.sources?.after ?? after,
     },
-    rules: options.rules ?? jsonSchemaRules()
+    rules: options.rules ?? openapi3Rules
   }
 
   return compare(before, after, _options)

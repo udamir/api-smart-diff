@@ -2,12 +2,10 @@ import {
   breaking, nonBreaking,allAnnotation, allBreaking, allUnclassified,
   onlyAddBreaking, allDeprecated, allNonBreaking,
 } from "../constants"
-import { 
-  booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, multipleOfClassifier
-} from "./jsonSchema.utils"
-import { annotationChange, customChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
+import { booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, multipleOfClassifier, requiredItemClassifyRule } from "./jsonSchema.classify"
+import { annotationChange, keyChangeAnnotation, parentKeyChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
+import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types/rules"
-import { compareCombinary, createCompareRefsResolver } from "./jsonSchema.compare"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 import { jsonSchemaTransformers } from "./jsonSchema.transform"
 import { mapSimpleEnumItemsRule } from "../resolvers/enum"
@@ -15,10 +13,10 @@ import { mapSimpleEnumItemsRule } from "../resolvers/enum"
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
 
-export const jsonSchemaRules = ({ transform = [], draft = "draft-06", reversClassifier = false }: JsonSchemaRulesOptions = {}): CompareRules => {
+export const jsonSchemaRules = ({ transform = [], draft = "draft-06", writer = false }: JsonSchemaRulesOptions = {}): CompareRules => {
   const rules = {
     // important to createCompareRefResolver once for cycle refs cache
-    compare: createCompareRefsResolver(),
+    compare: createRefsCompareResolver(),
     transform: [...jsonSchemaTransformers, ...transform],
 
     "/title": annotationRule,
@@ -38,13 +36,13 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", reversClas
     "/required": {
       $: onlyAddBreaking,
       mapping: mapSimpleEnumItemsRule,
-      // TODO: "/*": { $: [nonBreakingIfDefault, nonBreaking, nonBreakingIfDefault] },
+      "/*": { $: requiredItemClassifyRule },
     },
     "/enum": {
-      "/*": { $: [nonBreaking, breaking, breaking] },
+      "/*": { $: [nonBreaking, breaking, breaking], annotate: parentKeyChangeAnnotation },
       $: [breaking, nonBreaking, breaking],
       mapping: mapSimpleEnumItemsRule,
-      annotate: customChangeAnnotation("possbile values")
+      annotate: keyChangeAnnotation
     },
     "/type": {
       $: [breaking, nonBreaking, breaking],
@@ -54,17 +52,17 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", reversClas
     "/allOf": {
       $: [breaking, nonBreaking, breaking],
       "/*": () => ({ ...rules, $: allBreaking }),
-      compare: compareCombinary
+      compare: combinaryCompareResolver
     },
     "/oneOf": {
       $: [breaking, nonBreaking, breaking],
       "/*": () => ({ ...rules, $: allNonBreaking }),
-      compare: compareCombinary
+      compare: combinaryCompareResolver
     },
     "/anyOf": {
       $: [breaking, nonBreaking, breaking],
       "/*": () => ({ ...rules, $: allNonBreaking }),
-      compare: compareCombinary
+      compare: combinaryCompareResolver
     },
     "/items": () => ({ ...rules, $: allNonBreaking }),
     "/properties": {
@@ -73,8 +71,8 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", reversClas
     },
     "/additionalProperties": () => ({ ...rules, $: allNonBreaking }),
     "/description": annotationRule,
-    "/format": { $: [breaking, nonBreaking, breaking], annotate: customChangeAnnotation("value format") },
-    "/default": { $: [nonBreaking, breaking, breaking], annotate: customChangeAnnotation("default value") },
+    "/format": { $: [breaking, nonBreaking, breaking], annotate: keyChangeAnnotation },
+    "/default": { $: [nonBreaking, breaking, breaking], annotate: keyChangeAnnotation },
     "/dependencies": {
 
     },
@@ -93,7 +91,7 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", reversClas
     ...["openapi30schema"].includes(draft) ? {
       "/readOnly": { $: booleanClassifier, annotate: statusChange },
       "/writeOnly": { $: booleanClassifier, annotate: statusChange },
-      "/nullable": { $: booleanClassifier, annotate: customChangeAnnotation("possbile nullable value") },
+      "/nullable": { $: booleanClassifier, annotate: keyChangeAnnotation },
       "/deprecated": { $: allDeprecated, annotate: statusChange },
     } : {},
 

@@ -1,117 +1,88 @@
-import { ChangeAnnotationResolver } from "../types"
+import { JsonPath } from "json-crawl"
+import { ChangeAnnotationResolver, ComapreContext, DiffContext } from "../types"
 
-export const annotationChange: ChangeAnnotationResolver = (diff, ctx) => {
-  return ""
+type ChangeAnnotation = [string, string, string]
+
+const annotations = {
+  changeTemplate: (text: string, target?: string): ChangeAnnotation => [
+    target ? `[Added] ${text} to ${target}` : `[Added] ${text}`,
+    target ? `[Removed] ${text} from ${target}` : `[Removed] ${text}`,
+    target ? `[Replaced] ${text} of ${target}` : `[Replaced] ${text}`
+  ],
+  statusChange: (status: string, target?: string) => annotations.changeTemplate(`${status} status`, target),
+  validationChange: (key: string, target?: string) => annotations.changeTemplate(`${key} validator`, target), 
+  annotationChange: (key: string, target?: string) => annotations.changeTemplate(`annotation (${key})`, target),
+  enumChange: (target?: string) => annotations.changeTemplate("possbile values", target),
+  formatChange: (target?: string) => annotations.changeTemplate("value format", target),
+  defaultChange: (target?: string) => annotations.changeTemplate("default value", target),
+  nullableChange: (target?: string) => annotations.changeTemplate("possbile nullable value", target),
+} as const
+
+type AnnotationContext = DiffContext & {
+  action: number
+  target: string
 }
 
-export const validationChange: ChangeAnnotationResolver = (diff, ctx) => {
-  return ""
+const getTarget = (path: JsonPath, prefix = ""): string => {
+  for (let i = 0; i < path.length; i++) {
+    if (path[i] === "properties" && i < path.length - 1) {
+      prefix += prefix ? "." + String(path[i++]) : String(path[i++]) 
+    } else if (path[i] === "items") {
+      prefix += "[]"
+    }
+  }
+  return prefix
 }
 
-export const statusChange: ChangeAnnotationResolver = (diff, ctx) => {
-  return ""
-}
+const getDiffContext = (action: string, ctx: ComapreContext): AnnotationContext => {
+  const _ctx = action === "add" ? ctx.after : ctx.before
 
-export const customChangeAnnotation = (text: string): ChangeAnnotationResolver => {
-  return (diff, ctx) => {
-    return ""
+  return {
+    ..._ctx,
+    action: ["add", "remove", "replace"].indexOf(action),
+    target: getTarget(_ctx.path)
   }
 }
 
+export const annotationChange: ChangeAnnotationResolver = (diff, ctx) => {
+  const { key, action, target } = getDiffContext(diff.action, ctx)
 
+  return annotations.annotationChange(String(key), target)[action]
+}
 
-// const actions: Record<string, "[Added]" | "[Deleted]" | "[Changed]"> = {
-//   "add": "[Added]",
-//   "replace": "[Changed]",
-//   "remove": "[Deleted]"
-// }
+export const validationChange: ChangeAnnotationResolver = (diff, ctx) => {
+  const { key, action, target } = getDiffContext(diff.action, ctx)
 
-// const targetProperty = (path: JsonPath, from: number, prefix = ""): string => {
-//   if (from >= path.length) { return prefix }
-//   if (path[from] === "properties" && from < path.length) {
-//     prefix += prefix ? "." + String(path[from+1]) : String(path[from+1]) 
-//     return targetProperty(path, from + 2, prefix)
-//   } else if (path[from] === "items") {
-//     prefix += "[]"
-//   }
-//   return targetProperty(path, from + 1, prefix) 
-// }
+  return annotations.validationChange(String(key), target)[action]
+}
 
-// const mark = (text: string | number): string => "`" + text + "`"
+export const statusChange: ChangeAnnotationResolver = (diff, ctx) => {
+  const { key, target } = getDiffContext(diff.action, ctx)
 
-// const validatorRule = (location: string, index: number): ChangeDocResolver => ({ action, key, path }) => {
-//   let target = targetProperty(path, index)
-//   return `${actions[action]} ${key} validator ${target ? "for " + target : ""} in ${location}`
-// }
+  if (ctx.after.value) {
+    annotations.statusChange(String(key), target)[0]
+  } else if (ctx.before.value) {
+    annotations.statusChange(String(key), target)[1]
+  }
+  return ""
+}
 
-// const propertyList = (node: any, path: JsonPath, index: number) => {
-//   return Object.keys(node || {}).map((prop) => mark(targetProperty([...path, prop], index))).join(", ")
-// }
+export const keyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
+  const { key, action, target } = getDiffContext(diff.action, ctx)
+  switch (key) {
+    case "enum": return annotations.enumChange(target)[action]
+    case "format": return annotations.formatChange(target)[action]
+    case "nullable": return annotations.nullableChange(target)[action]
+    case "default": return annotations.defaultChange(target)[action]
+  }
+  return ""
+}
 
-// const requiredList = (required: string[], path: JsonPath, index: number) => {
-//   return (required.length > 1 ? "properties " : "property ") + required.map((prop) => mark(targetProperty([...path, "properties", prop], index))).join(", ")
-// }
-
-// const propertyRule = (target: string, location: string, index: number): ChangeDocResolver => ({ action, path }) => 
-//   `${actions[action]} ${target}property ${mark(targetProperty(path, index))} in ${location}`
-
-
-// const operationMethods = (node: any) => {
-//   const methods = Object.keys(node).filter(key => ["get", "post", "put", "head", "delete", "patch", "connect", "trace", "options"].includes(key.toLocaleLowerCase())).map(mark)
-//   return (methods.length > 1 ? "methods " : "method ") + methods.join(", ")
-// }
-
-// const changeSchemaRules = (location: string, index: number): ChangeDocRules => ({
-//   // property
-//   "%": propertyRule("", location, index),
-//   // validators
-//   "/multipleOf": { "%": validatorRule(location, index) },
-//   "/maximum": { "%": validatorRule(location, index) },
-//   "/exclusiveMaximum": { "%": validatorRule(location, index) },
-//   "/minimum": { "%": validatorRule(location, index) },
-//   "/exclusiveMinimum": { "%": validatorRule(location, index) },
-//   "/maxLength": { "%": validatorRule(location, index) },
-//   "/minLength": { "%": validatorRule(location, index) },
-//   "/pattern": { "%": validatorRule(location, index) },
-//   "/maxItems": { "%": validatorRule(location, index) },
-//   "/minItems": { "%": validatorRule(location, index) },
-//   "/uniqueItems": { "%": validatorRule(location, index) },
-//   "/maxProperties": { "%": validatorRule(location, index) },
-//   "/minProperties": { "%": validatorRule(location, index) },
-//   // items
-//   "/items": () => changeSchemaRules(location, index),
-//   // properties
-//   "/properties": {
-//     "%": ({ action, path, node }) => `${actions[action]} properties ${propertyList(node, path, index)} in ${location}`,
-//     "/*": () => changeSchemaRules(location, index)
-//   },
-//   // type
-//   "/type": { "%": propertyRule("Type of ", location, index) },
-//   // required
-//   "/required": {
-//     "%": ({ action, node, path }) => `${actions[action]} Required ${requiredList(node, path, index)} in ${location}`,
-//     "/*": {
-//       "%": ({ action, parent, key }) => `${actions[action]} Required property ${mark(parent[key])} in ${location}`
-//     },
-//   },
-//   // value
-//   "/format": { "%": propertyRule("Value format for ", location, index) },
-//   "/default": { "%": propertyRule("Default value for ", location, index) },
-//   "/nullable": { "%": propertyRule("Possbile nullable value for ", location, index) },
-//   "/enum": { "%": propertyRule("Possbile values for ", location, index) },
-//   // status
-//   "/readOnly": { "%": propertyRule("Readonly status to ", location, index) },
-//   "/writeOnly": { "%": propertyRule("Wrightonly status to ", location, index) },
-//   "/deprecated": { "%": propertyRule("Deprecated status to ", location, index) },
-//   // polymorph
-//   "/allOf": {
-//     "/*": () => changeSchemaRules(location, index),
-//   },
-//   "/oneOf": {
-//     "/*": () => changeSchemaRules(location, index),
-//   },
-//   "/anyOf": {
-//     "/*": () => changeSchemaRules(location, index),
-//   },
-//   "/not": () => changeSchemaRules(location, index),
-// })
+export const parentKeyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
+  const { path, target } = getDiffContext(diff.action, ctx)
+  const key = path.length > 1 ? path[path.length-2] : ""
+  switch (key) {
+    case "enum": return annotations.enumChange(target)[2]
+  }
+  return ""
+}

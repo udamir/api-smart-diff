@@ -9,21 +9,17 @@ export type AddDiffType = DiffType | DiffTypeClassifier
 export type RemoveDiffType = DiffType | DiffTypeClassifier
 export type ReplaceDiffType = DiffType | DiffTypeClassifier
 
+export type DiffContext =  {
+  path: JsonPath
+  key: string | number
+  value: any
+  parent?: unknown
+  root: unknown
+}
+
 export type ComapreContext = {
-  before: {
-    path: JsonPath
-    key: string | number
-    value: any
-    parent: unknown
-    root: unknown
-  }
-  after: {
-    path: JsonPath
-    key: string | number
-    value: any
-    parent: unknown
-    root: unknown
-  }
+  before: DiffContext
+  after: DiffContext
   options: ComapreOptions
 }
 

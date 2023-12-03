@@ -2,9 +2,7 @@ import { isRefNode, parseRef, resolveRefNode } from "allof-merge"
 import { JsonPath } from "json-crawl"
 
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
-import type { ClassifyRule, DiffType, DiffTypeClassifier } from "../types"
 import type { JsonSchemaNodeType } from "./jsonSchema.types"
-import { breaking, nonBreaking } from "../constants"
 
 export function isAllOfNode(value: any): value is { allOf: any[] } {
   return value && value.allOf && Array.isArray(value.allOf)
@@ -39,38 +37,6 @@ export function unwrapArrayOrNull(value: unknown): unknown[] | null {
 }
 
 
-export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
-export const breakingIfAfterTrue: DiffTypeClassifier = ({ after }): DiffType => breakingIf(!!after.value)
-
-export const maxClassifier: ClassifyRule = [
-  breaking, 
-  nonBreaking, 
-  ({ before, after }) => breakingIf(before.value > after.value)
-]
-
-export const minClassifier: ClassifyRule = [
-  breaking,
-  nonBreaking,
-  ({ before, after }) => breakingIf(before.value < after.value)
-]
-
-export const exclusiveClassifier: ClassifyRule = [
-  breakingIfAfterTrue, 
-  nonBreaking, 
-  breakingIfAfterTrue
-]
-
-export const booleanClassifier: ClassifyRule = [
-  breakingIfAfterTrue,
-  nonBreaking,
-  breakingIfAfterTrue
-]
-
-export const multipleOfClassifier: ClassifyRule = [
-  breaking,
-  nonBreaking,
-  ({ before, after }) => breakingIf(!!(before.value % after.value))
-]
 
 export const buildPath = (path: JsonPath): string => {
   return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")

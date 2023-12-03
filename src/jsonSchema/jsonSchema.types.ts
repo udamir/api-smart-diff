@@ -9,6 +9,6 @@ export type JsonSchemaVersion = typeof jsonSchemaVersion[number]
 export type JsonSchemaRulesOptions = {
   transform?: CompareTransformResolver[]
   draft?: JsonSchemaVersion
-  reversClassifier?: boolean
+  writer?: boolean
 }
 

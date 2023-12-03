@@ -1,6 +1,6 @@
-import { CrawlRulesKey, getNodeRules } from "json-crawl"
+import { CrawlRulesKey, JsonPath, getNodeRules } from "json-crawl"
 
-import type { ChangeFactory, ComapreContext, CompareRules, Diff, DiffMeta, FormatDiffFunc, MergeMeta } from "./types"
+import type { ChangeFactory, ComapreContext, CompareRules, Diff, DiffContext, DiffMeta, FormatDiffFunc, MergeMeta } from "./types"
 import { DiffAction, allUnclassified, unclassified } from "./constants"
   
 export const typeOf = (value: unknown): string  => {
@@ -29,6 +29,10 @@ export const isObject = (value: unknown): value is Record<string, unknown> => {
 
 export const isArray = (value: unknown): value is Array<unknown> => {
   return Array.isArray(value)
+}
+
+export const isNotEmptyArray = (value: unknown): boolean => {
+  return !!(Array.isArray(value) && value.length)
 }
 
 export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
@@ -87,4 +91,59 @@ export const createMergeMeta = (diffs: Diff[]): MergeMeta => {
   }
 
   return meta
+}
+
+export const getValueByPath = (obj: unknown, path: JsonPath): unknown | undefined => {
+  let value: unknown = obj
+  for (const key of path) {
+    if (Array.isArray(value) && typeof +key === "number" && value.length < +key) {
+      value = value[+key]
+    } else if (isObject(value) && key in value) {
+      value = value[key]
+    } else { 
+      return
+    }
+    if (value === undefined) { return }
+  }
+  return value
+}
+
+export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
+  const result = [...base]
+  for (const item of items) {
+    for (const step of item) {
+      if (step === "..") {
+        result.pop()
+      } else {
+        result.push(step)
+      }
+    }
+  }
+  return result
+}
+
+export const getParentContextByPath = (ctx: DiffContext, path: JsonPath): DiffContext | undefined => {
+  const newPath = joinPath(ctx.path, path)
+  
+  if (!newPath.length) {
+    return { path: [], key: "", value: ctx.root, root: ctx.root }
+  }
+
+  const parentPath = [...newPath]
+  const key = parentPath.pop()!
+
+  const parentValue = getValueByPath(ctx.root, parentPath) as Record<string | number, unknown>
+  const value = parentValue[key]
+
+  if (value === undefined) {
+    return
+  }
+
+  return {
+    path: newPath,
+    key: parentPath[parentPath.length-1],
+    value,
+    parent: parentValue,
+    root: ctx.root
+  }
 }
