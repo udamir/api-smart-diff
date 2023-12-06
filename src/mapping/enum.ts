@@ -3,11 +3,7 @@ import { MapKeysResult, MappingResolver } from "../types"
 
 export const mapSimpleEnumItemsRule: MappingResolver<number> = (before, after) => {
 
-  const result: MapKeysResult<number> = {
-    added: [],
-    removed: [],
-    mapped: {}
-  }
+  const result: MapKeysResult<number> = { added: [], removed: [],  mapped: {} }
 
   const afterItems = [...after]
   const mappedIndex = new Set(after.keys())

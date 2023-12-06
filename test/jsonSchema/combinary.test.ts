@@ -94,6 +94,7 @@ describe("schema with combinary", () => {
         {
           oneOf: [
             {
+              type: "object",
               title: "opt1",
               properties: {
                 id: {
@@ -105,6 +106,7 @@ describe("schema with combinary", () => {
               },
             },
             {
+              type: "object",
               title: "opt2",
               properties: {
                 id: {
@@ -118,6 +120,7 @@ describe("schema with combinary", () => {
           ],
         },
         {
+          type: "object",
           title: "opt3",
           properties: {
             id: {

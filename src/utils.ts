@@ -77,7 +77,7 @@ export const convertDiffToMeta = (diff: Diff): DiffMeta => {
   return {
     action: diff.action,
     type: diff.type ?? unclassified,
-    ...diff.action === "replace" ? { replaced: diff.before } : {}
+    ...diff.action === "replace" || diff.action === "rename" ? { replaced: diff.before } : {}
   }
 }
 
@@ -86,14 +86,14 @@ export const createMergeMeta = (diffs: Diff[]): MergeMeta => {
 
   for (const diff of diffs) {
     const _meta = convertDiffToMeta(diff)
-    const key = diff.path[diff.path.length - 1]
+    const key = diff.action !== "rename" ? diff.path[diff.path.length - 1] : diff.after
     meta[key] = _meta
   }
 
   return meta
 }
 
-export const getValueByPath = (obj: unknown, path: JsonPath): unknown | undefined => {
+export const getValueByPath = (obj: unknown, ...path: JsonPath): unknown | undefined => {
   let value: unknown = obj
   for (const key of path) {
     if (Array.isArray(value) && typeof +key === "number" && value.length < +key) {
@@ -132,7 +132,7 @@ export const getParentContextByPath = (ctx: DiffContext, path: JsonPath): DiffCo
   const parentPath = [...newPath]
   const key = parentPath.pop()!
 
-  const parentValue = getValueByPath(ctx.root, parentPath) as Record<string | number, unknown>
+  const parentValue = getValueByPath(ctx.root, ...parentPath) as Record<string | number, unknown>
   const value = parentValue[key]
 
   if (value === undefined) {

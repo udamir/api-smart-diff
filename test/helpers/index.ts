@@ -31,16 +31,16 @@ export class ExampleResource {
   }
 
   public diff(after: any) {
-    return apiDiff(this.res, after, { rules: this.rules, externalRefs: this.externalSources })
+    return apiDiff(this.res, after, { rules: this.rules, externalSources: this.externalSources })
   }
 
   public merge(after: any, options?: ComapreOptions) {
-    return apiMerge(this.res, after, { ...options, rules: this.rules, externalRefs: this.externalSources })
+    return apiMerge(this.res, after, { ...options, rules: this.rules, externalSources: this.externalSources })
   }
 
   public getValue(path: JsonPath) {
     // path = typeof path === "string" ? parsePath(path) : path
-    return getValueByPath(this.res, path)
+    return getValueByPath(this.res, ...path)
   }
 
   // public findExternalSources () {

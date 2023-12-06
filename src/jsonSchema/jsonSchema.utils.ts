@@ -1,5 +1,5 @@
 import { isRefNode, parseRef, resolveRefNode } from "allof-merge"
-import { JsonPath } from "json-crawl"
+import type { JsonPath } from "json-crawl"
 
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
 import type { JsonSchemaNodeType } from "./jsonSchema.types"

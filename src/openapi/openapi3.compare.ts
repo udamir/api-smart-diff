@@ -1,16 +1,12 @@
-import type { ComapreOptions, CompareResult } from "../types"
+import type { ComapreOptions, CompareResult, SourceContext } from "../types"
 import { openapi3Rules } from "./openapi3.rules"
 import { compare } from "../compare"
 
-export const compareOpenApi = (before: unknown, after: unknown, options: ComapreOptions = {}): CompareResult => {
+export const compareOpenApi = (before: unknown, after: unknown, options: ComapreOptions = {}, context: SourceContext = {}): CompareResult => {
  
   // set default options
   const _options = {
     ...options,
-    sources: {
-      before: options.sources?.before ?? before,
-      after: options.sources?.after ?? after,
-    },
     rules: options.rules ?? openapi3Rules
   }
 

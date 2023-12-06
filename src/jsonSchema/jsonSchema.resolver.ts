@@ -31,11 +31,16 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
     for (const j of after.value.keys()) {
       if (!afterMatched.has(j)) { continue }
       const _after = after.value[j]
-      const { diffs, merged } = compareJsonSchema(_before, _after, {...options, rules })
+
+      const { diffs, merged } = compareJsonSchema(_before, _after, { ...options, rules }, {
+        before: { jsonPath: [ ...before.path, i ], source: before.root },
+        after: { jsonPath: [ ...after.path, j ], source: after.root }
+      })
+
       if (!diffs.length) {
         afterMatched.delete(j)
         beforeMached.delete(i)
-        _merged[i] = merged
+        _merged[j] = merged
         break
       }
       comparedItems.push({ before: i, after: j, diffs, merged })
@@ -115,15 +120,18 @@ export const createRefsCompareResolver = (): CompareResolver => {
     }
       
     // compare $refs content
-    const _before = resolveRef(before.value, options.sources?.before)
-    const _after = resolveRef(after.value, options.sources?.after)
+    const _before = resolveRef(before.value, before.root)
+    const _after = resolveRef(after.value, after.root)
     
     if (_before === undefined || _after === undefined) {
       return
     }
 
     // compare content
-    const result = compareJsonSchema(_before, _after, options)
+    const result = compareJsonSchema(_before, _after, options, {
+      before: { jsonPath: before.path, source: before.root }, 
+      after: { jsonPath: after.path, source: after.root }, 
+    })
 
     // save compare result
     if (bRef && aRef) {

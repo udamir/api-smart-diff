@@ -21,23 +21,21 @@ export type DiffMeta = {
   replaced?: any
 }
 
-export type JsonCompareOptions<T = Diff> = {
-  trimStrings?: boolean
-  caseSensitive?: boolean
-  strictArrays?: boolean
-  metaKey?: string | symbol
-  arrayMeta?: boolean
-  formatDiff?: (diff: Diff) => T
-  resolveUnchangedRefs?: boolean
-  rules?: CompareRules
-  externalRefs?: {
-    [key: string]: any
-  }
-}
 export interface CompareResult {
   diffs: Diff[]
   merged: any
   rootMergeMeta?: DiffMeta | MergeArrayMeta
+}
+
+export type SourceContext = {
+  before?: {
+    source: unknown
+    jsonPath: JsonPath
+  }
+  after?: {
+    source: unknown
+    jsonPath: JsonPath
+  }
 }
 
 export type ComapreOptions = {
@@ -45,33 +43,35 @@ export type ComapreOptions = {
   // resolveUnchangedRefs?: boolean
   metaKey?: string | symbol
   arrayMeta?: boolean
-  externalRefs?: {
-    [key: string]: any
-  }
   rules?: CompareRules
-  sources?: {
-    before: unknown
-    after: unknown
+
+  externalSources?: {
+    before?: {
+      [key: string]: unknown
+    },
+    after?: {
+      [key: string]: unknown
+    }
   }
 }
 
 export type FormatDiffFunc<T extends Diff = Diff> = (diff: Diff, ctx: ComapreContext) => T
 export type NodeRoot = { "#": any }
-export type KeyMapping<T extends string | number> = T extends string ? Record<string, string> : Record<number, number>
+export type KeyMapping = Record<string | number, string | number>
 
 export interface MergeState<T extends string | number = string> {
-  keyMap: KeyMapping<T> // parent keys mappings
-  aPath: JsonPath         // after path 
+  keyMap: KeyMapping      // parent keys mappings
+  aPath: JsonPath         // after path from root
   aNode: JsonNode<T>      // after Node
+  bPath: JsonPath         // before path from root
   bNode: JsonNode<T>      // before Node 
   mNode: any              // merged Node
   parentMeta: MergeMeta   // parent merge meta
-  // nodeDiffs: Diff[]       // parent diffs
   root: { 
     before: NodeRoot      // before root Node
     after: NodeRoot       // after root Node
-    merged: NodeRoot      // merged root Node
-  }
+    merged: JsonNode<T>   // merged root Node
+  },
 }
 
 export type MergeArrayMeta = { array: Record<number, DiffMeta | MergeArrayMeta> }

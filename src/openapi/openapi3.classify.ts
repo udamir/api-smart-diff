@@ -11,21 +11,21 @@ export const parameterStyleClassifyRule: ClassifyRule = [
 ]
 
 export const parameterExplodeClassifyRule: ClassifyRule = [
-  ({ after }) => (after.value && getValueByPath(after.parent, ["style"]) === "form") || (!after.value && getValueByPath(after.parent, ["style"]) !== "form") ? annotation : breaking, 
-  ({ before }) => (before.value && getValueByPath(before.parent, ["style"]) === "form") || (!before.value && getValueByPath(before.parent, ["style"]) !== "form") ? annotation : breaking,
+  ({ after }) => (after.value && getValueByPath(after.parent, "style") === "form") || (!after.value && getValueByPath(after.parent, "style") !== "form") ? annotation : breaking, 
+  ({ before }) => (before.value && getValueByPath(before.parent, "style") === "form") || (!before.value && getValueByPath(before.parent, "style") !== "form") ? annotation : breaking,
   breaking
 ]
 
 export const parameterNameClassifyRule: ClassifyRule = [
   nonBreaking, 
   breaking, 
-  ({ before }) => getValueByPath(before.parent, ["in"]) === "path" ? nonBreaking : breaking 
+  ({ before }) => getValueByPath(before.parent, "in") === "path" ? nonBreaking : breaking 
 ]
 
 export const parameterRequiredClassifyRule: ClassifyRule = [
   breaking,
   nonBreaking,
-  (ctx) => getValueByPath(ctx.after.parent, ["schema", "default"]) ? nonBreaking : breakingIfAfterTrue(ctx)
+  (ctx) => getValueByPath(ctx.after.parent, "schema", "default") ? nonBreaking : breakingIfAfterTrue(ctx)
 ]
 
 export const paramSchemaTypeClassifyRule: ClassifyRule = [
@@ -33,7 +33,7 @@ export const paramSchemaTypeClassifyRule: ClassifyRule = [
   nonBreaking, 
   ({ before, after }) => {
     const paramContext = getParentContextByPath(before, ["..", ".."])
-    if (getValueByPath(paramContext?.value, ["in"]) === "query" && getValueByPath(paramContext?.value, ["style"]) === "form") {
+    if (getValueByPath(paramContext?.value, "in") === "query" && getValueByPath(paramContext?.value, "style") === "form") {
       return before.value === "object" || before.value === "array" || after.value === "object" ? breaking : nonBreaking
     }
     return breaking
@@ -53,8 +53,8 @@ export const globalSecurityItemClassifyRule: ClassifyRule = [
 ]
 
 export const operationSecurityClassifyRule: ClassifyRule = [
-  ({ before, after }) => emptySecurity(after.value) || includeSecurity(after.value, getValueByPath(before.root, ["security"])) ? nonBreaking : breaking, 
-  ({ before, after }) => includeSecurity(getValueByPath(after.root, ["security"]), before.value) ? nonBreaking : breaking,
+  ({ before, after }) => emptySecurity(after.value) || includeSecurity(after.value, getValueByPath(before.root, "security")) ? nonBreaking : breaking, 
+  ({ before, after }) => includeSecurity(getValueByPath(after.root, "security"), before.value) ? nonBreaking : breaking,
   ({ before, after }) => includeSecurity(after.value, before.value) || emptySecurity(after.value) ? nonBreaking : breaking
 ]
 

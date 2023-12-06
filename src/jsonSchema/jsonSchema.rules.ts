@@ -5,10 +5,10 @@ import {
 import { booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, multipleOfClassifier, requiredItemClassifyRule } from "./jsonSchema.classify"
 import { annotationChange, keyChangeAnnotation, parentKeyChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
-import { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types/rules"
+import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 import { jsonSchemaTransformers } from "./jsonSchema.transform"
-import { mapSimpleEnumItemsRule } from "../resolvers/enum"
+import { mapSimpleEnumItemsRule } from "../mapping"
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })

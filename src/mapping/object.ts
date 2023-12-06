@@ -2,11 +2,7 @@ import { MapKeysResult, MappingResolver } from "../types"
 
 export const mapObjectKeysRule: MappingResolver<string> = (before, after) => {
 
-  const result: MapKeysResult<string> = {
-    added: [],
-    removed: [],
-    mapped: {}
-  }
+  const result: MapKeysResult<string> = { added: [], removed: [], mapped: {} }
 
   const afterKeys = new Set(Object.keys(after))
 

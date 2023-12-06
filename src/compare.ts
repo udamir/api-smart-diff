@@ -1,8 +1,8 @@
 import { JsonPath, syncCrawl, SyncCrawlHook } from "json-crawl"
 
-import { changeFactory, convertDiffToMeta, createMergeMeta, isArray, isObject, objectKeys, typeOf } from "./utils"
-import type { ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta } from "./types"
-import { mapObjectKeysRule, mapArraysKeysRule } from "./resolvers"
+import { changeFactory, convertDiffToMeta, createMergeMeta, getValueByPath, isArray, isObject, objectKeys, typeOf } from "./utils"
+import type { ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, SourceContext } from "./types"
+import { mapObjectKeysRule, mapArraysKeysRule } from "./mapping"
 import type { Diff, JsonNode, MergeState } from "./types"
 import { DIFF_META_KEY } from "./constants"
 
@@ -21,9 +21,10 @@ export interface ContextInput extends MergeState {
 
 const createContext = (data: ContextInput, options: ComapreOptions): ComapreContext => {
   const { bNode, aNode, aPath, root, akey, bkey, bPath, before, after } = data
+  const beforePath = (bPath.length || bkey !== "#") ? [...bPath, bkey] : []
   const afterPath = (aPath.length || akey !== "#") ? [...aPath, akey] : []
   return {
-    before: { key: bkey, path: bPath, parent: bNode, value: before, root: root.before["#"] },
+    before: { key: bkey, path: beforePath, parent: bNode, value: before, root: root.before["#"] },
     after: { key: akey, path: afterPath, parent: aNode, value: after, root: root.after["#"] },
     options
   }
@@ -45,10 +46,11 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
   const { arrayMeta, metaKey = DIFF_META_KEY } = options
 
   const hook: SyncCrawlHook<MergeState, CompareRule> = (crawlContext) => {
-    const { rules = {}, state, value, key: bkey = "#", path: bPath } = crawlContext
+    const { rules = {}, state, value, key } = crawlContext
     const { transform, compare, mapping } = rules
-    const { keyMap, parentMeta, bNode, aNode, aPath, mNode } = state
+    const { keyMap, parentMeta, bNode, aNode, aPath, bPath, mNode } = state
 
+    const bkey = key ?? Object.keys(keyMap).pop()
     const akey = keyMap[bkey]
 
     // skip if node was removed
@@ -64,7 +66,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
     aNode[akey] = after
 
     // compare via custom handler
-    const ctx = createContext({ ...crawlContext.state, before, after, akey, bkey, bPath }, { ...options, rules })
+    const ctx = createContext({ ...state, before, after, akey, bkey }, { ...options, rules })
     const compared = compare?.(ctx)
     if (compared) {
       const { diffs, merged, rootMergeMeta } = compared
@@ -96,7 +98,6 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       const renamed = isArray(before) ? [] : objectKeys(mapped).filter((key) => key !== mapped[key])
 
       _nodeDiffs.push(...removed.map((key) => change.removed([...bPath, key], before[key], ctx)))
-      _nodeDiffs.push(...added.map((key) => change.added([...bPath, key], after[key], ctx)))
       _nodeDiffs.push(...renamed.map((key) => change.renamed(bPath, key, mapped[key], ctx)))
 
       _diffs.push(..._nodeDiffs)
@@ -104,7 +105,14 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       const nodeMeta = createMergeMeta(_nodeDiffs) ?? {}
       
       const exitHook = () => {
-        added.forEach((key) => merged[key] = after[key])
+        added.forEach((key) => {
+          const diff = change.added([...bPath, key], after[key], ctx) 
+          
+          nodeMeta[key] = convertDiffToMeta(diff)
+          merged[key] = after[key]
+
+          _diffs.push(diff)
+        })
 
         if (!Object.keys(nodeMeta).length) { return }
 
@@ -119,6 +127,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
         ...crawlContext.state,
         keyMap: mapped,
         aPath: (aPath.length || akey !== "#") ? [...aPath, akey] : [],
+        bPath: (bPath.length || bkey !== "#") ? [...bPath, bkey] : [],
         bNode: before,
         aNode: after,
         parentMeta: nodeMeta,
@@ -138,26 +147,48 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
   return { diffs: _diffs, hook }
 }
 
-export const compare = (before: unknown, after: unknown, options: ComapreOptions = {}): CompareResult => {
-  const { diffs, hook } = useMergeFactory(options)
-  
+export const compare = (before: unknown, after: unknown, options: ComapreOptions = {}, context: SourceContext = {}): CompareResult => {
+  // set default context if not assigned
+  const { jsonPath: _bPath = [], source: bSource = before } = context.before ?? {}
+  const { jsonPath: _aPath = [], source: aSource = after } = context.after ?? {}
+
   const root: MergeState["root"] = { 
-    before: { "#": before }, 
-    after: { "#": after }, 
-    merged: { "#": undefined } 
+    before: { "#": bSource }, 
+    after: { "#": aSource }, 
+    merged: {} 
   }
 
+  const bPath = _bPath.slice(0, -1)
+  const aPath = _aPath.slice(0, -1)
+
+  const bNode = bPath.length ? getValueByPath(bSource, ...bPath) : root.before
+  const aNode = aPath.length ? getValueByPath(aSource, ...aPath) : root.after
+
+  if (!isObject(bNode) || !isObject(aNode)) {
+    // TODO
+    throw new Error("")
+  }
+
+  const bKey = bPath.length ? _bPath[bPath.length] : "#" 
+  const aKey = aPath.length ? _aPath[aPath.length] : "#" 
+
+  bNode[bKey] = before
+  aNode[aKey] = after
+
+  const { diffs, hook } = useMergeFactory(options)  
+
   const rootState: MergeState = { 
-    aPath: [],
+    aPath,
+    bPath,
     mNode: root.merged,
-    bNode: root.before,
-    aNode: root.after,
-    keyMap: { "#": "#" },
+    bNode,
+    aNode,
+    keyMap: { [bKey]: aKey },
     parentMeta: {},
-    root
+    root,
   } 
 
   syncCrawl<MergeState, CompareRule>(before, hook, { state: rootState, rules: options.rules })
 
-  return { diffs, merged: root.merged["#"], rootMergeMeta: rootState.parentMeta?.["#"] }
+  return { diffs, merged: root.merged[aKey], rootMergeMeta: rootState.parentMeta?.[aKey] }
 }

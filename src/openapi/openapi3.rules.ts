@@ -36,11 +36,11 @@ const parametersRules: CompareRules = {
     $: [nonBreaking, breaking, breaking],
     "/name": { $: parameterNameClassifyRule },
     "/in": { $: [nonBreaking, breaking, breaking] },
-    "/schema": {
+    "/schema": () => ({
       ...jsonSchemaRules(),
       $: allBreaking,
       "/type": { $: paramSchemaTypeClassifyRule }
-    },
+    }),
     "/explode": { $: parameterExplodeClassifyRule },
     "/style": { $: parameterStyleClassifyRule },
     "/description": { $: allAnnotation },
@@ -75,10 +75,10 @@ const contentRules: CompareRules = {
   mapping: contentMediaTypeMappingResolver,
   "/*": {
     $: [nonBreaking, breaking, unclassified],
-    "/schema": {
+    "/schema": () => ({
       ...jsonSchemaRules(),
       $: allBreaking
-    },
+    }),
     "/example": { $: allAnnotation },
     "/examples": { $: allAnnotation },
     "/encoding": encodingRules,
@@ -152,10 +152,10 @@ export const openapi3Rules: CompareRules = {
     $: allNonBreaking,
     "/schemas": {
       $: [nonBreaking, breaking, breaking],
-      "/*": {
+      "/*": () => ({
         ...jsonSchemaRules(),
         $: addNonBreaking
-      }
+      })
     },
     "/responses": {
       $: [nonBreaking, breaking, breaking],

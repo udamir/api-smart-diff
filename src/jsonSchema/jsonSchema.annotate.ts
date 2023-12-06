@@ -1,5 +1,5 @@
-import { JsonPath } from "json-crawl"
-import { ChangeAnnotationResolver, ComapreContext, DiffContext } from "../types"
+import type { JsonPath } from "json-crawl"
+import type { ChangeAnnotationResolver, ComapreContext, DiffContext } from "../types"
 
 type ChangeAnnotation = [string, string, string]
 

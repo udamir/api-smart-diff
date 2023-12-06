@@ -38,12 +38,13 @@ export const paramMappingResolver: MappingResolver<number> = (before, after) => 
 
   for (let i = 0; i < before.length; i++) {
     const _afterIndex = after.findIndex((after) => {
-      const beforeIn = getValueByPath(before[i], ["in"])
-      const afterIn = getValueByPath(after, ["in"])
+      const beforeIn = getValueByPath(before[i], "in")
+      const afterIn = getValueByPath(after, "in")
       
-      const beforeName = getValueByPath(before[i], ["name"])
-      const afterName = getValueByPath(after, ["name"])
+      const beforeName = getValueByPath(before[i], "name")
+      const afterName = getValueByPath(after, "name")
 
+      // TODO: add extra mapping logic for path parameters
       return beforeIn === afterIn && (beforeIn === "path" || beforeName === afterName)
     })
     
@@ -79,6 +80,7 @@ export const contentMediaTypeMappingResolver: MappingResolver<string> = (before,
 
       if (afterType !== beforeType && afterType !== "*" && beforeType !== "*") { return false }
       if (afterSubType !== beforeSubType && afterSubType !== "*" && beforeSubType !== "*") { return false }
+      return true
     })
     
     if (_afterIndex < 0) {
