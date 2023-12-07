@@ -112,7 +112,7 @@ export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
   const result = [...base]
   for (const item of items) {
     for (const step of item) {
-      if (step === "..") {
+      if (step === "") {
         result.pop()
       } else {
         result.push(step)
@@ -122,14 +122,14 @@ export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
   return result
 }
 
-export const getParentContextByPath = (ctx: DiffContext, path: JsonPath): DiffContext | undefined => {
-  const newPath = joinPath(ctx.path, path)
+export const getParentContext = (ctx: DiffContext, ...path: JsonPath): DiffContext | undefined => {
+  const _path = joinPath(ctx.path.slice(0, -1), path)
   
-  if (!newPath.length) {
+  if (!_path.length) {
     return { path: [], key: "", value: ctx.root, root: ctx.root }
   }
 
-  const parentPath = [...newPath]
+  const parentPath = [..._path]
   const key = parentPath.pop()!
 
   const parentValue = getValueByPath(ctx.root, ...parentPath) as Record<string | number, unknown>
@@ -139,11 +139,9 @@ export const getParentContextByPath = (ctx: DiffContext, path: JsonPath): DiffCo
     return
   }
 
-  return {
-    path: newPath,
-    key: parentPath[parentPath.length-1],
-    value,
-    parent: parentValue,
-    root: ctx.root
-  }
+  return { path: _path, key, value, parent: parentValue, root: ctx.root }
+}
+
+export const isExist = (value: unknown): boolean => {
+  return typeof value !== "undefined"
 }

@@ -1,4 +1,4 @@
-import { getParentContextByPath, getValueByPath, isNotEmptyArray } from "../utils"
+import { getParentContext, getValueByPath, isNotEmptyArray } from "../utils"
 import { emptySecurity, includeSecurity } from "./openapi3.utils"
 import { annotation, breaking, nonBreaking } from "../constants"
 import { breakingIfAfterTrue } from "../jsonSchema"
@@ -32,7 +32,7 @@ export const paramSchemaTypeClassifyRule: ClassifyRule = [
   breaking,
   nonBreaking, 
   ({ before, after }) => {
-    const paramContext = getParentContextByPath(before, ["..", ".."])
+    const paramContext = getParentContext(before, "")
     if (getValueByPath(paramContext?.value, "in") === "query" && getValueByPath(paramContext?.value, "style") === "form") {
       return before.value === "object" || before.value === "array" || after.value === "object" ? breaking : nonBreaking
     }

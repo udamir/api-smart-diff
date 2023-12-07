@@ -1,4 +1,4 @@
-import { compareJsonSchema } from "../../src"
+import { breaking, compareJsonSchema, nonBreaking } from "../../src"
 
 const metaKey = Symbol('diff')
 
@@ -50,10 +50,12 @@ describe("schema with combinary", () => {
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
-    expect(merged).toMatchObject(after)
-    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 1: { action: "add"}}} })
-    expect(merged.oneOf[2][metaKey]).toMatchObject({
-      required: { array: { 0: { action: "add" }}}
+    expect(merged.oneOf[0]).toMatchObject(after.oneOf[0])
+    expect(merged.oneOf[1]).toMatchObject({...after.oneOf[2], required: ["id", "name"] })
+    expect(merged.oneOf[2]).toMatchObject(after.oneOf[1])
+    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 2: { action: "add", type: nonBreaking }}} })
+    expect(merged.oneOf[1][metaKey]).toMatchObject({
+      required: { array: { 1: { action: "add", type: breaking }}}
     })
   })
 

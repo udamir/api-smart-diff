@@ -30,6 +30,14 @@ const createContext = (data: ContextInput, options: ComapreOptions): ComapreCont
   }
 }
 
+const createChildContext = ({ before, after, options}: ComapreContext, bkey: number | string, akey: number | string): ComapreContext => {
+  return { 
+    before: { path: [...before.path, bkey], key: bkey, value: before.value[bkey], parent: before.value, root: before.root },
+    after: { path: [...after.path, akey], key: akey, value: after.value[akey], parent: after.value, root: after.root },
+    options
+  }
+} 
+
 const mergedResult = (mNode: JsonNode, key: number | string, value: unknown) => {
   mNode[key] = value
   return { done: true } 
@@ -48,15 +56,18 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
   const hook: SyncCrawlHook<MergeState, CompareRule> = (crawlContext) => {
     const { rules = {}, state, value, key } = crawlContext
     const { transform, compare, mapping } = rules
-    const { keyMap, parentMeta, bNode, aNode, aPath, bPath, mNode } = state
+    const { keyMap, parentMeta, bNode, aNode, mNode } = state
 
-    const bkey = key ?? Object.keys(keyMap).pop()
+    const bkey = key ?? (isArray(bNode) ? +Object.keys(keyMap).pop()! : Object.keys(keyMap).pop())
     const akey = keyMap[bkey]
 
     // skip if node was removed
     if (!(bkey in keyMap)) { 
       return mergedResult(mNode, bkey, value)
     }
+
+    const bPath = (!state.bPath.length && bkey === "#") ? [] : [...state.bPath, bkey]
+    const aPath = (!state.aPath.length && akey === "#") ? [] : [...state.aPath, akey]
 
     // transform values before comparison
     const data: [unknown, unknown] = [value, aNode[akey]]
@@ -72,7 +83,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       const { diffs, merged, rootMergeMeta } = compared
 
       _diffs.push(...(aPath.length || akey !== "#") 
-        ? diffs.map((diff) => ({ ...diff, path: [...aPath, akey, ...diff.path]}))
+        ? diffs.map((diff) => ({ ...diff, path: [...aPath, ...diff.path]}))
         : diffs 
       )
       if (rootMergeMeta) { 
@@ -97,19 +108,20 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       const { added, removed, mapped } = mapKeys(before as any, after as any)
       const renamed = isArray(before) ? [] : objectKeys(mapped).filter((key) => key !== mapped[key])
 
-      _nodeDiffs.push(...removed.map((key) => change.removed([...bPath, key], before[key], ctx)))
-      _nodeDiffs.push(...renamed.map((key) => change.renamed(bPath, key, mapped[key], ctx)))
+      _nodeDiffs.push(...removed.map((k) => change.removed([...bPath, k], before[k], createChildContext(ctx, k, ""))))
+      _nodeDiffs.push(...renamed.map((k) => change.renamed(bPath, k, mapped[k], createChildContext(ctx, k, mapped[k]))))
 
       _diffs.push(..._nodeDiffs)
       
       const nodeMeta = createMergeMeta(_nodeDiffs) ?? {}
       
       const exitHook = () => {
-        added.forEach((key) => {
-          const diff = change.added([...bPath, key], after[key], ctx) 
+        added.forEach((k) => {
+          const _key = isArray(merged) ? merged.length : k
+          const diff = change.added([...bPath, _key], after[k], createChildContext(ctx, "", k)) 
           
-          nodeMeta[key] = convertDiffToMeta(diff)
-          merged[key] = after[key]
+          nodeMeta[_key] = convertDiffToMeta(diff)
+          merged[_key] = after[k]
 
           _diffs.push(diff)
         })
@@ -126,8 +138,8 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       const _state: MergeState<string | number> = { 
         ...crawlContext.state,
         keyMap: mapped,
-        aPath: (aPath.length || akey !== "#") ? [...aPath, akey] : [],
-        bPath: (bPath.length || bkey !== "#") ? [...bPath, bkey] : [],
+        aPath,
+        bPath,
         bNode: before,
         aNode: after,
         parentMeta: nodeMeta,
@@ -141,7 +153,9 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       _diffs.push(setMergeMeta(parentMeta, akey, change.replaced(bPath, before, after, ctx)))
     } 
 
-    return mergedResult(mNode, akey, after)
+    //TODO: check for rename
+    //  return mergedResult(mNode, akey, after)
+    return mergedResult(mNode, bkey, after)
   }
 
   return { diffs: _diffs, hook }
@@ -172,6 +186,9 @@ export const compare = (before: unknown, after: unknown, options: ComapreOptions
   const bKey = bPath.length ? _bPath[bPath.length] : "#" 
   const aKey = aPath.length ? _aPath[aPath.length] : "#" 
 
+  const _before = bNode[bKey]
+  const _after = aNode[aKey]
+
   bNode[bKey] = before
   aNode[aKey] = after
 
@@ -189,6 +206,9 @@ export const compare = (before: unknown, after: unknown, options: ComapreOptions
   } 
 
   syncCrawl<MergeState, CompareRule>(before, hook, { state: rootState, rules: options.rules })
+
+  bNode[bKey] = _before
+  aNode[aKey] = _after
 
   return { diffs, merged: root.merged[aKey], rootMergeMeta: rootState.parentMeta?.[aKey] }
 }

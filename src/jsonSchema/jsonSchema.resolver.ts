@@ -53,21 +53,21 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
     if (!afterMatched.has(compared.after) || !beforeMached.has(compared.before)) { continue }
     afterMatched.delete(compared.after)
     beforeMached.delete(compared.before)
-    _merged[compared.after] = compared.merged
+    _merged[compared.before] = compared.merged
     _diffs.push(...compared.diffs.map((diff) => ({ ...diff, path: [compared.before, ...diff.path] })))
   }
 
   const arrayMetaDiffs: Diff[] = []
   for (const i of beforeMached.values()) {
-    _merged.push(before.value[i])
+    _merged[i] = before.value[i]
     const diff = change.removed([i], before.value[i], ctx)
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
 
   for (const j of afterMatched.values()) {
-    _merged[j] = after.value[j]
-    const diff = change.added([j], after.value[j], ctx)
+    const diff = change.added([_merged.length], after.value[j], ctx)
+    _merged.push(after.value[j])
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }

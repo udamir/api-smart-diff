@@ -14,7 +14,7 @@ describe("merge simple jsonSchema", () => {
     const after = {
       title: "test1",
       type: "string",
-      enum: ["a", "d", "c", 'b'],
+      enum: ["a", "d", "c"],
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -23,12 +23,12 @@ describe("merge simple jsonSchema", () => {
     expect(merged).toMatchObject({
       title: "test1",
       type: "string",
-      enum: ["a", "d", "c", "b"],
+      enum: ["a", "d", "c"],
       examples: ["a"],
     })
     expect(merged[metaKey]).toMatchObject({
       title: { action: "replace", replaced: "test" },
-      enum: { array: { 1: { action: "add" }}},
+      enum: { array: { 1: { action: "replace", replaced: "b" }}},
       examples: { action: "remove" }
     })
   })
