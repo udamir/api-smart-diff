@@ -4,7 +4,7 @@ import yaml from "js-yaml"
 import path from "path"
 import fs from "fs"
 
-import { apiDiff, apiMerge, getValueByPath, buildPath, ComapreOptions, CompareRules } from "../../src"
+import { apiDiff, apiMerge, getKeyValue, buildPath, ComapreOptions, CompareRules } from "../../src"
 
 export class ExampleResource {
   private res: any = {}
@@ -40,7 +40,7 @@ export class ExampleResource {
 
   public getValue(path: JsonPath) {
     // path = typeof path === "string" ? parsePath(path) : path
-    return getValueByPath(this.res, ...path)
+    return getKeyValue(this.res, ...path)
   }
 
   // public findExternalSources () {

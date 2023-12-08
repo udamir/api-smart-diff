@@ -12,7 +12,7 @@ export type ReplaceDiffType = DiffType | DiffTypeClassifier
 export type DiffContext =  {
   path: JsonPath
   key: string | number
-  value: any
+  value: unknown
   parent?: unknown
   root: unknown
 }
@@ -29,8 +29,8 @@ export type TransformResolver = (value: unknown, other: unknown) => unknown
 export type CompareTransformResolver = (before: unknown, after: unknown) => [unknown, unknown]
 
 export type MappingResolver<T extends string | number> = T extends string ? MappingObjectResolver : MappingArrayResolver
-export type MappingObjectResolver = (before: Record<string, unknown>, after: Record<string, unknown>) => MapKeysResult<string>
-export type MappingArrayResolver = (before: Array<unknown>, after: Array<unknown>) => MapKeysResult<number>
+export type MappingObjectResolver = (before: Record<string, unknown>, after: Record<string, unknown>, ctx: ComapreContext) => MapKeysResult<string>
+export type MappingArrayResolver = (before: Array<unknown>, after: Array<unknown>, ctx: ComapreContext) => MapKeysResult<number>
 
 export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => string
 

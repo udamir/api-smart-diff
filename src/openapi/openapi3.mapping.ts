@@ -1,5 +1,6 @@
 import type { MapKeysResult, MappingResolver } from "../types"
-import { getValueByPath, objectKeys } from "../utils"
+import { getStringValue, objectKeys } from "../utils"
+import { mapPathParams } from "./openapi3.utils"
 
 export const pathMappingResolver: MappingResolver<string> = (before, after) => {
 
@@ -31,21 +32,22 @@ export const pathMappingResolver: MappingResolver<string> = (before, after) => {
   return result
 }
 
-export const paramMappingResolver: MappingResolver<number> = (before, after) => {
+export const paramMappingResolver: MappingResolver<number> = (before, after, ctx) => {
   const result: MapKeysResult<number> = { added: [], removed: [], mapped: {} }
 
+  const pathParamMapping = mapPathParams(ctx)
   const mappedIndex = new Set(after.keys())
 
   for (let i = 0; i < before.length; i++) {
-    const _afterIndex = after.findIndex((after) => {
-      const beforeIn = getValueByPath(before[i], "in")
-      const afterIn = getValueByPath(after, "in")
-      
-      const beforeName = getValueByPath(before[i], "name")
-      const afterName = getValueByPath(after, "name")
+    const beforeIn = getStringValue(before[i], "in")
+    const beforeName = getStringValue(before[i], "name") ?? ""
 
-      // TODO: add extra mapping logic for path parameters
-      return beforeIn === afterIn && (beforeIn === "path" || beforeName === afterName)
+    const _afterIndex = after.findIndex((after) => {
+      const afterIn = getStringValue(after, "in")
+      const afterName = getStringValue(after, "name") ?? ""
+
+      // use extra mapping logic for path parameters
+      return beforeIn === afterIn && (beforeName === afterName || (beforeIn === "path" && pathParamMapping[beforeName] === afterName))
     })
     
     if (_afterIndex < 0) {

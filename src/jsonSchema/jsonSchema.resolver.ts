@@ -1,4 +1,5 @@
 import { getNodeRules } from "json-crawl"
+import { isRefNode } from "allof-merge"
 
 import { buildPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
 import { changeFactory, convertDiffToMeta, createMergeMeta, isArray } from "../utils"
@@ -96,8 +97,8 @@ export const createRefsCompareResolver = (): CompareResolver => {
     }
 
     // normalize ref
-    const bRef = getRef(before.value.$ref)
-    const aRef = getRef(after.value.$ref)
+    const bRef = isRefNode(before.value) ? getRef(before.value.$ref) : ""
+    const aRef = isRefNode(after.value) ? getRef(after.value.$ref) : ""
 
     if (!bRef && !aRef) { return }
 

@@ -1,7 +1,7 @@
-import { JsonPath } from "json-crawl"
+import { JsonPath, SyncCrawlHook } from "json-crawl"
 
+import { ComapreContext, CompareRule, CompareRules } from "./rules"
 import { ClassifierType, DiffAction } from "../constants"
-import { ComapreContext, CompareRules } from "./rules"
 
 export type ActionType = keyof typeof DiffAction
 export type DiffType = typeof ClassifierType[keyof typeof ClassifierType]
@@ -84,4 +84,17 @@ export interface ChangeFactory<T extends Diff = Diff> {
   removed: (path: JsonPath, before: unknown, ctx: ComapreContext) => T
   replaced: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => T
   renamed: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => T
+}
+
+export interface MergeFactoryResult {
+  diffs: Diff[]
+  hook: SyncCrawlHook<MergeState, CompareRule>
+}
+
+export interface ContextInput extends MergeState {
+  before: any
+  after: any
+  bPath: JsonPath
+  akey: string | number
+  bkey: string | number
 }

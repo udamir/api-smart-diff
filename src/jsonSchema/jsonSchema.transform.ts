@@ -1,9 +1,9 @@
 import { isAnyOfNode, isOneOfNode, isRefNode } from "allof-merge"
 
-import type { CompareTransformResolver, TransformResolver } from "../types"
+import { isArray, isObject, objectKeys, filterObj, compareTransformationFactory } from "../utils"
 import { inferTypes, isAllOfNode, isValidType } from "./jsonSchema.utils"
-import { isArray, isObject, objectKeys, filterObj } from "../utils"
 import { jsonSchemaTypeProps } from "./jsonSchema.consts"
+import type { CompareTransformResolver } from "../types"
 
 export const validators = {
   type: (value: unknown) => (Array.isArray(value) && value.every(isValidType)) || isValidType(value),
@@ -36,10 +36,6 @@ export const validators = {
   minItems: (value: unknown) => typeof value === "number",
   maxItems: (value: unknown) => typeof value === "number",
   uniqueItems: (value: unknown) => typeof value === "boolean",
-}
-
-export const compareTransformationFactory = (resolver: TransformResolver): CompareTransformResolver => {
-  return (before, after) => [resolver(before, after), resolver(after, before)]
 }
 
 export const transformCombinary: CompareTransformResolver = (before, after) => {

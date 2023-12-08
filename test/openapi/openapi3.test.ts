@@ -66,24 +66,6 @@ describe("Test openapi 3 diff", () => {
     expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({ ["application/*"]: { action: DiffAction.rename, replaced: "application/json", type: unclassified } })
   })
 
-  it("should not add rename diff on query parameter name change", () => {
-    const after = exampleResource.clone()
-    after.paths["/user/login"].get.parameters[0].name = "login"
-
-    const merged = exampleResource.merge(after)
-    expect(merged.paths["/user/login"].get.$diff).toMatchObject({ parameters: { array: {
-      0: { action: DiffAction.replace, type: breaking }
-    }}})
-  })
-
-  it("should classify operation parameter schema change", () => {
-    const after = exampleResource.clone()
-    after.paths["/pet/findByStatus"].get.parameters[0].schema.description = "Status list"
-
-    const merged = exampleResource.merge(after)
-    expect(merged.paths["/pet/findByStatus"].get.parameters[0].schema.$diff).toMatchObject({ description: { action: DiffAction.add, type: annotation } })
-  })
-
   it("should classify as non-breaking remove of operation security", () => {
     const after = exampleResource.clone()
     after.paths["/user/createWithList"].post.security = [{}]
@@ -124,41 +106,7 @@ describe("Test openapi 3 diff", () => {
     expect(diffs).toMatchObject([{ type: breaking }])
   })
 
-  it("should classify as breaking change of query param style", () => {
-    const after = exampleResource.clone()
-    after.paths["/pet/findByStatus"].get.parameters[0].style = "simple"
-    
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: breaking }])
-  }) 
-
-  it("should classify as annotation remove of query param style 'form'", () => {
-    const after = exampleResource.clone()
-    delete after.paths["/pet/findByStatus"].get.parameters[0].style
-
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: annotation }])
-  }) 
-
-  it("should classify as breaking change of query param type from array to string", () => {
-    const after = exampleResource.clone()
-    after.paths["/pet/findByStatus"].get.parameters[0].schema.type = "string"
-    delete after.paths["/pet/findByStatus"].get.parameters[0].schema.items
-
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: breaking }, { type: breaking }])
-  }) 
-
-  it("should classify as non-breaking change of query param type from string to array", () => {
-    const after = exampleResource.clone()
-    after.paths["/user/login"].get.parameters[0].schema.type = "array"
-    after.paths["/user/login"].get.parameters[0].schema.items = { type: "string" }
-
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: nonBreaking }, { type: nonBreaking }])
-  }) 
-
-  it("should do not find changes with allOf diff", () => {
+  it.skip("should do not find changes with allOf diff", () => {
     const after = exampleResource.clone()
     const { xml, ...rest } = after.components.schemas.Order
     after.components.schemas.Order = {

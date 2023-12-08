@@ -1,23 +1,10 @@
-import { JsonPath, syncCrawl, SyncCrawlHook } from "json-crawl"
+import { syncCrawl, SyncCrawlHook } from "json-crawl"
 
-import { changeFactory, convertDiffToMeta, createMergeMeta, getValueByPath, isArray, isObject, objectKeys, typeOf } from "./utils"
-import type { ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, SourceContext } from "./types"
+import type { ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, SourceContext, ContextInput, MergeFactoryResult } from "./types"
+import { changeFactory, convertDiffToMeta, createMergeMeta, getKeyValue, isArray, isObject, objectKeys, typeOf } from "./utils"
 import { mapObjectKeysRule, mapArraysKeysRule } from "./mapping"
 import type { Diff, JsonNode, MergeState } from "./types"
 import { DIFF_META_KEY } from "./constants"
-
-export interface MergeFactoryResult {
-  diffs: Diff[]
-  hook: SyncCrawlHook<MergeState, CompareRule>
-}
-
-export interface ContextInput extends MergeState {
-  before: any
-  after: any
-  bPath: JsonPath
-  akey: string | number
-  bkey: string | number
-}
 
 const createContext = (data: ContextInput, options: ComapreOptions): ComapreContext => {
   const { bNode, aNode, aPath, root, akey, bkey, bPath, before, after } = data
@@ -32,8 +19,8 @@ const createContext = (data: ContextInput, options: ComapreOptions): ComapreCont
 
 const createChildContext = ({ before, after, options}: ComapreContext, bkey: number | string, akey: number | string): ComapreContext => {
   return { 
-    before: { path: [...before.path, bkey], key: bkey, value: before.value[bkey], parent: before.value, root: before.root },
-    after: { path: [...after.path, akey], key: akey, value: after.value[akey], parent: after.value, root: after.root },
+    before: { path: [...before.path, bkey], key: bkey, value: getKeyValue(before.value, bkey), parent: before.value, root: before.root },
+    after: { path: [...after.path, akey], key: akey, value: getKeyValue(after.value, akey), parent: after.value, root: after.root },
     options
   }
 } 
@@ -89,6 +76,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       if (rootMergeMeta) { 
         parentMeta[akey] = rootMergeMeta
       }
+      // TODO: check akey for arrays
       return mergedResult(mNode, akey, merged)
     }
 
@@ -105,7 +93,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       mNode[akey] = merged
       
       const mapKeys = mapping ?? (isArray(before) ? mapArraysKeysRule : mapObjectKeysRule)
-      const { added, removed, mapped } = mapKeys(before as any, after as any)
+      const { added, removed, mapped } = mapKeys(before as any, after as any, ctx)
       const renamed = isArray(before) ? [] : objectKeys(mapped).filter((key) => key !== mapped[key])
 
       _nodeDiffs.push(...removed.map((k) => change.removed([...bPath, k], before[k], createChildContext(ctx, k, ""))))
@@ -175,8 +163,8 @@ export const compare = (before: unknown, after: unknown, options: ComapreOptions
   const bPath = _bPath.slice(0, -1)
   const aPath = _aPath.slice(0, -1)
 
-  const bNode = bPath.length ? getValueByPath(bSource, ...bPath) : root.before
-  const aNode = aPath.length ? getValueByPath(aSource, ...aPath) : root.after
+  const bNode = bPath.length ? getKeyValue(bSource, ...bPath) : root.before
+  const aNode = aPath.length ? getKeyValue(aSource, ...aPath) : root.after
 
   if (!isObject(bNode) || !isObject(aNode)) {
     // TODO

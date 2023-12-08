@@ -6,6 +6,7 @@ import {
 import { addNonBreaking, allAnnotation, allBreaking, allDeprecated, allNonBreaking, breaking, nonBreaking, unclassified } from "../constants"
 import { contentMediaTypeMappingResolver, paramMappingResolver, pathMappingResolver } from "./openapi3.mapping"
 import { breakingIfAfterTrue, jsonSchemaRules } from "../jsonSchema"
+import { transformPathItems } from "./openapi3.transform"
 import type { CompareRules } from "../types"
 
 const serversRules: CompareRules = {
@@ -141,6 +142,7 @@ export const openapi3Rules: CompareRules = {
     mapping: pathMappingResolver,
     "/*": {
       $: [nonBreaking, breaking, nonBreaking],
+      transform: [transformPathItems],
       "/summary": { $: allAnnotation },
       "/description": { $: allAnnotation },
       "/*": operationRules,

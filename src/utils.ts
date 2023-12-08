@@ -1,6 +1,6 @@
-import { CrawlRulesKey, JsonPath, getNodeRules } from "json-crawl"
+import { JsonPath, getNodeRules } from "json-crawl"
 
-import type { ChangeFactory, ComapreContext, CompareRules, Diff, DiffContext, DiffMeta, FormatDiffFunc, MergeMeta } from "./types"
+import type { ChangeFactory, ComapreContext, CompareRules, CompareTransformResolver, Diff, DiffContext, DiffMeta, FormatDiffFunc, MergeMeta, TransformResolver } from "./types"
 import { DiffAction, allUnclassified, unclassified } from "./constants"
   
 export const typeOf = (value: unknown): string  => {
@@ -23,6 +23,10 @@ export const filterObj = <T extends {}>(value: T, func: (key: number | string | 
   return result
 }
 
+export const isKey = <T extends object>(x: T, k: PropertyKey): k is keyof T => {
+  return k in x;
+}
+
 export const isObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === 'object' && value !== null
 }
@@ -37,8 +41,8 @@ export const isNotEmptyArray = (value: unknown): boolean => {
 
 export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
   const { rules } = ctx.options
-  const key: CrawlRulesKey = diff.action === "rename" ? "/*" : `/${diff.path[diff.path.length - 1]}`
-  const _rules: CompareRules | undefined = diff.action === "replace" ? rules : getNodeRules(rules, key, ctx.before.path)
+  const key = diff.action === "rename" ? "*" : `${diff.path[diff.path.length - 1]}`
+  const _rules: CompareRules | undefined = diff.action === "replace" ? rules : getNodeRules(rules, key, diff.path)
   const rule = _rules?.$
 
   if (!rule || diff.action === "test") { 
@@ -93,7 +97,7 @@ export const createMergeMeta = (diffs: Diff[]): MergeMeta => {
   return meta
 }
 
-export const getValueByPath = (obj: unknown, ...path: JsonPath): unknown | undefined => {
+export const getKeyValue = (obj: unknown, ...path: JsonPath): unknown | undefined => {
   let value: unknown = obj
   for (const key of path) {
     if (Array.isArray(value) && typeof +key === "number" && value.length < +key) {
@@ -106,6 +110,21 @@ export const getValueByPath = (obj: unknown, ...path: JsonPath): unknown | undef
     if (value === undefined) { return }
   }
   return value
+}
+
+export const getStringValue = (obj: unknown, ...path: JsonPath): string | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return typeof value === "string" ? value : undefined
+}
+
+export const getNumberValue = (obj: unknown, ...path: JsonPath): number | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return typeof value === "number" ? value : ((typeof value === "string" && +value) ? +value : undefined)
+}
+
+export const getBooleanValue = (obj: unknown, ...path: JsonPath): boolean | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return typeof value === "boolean" ? value : ((typeof value === "string" && (value === "true" || value === "false") ? Boolean(value) : undefined))
 }
 
 export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
@@ -132,7 +151,7 @@ export const getParentContext = (ctx: DiffContext, ...path: JsonPath): DiffConte
   const parentPath = [..._path]
   const key = parentPath.pop()!
 
-  const parentValue = getValueByPath(ctx.root, ...parentPath) as Record<string | number, unknown>
+  const parentValue = getKeyValue(ctx.root, ...parentPath) as Record<string | number, unknown>
   const value = parentValue[key]
 
   if (value === undefined) {
@@ -144,4 +163,16 @@ export const getParentContext = (ctx: DiffContext, ...path: JsonPath): DiffConte
 
 export const isExist = (value: unknown): boolean => {
   return typeof value !== "undefined"
+}
+
+export const isString = (value: unknown): value is string => {
+  return typeof value === "string"
+}
+
+export const isNumber = (value: unknown): value is number => {
+  return typeof value === "number" || isString(value) && !Number.isNaN(+value)
+}
+
+export const compareTransformationFactory = (resolver: TransformResolver): CompareTransformResolver => {
+  return (before, after) => [resolver(before, after), resolver(after, before)]
 }
