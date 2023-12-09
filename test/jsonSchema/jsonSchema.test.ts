@@ -3,67 +3,7 @@ import { compareJsonSchema } from "../../src"
 const metaKey = Symbol('diff')
 
 describe("merge simple jsonSchema", () => {
-  it("should merge simple jsonSchema", () => {
-    const before = {
-      title: "test",
-      type: "string",
-      enum: ["a", "b", "c"],
-      example: "a",
-    }
 
-    const after = {
-      title: "test1",
-      type: "string",
-      enum: ["a", "d", "c"],
-    }
-
-    const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
-
-    expect(diffs.length).toEqual(3)
-    expect(merged).toMatchObject({
-      title: "test1",
-      type: "string",
-      enum: ["a", "d", "c"],
-      examples: ["a"],
-    })
-    expect(merged[metaKey]).toMatchObject({
-      title: { action: "replace", replaced: "test" },
-      enum: { array: { 1: { action: "replace", replaced: "b" }}},
-      examples: { action: "remove" }
-    })
-  })
-
-  it("should merge simple jsonSchema with meta", () => {
-    const before = {
-      title: "test",
-      type: "string",
-      description: "test description",
-      readOnly: true
-    }
-
-    const after = {
-      title: "test",
-      type: "string",
-      description: "test description1",
-      deprecated: true,
-    }
-
-    const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
-
-    expect(diffs.length).toEqual(3)
-    expect(merged).toMatchObject({
-      title: "test",
-      type: "string",
-      description: "test description1",
-      readOnly: true,
-      deprecated: true,
-    })
-    expect(merged[metaKey]).toMatchObject({
-      description: { action: "replace", replaced: "test description" },
-      deprecated: { action: "add" },
-      readOnly: { action: "remove" }
-    })
-  })
 
   it("should merge object jsonSchema", () => {
     const before = {

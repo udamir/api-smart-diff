@@ -3,7 +3,7 @@ import {
   onlyAddBreaking, allDeprecated, allNonBreaking,
 } from "../constants"
 import { booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, multipleOfClassifier, requiredItemClassifyRule } from "./jsonSchema.classify"
-import { annotationChange, keyChangeAnnotation, parentKeyChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
+import { annotationChange, exampleChange, keyChangeAnnotation, parentKeyChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
@@ -13,7 +13,7 @@ import { mapSimpleEnumItemsRule } from "../mapping"
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
 
-export const jsonSchemaRules = ({ transform = [], draft = "draft-06", writer = false }: JsonSchemaRulesOptions = {}): CompareRules => {
+export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSchemaRulesOptions = {}): CompareRules => {
   const rules = {
     // important to createCompareRefResolver once for cycle refs cache
     compare: createRefsCompareResolver(),
@@ -42,6 +42,10 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", writer = f
       "/*": { $: [nonBreaking, breaking, breaking], annotate: parentKeyChangeAnnotation },
       $: [breaking, nonBreaking, breaking],
       mapping: mapSimpleEnumItemsRule,
+      annotate: keyChangeAnnotation
+    },
+    "/const": {
+      $: [breaking, nonBreaking, breaking],
       annotate: keyChangeAnnotation
     },
     "/type": {
@@ -85,7 +89,11 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", writer = f
       "/readOnly": { $: booleanClassifier, annotate: statusChange },
       "/writeOnly": { $: booleanClassifier, annotate: statusChange },
       "/deprecated": { $: allDeprecated, annotate: statusChange },
-      "/examples": annotationRule,
+      "/examples": {
+        $: allAnnotation,
+        annotate: annotationChange,
+        "/*": { $: allAnnotation, annotate: exampleChange }
+      }
     } : {},
     
     ...["openapi30schema"].includes(draft) ? {

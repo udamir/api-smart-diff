@@ -41,9 +41,9 @@ export const isNotEmptyArray = (value: unknown): boolean => {
 
 export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
   const { rules } = ctx.options
-  const key = diff.action === "rename" ? "*" : `${diff.path[diff.path.length - 1]}`
-  const _rules: CompareRules | undefined = diff.action === "replace" ? rules : getNodeRules(rules, key, diff.path)
-  const rule = _rules?.$
+  // const key = diff.action === "rename" ? "*" : `${diff.path[diff.path.length - 1]}`
+  // const _rules: CompareRules | undefined = diff.action === "replace" ? rules : getNodeRules(rules, key, diff.path)
+  const rule = rules?.$
 
   if (!rule || diff.action === "test") { 
     return { ...diff, type: unclassified }

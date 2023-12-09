@@ -148,12 +148,12 @@ export const transformDiscriminator = compareTransformationFactory((value) => {
   return value
 })
 
-export const transformConst = compareTransformationFactory((value) => {
-  if (typeof value !== "object" || !value) {
+export const transformConst = compareTransformationFactory((value, other) => {
+  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
     return value
   }
   // transform const into enum
-  if ("const" in value) {
+  if ("const" in value && "enum" in other) {
     const { const: v, ...rest } = value
     return { ...rest, enum: [v] }
   }
@@ -202,16 +202,22 @@ export const transformExclusiveMaximum = compareTransformationFactory((value) =>
   return value
 })
 
-export const transformExample = compareTransformationFactory((value) => {
-  if (typeof value !== "object" || !value) {
+export const transformExample = compareTransformationFactory((value, other) => {
+  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
     return value
   }
-  // 1. convert example to array of examples
-  if ("example" in value) {
+  // convert example to array of examples
+  if ("example" in value && "examples" in other) {
     const { example, ...rest } = value
     const examples = "examples" in value && Array.isArray(value.examples) ? value.examples : []
     return { ...rest, examples: [...examples, example] }
   }
+
+  // add empty examples
+  if (!("examples" in value) && "examples" in other) {
+    return { ...value, examples: [] }
+  }
+
   return value
 })
 

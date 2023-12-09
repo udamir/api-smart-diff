@@ -44,7 +44,7 @@ export type ComapreOptions = {
   metaKey?: string | symbol
   arrayMeta?: boolean
   rules?: CompareRules
-
+  formatDiffFunc?: FormatDiffFunc
   externalSources?: {
     before?: {
       [key: string]: unknown

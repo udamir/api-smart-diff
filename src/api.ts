@@ -28,3 +28,9 @@ export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions
 
   return diffs
 }
+
+export const apiCompare = (before: unknown, after: unknown, options: ComapreOptions) => {
+  const rules = options.rules ?? discoverCompareRules(before)
+
+  return compare(before, after, { ...options, rules })
+}

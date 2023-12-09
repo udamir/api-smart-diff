@@ -1,4 +1,4 @@
-import { syncCrawl, SyncCrawlHook } from "json-crawl"
+import { getNodeRules, syncCrawl, SyncCrawlHook } from "json-crawl"
 
 import type { ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, SourceContext, ContextInput, MergeFactoryResult } from "./types"
 import { changeFactory, convertDiffToMeta, createMergeMeta, getKeyValue, isArray, isObject, objectKeys, typeOf } from "./utils"
@@ -6,7 +6,7 @@ import { mapObjectKeysRule, mapArraysKeysRule } from "./mapping"
 import type { Diff, JsonNode, MergeState } from "./types"
 import { DIFF_META_KEY } from "./constants"
 
-const createContext = (data: ContextInput, options: ComapreOptions): ComapreContext => {
+export const createContext = (data: ContextInput, options: ComapreOptions): ComapreContext => {
   const { bNode, aNode, aPath, root, akey, bkey, bPath, before, after } = data
   const beforePath = (bPath.length || bkey !== "#") ? [...bPath, bkey] : []
   const afterPath = (aPath.length || akey !== "#") ? [...aPath, akey] : []
@@ -17,11 +17,11 @@ const createContext = (data: ContextInput, options: ComapreOptions): ComapreCont
   }
 }
 
-const createChildContext = ({ before, after, options}: ComapreContext, bkey: number | string, akey: number | string): ComapreContext => {
+export const createChildContext = ({ before, after, options}: ComapreContext, bkey: number | string, akey: number | string): ComapreContext => {
   return { 
     before: { path: [...before.path, bkey], key: bkey, value: getKeyValue(before.value, bkey), parent: before.value, root: before.root },
     after: { path: [...after.path, akey], key: akey, value: getKeyValue(after.value, akey), parent: after.value, root: after.root },
-    options
+    options: { ...options, rules: getNodeRules(options.rules, bkey || akey, before.path) }
   }
 } 
 
@@ -37,7 +37,7 @@ const setMergeMeta = (parentMeta: MergeMeta, key: string | number, diff: Diff) =
 
 const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
   const _diffs: Diff[] = []
-  const change = changeFactory<Diff>()
+  const change = changeFactory<Diff>(options.formatDiffFunc)
   const { arrayMeta, metaKey = DIFF_META_KEY } = options
 
   const hook: SyncCrawlHook<MergeState, CompareRule> = (crawlContext) => {

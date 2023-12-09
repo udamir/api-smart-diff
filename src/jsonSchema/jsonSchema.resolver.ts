@@ -6,6 +6,7 @@ import { changeFactory, convertDiffToMeta, createMergeMeta, isArray } from "../u
 import type { CompareResolver, CompareResult, Diff } from "../types"
 import { jsonSchemaDiffFormat } from "./jsonSchema.format"
 import { compareJsonSchema } from "./jsonSchema.compare"
+import { createChildContext } from "../compare"
 import { DIFF_META_KEY } from "../constants"
 
 export const combinaryCompareResolver: CompareResolver = (ctx) => {
@@ -61,13 +62,13 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   const arrayMetaDiffs: Diff[] = []
   for (const i of beforeMached.values()) {
     _merged[i] = before.value[i]
-    const diff = change.removed([i], before.value[i], ctx)
+    const diff = change.removed([i], before.value[i], createChildContext(ctx, i, ""))
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
 
   for (const j of afterMatched.values()) {
-    const diff = change.added([_merged.length], after.value[j], ctx)
+    const diff = change.added([_merged.length], after.value[j], createChildContext(ctx, "", j))
     _merged.push(after.value[j])
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)

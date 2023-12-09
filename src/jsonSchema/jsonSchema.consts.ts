@@ -9,7 +9,7 @@ export const jsonSchemaNodeMetaProps = [
 ] as const
 
 export const jsonSchemaCommonProps = [
-  'type', 'description', 'title', 'enum', 'default', 'examples', 'format'
+  'type', 'description', 'title', 'enum', 'default', 'examples', 'format', 'const'
 ] as const
 
 export const jsonSchemaValidators = {
