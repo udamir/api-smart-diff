@@ -2,7 +2,7 @@ import { compareJsonSchema } from "../../src"
 
 const metaKey = Symbol('diff')
 
-describe("schema with array", () => {
+describe("Comapre array jsonSchema", () => {
   it("should merge simple jsonSchema (array type change)", () => {
     const before = {
       type: "array",

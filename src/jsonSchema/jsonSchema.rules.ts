@@ -1,14 +1,14 @@
 import { 
   breaking, nonBreaking,allAnnotation, allBreaking, allUnclassified,
-  onlyAddBreaking, allDeprecated, allNonBreaking,
+  onlyAddBreaking, allDeprecated, allNonBreaking, addNonBreaking,
 } from "../constants"
 import { booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, multipleOfClassifier, requiredItemClassifyRule } from "./jsonSchema.classify"
-import { annotationChange, exampleChange, keyChangeAnnotation, parentKeyChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
+import { annotationChange, exampleChange, keyChangeAnnotation, parentKeyChangeAnnotation, requiredChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
+import { enumMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 import { jsonSchemaTransformers } from "./jsonSchema.transform"
-import { mapSimpleEnumItemsRule } from "../mapping"
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
@@ -35,13 +35,16 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
     "/minProperties": simpleRule(minClassifier, validationChange),
     "/required": {
       $: onlyAddBreaking,
-      mapping: mapSimpleEnumItemsRule,
-      "/*": { $: requiredItemClassifyRule },
+      mapping: requiredMappingResolver,
+      "/*": { 
+        $: requiredItemClassifyRule,
+        annotate: requiredChangeAnnotation
+      },
     },
     "/enum": {
       "/*": { $: [nonBreaking, breaking, breaking], annotate: parentKeyChangeAnnotation },
       $: [breaking, nonBreaking, breaking],
-      mapping: mapSimpleEnumItemsRule,
+      mapping: enumMappingResolver,
       annotate: keyChangeAnnotation
     },
     "/const": {
@@ -71,7 +74,11 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
     "/items": () => ({ ...rules, $: allNonBreaking }),
     "/properties": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => ({ ...rules, $: allNonBreaking }),
+      "/*": () => ({ 
+        ...rules, 
+        $: addNonBreaking,
+        annotate: parentKeyChangeAnnotation
+      }),
     },
     "/additionalProperties": () => ({ ...rules, $: allNonBreaking }),
     "/description": annotationRule,

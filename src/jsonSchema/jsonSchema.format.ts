@@ -4,7 +4,10 @@ export const jsonSchemaDiffFormat = (diff: Diff, ctx: ComapreContext): Diff => {
   const { rules } = ctx.options
 
   if (rules?.annotate) {
-    diff.description = rules.annotate(diff, ctx)
+    const description = rules.annotate(diff, ctx)
+    if (description) {
+      diff.description = description
+    }
   }
 
   return diff

@@ -1,7 +1,6 @@
-import { MapKeysResult, MappingResolver } from "../types"
+import type { MapKeysResult, MappingResolver } from "../types"
 
-
-export const mapSimpleEnumItemsRule: MappingResolver<number> = (before, after) => {
+export const enumMappingResolver: MappingResolver<number> = (before, after) => {
 
   const result: MapKeysResult<number> = { added: [], removed: [],  mapped: {} }
 
@@ -36,6 +35,34 @@ export const mapSimpleEnumItemsRule: MappingResolver<number> = (before, after) =
   for (let i = j; i < unmappedBefore.length; i++) {
     result.removed.push(unmappedBefore[i])
   }
+
+  return result
+}
+
+
+export const requiredMappingResolver: MappingResolver<number> = (before, after) => {
+
+  const result: MapKeysResult<number> = { added: [], removed: [],  mapped: {} }
+
+  const afterItems = [...after]
+  const unmappedAfter = new Set(after.keys())
+
+  for (let i = 0; i < before.length; i++) {
+    const _afterIndex = afterItems.indexOf(before[i])
+    
+    if (_afterIndex < 0) {
+      result.removed.push(i)
+    } else {
+      // mapped items
+      result.mapped[i] = _afterIndex
+      unmappedAfter.delete(_afterIndex)
+    }
+  }
+
+  unmappedAfter.forEach((i) => {
+    // added items
+    result.added.push(i)
+  })
 
   return result
 }

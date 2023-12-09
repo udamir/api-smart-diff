@@ -54,7 +54,10 @@ describe("Test openapi 3 diff", () => {
 
     const merged = exampleResource.merge(after)
     expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}"]: { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking } })
-    expect(merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array[0]).toMatchObject({ action: DiffAction.replace, replaced: "name", type: nonBreaking })
+    expect(merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array).toMatchObject({
+      0: { action: DiffAction.remove, type: nonBreaking },
+      2: { action: DiffAction.add, type: nonBreaking }
+    })
   })
 
   it("should add rename diff on media type rename", () => {

@@ -111,6 +111,19 @@ export const transformAdditionalProperties = compareTransformationFactory((value
   return value
 })
 
+export const transformProperties = compareTransformationFactory((value, other) => {
+  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
+    return value
+  }
+
+  // add empty properties
+  if (!("properties" in value) && "properties" in other) {
+    return { ...value, properties: {} }
+  }
+
+  return value
+})
+
 export const transformDiscriminator = compareTransformationFactory((value) => {
   if (typeof value !== "object" || !value) {
     return value
@@ -148,20 +161,33 @@ export const transformDiscriminator = compareTransformationFactory((value) => {
   return value
 })
 
-export const transformConst = compareTransformationFactory((value, other) => {
+export const transformConstEnum = compareTransformationFactory((value, other) => {
   if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
     return value
   }
-  // transform const into enum
+  // 1. transform const into enum
   if ("const" in value && "enum" in other) {
     const { const: v, ...rest } = value
     return { ...rest, enum: [v] }
   }
+
+  // 2. remove not unique items
+  if ("enum" in value && Array.isArray(value.enum)) {
+    const _enum = value.enum.filter((v, i, arr) => arr.indexOf(v) === i)
+
+    return { ...value, enum: _enum }
+  }
+
+  // 3. add empty required
+  if (!("enum" in value) && "enum" in other) {
+    return { ...value, enum: [] }
+  }
+
   return value
 })
 
-export const transformRequred = compareTransformationFactory((value) => {
-  if (typeof value !== "object" || !value) {
+export const transformRequred = compareTransformationFactory((value, other) => {
+  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
     return value
   }
   // 1. remove not unique items
@@ -173,6 +199,12 @@ export const transformRequred = compareTransformationFactory((value) => {
 
     return { ...value, required }
   }
+
+  // 3. add empty required
+  if (!("required" in value) && "required" in other) {
+    return { ...value, required: [] }
+  }
+
   return value
 })
 
@@ -308,11 +340,14 @@ export const filterValidProps = compareTransformationFactory((value) => {
 })
 
 export const jsonSchemaTransformers = [
+  // !! order is important
   // filterValidProps,
+  transformCombinary,
   transformAdditionalItems,
   transformItems,
   transformAdditionalProperties,
-  transformConst,
+  transformProperties,
+  transformConstEnum,
   transformDeprecated,
   transformDiscriminator,
   transformExample,
@@ -320,5 +355,4 @@ export const jsonSchemaTransformers = [
   transformExclusiveMinimum,
   transformRequred,
   transformTypeOfArray,
-  transformCombinary,
 ]

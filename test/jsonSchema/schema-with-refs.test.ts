@@ -155,7 +155,7 @@ describe("schema with references", () => {
 
     expect(diffs.length).toEqual(1)
     expect(merged[metaKey]).toMatchObject({
-      required: { action: "add" },
+      required: { array: { 0: { action: "add" }}},
     })
   })
 
