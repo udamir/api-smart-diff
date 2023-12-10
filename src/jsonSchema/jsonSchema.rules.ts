@@ -2,8 +2,14 @@ import {
   breaking, nonBreaking,allAnnotation, allBreaking, allUnclassified,
   onlyAddBreaking, allDeprecated, allNonBreaking, addNonBreaking,
 } from "../constants"
-import { booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, multipleOfClassifier, requiredItemClassifyRule } from "./jsonSchema.classify"
-import { annotationChange, exampleChange, keyChangeAnnotation, parentKeyChangeAnnotation, requiredChangeAnnotation, statusChange, validationChange } from "./jsonSchema.annotate"
+import { 
+  annotationChange, exampleChange, keyChangeAnnotation, parentKeyChangeAnnotation,
+  requiredChangeAnnotation, statusChange, validationChange
+} from "./jsonSchema.annotate"
+import { 
+  booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, 
+  multipleOfClassifier, requiredItemClassifyRule
+} from "./jsonSchema.classify"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
 import { enumMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
@@ -53,6 +59,7 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
     },
     "/type": {
       $: [breaking, nonBreaking, breaking],
+      annotate: keyChangeAnnotation,
       "/*": { $: [nonBreaking, breaking, breaking] },
     },
     "/not": () => ({ ...rules, $: allBreaking }),
@@ -80,7 +87,16 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
         annotate: parentKeyChangeAnnotation
       }),
     },
-    "/additionalProperties": () => ({ ...rules, $: allNonBreaking }),
+    "/additionalProperties": () => ({ ...rules, $: allNonBreaking, annotate: keyChangeAnnotation }),
+    "/patternProperties": {
+      $: [breaking, nonBreaking, breaking],
+      "/*": () => ({ 
+        ...rules, 
+        $: addNonBreaking,
+        annotate: parentKeyChangeAnnotation
+      }),
+    },
+    "/propertyNames": () => ({ ...rules, $: onlyAddBreaking, annotate: validationChange }),
     "/description": annotationRule,
     "/format": { $: [breaking, nonBreaking, breaking], annotate: keyChangeAnnotation },
     "/default": { $: [nonBreaking, breaking, breaking], annotate: keyChangeAnnotation },

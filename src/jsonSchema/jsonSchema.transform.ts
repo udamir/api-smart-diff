@@ -124,6 +124,19 @@ export const transformProperties = compareTransformationFactory((value, other) =
   return value
 })
 
+export const transformPatternProperties = compareTransformationFactory((value, other) => {
+  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
+    return value
+  }
+
+  // add empty patternProperties
+  if (!("patternProperties" in value) && "patternProperties" in other) {
+    return { ...value, patternProperties: {} }
+  }
+
+  return value
+})
+
 export const transformDiscriminator = compareTransformationFactory((value) => {
   if (typeof value !== "object" || !value) {
     return value
@@ -346,6 +359,7 @@ export const jsonSchemaTransformers = [
   transformAdditionalItems,
   transformItems,
   transformAdditionalProperties,
+  transformPatternProperties,
   transformProperties,
   transformConstEnum,
   transformDeprecated,

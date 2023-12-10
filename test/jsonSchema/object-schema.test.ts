@@ -2,8 +2,6 @@ import { breaking, compareJsonSchema, nonBreaking } from "../../src"
 
 const metaKey = Symbol('diff')
 
-// TODO: 'required', 'minProperties', 'maxProperties', 'propertyNames', 'properties', 'patternProperties', 'additionalProperties'
-
 describe("Compare object jsonSchema", () => {
 
   it("should compare object jsonSchema with required remove", () => {
@@ -27,6 +25,7 @@ describe("Compare object jsonSchema", () => {
     expect(diffs.length).toEqual(3)
 
     diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
+    diffs.forEach((diff) => expect(diff.type).not.toEqual("unclassified"))
 
     expect(merged).toMatchObject({
       type: "object",
@@ -63,7 +62,11 @@ describe("Compare object jsonSchema", () => {
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(merged).toMatchObject({
       type: "object",
@@ -104,8 +107,12 @@ describe("Compare object jsonSchema", () => {
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
-    
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
     expect(merged).toMatchObject({
       type: "object",
       required: ["id", "name"],
@@ -125,23 +132,63 @@ describe("Compare object jsonSchema", () => {
     })
   })
 
-  it("should merge jsonSchema with additionalProperties", () => {
+  it("should compare object jsonSchema with additionalProperties", () => {
     const before = {
-      type: "object",
       properties: {
-        id: {
-          type: "string",
-        }
-      }
+        id: { type: "string" },
+        name: { type: "string" },
+      },
     }
 
     const after = {
+      additionalProperties: { type: "string" },
+      minProperties: 1,
+      maxProperties: 3,
+      propertyNames: {
+        enum: ["id", "name", "foo"]
+      }
+    }
+
+    const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(6)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
+    expect(merged).toMatchObject({
       type: "object",
       properties: {
-        id: {
-          type: "string",
-        }
+        id: { type: "string" },
+        name: { type: "string" },
       },
+      additionalProperties: { type: "string" },
+      minProperties: 1,
+      maxProperties: 3,
+      propertyNames: {
+        enum: ["id", "name", "foo"]
+      }
+    })
+    expect(merged[metaKey]).toMatchObject({
+      additionalProperties: { action: "add", type: nonBreaking },
+      minProperties: { action: "add", type: breaking },
+      maxProperties: { action: "add", type: breaking },
+      propertyNames: { action: "add", type: breaking },
+    })
+    expect(merged.properties[metaKey]).toMatchObject({
+      name: { action: "remove", type: breaking },
+      id: { action: "remove", type: breaking },
+    })
+  })
+
+  it("should compare object jsonSchema with additionalProperties change", () => {
+    const before = {
+      additionalProperties: true
+    }
+
+    const after = {
       additionalProperties: {
         type: "number",
       },
@@ -150,15 +197,50 @@ describe("Compare object jsonSchema", () => {
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(1)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
     expect(merged).toMatchObject(after)
     expect(merged[metaKey]).toMatchObject({
-      additionalProperties: { action: "add" }
+      additionalProperties: { action: "replace", replaced: true, type: nonBreaking }
+    })
+  })
+
+  it("should compare object jsonSchema with additionalProperties validation change", () => {
+    const before = {
+      additionalProperties: {
+        type: "number",
+      },
+    }
+
+    const after = {
+      additionalProperties: {
+        type: "string",
+        maxLength: 3,
+      },
+    }
+
+    const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
+    expect(merged).toMatchObject(after)
+    expect(merged.additionalProperties[metaKey]).toMatchObject({
+      maxLength: { action: "add", type: breaking },
+      type: { action: "replace", replaced: "number", type: breaking }
     })
   })
 
   it("should create tree from jsonSchema with patternProperties", () => {
     const before = {
-      type: "object",
       patternProperties: {
         "^[a-z0-9]+$": {
           type: "string",
@@ -180,12 +262,18 @@ describe("Compare object jsonSchema", () => {
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
     expect(merged).toMatchObject(after)
     expect(merged.patternProperties[metaKey]).toMatchObject({
-      "^[0-9]+$": { action: "add" }
+      "^[0-9]+$": { action: "add", type: nonBreaking }
     })
     expect(merged.patternProperties["^[a-z0-9]+$"][metaKey]).toMatchObject({
-      type: { action: "replace", replaced: "string" }
+      type: { action: "replace", replaced: "string", type: breaking }
     })
   })
 })

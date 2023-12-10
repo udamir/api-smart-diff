@@ -23,7 +23,11 @@ describe("Compare simple jsonSchema", () => {
 
     expect(diffs.length).toEqual(4)
 
-    diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(merged).toMatchObject({
       title: "boolean",
@@ -105,7 +109,11 @@ describe("Compare simple jsonSchema", () => {
 
     expect(diffs.length).toEqual(6)
 
-    diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(merged).toMatchObject({
       title: "Title",
@@ -146,7 +154,11 @@ describe("Compare simple jsonSchema", () => {
 
     expect(diffs.length).toEqual(3)
 
-    diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(merged).toMatchObject({
       title: "test1",
@@ -180,8 +192,12 @@ describe("Compare simple jsonSchema", () => {
 
     expect(diffs.length).toEqual(3)
 
-    diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
-    
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
     expect(merged).toMatchObject({
       title: "test",
       type: "string",

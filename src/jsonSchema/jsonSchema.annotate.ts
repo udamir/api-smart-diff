@@ -5,29 +5,36 @@ import { AnnotationContext, ChangeAnnotation } from "./jsonSchema.types"
 import { isString } from "../utils"
 
 const mark = (text: string | number): string => "`" + text + "`"
+const changeTemplate = (text: string, target?: string): ChangeAnnotation => [
+  target ? `[Added] ${text} to \`${target}\`` : `[Added] ${text}`,
+  target ? `[Removed] ${text} from \`${target}\`` : `[Removed] ${text}`,
+  target ? `[Replaced] ${text} of \`${target}\`` : `[Replaced] ${text}`
+]
 
 const jsonSchemaAnnotations = {
-  changeTemplate: (text: string, target?: string): ChangeAnnotation => [
-    target ? `[Added] ${text} to \`${target}\`` : `[Added] ${text}`,
-    target ? `[Removed] ${text} from \`${target}\`` : `[Removed] ${text}`,
-    target ? `[Replaced] ${text} of \`${target}\`` : `[Replaced] ${text}`
-  ],
-  statusChange: (status: string, target?: string) => jsonSchemaAnnotations.changeTemplate(`${status} status`, target),
-  validationChange: (key: string, target?: string) => jsonSchemaAnnotations.changeTemplate(`${key} validator`, target), 
-  annotationChange: (key: string, target?: string) => jsonSchemaAnnotations.changeTemplate(`annotation (${key})`, target),
-  enumChange: (target?: string) => jsonSchemaAnnotations.changeTemplate("possbile values", target),
-  formatChange: (target?: string) => jsonSchemaAnnotations.changeTemplate("value format", target),
-  defaultChange: (target?: string) => jsonSchemaAnnotations.changeTemplate("default value", target),
-  constChange: (target?: string) => jsonSchemaAnnotations.changeTemplate("possible value", target),
-  nullableChange: (target?: string) => jsonSchemaAnnotations.changeTemplate("possbile nullable value", target),
-  requiredItemChange: (target?: string) => jsonSchemaAnnotations.changeTemplate(`required status`, target),
-  propertyChange: (key: string, target?: string) => jsonSchemaAnnotations.changeTemplate(`property ${mark(key)}`, target),
+  statusChange: (status: string, target?: string) => changeTemplate(`${status} status`, target),
+  validationChange: (key: string, target?: string) => changeTemplate(`${key} validator`, target), 
+  annotationChange: (key: string, target?: string) => changeTemplate(`annotation (${key})`, target),
+  enumChange: (target?: string) => changeTemplate("possible values", target),
+  formatChange: (target?: string) => changeTemplate("value format", target),
+  defaultChange: (target?: string) => changeTemplate("default value", target),
+  constChange: (target?: string) => changeTemplate("possible value", target),
+  typeChange: (target?: string) => changeTemplate("type definition", target),
+  nullableChange: (target?: string) => changeTemplate("possbile nullable value", target),
+  requiredItemChange: (target?: string) => changeTemplate(`required status`, target),
+  propertyChange: (key: string, target?: string) => changeTemplate(`property ${mark(key)}`, target),
+  patternPropertiesChange: (key: string, target?: string) => changeTemplate(`property with key pattern ${mark(key)}`, target),
+  additionalPropertiesChange: (target?: string) => changeTemplate(`schema for additional properties`, target),
 } as const
 
 const getTarget = (path: JsonPath, prefix = ""): string => {
   for (let i = 0; i < path.length; i++) {
     if (path[i] === "properties" && i < path.length - 1) {
       prefix += prefix ? "." + String(path[++i]) : String(path[++i]) 
+    } else if (path[i] === "additionalProperties") {
+      prefix += "{.*}" 
+    } else if (path[i] === "patternProperties" && i < path.length - 1) {
+      prefix += `{${String(path[++i])}}` 
     } else if (path[i] === "items") {
       prefix += "[]"
     }
@@ -82,6 +89,8 @@ export const keyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
     case "format": return jsonSchemaAnnotations.formatChange(target)[action]
     case "nullable": return jsonSchemaAnnotations.nullableChange(target)[action]
     case "default": return jsonSchemaAnnotations.defaultChange(target)[action]
+    case "type": return jsonSchemaAnnotations.typeChange(target)[action]
+    case "additionalProperties": return jsonSchemaAnnotations.additionalPropertiesChange(target)[action]
   }
   return ""
 }
@@ -93,6 +102,7 @@ export const parentKeyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) =
   switch (_key) {
     case "enum": return jsonSchemaAnnotations.enumChange(target)[2]
     case "properties": return isString(key) ? jsonSchemaAnnotations.propertyChange(key, _target)[action] : "" 
+    case "patternProperties": return isString(key) ? jsonSchemaAnnotations.patternPropertiesChange(key, _target)[action] : "" 
   }
   return ""
 }
