@@ -19,8 +19,22 @@ import { jsonSchemaTransformers } from "./jsonSchema.transform"
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
 
+const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
+  return Array.isArray(value) ? {
+    "/*": () => ({ 
+      ...rules,
+      $: allBreaking,
+      annotate: parentKeyChangeAnnotation
+    }),  
+  } : {
+    ...rules,
+    $: allNonBreaking,
+    annotate: keyChangeAnnotation,
+  }
+}
+
 export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSchemaRulesOptions = {}): CompareRules => {
-  const rules = {
+  const rules: CompareRules = {
     // important to createCompareRefResolver once for cycle refs cache
     compare: createRefsCompareResolver(),
     transform: [...jsonSchemaTransformers, ...transform],
@@ -78,7 +92,12 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
       "/*": () => ({ ...rules, $: allNonBreaking }),
       compare: combinaryCompareResolver
     },
-    "/items": () => ({ ...rules, $: allNonBreaking }),
+    "/items": ({ value }) => arrayItemsRules(value, rules),
+    "/additionalItems": () => ({
+      ...rules,
+      $: allNonBreaking,
+      annotate: keyChangeAnnotation,
+    }),
     "/properties": {
       $: [breaking, nonBreaking, breaking],
       "/*": () => ({ 

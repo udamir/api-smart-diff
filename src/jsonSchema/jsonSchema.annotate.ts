@@ -2,7 +2,7 @@ import type { JsonPath } from "json-crawl"
 
 import type { ChangeAnnotationResolver, ComapreContext } from "../types"
 import { AnnotationContext, ChangeAnnotation } from "./jsonSchema.types"
-import { isString } from "../utils"
+import { isNumber, isString } from "../utils"
 
 const mark = (text: string | number): string => "`" + text + "`"
 const changeTemplate = (text: string, target?: string): ChangeAnnotation => [
@@ -23,8 +23,11 @@ const jsonSchemaAnnotations = {
   nullableChange: (target?: string) => changeTemplate("possbile nullable value", target),
   requiredItemChange: (target?: string) => changeTemplate(`required status`, target),
   propertyChange: (key: string, target?: string) => changeTemplate(`property ${mark(key)}`, target),
+  itemChange: (key: string, target?: string) => changeTemplate(`array item with index ${mark(key)}`, target),
   patternPropertiesChange: (key: string, target?: string) => changeTemplate(`property with key pattern ${mark(key)}`, target),
   additionalPropertiesChange: (target?: string) => changeTemplate(`schema for additional properties`, target),
+  arrayItemsChange: (target?: string) => changeTemplate(`schema for array items`, target),
+  additionalArrayItemsChange: (target?: string) => changeTemplate(`schema for additional array items`, target),
 } as const
 
 const getTarget = (path: JsonPath, prefix = ""): string => {
@@ -36,7 +39,11 @@ const getTarget = (path: JsonPath, prefix = ""): string => {
     } else if (path[i] === "patternProperties" && i < path.length - 1) {
       prefix += `{${String(path[++i])}}` 
     } else if (path[i] === "items") {
-      prefix += "[]"
+      if ((i < path.length - 1) && isNumber(path[i+1])) {
+        prefix += `[${path[++i]}]`
+      } else {
+        prefix += "[]"
+      }
     }
   }
   return prefix
@@ -82,7 +89,7 @@ export const statusChange: ChangeAnnotationResolver = (diff, ctx) => {
 }
 
 export const keyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
-  const { key, action, target, value } = getDiffContext(diff.action, ctx)
+  const { key, action, target } = getDiffContext(diff.action, ctx)
   switch (key) {
     case "enum": return jsonSchemaAnnotations.enumChange(target)[action]
     case "const": return jsonSchemaAnnotations.constChange(target)[action]
@@ -91,6 +98,8 @@ export const keyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
     case "default": return jsonSchemaAnnotations.defaultChange(target)[action]
     case "type": return jsonSchemaAnnotations.typeChange(target)[action]
     case "additionalProperties": return jsonSchemaAnnotations.additionalPropertiesChange(target)[action]
+    case "items": return jsonSchemaAnnotations.arrayItemsChange(target)[action]
+    case "additionalItems": return jsonSchemaAnnotations.additionalArrayItemsChange(target)[action]
   }
   return ""
 }
@@ -102,6 +111,7 @@ export const parentKeyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) =
   switch (_key) {
     case "enum": return jsonSchemaAnnotations.enumChange(target)[2]
     case "properties": return isString(key) ? jsonSchemaAnnotations.propertyChange(key, _target)[action] : "" 
+    case "items": return isNumber(key) ? jsonSchemaAnnotations.itemChange(String(key), _target)[action] : "" 
     case "patternProperties": return isString(key) ? jsonSchemaAnnotations.patternPropertiesChange(key, _target)[action] : "" 
   }
   return ""

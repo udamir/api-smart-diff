@@ -239,7 +239,7 @@ describe("Compare object jsonSchema", () => {
     })
   })
 
-  it("should create tree from jsonSchema with patternProperties", () => {
+  it("should compare object jsonSchema with patternProperties", () => {
     const before = {
       patternProperties: {
         "^[a-z0-9]+$": {
