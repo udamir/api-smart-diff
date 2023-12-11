@@ -1,5 +1,4 @@
 import type { ComapreContext } from "../types"
-import { getParentContext } from "../utils"
 
 export const emptySecurity = (value?: unknown) => {
   if (!Array.isArray(value)) { return false }

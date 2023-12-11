@@ -28,6 +28,9 @@ const jsonSchemaAnnotations = {
   additionalPropertiesChange: (target?: string) => changeTemplate(`schema for additional properties`, target),
   arrayItemsChange: (target?: string) => changeTemplate(`schema for array items`, target),
   additionalArrayItemsChange: (target?: string) => changeTemplate(`schema for additional array items`, target),
+  oneOfItemChange: (target?: string) => changeTemplate(`oneOf schema`, target),
+  anyOfItemChange: (target?: string) => changeTemplate(`anyOf schema`, target),
+  allOfItemChange: (target?: string) => changeTemplate(`allOf schema`, target),
 } as const
 
 const getTarget = (path: JsonPath, prefix = ""): string => {
@@ -113,6 +116,9 @@ export const parentKeyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) =
     case "properties": return isString(key) ? jsonSchemaAnnotations.propertyChange(key, _target)[action] : "" 
     case "items": return isNumber(key) ? jsonSchemaAnnotations.itemChange(String(key), _target)[action] : "" 
     case "patternProperties": return isString(key) ? jsonSchemaAnnotations.patternPropertiesChange(key, _target)[action] : "" 
+    case "oneOf": return jsonSchemaAnnotations.oneOfItemChange(target)[action]
+    case "anyOf": return jsonSchemaAnnotations.anyOfItemChange(target)[action]
+    case "allOf": return jsonSchemaAnnotations.allOfItemChange(target)[action]
   }
   return ""
 }

@@ -18,10 +18,12 @@ export const createContext = (data: ContextInput, options: ComapreOptions): Coma
 }
 
 export const createChildContext = ({ before, after, options}: ComapreContext, bkey: number | string, akey: number | string): ComapreContext => {
+  const bValue = getKeyValue(before.value, bkey)
+  const aValue = getKeyValue(after.value, akey)
   return { 
-    before: { path: [...before.path, bkey], key: bkey, value: getKeyValue(before.value, bkey), parent: before.value, root: before.root },
-    after: { path: [...after.path, akey], key: akey, value: getKeyValue(after.value, akey), parent: after.value, root: after.root },
-    options: { ...options, rules: getNodeRules(options.rules, bkey || akey, before.path) }
+    before: { path: [...before.path, bkey], key: bkey, value: bValue, parent: before.value, root: before.root },
+    after: { path: [...after.path, akey], key: akey, value: aValue, parent: after.value, root: after.root },
+    options: { ...options, rules: getNodeRules(options.rules, bkey || akey, bkey ? before.path : after.path, bkey ? bValue : aValue) }
   }
 } 
 
@@ -69,10 +71,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
     if (compared) {
       const { diffs, merged, rootMergeMeta } = compared
 
-      _diffs.push(...(aPath.length || akey !== "#") 
-        ? diffs.map((diff) => ({ ...diff, path: [...aPath, ...diff.path]}))
-        : diffs 
-      )
+      _diffs.push(...diffs)
       if (rootMergeMeta) { 
         parentMeta[akey] = rootMergeMeta
       }

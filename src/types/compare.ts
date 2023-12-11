@@ -39,13 +39,16 @@ export type SourceContext = {
 }
 
 export type ComapreOptions = {
-  // strictArrays?: boolean
-  // resolveUnchangedRefs?: boolean
-  metaKey?: string | symbol
-  arrayMeta?: boolean
-  rules?: CompareRules
-  formatDiffFunc?: FormatDiffFunc
-  externalSources?: {
+  rules?: CompareRules              // custom rules for compare
+
+  metaKey?: string | symbol         // metakey for merge changes
+  arrayMeta?: boolean               // add changes to arrays via metakey
+  formatDiffFunc?: FormatDiffFunc   // custom format hook
+
+  mergeAllOf?: boolean              // merge allOf combiners before compare
+  skipDefinitions?: boolean         // skip definitions while compare
+
+  externalSources?: {               // external $ref sources
     before?: {
       [key: string]: unknown
     },

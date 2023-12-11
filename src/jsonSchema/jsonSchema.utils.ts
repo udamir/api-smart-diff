@@ -2,9 +2,9 @@ import { isRefNode, parseRef, resolveRefNode } from "allof-merge"
 import type { JsonPath } from "json-crawl"
 
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
-import type { JsonSchemaNodeType } from "./jsonSchema.types"
+import type { AllOfNode, JsonSchemaNodeType } from "./jsonSchema.types"
 
-export function isAllOfNode(value: any): value is { allOf: any[] } {
+export function isAllOfNode(value: any): value is AllOfNode {
   return value && value.allOf && Array.isArray(value.allOf)
 }
 
@@ -36,12 +36,9 @@ export function unwrapArrayOrNull(value: unknown): unknown[] | null {
   return Array.isArray(value) ? value : null
 }
 
-
-
 export const buildPath = (path: JsonPath): string => {
   return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
 }
-
 
 export const isCycleRef = ($ref: string, path: string, refs: Record<string, string[]>) => {
   if (!$ref) { return false }

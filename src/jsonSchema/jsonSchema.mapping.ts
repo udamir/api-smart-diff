@@ -39,7 +39,6 @@ export const enumMappingResolver: MappingResolver<number> = (before, after) => {
   return result
 }
 
-
 export const requiredMappingResolver: MappingResolver<number> = (before, after) => {
 
   const result: MapKeysResult<number> = { added: [], removed: [],  mapped: {} }

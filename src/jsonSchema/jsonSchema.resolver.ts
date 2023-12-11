@@ -25,7 +25,7 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   const _merged: any = []
   const _diffs: Diff[] = []
 
-  const rules = getNodeRules(options.rules, "*", before.path)
+  const rules = getNodeRules(options.rules, "*", before.path, before.value)
 
   // compare all combinations, find min diffs
   for (const i of before.value.keys()) {
@@ -56,19 +56,19 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
     afterMatched.delete(compared.after)
     beforeMached.delete(compared.before)
     _merged[compared.before] = compared.merged
-    _diffs.push(...compared.diffs.map((diff) => ({ ...diff, path: [compared.before, ...diff.path] })))
+    _diffs.push(...compared.diffs)
   }
 
   const arrayMetaDiffs: Diff[] = []
   for (const i of beforeMached.values()) {
     _merged[i] = before.value[i]
-    const diff = change.removed([i], before.value[i], createChildContext(ctx, i, ""))
+    const diff = change.removed([...before.path, i], before.value[i], createChildContext(ctx, i, ""))
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
 
   for (const j of afterMatched.values()) {
-    const diff = change.added([_merged.length], after.value[j], createChildContext(ctx, "", j))
+    const diff = change.added([...after.path, _merged.length], after.value[j], createChildContext(ctx, "", j))
     _merged.push(after.value[j])
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)

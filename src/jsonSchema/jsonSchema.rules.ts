@@ -14,7 +14,7 @@ import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchem
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
 import { enumMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
-import { jsonSchemaTransformers } from "./jsonSchema.transform"
+import { jsonSchemaTransformers, transformMergeAllOf } from "./jsonSchema.transform"
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
@@ -33,7 +33,7 @@ const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
   }
 }
 
-export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSchemaRulesOptions = {}): CompareRules => {
+export const jsonSchemaRules = ({ transform = [], draft = "draft-06", mergeAllOf = true }: JsonSchemaRulesOptions = {}): CompareRules => {
   const rules: CompareRules = {
     // important to createCompareRefResolver once for cycle refs cache
     compare: createRefsCompareResolver(),
@@ -62,10 +62,10 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
       },
     },
     "/enum": {
-      "/*": { $: [nonBreaking, breaking, breaking], annotate: parentKeyChangeAnnotation },
       $: [breaking, nonBreaking, breaking],
       mapping: enumMappingResolver,
-      annotate: keyChangeAnnotation
+      annotate: keyChangeAnnotation,
+      "/*": { $: [nonBreaking, breaking, breaking], annotate: parentKeyChangeAnnotation },
     },
     "/const": {
       $: [breaking, nonBreaking, breaking],
@@ -79,18 +79,30 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
     "/not": () => ({ ...rules, $: allBreaking }),
     "/allOf": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => ({ ...rules, $: allBreaking }),
-      compare: combinaryCompareResolver
+      compare: combinaryCompareResolver,
+      "/*": () => ({ 
+        ...rules,
+        $: allBreaking,
+        annotate: parentKeyChangeAnnotation
+      }),
     },
     "/oneOf": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => ({ ...rules, $: allNonBreaking }),
-      compare: combinaryCompareResolver
+      compare: combinaryCompareResolver,
+      "/*": () => ({ 
+        ...rules, 
+        $: allNonBreaking,
+        annotate: parentKeyChangeAnnotation
+      }),
     },
     "/anyOf": {
       $: [breaking, nonBreaking, breaking],
-      "/*": () => ({ ...rules, $: allNonBreaking }),
-      compare: combinaryCompareResolver
+      compare: combinaryCompareResolver,
+      "/*": () => ({ 
+        ...rules, 
+        $: allNonBreaking,
+        annotate: parentKeyChangeAnnotation
+      }),
     },
     "/items": ({ value }) => arrayItemsRules(value, rules),
     "/additionalItems": () => ({
@@ -154,5 +166,8 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06" }: JsonSche
     "/**": { $: allUnclassified }
   }
 
-  return rules
+  return mergeAllOf ? { 
+    ...rules,
+    transform: [...jsonSchemaTransformers, ...transform, transformMergeAllOf]
+  } : rules
 }

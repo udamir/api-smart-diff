@@ -1,4 +1,4 @@
-import { isAnyOfNode, isOneOfNode, isRefNode } from "allof-merge"
+import { isAnyOfNode, isOneOfNode, isRefNode, jsonSchemaMergeRules, merge } from "allof-merge"
 
 import { isArray, isObject, objectKeys, filterObj, compareTransformationFactory } from "../utils"
 import { inferTypes, isAllOfNode, isValidType } from "./jsonSchema.utils"
@@ -59,6 +59,62 @@ export const transformCombinary: CompareTransformResolver = (before, after) => {
     }
   }
 }
+
+export const transformAnyOfSibling = compareTransformationFactory((value) => {
+  if (typeof value !== "object" || !value || !isAnyOfNode(value)) {
+    return value
+  }
+
+  const { anyOf, ...rest } = value
+  const { defs, definitions, ...sibling } = rest
+
+  if (!Object.keys(sibling).length) { return value }
+
+  return {
+    anyOf: anyOf.map((item) => ({ allOf: [item, sibling] })),
+    ...defs ? { defs } : {},
+    ...definitions ? { definitions } : {}
+  }
+})
+
+export const transformOneOfSibling = compareTransformationFactory((value) => {
+  if (typeof value !== "object" || !value || !isOneOfNode(value)) {
+    return value
+  }
+
+  const { oneOf, ...rest } = value
+  const { defs, definitions, ...sibling } = rest
+
+  if (!Object.keys(sibling).length) { return value }
+
+  return {
+    oneOf: oneOf.map((item) => ({ allOf: [item, sibling] })),
+    ...defs ? { defs } : {},
+    ...definitions ? { definitions } : {}
+  }
+})
+
+export const transformAllOfSibling = compareTransformationFactory((value) => {
+  if (typeof value !== "object" || !value || !isAllOfNode(value)) {
+    return value
+  }
+
+  const { allOf, ...rest } = value
+  const { defs, definitions, ...sibling } = rest
+
+  if (!Object.keys(sibling).length) { return value }
+
+  return {
+    allOf: [...allOf, sibling],
+    ...defs ? { defs } : {},
+    ...definitions ? { definitions } : {}
+  }
+})
+
+export const transformMergeAllOf = compareTransformationFactory((value) => {
+  return merge(value, { rules: jsonSchemaMergeRules(), mergeCombinarySibling: true, mergeRefSibling: true })
+})
+
 
 export const transformAdditionalItems = compareTransformationFactory((value, other) => {
   if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
@@ -369,4 +425,7 @@ export const jsonSchemaTransformers = [
   transformExclusiveMinimum,
   transformRequred,
   transformTypeOfArray,
+  transformAnyOfSibling,
+  transformOneOfSibling,
+  transformAllOfSibling
 ]
