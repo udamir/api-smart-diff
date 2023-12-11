@@ -7,9 +7,9 @@ describe("schema with references", () => {
     const before = {
       type: "object",
       properties: {
-        id: { $ref: "#/defs/id" },
+        id: { $ref: "#/definitions/id" },
       },
-      defs: {
+      definitions: {
         id: {
           title: "id",
           type: "string",
@@ -20,10 +20,10 @@ describe("schema with references", () => {
     const after = {
       type: "object",
       properties: {
-        id: { $ref: "#/defs/id" },
-        name: { $ref: "#/defs/name" },
+        id: { $ref: "#/definitions/id" },
+        name: { $ref: "#/definitions/name" },
       },
-      defs: {
+      definitions: {
         id: {
           title: "id",
           type: "number",
@@ -45,16 +45,16 @@ describe("schema with references", () => {
           title: "id",
           type: "number",
         },
-        name: { $ref: "#/defs/name" },
+        name: { $ref: "#/definitions/name" },
       }
     })
     expect(merged.properties[metaKey]).toMatchObject({
       name: { action: "add" },
     })
-    expect(merged.defs[metaKey]).toMatchObject({
+    expect(merged.definitions[metaKey]).toMatchObject({
       name: { action: "add" },
     })
-    expect(merged.defs.id[metaKey]).toMatchObject({
+    expect(merged.definitions.id[metaKey]).toMatchObject({
       type: { action: "replace", replaced: "string" },
     })
     expect(merged.properties.id[metaKey]).toMatchObject({
@@ -66,12 +66,12 @@ describe("schema with references", () => {
     const before = {
       type: "object",
       properties: {
-        id: { $ref: "#/defs/id" },
+        id: { $ref: "#/definitions/id" },
         name: {
           type: "string",
         }
       },
-      defs: {
+      definitions: {
         id: {
           title: "id",
           type: "string",
@@ -82,10 +82,10 @@ describe("schema with references", () => {
     const after = {
       type: "object",
       properties: {
-        id: { $ref: "#/defs/id" },
-        name: { $ref: "#/defs/name" },
+        id: { $ref: "#/definitions/id" },
+        name: { $ref: "#/definitions/name" },
       },
-      defs: {
+      definitions: {
         id: {
           title: "id",
           type: "number",
@@ -116,10 +116,10 @@ describe("schema with references", () => {
     expect(merged.properties.name[metaKey]).toMatchObject({
       title: { action: "add" },
     })
-    expect(merged.defs[metaKey]).toMatchObject({
+    expect(merged.definitions[metaKey]).toMatchObject({
       name: { action: "add" },
     })
-    expect(merged.defs.id[metaKey]).toMatchObject({
+    expect(merged.definitions.id[metaKey]).toMatchObject({
       type: { action: "replace", replaced: "string" },
     })
     expect(merged.properties.id[metaKey]).toMatchObject({
@@ -163,9 +163,9 @@ describe("schema with references", () => {
     const before = {
       type: "object",
       properties: {
-        model: { $ref: "#/defs/model" },
+        model: { $ref: "#/definitions/model" },
       },
-      defs: {
+      definitions: {
         id: {
           title: "id",
           type: "string",
@@ -174,10 +174,10 @@ describe("schema with references", () => {
           type: "object",
           properties: {
             id: {
-              $ref: "#/defs/id",
+              $ref: "#/definitions/id",
             },
             parent: {
-              $ref: "#/defs/model",
+              $ref: "#/definitions/model",
             },
           },
         },
@@ -187,9 +187,9 @@ describe("schema with references", () => {
     const after = {
       type: "object",
       properties: {
-        model: { $ref: "#/defs/model" },
+        model: { $ref: "#/definitions/model" },
       },
-      defs: {
+      definitions: {
         id: {
           title: "id",
           type: "string",
@@ -198,7 +198,7 @@ describe("schema with references", () => {
           type: "object",
           properties: {
             id: {
-              $ref: "#/defs/id",
+              $ref: "#/definitions/id",
             },
           },
         },
@@ -208,7 +208,7 @@ describe("schema with references", () => {
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
-    expect(merged.defs.model.properties[metaKey]).toMatchObject({
+    expect(merged.definitions.model.properties[metaKey]).toMatchObject({
       parent: { action: "remove" },
     })
     expect(merged.properties.model.properties[metaKey]).toMatchObject({
@@ -229,7 +229,7 @@ describe("schema with broken reference", () => {
     const after = {
       type: "object",
       properties: {
-        id: { $ref: "#/defs/id" },
+        id: { $ref: "#/definitions/id" },
       },
     }
     

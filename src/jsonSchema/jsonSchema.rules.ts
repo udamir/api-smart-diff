@@ -1,6 +1,6 @@
 import { 
   breaking, nonBreaking,allAnnotation, allBreaking, allUnclassified,
-  onlyAddBreaking, allDeprecated, allNonBreaking, addNonBreaking,
+  onlyAddBreaking, allDeprecated, allNonBreaking, unclassified,
 } from "../constants"
 import { 
   annotationChange, exampleChange, keyChangeAnnotation, parentKeyChangeAnnotation,
@@ -12,9 +12,9 @@ import {
 } from "./jsonSchema.classify"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
+import { jsonSchemaTransformers, transformMergeAllOf } from "./jsonSchema.transform"
 import { enumMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
-import { jsonSchemaTransformers, transformMergeAllOf } from "./jsonSchema.transform"
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
@@ -33,11 +33,11 @@ const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
   }
 }
 
-export const jsonSchemaRules = ({ transform = [], draft = "draft-06", mergeAllOf = true }: JsonSchemaRulesOptions = {}): CompareRules => {
+export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}): CompareRules => {
   const rules: CompareRules = {
     // important to createCompareRefResolver once for cycle refs cache
     compare: createRefsCompareResolver(),
-    transform: [...jsonSchemaTransformers, ...transform],
+    transform: jsonSchemaTransformers,
 
     "/title": annotationRule,
     "/multipleOf": simpleRule(multipleOfClassifier, validationChange),
@@ -78,7 +78,6 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", mergeAllOf
     },
     "/not": () => ({ ...rules, $: allBreaking }),
     "/allOf": {
-      $: [breaking, nonBreaking, breaking],
       compare: combinaryCompareResolver,
       "/*": () => ({ 
         ...rules,
@@ -87,43 +86,39 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", mergeAllOf
       }),
     },
     "/oneOf": {
-      $: [breaking, nonBreaking, breaking],
       compare: combinaryCompareResolver,
       "/*": () => ({ 
         ...rules, 
-        $: allNonBreaking,
+        $: [nonBreaking, breaking, breaking],
         annotate: parentKeyChangeAnnotation
       }),
     },
     "/anyOf": {
-      $: [breaking, nonBreaking, breaking],
       compare: combinaryCompareResolver,
       "/*": () => ({ 
         ...rules, 
-        $: allNonBreaking,
+        $: [nonBreaking, breaking, breaking],
         annotate: parentKeyChangeAnnotation
       }),
     },
     "/items": ({ value }) => arrayItemsRules(value, rules),
     "/additionalItems": () => ({
       ...rules,
-      $: allNonBreaking,
+      $: [nonBreaking, breaking, unclassified],
       annotate: keyChangeAnnotation,
     }),
     "/properties": {
-      $: [breaking, nonBreaking, breaking],
       "/*": () => ({ 
         ...rules, 
-        $: addNonBreaking,
+        $: [nonBreaking, breaking, unclassified],
         annotate: parentKeyChangeAnnotation
       }),
     },
     "/additionalProperties": () => ({ ...rules, $: allNonBreaking, annotate: keyChangeAnnotation }),
     "/patternProperties": {
-      $: [breaking, nonBreaking, breaking],
       "/*": () => ({ 
         ...rules, 
-        $: addNonBreaking,
+        $: [breaking, nonBreaking, unclassified],
         annotate: parentKeyChangeAnnotation
       }),
     },
@@ -133,41 +128,41 @@ export const jsonSchemaRules = ({ transform = [], draft = "draft-06", mergeAllOf
     "/default": { $: [nonBreaking, breaking, breaking], annotate: keyChangeAnnotation },
     "/dependencies": {
 
+    },    
+    "/definitions": {
+      "/*": () => ({
+        ...rules, 
+        $: allNonBreaking,
+      })
+    },
+    "/$defs": {
+      "/*": () => ({
+        ...rules, 
+        $: allNonBreaking,
+      })
+    },
+    "/readOnly": { $: booleanClassifier, annotate: statusChange },
+    "/writeOnly": { $: booleanClassifier, annotate: statusChange },
+    "/deprecated": { $: allDeprecated, annotate: statusChange },
+    "/examples": {
+      $: allAnnotation,
+      annotate: annotationChange,
+      "/*": { $: allAnnotation, annotate: exampleChange }
     },
     
-    ...["draft-00", "draft-04"].includes(draft) ? {
-      "/definitions": {},
-    } : {},
+    // openapi extentions
+    "/nullable": { $: booleanClassifier, annotate: keyChangeAnnotation },
+    "/discriminator": { $: allUnclassified, annotate: annotationChange },
+    "/example": annotationRule,
+    "/externalDocs": annotationRule,
+    "/xml": {},
 
-    ...["draft-06", "openapi31schema"].includes(draft) ? {
-      "/readOnly": { $: booleanClassifier, annotate: statusChange },
-      "/writeOnly": { $: booleanClassifier, annotate: statusChange },
-      "/deprecated": { $: allDeprecated, annotate: statusChange },
-      "/examples": {
-        $: allAnnotation,
-        annotate: annotationChange,
-        "/*": { $: allAnnotation, annotate: exampleChange }
-      }
-    } : {},
-    
-    ...["openapi30schema"].includes(draft) ? {
-      "/readOnly": { $: booleanClassifier, annotate: statusChange },
-      "/writeOnly": { $: booleanClassifier, annotate: statusChange },
-      "/nullable": { $: booleanClassifier, annotate: keyChangeAnnotation },
-      "/deprecated": { $: allDeprecated, annotate: statusChange },
-    } : {},
-
-    ...["openapi30schema", "openapi31schema"].includes(draft) ? {
-      "/discriminator": { $: allUnclassified, annotate: annotationChange },
-      "/example": annotationRule,
-      "/externalDocs": annotationRule,
-      "/xml": {},
-    } : {},
+    // unknown tags
     "/**": { $: allUnclassified }
   }
 
-  return mergeAllOf ? { 
+  return notMergeAllOf ? rules : { 
     ...rules,
-    transform: [...jsonSchemaTransformers, ...transform, transformMergeAllOf]
-  } : rules
+    transform: [...jsonSchemaTransformers, transformMergeAllOf]
+  }
 }

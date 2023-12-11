@@ -35,11 +35,12 @@ export type MappingArrayResolver = (before: Array<unknown>, after: Array<unknown
 export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => string
 
 export type CompareRule = {
-  $?: ClassifyRule      // classifier for current node
-  compare?: CompareResolver      // compare handler for current node
-  transform?: CompareTransformResolver[]
-  mapping?: MappingResolver<string | number>
-  annotate?: ChangeAnnotationResolver
+  $?: ClassifyRule                            // classifier for current node
+  compare?: CompareResolver                   // compare handler for current node
+  transform?: CompareTransformResolver[]      // transformations 
+  mapping?: MappingResolver<string | number>  // key mapping rules
+  annotate?: ChangeAnnotationResolver         // 
+  skip?: boolean                              // skip comparison, use before value as merge result
 }
 
 export type CompareRules = CrawlRules<CompareRule>

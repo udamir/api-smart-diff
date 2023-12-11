@@ -1,5 +1,3 @@
-export const jsonSchemaVersion = ["openapi30schema", "openapi31schema", "draft-00", "draft-04", "draft-06", "draft-2022-12"] as const
-
 export const jsonSchemaTypes = [
   'any', 'string', 'number', 'integer', 'boolean', 'null', 'array', 'object'
 ] as const 
@@ -11,6 +9,8 @@ export const jsonSchemaNodeMetaProps = [
 export const jsonSchemaCommonProps = [
   'type', 'description', 'title', 'enum', 'default', 'examples', 'format', 'const'
 ] as const
+
+export const jsonSchemaDefinitionsPath = ["$defs", "definitions"]
 
 export const jsonSchemaValidators = {
   any:     [],

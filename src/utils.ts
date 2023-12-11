@@ -1,6 +1,6 @@
-import { JsonPath, getNodeRules } from "json-crawl"
+import { JsonPath } from "json-crawl"
 
-import type { ChangeFactory, ComapreContext, CompareRules, CompareTransformResolver, Diff, DiffContext, DiffMeta, FormatDiffFunc, MergeMeta, TransformResolver } from "./types"
+import type { ChangeFactory, ComapreContext, CompareTransformResolver, Diff, DiffContext, DiffMeta, FormatDiffFunc, MergeMeta, TransformResolver } from "./types"
 import { DiffAction, allUnclassified, unclassified } from "./constants"
   
 export const typeOf = (value: unknown): string  => {
@@ -41,9 +41,7 @@ export const isNotEmptyArray = (value: unknown): boolean => {
 
 export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
   const { rules } = ctx.options
-  // const key = diff.action === "rename" ? "*" : `${diff.path[diff.path.length - 1]}`
-  // const _rules: CompareRules | undefined = diff.action === "replace" ? rules : getNodeRules(rules, key, diff.path)
-  const rule = rules?.$
+  const { $: rule, annotate } = rules ?? {}
 
   if (!rule || diff.action === "test") { 
     return { ...diff, type: unclassified }
@@ -54,15 +52,17 @@ export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
   const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
   const changeType = classifier[index]
 
+  const description = annotate?.(diff, ctx)
+
   try {
     if (typeof changeType === "function") {
-      return { ...diff, type: changeType(ctx) }
+      return { ...diff, type: changeType(ctx), ...description ? { description } : {} }
     } else {
-      return { ...diff, type: changeType }
+      return { ...diff, type: changeType, ...description ? { description } : {} }
     }
 
   } catch (error) {
-    return { ...diff, type: unclassified }
+    return { ...diff, type: unclassified, ...description ? { description } : {} }
   }
 }
 

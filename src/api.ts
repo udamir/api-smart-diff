@@ -6,7 +6,7 @@ import { compare } from "./compare"
 export const discoverCompareRules = (data: any): CompareRules => {
   if (typeof data !== "object" || !data) { return jsonSchemaRules() }
 
-  if (/3.+/.test(data?.openapi || "")) return openapi3Rules
+  if (/3.+/.test(data?.openapi || "")) return openapi3Rules()
   // if (/2.+/.test(data?.asyncapi || "")) return asyncApi2Rules
   // if (/2.+/.test(data?.swagger || "")) return swagger2Rules
   // if (data?.graphapi) return graphapiRules

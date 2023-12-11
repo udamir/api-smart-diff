@@ -44,14 +44,14 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
 
   const hook: SyncCrawlHook<MergeState, CompareRule> = (crawlContext) => {
     const { rules = {}, state, value, key } = crawlContext
-    const { transform, compare, mapping } = rules
+    const { transform, compare, mapping, skip } = rules
     const { keyMap, parentMeta, bNode, aNode, mNode } = state
 
     const bkey = key ?? (isArray(bNode) ? +Object.keys(keyMap).pop()! : Object.keys(keyMap).pop())
     const akey = keyMap[bkey]
 
     // skip if node was removed
-    if (!(bkey in keyMap)) { 
+    if (skip || !(bkey in keyMap)) { 
       return mergedResult(mNode, bkey, value)
     }
 

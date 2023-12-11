@@ -270,7 +270,7 @@ describe("Compare object jsonSchema", () => {
 
     expect(merged).toMatchObject(after)
     expect(merged.patternProperties[metaKey]).toMatchObject({
-      "^[0-9]+$": { action: "add", type: nonBreaking }
+      "^[0-9]+$": { action: "add", type: breaking }
     })
     expect(merged.patternProperties["^[a-z0-9]+$"][metaKey]).toMatchObject({
       type: { action: "replace", replaced: "string", type: breaking }

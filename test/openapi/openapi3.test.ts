@@ -1,5 +1,5 @@
+import { breaking, DiffAction, nonBreaking, unclassified } from "../../src"
 import { addPatch, ExampleResource } from "../helpers"
-import { annotation, breaking, DiffAction, nonBreaking, unclassified } from "../../src"
 
 const exampleResource = new ExampleResource("petstore.yaml")
 
@@ -55,6 +55,10 @@ describe("Test openapi 3 diff", () => {
     const merged = exampleResource.merge(after)
     expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}"]: { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking } })
     expect(merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array).toMatchObject({
+      0: { action: DiffAction.remove, type: breaking },
+      2: { action: DiffAction.add, type: breaking }
+    })
+    expect(merged.paths["/pet"].post.requestBody.content["application/json"].schema.$diff.required.array).toMatchObject({
       0: { action: DiffAction.remove, type: nonBreaking },
       2: { action: DiffAction.add, type: nonBreaking }
     })
@@ -109,7 +113,7 @@ describe("Test openapi 3 diff", () => {
     expect(diffs).toMatchObject([{ type: breaking }])
   })
 
-  it.skip("should do not find changes with allOf diff", () => {
+  it("should do not find changes with allOf diff", () => {
     const after = exampleResource.clone()
     const { xml, ...rest } = after.components.schemas.Order
     after.components.schemas.Order = {

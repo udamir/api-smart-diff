@@ -37,7 +37,7 @@ describe("schema with combinary", () => {
       ],
     }
 
-    const { diffs, merged } =compareJsonSchema(before, after, { metaKey })
+    const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
     diffs.forEach((diff) => {

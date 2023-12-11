@@ -1,15 +1,11 @@
 
-import { jsonSchemaTypes, jsonSchemaVersion } from "./jsonSchema.consts"
-import type { CompareTransformResolver, DiffContext } from "../types"
+import type { ComapreOptions, DiffContext } from "../types"
+import { jsonSchemaTypes } from "./jsonSchema.consts"
 
 export type JsonSchemaNodeType = typeof jsonSchemaTypes[number]
 
-export type JsonSchemaVersion = typeof jsonSchemaVersion[number]
-
 export type JsonSchemaRulesOptions = {
-  transform?: CompareTransformResolver[]
-  draft?: JsonSchemaVersion
-  mergeAllOf?: boolean
+  notMergeAllOf?: boolean
 }
 
 export type ChangeAnnotation = [string, string, string]
@@ -22,4 +18,8 @@ export type AnnotationContext = DiffContext & {
 export type AllOfNode = {
   allOf: any[]
   [key: string]: any
+}
+
+export type JsonSchemaCompareOptions = ComapreOptions & {
+  notMergeAllOf?: boolean           // do not merge allOf combiners before compare
 }

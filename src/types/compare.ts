@@ -45,9 +45,6 @@ export type ComapreOptions = {
   arrayMeta?: boolean               // add changes to arrays via metakey
   formatDiffFunc?: FormatDiffFunc   // custom format hook
 
-  mergeAllOf?: boolean              // merge allOf combiners before compare
-  skipDefinitions?: boolean         // skip definitions while compare
-
   externalSources?: {               // external $ref sources
     before?: {
       [key: string]: unknown

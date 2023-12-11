@@ -1,14 +1,17 @@
-import type { ComapreOptions, CompareResult, SourceContext } from "../types"
+import type { OpenApiComapreOptions } from "./openapi3.types"
+import type { CompareResult, SourceContext } from "../types"
 import { openapi3Rules } from "./openapi3.rules"
 import { compare } from "../compare"
 
-export const compareOpenApi = (before: unknown, after: unknown, options: ComapreOptions = {}, context: SourceContext = {}): CompareResult => {
+export const compareOpenApi = (before: unknown, after: unknown, options: OpenApiComapreOptions = {}, context: SourceContext = {}): CompareResult => {
  
+  const { notMergeAllOf } = options
+
   // set default options
   const _options = {
     ...options,
-    rules: options.rules ?? openapi3Rules
+    rules: options.rules ?? openapi3Rules({ notMergeAllOf })
   }
 
-  return compare(before, after, _options)
+  return compare(before, after, _options, context)
 }
