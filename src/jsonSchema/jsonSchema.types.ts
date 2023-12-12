@@ -1,5 +1,7 @@
 
-import type { ComapreOptions, DiffContext } from "../types"
+import { JsonPath } from "json-crawl"
+
+import type { ComapreOptions, CompareResult, DiffContext } from "../types"
 import { jsonSchemaTypes } from "./jsonSchema.consts"
 
 export type JsonSchemaNodeType = typeof jsonSchemaTypes[number]
@@ -22,4 +24,8 @@ export type AllOfNode = {
 
 export type JsonSchemaCompareOptions = ComapreOptions & {
   notMergeAllOf?: boolean           // do not merge allOf combiners before compare
+}
+
+export type CompareResultCache = CompareResult & {
+  path: JsonPath
 }

@@ -1,4 +1,5 @@
 import { compareTransformationFactory, isKey, objectKeys } from "../utils"
+import { getDefaultStyle } from "./openapi3.utils"
 
 export const transformPathItems = compareTransformationFactory((value) => {
   if (typeof value !== 'object' || !value) { return value }
@@ -48,6 +49,27 @@ export const transformPathItems = compareTransformationFactory((value) => {
     }
 
     result[method] = data
+  }
+  
+  return result
+})
+
+export const transformParameterItems = compareTransformationFactory((value, other) => {
+  if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
+  
+  const result: any = { ...value }
+
+  if (("in" in value) && !("style" in value) && ("style" in other)) {
+    const style = getDefaultStyle(value.in)
+    if (style) {
+      result.style = style
+    }
+  }
+
+  if (("style" in result) && ("explode" in value) && ("explode" in other)) {
+    if (result.style === "form") {
+      result.explode = true
+    }
   }
   
   return result

@@ -1,10 +1,14 @@
 import { applyOperation, Operation } from "fast-json-patch"
 import { JsonPath } from "json-crawl"
-import yaml from "js-yaml"
+import YAML from "js-yaml"
 import path from "path"
 import fs from "fs"
 
 import { apiDiff, apiMerge, getKeyValue, buildPath, ComapreOptions, CompareRules } from "../../src"
+
+export const yaml = (strings: TemplateStringsArray): string => {
+  return YAML.load(strings[0]) as string
+}
 
 export class ExampleResource {
   private res: any = {}
@@ -15,7 +19,7 @@ export class ExampleResource {
     const data = fs.readFileSync(resPath, "utf8")
     if (new RegExp(".(yaml|YAML|yml|YML)$", "g").test(filename)) {
       try {
-        this.res = yaml.load(data)
+        this.res = YAML.load(data)
       } catch (e) {
         console.log(e)
       }

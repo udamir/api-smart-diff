@@ -1,6 +1,7 @@
 import type { MapKeysResult, MappingResolver } from "../types"
 import { getStringValue, objectKeys } from "../utils"
 import { mapPathParams } from "./openapi3.utils"
+import { resolveRef } from "../jsonSchema"
 
 export const pathMappingResolver: MappingResolver<string> = (before, after) => {
 
@@ -37,14 +38,16 @@ export const paramMappingResolver: MappingResolver<number> = (before, after, ctx
 
   const pathParamMapping = mapPathParams(ctx)
   const mappedIndex = new Set(after.keys())
-
-  for (let i = 0; i < before.length; i++) {
+  const _before = before.map((b) => resolveRef(b, ctx.before.root))
+  const _after = after.map((a) => resolveRef(a, ctx.after.root))
+  
+  for (let i = 0; i < _before.length; i++) {
     const beforeIn = getStringValue(before[i], "in")
     const beforeName = getStringValue(before[i], "name") ?? ""
-
-    const _afterIndex = after.findIndex((after) => {
-      const afterIn = getStringValue(after, "in")
-      const afterName = getStringValue(after, "name") ?? ""
+    
+    const _afterIndex = _after.findIndex((a) => {
+      const afterIn = getStringValue(a, "in")
+      const afterName = getStringValue(a, "name") ?? ""
 
       // use extra mapping logic for path parameters
       return beforeIn === afterIn && (beforeName === afterName || (beforeIn === "path" && pathParamMapping[beforeName] === afterName))

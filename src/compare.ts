@@ -1,7 +1,7 @@
 import { getNodeRules, syncCrawl, SyncCrawlHook } from "json-crawl"
 
 import type { ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, SourceContext, ContextInput, MergeFactoryResult } from "./types"
-import { changeFactory, convertDiffToMeta, createMergeMeta, getKeyValue, isArray, isObject, objectKeys, typeOf } from "./utils"
+import { changeFactory, convertDiffToMeta, createMergeMeta, getKeyValue, isArray, isNumber, isObject, objectKeys, typeOf } from "./utils"
 import { mapObjectKeysRule, mapArraysKeysRule } from "./mapping"
 import type { Diff, JsonNode, MergeState } from "./types"
 import { DIFF_META_KEY } from "./constants"
@@ -49,6 +49,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
 
     const bkey = key ?? (isArray(bNode) ? +Object.keys(keyMap).pop()! : Object.keys(keyMap).pop())
     const akey = keyMap[bkey]
+    const mkey = isArray(mNode) && isNumber(bkey) ? bkey : akey
 
     // skip if node was removed
     if (skip || !(bkey in keyMap)) { 
@@ -76,21 +77,22 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
         parentMeta[akey] = rootMergeMeta
       }
       // TODO: check akey for arrays
-      return mergedResult(mNode, akey, merged)
+      return mergedResult(mNode, mkey, merged)
     }
 
     // types are different
     if (typeOf(before) !== typeOf(after)) {
       _diffs.push(setMergeMeta(parentMeta, akey, change.replaced(bPath, before, after, ctx)))
-      return mergedResult(mNode, akey, after)
+      return mergedResult(mNode, mkey, after)
     } 
     
     // compare objects or arrays
     if (isObject(before) && isObject(after)) {
       const _nodeDiffs: Diff[] = []
       const merged: any = isArray(before) ? [] : {}
-      mNode[akey] = merged
-      
+
+      mNode[mkey] = merged
+
       const mapKeys = mapping ?? (isArray(before) ? mapArraysKeysRule : mapObjectKeysRule)
       const { added, removed, mapped } = mapKeys(before as any, after as any, ctx)
       const renamed = isArray(before) ? [] : objectKeys(mapped).filter((key) => key !== mapped[key])
@@ -141,8 +143,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
     } 
 
     //TODO: check for rename
-    //  return mergedResult(mNode, akey, after)
-    return mergedResult(mNode, bkey, after)
+    return mergedResult(mNode, mkey, after)
   }
 
   return { diffs: _diffs, hook }

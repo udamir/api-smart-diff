@@ -3,6 +3,12 @@ import { addPatch, ExampleResource } from "../helpers"
 
 const exampleResource = new ExampleResource("petstore.yaml")
 
+// document annotation
+// operation annotation
+// request parameters
+// request body
+// responses
+
 describe("Test openapi 3 diff", () => {
   it("add servers should be non-breaking change", () => {
     const path = ["servers", 2]

@@ -1,60 +1,245 @@
-import { ExampleResource } from "../helpers"
-import { annotation, breaking, DiffAction, nonBreaking } from "../../src"
+import { annotation, breaking, compareOpenApi, DiffAction, nonBreaking } from "../../src"
+import { yaml } from "../helpers"
 
-const exampleResource = new ExampleResource("petstore.yaml")
+const metaKey = Symbol('diff')
 
 describe("Test openapi 3 parameters compare", () => {
 
-  it("should not add rename diff on query parameter name change", () => {
-    const after = exampleResource.clone()
-    after.paths["/user/login"].get.parameters[0].name = "login"
+  it("should add rename diff on path parameter name change", () => {
+    const before = yaml`
+      paths:
+        "/pet/{petId}":
+          get:
+            parameters:
+              - name: petId
+                in: path
+                schema:
+                  type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet/{id}":
+          get:
+            parameters:
+              - name: id
+                in: path
+                schema:
+                  type: string
+    `
 
-    const merged = exampleResource.merge(after)
-    expect(merged.paths["/user/login"].get.$diff).toMatchObject({ parameters: { array: {
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+
+    expect(merged.paths[metaKey]).toMatchObject({ 
+      "/pet/{id}": { action: DiffAction.rename, type: nonBreaking, replaced: "/pet/{petId}" },
+    })
+    expect(merged.paths["/pet/{id}"].get.parameters[0][metaKey]).toMatchObject({ 
+      name: { action: DiffAction.replace, type: nonBreaking, replaced: "petId" },
+    })
+  })
+
+  it("should not add rename diff on query parameter name change", () => {
+    const before = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              schema:
+                type: array
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: stat
+              in: query
+              schema:
+                type: array
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+
+    expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
       0: { action: DiffAction.remove, type: breaking },
-      2: { action: DiffAction.add, type: nonBreaking }
+      1: { action: DiffAction.add, type: nonBreaking }
+    }}})
+  })
+
+  it("should be add diff on query parameter add", () => {
+    const before = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              schema:
+                type: array
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: stat
+              in: query
+              schema:
+                type: string
+            - name: stat2
+              in: query
+              required: true
+              schema:
+                type: string
+            - name: stat3
+              in: query
+              required: true
+              schema:
+                type: string
+                default: 0
+            - name: status
+              in: query
+              schema:
+                type: array
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(3)
+
+    expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
+      1: { action: DiffAction.add, type: nonBreaking },
+      2: { action: DiffAction.add, type: breaking },
+      3: { action: DiffAction.add, type: nonBreaking },
     }}})
   })
 
   it("should classify operation parameter schema change", () => {
-    const after = exampleResource.clone()
-    after.paths["/pet/findByStatus"].get.parameters[0].schema.description = "Status list"
+    const before = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              schema:
+                type: array
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              description: Status values that need to be considered for filter
+              required: true
+              style: simple
+              schema:
+                type: array
+    `
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
-    const merged = exampleResource.merge(after)
-    expect(merged.paths["/pet/findByStatus"].get.parameters[0].schema.$diff).toMatchObject({ description: { action: DiffAction.add, type: annotation } })
+    expect(diffs.length).toEqual(3)
+
+    expect(merged.paths["/pet/findByStatus"].get.parameters[0][metaKey]).toMatchObject({ 
+      description: { action: DiffAction.add, type: annotation },
+      required: { action: DiffAction.add, type: breaking },
+      style: { action: DiffAction.replace, replaced: "form", type: breaking }
+    })
   })
-  
-  it("should classify as breaking change of query param style", () => {
-    const after = exampleResource.clone()
-    after.paths["/pet/findByStatus"].get.parameters[0].style = "simple"
-    
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: breaking }])
-  }) 
 
-  it("should classify as annotation remove of query param style 'form'", () => {
-    const after = exampleResource.clone()
-    delete after.paths["/pet/findByStatus"].get.parameters[0].style
+  it("should find change when remove of query param style 'form'", () => {
+    const before = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              style: form
+              schema:
+                type: array
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - $ref: "#/components/parameters/status"
+      components:
+        parameters:
+          status:
+            name: status
+            in: query
+            schema:
+              type: array
+    `
 
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: annotation }])
+    const { diffs } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(1)
   }) 
 
   it("should classify as breaking change of query param type from array to string", () => {
-    const after = exampleResource.clone()
-    after.paths["/pet/findByStatus"].get.parameters[0].schema.type = "string"
-    delete after.paths["/pet/findByStatus"].get.parameters[0].schema.items
+    const before = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              style: form
+              schema:
+                type: array
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              schema:
+                type: string
+    `
 
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: nonBreaking }, { type: breaking }])
+    const { diffs } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(1)
+    expect(diffs).toMatchObject([{ type: breaking }])
   }) 
 
   it("should classify as non-breaking change of query param type from string to array", () => {
-    const after = exampleResource.clone()
-    after.paths["/user/login"].get.parameters[0].schema.type = "array"
-    after.paths["/user/login"].get.parameters[0].schema.items = { type: "string" }
+    const before = yaml`
+    paths:
+      "/pet/findByStatus":
+        get:
+          parameters:
+          - name: status
+            in: query
+            schema:
+              type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            parameters:
+            - name: status
+              in: query
+              schema:
+                type: array
+    `
 
-    const diffs = exampleResource.diff(after)
-    expect(diffs).toMatchObject([{ type: nonBreaking }, { type: nonBreaking }])
+    const { diffs } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(1)
+    expect(diffs).toMatchObject([{ type: nonBreaking }])
   }) 
 })

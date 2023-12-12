@@ -1,20 +1,24 @@
 import { 
   globalSecurityClassifyRule, globalSecurityItemClassifyRule, operationSecurityClassifyRule, 
-  operationSecurityItemClassifyRule, paramSchemaTypeClassifyRule, parameterExplodeClassifyRule, 
+  operationSecurityItemClassifyRule, paramClassifyRule, paramSchemaTypeClassifyRule, parameterExplodeClassifyRule, 
   parameterNameClassifyRule, parameterRequiredClassifyRule, parameterStyleClassifyRule
 } from "./openapi3.classify"
-import { addNonBreaking, allAnnotation, allBreaking, allDeprecated, allNonBreaking, breaking, nonBreaking, unclassified } from "../constants"
+import { 
+  addNonBreaking, allAnnotation, allBreaking, allDeprecated, allNonBreaking, breaking, 
+  nonBreaking, unclassified
+} from "../constants"
 import { contentMediaTypeMappingResolver, paramMappingResolver, pathMappingResolver } from "./openapi3.mapping"
-import { breakingIfAfterTrue, jsonSchemaRules } from "../jsonSchema"
+import { breakingIfAfterTrue, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
+import { transformParameterItems, transformPathItems } from "./openapi3.transform"
 import type { OpenApi3RulesOptions } from "./openapi3.types"
-import { transformPathItems } from "./openapi3.transform"
-import { reverseRules } from "./openapi3.utils"
+import { openApiSchemaRules } from "./openapi3.schema"
+import { isResponsePath } from "./openapi3.utils"
 import type { CompareRules } from "../types"
 
 export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = {}): CompareRules => {
-
-  const requestSchema = jsonSchemaRules({ notMergeAllOf })
-  const responseSchema = reverseRules(jsonSchemaRules({ notMergeAllOf }))
+  const requestSchemaRules = openApiSchemaRules(jsonSchemaRules({ notMergeAllOf }))
+  const responseSchemaRules = openApiSchemaRules(jsonSchemaRules({ notMergeAllOf }), true)
+  const refsCompareResolver = createRefsCompareResolver()
 
   const serversRules: CompareRules = {
     $: allAnnotation,
@@ -41,11 +45,13 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
     $: [nonBreaking, breaking, breaking],
     mapping: paramMappingResolver,
     "/*": {
-      $: [nonBreaking, breaking, breaking],
+      compare: refsCompareResolver,
+      transform: [transformParameterItems],
+      $: paramClassifyRule,
       "/name": { $: parameterNameClassifyRule },
       "/in": { $: [nonBreaking, breaking, breaking] },
       "/schema": () => ({
-        ...requestSchema,
+        ...requestSchemaRules,
         $: allBreaking,
         "/type": { $: paramSchemaTypeClassifyRule }
       }),
@@ -61,6 +67,7 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
     $: [nonBreaking, breaking, breaking],
     "/*": {
       $: [nonBreaking, breaking, breaking],
+      compare: refsCompareResolver,
       "/description": { $: allAnnotation },
       "/required": { $: [breaking, nonBreaking, breakingIfAfterTrue] },
       "/deprecated": { $: allDeprecated },
@@ -78,25 +85,29 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
     },
   }
   
-  const contentRules = (response = false): CompareRules => ({
+  const contentRules: CompareRules = {
     $: [nonBreaking, breaking, breaking],
     mapping: contentMediaTypeMappingResolver,
     "/*": {
       $: [nonBreaking, breaking, unclassified],
-      "/schema": () => ({
-        ...response ? responseSchema : requestSchema,
+      "/schema": ({ path }) => ({
+        ...isResponsePath(path) ? responseSchemaRules : requestSchemaRules,
         $: allBreaking
       }),
       "/example": { $: allAnnotation },
-      "/examples": { $: allAnnotation },
+      "/examples": { 
+        $: allAnnotation,
+        compare: refsCompareResolver,
+      },
       "/encoding": encodingRules,
     },
-  })
+  }
   
   const requestBodiesRules: CompareRules = {
     $: [nonBreaking, breaking, breaking],
+    compare: refsCompareResolver,
     "/description": { $: allAnnotation },
-    "/content": contentRules(),
+    "/content": contentRules,
     "/required": { $: [breaking, nonBreaking, breakingIfAfterTrue] },
   }
   
@@ -104,13 +115,14 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
     $: [nonBreaking, breaking, breaking],
     "/*": {
       $: [nonBreaking, breaking, breaking],
+      compare: refsCompareResolver,
       "/description": { $: allAnnotation },
       "/headers": headersRules,
-      "/content": contentRules(true),
+      "/content": contentRules,
     },
   }  
 
-  const rules = {
+  const rules: CompareRules = {
     "/openapi": { $: allAnnotation }, 
     "/info": {
       $: allAnnotation,
@@ -132,6 +144,7 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
       "/*": {
         $: [nonBreaking, breaking, nonBreaking],
         transform: [transformPathItems],
+        compare: refsCompareResolver,
         "/summary": { $: allAnnotation },
         "/description": { $: allAnnotation },
         "/*": {
@@ -143,6 +156,11 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
           "/operationId": { $: allAnnotation },
           "/parameters": parametersRules,
           "/requestBody": requestBodiesRules,
+          "/callbacks": {
+            "/*": {
+              compare: refsCompareResolver,
+            }
+          },
           "/responses": responsesRules,
           "/deprecated": { $: allDeprecated },
           "/security": {
@@ -160,7 +178,7 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
       "/schemas": {
         $: [nonBreaking, breaking, breaking],
         "/*": () => ({
-          ...requestSchema,
+          ...requestSchemaRules,
           $: addNonBreaking
         })
       },

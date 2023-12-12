@@ -1,6 +1,6 @@
-import { getParentContext, getKeyValue, isNotEmptyArray } from "../utils"
+import { getParentContext, getKeyValue, isNotEmptyArray, isExist } from "../utils"
 import { emptySecurity, includeSecurity } from "./openapi3.utils"
-import { annotation, breaking, nonBreaking } from "../constants"
+import { annotation, breaking, nonBreaking, unclassified } from "../constants"
 import { breakingIfAfterTrue } from "../jsonSchema"
 import type { ClassifyRule } from "../types"
 
@@ -39,6 +39,12 @@ export const paramSchemaTypeClassifyRule: ClassifyRule = [
     }
     return breaking
   }
+]
+
+export const paramClassifyRule: ClassifyRule = [
+  ({ after }) => getKeyValue(after.value, "required") && !isExist(getKeyValue(after.value, "schema", "default")) ? breaking : nonBreaking,
+  breaking,
+  unclassified
 ]
 
 export const globalSecurityClassifyRule: ClassifyRule = [

@@ -1,11 +1,12 @@
 import { getNodeRules } from "json-crawl"
 import { isRefNode } from "allof-merge"
 
-import { buildPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
+import { buildPath, changeDiffsPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
 import { changeFactory, convertDiffToMeta, createMergeMeta, isArray } from "../utils"
-import type { CompareResolver, CompareResult, Diff } from "../types"
+import type { CompareResultCache } from "./jsonSchema.types"
 import { compareJsonSchema } from "./jsonSchema.compare"
-import { createChildContext } from "../compare"
+import { compare, createChildContext } from "../compare"
+import type { CompareResolver, Diff } from "../types"
 import { DIFF_META_KEY } from "../constants"
 
 export const combinaryCompareResolver: CompareResolver = (ctx) => {
@@ -82,7 +83,7 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
 }
 
 export const createRefsCompareResolver = (): CompareResolver => {
-  const compareCache = new Map<string, CompareResult>()
+  const compareCache = new Map<string, CompareResultCache>()
   const aRefs: Record<string, string[]> = {}
   const bRefs: Record<string, string[]> = {}
 
@@ -116,7 +117,8 @@ export const createRefsCompareResolver = (): CompareResolver => {
       compareRefsId = getCompareId(bRef, aRef)
       
       if (compareCache.has(compareRefsId)) {
-        return compareCache.get(compareRefsId)
+        const { path, diffs, ...rest } = compareCache.get(compareRefsId)!
+        return { ...rest, diffs: changeDiffsPath(diffs, path, before.path) }
       }
     }
       
@@ -129,14 +131,14 @@ export const createRefsCompareResolver = (): CompareResolver => {
     }
 
     // compare content
-    const result = compareJsonSchema(_before, _after, options, {
+    const result = compare(_before, _after, options, {
       before: { jsonPath: before.path, source: before.root }, 
       after: { jsonPath: after.path, source: after.root }, 
     })
 
     // save compare result
     if (bRef && aRef) {
-      compareCache.set(compareRefsId, result)
+      compareCache.set(compareRefsId, { ...result, path: before.path })
     }
 
     return result
