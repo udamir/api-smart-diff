@@ -7,17 +7,22 @@ import {
   addNonBreaking, allAnnotation, allBreaking, allDeprecated, allNonBreaking, breaking, 
   nonBreaking, unclassified
 } from "../constants"
+import { 
+  documentChangeAnnotation, operationChangeAnnotation, operationSecurityChangeAnnotation, parameterChangeAnnotation, 
+  pathMethodChangeAnnotation 
+} from "./openapi3.annotate"
+import { transformOperation, transformParameterItems, transformPathItems, transformPaths } from "./openapi3.transform"
 import { contentMediaTypeMappingResolver, paramMappingResolver, pathMappingResolver } from "./openapi3.mapping"
 import { breakingIfAfterTrue, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
-import { transformParameterItems, transformPathItems } from "./openapi3.transform"
-import { parameterChangeAnnotation } from "./openapi3.annotate"
 import type { OpenApi3RulesOptions } from "./openapi3.types"
 import type { ClassifyRule, CompareRules } from "../types"
 import { openApiSchemaRules } from "./openapi3.schema"
+import { enumMappingResolver } from "../jsonSchema"
 import { isResponsePath } from "./openapi3.utils"
 
 const paramRule = (classify: ClassifyRule) => ({ $: classify, annotate: parameterChangeAnnotation })
-
+const documentAnnotationRule: CompareRules = { $: allAnnotation, annotate: documentChangeAnnotation }
+const operationAnnotationRule: CompareRules = { $: allAnnotation, annotate: operationChangeAnnotation }
 
 export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = {}): CompareRules => {
   const requestSchemaRules = openApiSchemaRules(jsonSchemaRules({ notMergeAllOf }))
@@ -26,20 +31,15 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
 
   const serversRules: CompareRules = {
     $: allAnnotation,
+    "/**": {
+      $: allAnnotation,
+    },
     "/*": {
-      $: [nonBreaking, breaking, breaking],
-      "/url": { $: [nonBreaking, breaking, breaking] },
-      "/description": { $: allAnnotation },
       "/variables": {
-        $: [nonBreaking, breaking, breaking],
         "/*": {
-          $: [nonBreaking, breaking, breaking],
           "/enum": {
-            $: [nonBreaking, breaking, breaking],
-            "/*": { $: [nonBreaking, breaking, breaking] },
+            mapping: enumMappingResolver,
           },
-          "/default": { $: [nonBreaking, nonBreaking, breaking] },
-          "/description": { $: allAnnotation },
         },
       },
     },
@@ -58,7 +58,10 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
       "/schema": () => ({
         ...requestSchemaRules,
         $: allBreaking,
-        "/type": { $: paramSchemaTypeClassifyRule }
+        "/type": { 
+          ...requestSchemaRules["/type"],
+          $: paramSchemaTypeClassifyRule
+        }
       }),
       "/explode": paramRule(parameterExplodeClassifyRule),
       "/style": paramRule(parameterStyleClassifyRule),
@@ -128,37 +131,31 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
   }  
 
   const rules: CompareRules = {
-    "/openapi": { $: allAnnotation }, 
+    "/openapi": documentAnnotationRule, 
     "/info": {
-      $: allAnnotation,
-      "/title": { $: allAnnotation },
-      "/description": { $: allAnnotation },
-      "/termsOfService": { $: allAnnotation },
-      "/contact": { $: allAnnotation },
-      "/licence": {
-        $: [nonBreaking, breaking, breaking],
-        "/name": { $: [breaking, breaking, breaking] },
-        "/url": { $: [breaking, nonBreaking, nonBreaking] },
-      },
-      "/version": { $: allAnnotation },
+      ...documentAnnotationRule,
+      "/**": documentAnnotationRule
     },
     "/servers": serversRules,
     "/paths": {
-      $: [nonBreaking, breaking, breaking],
+      transform: [transformPaths],
       mapping: pathMappingResolver,
       "/*": {
-        $: [nonBreaking, breaking, nonBreaking],
+        $: [unclassified, unclassified, nonBreaking],
         transform: [transformPathItems],
         compare: refsCompareResolver,
         "/summary": { $: allAnnotation },
         "/description": { $: allAnnotation },
         "/*": {
-          $: [nonBreaking, breaking, breaking],
-          "/tags": { $: allAnnotation },
-          "/summary": { $: allAnnotation },
-          "/description": { $: allAnnotation },
-          "/externalDocs": { $: allAnnotation },
-          "/operationId": { $: allAnnotation },
+          annotate: pathMethodChangeAnnotation,
+          $: [nonBreaking, breaking, unclassified],
+          transform: [transformOperation],
+          "/*": operationAnnotationRule,
+          "/tags": {
+            ...operationAnnotationRule,
+            mapping: enumMappingResolver,
+            "/*": operationAnnotationRule
+          },
           "/parameters": parametersRules,
           "/requestBody": requestBodiesRules,
           "/callbacks": {
@@ -169,8 +166,18 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
           "/responses": responsesRules,
           "/deprecated": { $: allDeprecated },
           "/security": {
+            "/**": {
+              annotate: operationSecurityChangeAnnotation,
+            },
             $: operationSecurityClassifyRule,
-            "/*": { $: operationSecurityItemClassifyRule },
+            "/*": { 
+              $: operationSecurityItemClassifyRule,
+              "/*": {
+                $: addNonBreaking,
+                mapping: enumMappingResolver,
+                "/*": { $: addNonBreaking }
+              }
+            },
           },
           "/servers": serversRules,
         },

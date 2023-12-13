@@ -1,4 +1,6 @@
-import { compareTransformationFactory, isKey, objectKeys } from "../utils"
+import { compareTransformationFactory, isKey, isObject, objectKeys, setKeyValue } from "../utils"
+import type { ComapreContext, CompareTransformResolver } from "../types"
+import { pathMappingResolver } from "./openapi3.mapping"
 import { getDefaultStyle } from "./openapi3.utils"
 
 export const transformPathItems = compareTransformationFactory((value) => {
@@ -53,6 +55,26 @@ export const transformPathItems = compareTransformationFactory((value) => {
   
   return result
 })
+
+export const transformOperation = compareTransformationFactory((value, other) => {
+  if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
+  
+  if (!("tags" in value) && ("tags" in other)) {
+    return { ...value, tags: [] }
+  }
+  
+  return value
+})
+
+export const transformPaths: CompareTransformResolver = (before, after) => {
+  if (!isObject(before) || !isObject(after)) { return [before, after] }
+  
+  const { added, removed } = pathMappingResolver(before, after, {} as ComapreContext)
+  return [
+    added.reduce((obj, key) => setKeyValue(obj, key, { [key]: {} }), { ...before }),
+    removed.reduce((obj, key) => setKeyValue(obj, key, { [key]: {} }), { ...after })
+  ]
+}
 
 export const transformParameterItems = compareTransformationFactory((value, other) => {
   if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }

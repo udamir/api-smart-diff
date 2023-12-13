@@ -4,17 +4,16 @@ import { yaml } from "../helpers"
 const metaKey = Symbol('diff')
 
 describe("Test openapi 3 parameters compare", () => {
-
   it("should add rename diff on path parameter name change", () => {
     const before = yaml`
       paths:
         "/pet/{petId}":
-          get:
-            parameters:
-              - name: petId
-                in: path
-                schema:
-                  type: string
+          get: {}
+          parameters:
+            - name: petId
+              in: path
+              schema:
+                type: string
     `
     const after = yaml`
       paths:
@@ -30,6 +29,9 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
+    expect(diffs[1]).toHaveProperty("description")
+    expect(diffs[1].description).not.toEqual("")
+    expect(diffs[1].type).not.toEqual("unclassified")
 
     expect(merged.paths[metaKey]).toMatchObject({ 
       "/pet/{id}": { action: DiffAction.rename, type: nonBreaking, replaced: "/pet/{petId}" },
@@ -64,6 +66,11 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
       0: { action: DiffAction.remove, type: breaking },
@@ -111,6 +118,11 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
       1: { action: DiffAction.add, type: nonBreaking },
@@ -146,6 +158,11 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(merged.paths["/pet/findByStatus"].get.parameters[0][metaKey]).toMatchObject({ 
       description: { action: DiffAction.add, type: annotation },
@@ -210,6 +227,11 @@ describe("Test openapi 3 parameters compare", () => {
     `
 
     const { diffs } = compareOpenApi(before, after, { metaKey })
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(diffs.length).toEqual(1)
     expect(diffs).toMatchObject([{ type: breaking }])
@@ -238,6 +260,11 @@ describe("Test openapi 3 parameters compare", () => {
     `
 
     const { diffs } = compareOpenApi(before, after, { metaKey })
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
 
     expect(diffs.length).toEqual(1)
     expect(diffs).toMatchObject([{ type: nonBreaking }])

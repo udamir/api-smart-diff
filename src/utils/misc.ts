@@ -13,6 +13,11 @@ export const objectKeys = <T extends {}>(value: T): (keyof T)[] => {
   return Object.keys(value) as (keyof T)[]
 }
 
+export const setKeyValue = (obj: Record<string | number, unknown>, key: string | number, value: unknown): Record<string | number, unknown> => {
+  obj[key] = value
+  return obj
+}
+
 export const filterObj = <T extends {}>(value: T, func: (key: number | string | symbol, obj: T) => boolean ): Partial<T> => {
   const result: Partial<T> = {}
   for (const key of objectKeys(value)) {

@@ -4,8 +4,6 @@ import { addPatch, ExampleResource } from "../helpers"
 const exampleResource = new ExampleResource("petstore.yaml")
 
 // document annotation
-// operation annotation
-// request parameters
 // request body
 // responses
 
