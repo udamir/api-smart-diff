@@ -1,7 +1,7 @@
 
 import { JsonPath } from "json-crawl"
 
-import type { ComapreOptions, CompareResult, DiffContext } from "../types"
+import type { ComapreOptions, CompareResult, DiffContext, TemplateFunc } from "../types"
 import { jsonSchemaTypes } from "./jsonSchema.consts"
 
 export type JsonSchemaNodeType = typeof jsonSchemaTypes[number]
@@ -10,11 +10,9 @@ export type JsonSchemaRulesOptions = {
   notMergeAllOf?: boolean
 }
 
-export type ChangeAnnotation = [string, string, string]
-
 export type AnnotationContext = DiffContext & {
-  action: number
-  target: string
+  t: TemplateFunc
+  target: string | undefined
 }
 
 export type AllOfNode = {

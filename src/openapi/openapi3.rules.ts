@@ -10,10 +10,14 @@ import {
 import { contentMediaTypeMappingResolver, paramMappingResolver, pathMappingResolver } from "./openapi3.mapping"
 import { breakingIfAfterTrue, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
 import { transformParameterItems, transformPathItems } from "./openapi3.transform"
+import { parameterChangeAnnotation } from "./openapi3.annotate"
 import type { OpenApi3RulesOptions } from "./openapi3.types"
+import type { ClassifyRule, CompareRules } from "../types"
 import { openApiSchemaRules } from "./openapi3.schema"
 import { isResponsePath } from "./openapi3.utils"
-import type { CompareRules } from "../types"
+
+const paramRule = (classify: ClassifyRule) => ({ $: classify, annotate: parameterChangeAnnotation })
+
 
 export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = {}): CompareRules => {
   const requestSchemaRules = openApiSchemaRules(jsonSchemaRules({ notMergeAllOf }))
@@ -45,21 +49,22 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
     $: [nonBreaking, breaking, breaking],
     mapping: paramMappingResolver,
     "/*": {
+      annotate: parameterChangeAnnotation,
       compare: refsCompareResolver,
       transform: [transformParameterItems],
       $: paramClassifyRule,
-      "/name": { $: parameterNameClassifyRule },
-      "/in": { $: [nonBreaking, breaking, breaking] },
+      "/name": paramRule(parameterNameClassifyRule),
+      "/in": paramRule([nonBreaking, breaking, breaking]),
       "/schema": () => ({
         ...requestSchemaRules,
         $: allBreaking,
         "/type": { $: paramSchemaTypeClassifyRule }
       }),
-      "/explode": { $: parameterExplodeClassifyRule },
-      "/style": { $: parameterStyleClassifyRule },
-      "/description": { $: allAnnotation },
-      "/required": { $: parameterRequiredClassifyRule },
-      "/deprecated": { $: allDeprecated },
+      "/explode": paramRule(parameterExplodeClassifyRule),
+      "/style": paramRule(parameterStyleClassifyRule),
+      "/description": paramRule(allAnnotation),
+      "/required": paramRule(parameterRequiredClassifyRule),
+      "/deprecated": paramRule(allDeprecated),
     },
   }
   

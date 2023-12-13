@@ -114,7 +114,11 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
         annotate: parentKeyChangeAnnotation
       }),
     },
-    "/additionalProperties": () => ({ ...rules, $: allNonBreaking, annotate: keyChangeAnnotation }),
+    "/additionalProperties": () => ({ 
+      ...rules, 
+      $: allNonBreaking, 
+      annotate: keyChangeAnnotation
+    }),
     "/patternProperties": {
       "/*": () => ({ 
         ...rules, 

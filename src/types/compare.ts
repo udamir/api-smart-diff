@@ -53,6 +53,10 @@ export type ComapreOptions = {
       [key: string]: unknown
     }
   }
+
+  dictionary?: {
+    [name: string]: Record<string, string>
+  }
 }
 
 export type FormatDiffFunc<T extends Diff = Diff> = (diff: Diff, ctx: ComapreContext) => T

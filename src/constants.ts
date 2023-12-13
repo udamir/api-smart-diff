@@ -7,7 +7,6 @@ export const DiffAction = {
   remove: "remove",
   replace: "replace",
   rename: "rename",
-  test: "test"
 } as const
 
 export const ClassifierType = {

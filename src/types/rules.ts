@@ -51,3 +51,5 @@ export interface MapKeysResult<T extends string | number> {
   removed: Array<T>
   mapped: Record<T, T>
 }
+
+export type TemplateFunc = (key: string, params?: Record<string | number, unknown>) => string
