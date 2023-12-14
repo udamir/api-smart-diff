@@ -58,17 +58,25 @@ export const transformPathItems = compareTransformationFactory((value) => {
 
 export const transformOperation = compareTransformationFactory((value, other) => {
   if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
+  const result: any = { ...value }
   
+  // add empty tags array
   if (!("tags" in value) && ("tags" in other)) {
-    return { ...value, tags: [] }
+    result.tags = []
   }
+
+  // remvoe deprecated: false
+  if ("deprecated" in result && !result.deprecated) {
+    delete result.deprecated
+  } 
   
-  return value
+  return result
 })
 
 export const transformPaths: CompareTransformResolver = (before, after) => {
   if (!isObject(before) || !isObject(after)) { return [before, after] }
   
+  // add empty paths (diff should be in methods)
   const { added, removed } = pathMappingResolver(before, after, {} as ComapreContext)
   return [
     added.reduce((obj, key) => setKeyValue(obj, key, { [key]: {} }), { ...before }),
@@ -76,11 +84,12 @@ export const transformPaths: CompareTransformResolver = (before, after) => {
   ]
 }
 
-export const transformParameterItems = compareTransformationFactory((value, other) => {
+export const transformParameterItem = compareTransformationFactory((value, other) => {
   if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
   
   const result: any = { ...value }
 
+  // set default value for style
   if (("in" in value) && !("style" in value) && ("style" in other)) {
     const style = getDefaultStyle(value.in)
     if (style) {
@@ -88,11 +97,22 @@ export const transformParameterItems = compareTransformationFactory((value, othe
     }
   }
 
+  // set default value for explode
   if (("style" in result) && ("explode" in value) && ("explode" in other)) {
     if (result.style === "form") {
       result.explode = true
     }
   }
+
+  // remove deprecated: false
+  if ("deprecated" in result && !result.deprecated) {
+    delete result.deprecated
+  } 
+
+  // remove required: false
+  if ("required" in result && !result.required) {
+    delete result.required
+  } 
   
   return result
 })

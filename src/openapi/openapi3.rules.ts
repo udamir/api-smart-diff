@@ -8,10 +8,13 @@ import {
   nonBreaking, unclassified
 } from "../constants"
 import { 
-  documentChangeAnnotation, operationChangeAnnotation, operationSecurityChangeAnnotation, parameterChangeAnnotation, 
-  pathMethodChangeAnnotation 
+  contentChangeAnnotation,
+  documentChangeAnnotation, encodingChangeAnnotation, operationChangeAnnotation, operationSecurityChangeAnnotation, parameterChangeAnnotation, 
+  pathMethodChangeAnnotation, 
+  requestBodyChangeAnnotation,
+  responseChangeAnnotation
 } from "./openapi3.annotate"
-import { transformOperation, transformParameterItems, transformPathItems, transformPaths } from "./openapi3.transform"
+import { transformOperation, transformParameterItem, transformPathItems, transformPaths } from "./openapi3.transform"
 import { contentMediaTypeMappingResolver, paramMappingResolver, pathMappingResolver } from "./openapi3.mapping"
 import { breakingIfAfterTrue, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
 import type { OpenApi3RulesOptions } from "./openapi3.types"
@@ -46,12 +49,10 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
   }
   
   const parametersRules: CompareRules = {
-    $: [nonBreaking, breaking, breaking],
-    mapping: paramMappingResolver,
     "/*": {
       annotate: parameterChangeAnnotation,
       compare: refsCompareResolver,
-      transform: [transformParameterItems],
+      transform: [transformParameterItem],
       $: paramClassifyRule,
       "/name": paramRule(parameterNameClassifyRule),
       "/in": paramRule([nonBreaking, breaking, breaking]),
@@ -83,7 +84,8 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
   }
   
   const encodingRules: CompareRules = {
-    $: [nonBreaking, nonBreaking, nonBreaking],
+    annotate: encodingChangeAnnotation,
+    $: [breaking, nonBreaking, breaking],
     "/*": {
       "/contentType": { $: [nonBreaking, breaking, breaking] },
       "/headers": headersRules,
@@ -91,13 +93,21 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
       "/explode": { $: [nonBreaking, breaking, breaking] },
       "/allowReserved": { $: [nonBreaking, breaking, breaking] },
     },
+    "/**": {
+      annotate: encodingChangeAnnotation,
+    }
   }
   
   const contentRules: CompareRules = {
+    annotate: contentChangeAnnotation,
     $: [nonBreaking, breaking, breaking],
     mapping: contentMediaTypeMappingResolver,
     "/*": {
-      $: [nonBreaking, breaking, unclassified],
+      annotate: contentChangeAnnotation,
+      "/*": {
+        annotate: contentChangeAnnotation,
+      },
+      $: [nonBreaking, breaking, nonBreaking],
       "/schema": ({ path }) => ({
         ...isResponsePath(path) ? responseSchemaRules : requestSchemaRules,
         $: allBreaking
@@ -112,6 +122,9 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
   }
   
   const requestBodiesRules: CompareRules = {
+    "/*": {
+      annotate: requestBodyChangeAnnotation,
+    },
     $: [nonBreaking, breaking, breaking],
     compare: refsCompareResolver,
     "/description": { $: allAnnotation },
@@ -122,6 +135,10 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
   const responsesRules: CompareRules = {
     $: [nonBreaking, breaking, breaking],
     "/*": {
+      annotate: responseChangeAnnotation,
+      "/*": {
+        annotate: responseChangeAnnotation,
+      },
       $: [nonBreaking, breaking, breaking],
       compare: refsCompareResolver,
       "/description": { $: allAnnotation },
@@ -156,7 +173,11 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
             mapping: enumMappingResolver,
             "/*": operationAnnotationRule
           },
-          "/parameters": parametersRules,
+          "/parameters": {
+            ...parametersRules,
+            $: [nonBreaking, breaking, breaking],
+            mapping: paramMappingResolver,
+          },
           "/requestBody": requestBodiesRules,
           "/callbacks": {
             "/*": {
@@ -182,7 +203,11 @@ export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = 
           "/servers": serversRules,
         },
         "/servers": serversRules,
-        "/parameters": parametersRules,
+        "/parameters": {
+          ...parametersRules,
+          $: [nonBreaking, breaking, breaking],
+          mapping: paramMappingResolver,
+        }
       },
     },
     "/components": {

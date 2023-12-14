@@ -62,25 +62,25 @@ const getDiffContext = (action: string, ctx: ComapreContext): AnnotationContext 
   }
 }
 
-export const annotationChange: ChangeAnnotationResolver = (diff, ctx) => {
+export const schemaAnnotationChange: ChangeAnnotationResolver = (diff, ctx) => {
   const { t, key, target } = getDiffContext(diff.action, ctx)
 
   return t(diff.action, { text: t("annotation", { key }), target })
 }
 
-export const exampleChange: ChangeAnnotationResolver = (diff, ctx) => {
+export const schemaExampleChange: ChangeAnnotationResolver = (diff, ctx) => {
   const { t, target } = getDiffContext(diff.action, ctx)
 
   return t(diff.action, { text: t("annotation", { key: "example" }), target })
 }
 
-export const validationChange: ChangeAnnotationResolver = (diff, ctx) => {
+export const schemaValidationChange: ChangeAnnotationResolver = (diff, ctx) => {
   const { key, t, target } = getDiffContext(diff.action, ctx)
 
   return t(diff.action, { text: t("validation", { key }), target })
 }
 
-export const statusChange: ChangeAnnotationResolver = (diff, ctx) => {
+export const schemaStatusChange: ChangeAnnotationResolver = (diff, ctx) => {
   const { t, key, target } = getDiffContext(diff.action, ctx)
 
   if (ctx.after.value) {
@@ -91,7 +91,7 @@ export const statusChange: ChangeAnnotationResolver = (diff, ctx) => {
   return ""
 }
 
-export const keyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
+export const jsonSchemaKeyChange: ChangeAnnotationResolver = (diff, ctx) => {
   const { t, key, target } = getDiffContext(diff.action, ctx)
 
   if (isNumber(key)) { return "" }
@@ -99,33 +99,31 @@ export const keyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
   return t(diff.action, { target, text: t(key) })
 }
 
-export const parentKeyChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
+export const schemaParentKeyChange: ChangeAnnotationResolver = (diff, ctx) => {
   const { key, path, target, t } = getDiffContext(diff.action, ctx)
-  const _key = path.length > 1 ? path[path.length-2] : ""
-  const _target = getTarget(path.slice(0, -1))
-  switch (_key) {
+  const parentKey = path.length > 1 ? path[path.length-2] : ""
+  const parentTarget = getTarget(path.slice(0, -1))
+  switch (parentKey) {
     case "enum": 
       return t("replace", { text: t("enum"), target })
     case "properties": 
-      return isString(key) ? t(diff.action, { text: t("property", { key }), target: _target }) : "" 
+      return isString(key) ? t(diff.action, { text: t("property", { key }), target: parentTarget }) : "" 
     case "items": 
-      return isNumber(key) ? t(diff.action, { text: t("arratItem", { key }), target: _target }) : "" 
+      return isNumber(key) ? t(diff.action, { text: t("arratItem", { key }), target: parentTarget }) : "" 
     case "patternProperties": 
-      return isString(key) ? t(diff.action, { text: t("patternProperty", { key }), target: _target}) : "" 
+      return isString(key) ? t(diff.action, { text: t("patternProperty", { key }), target: parentTarget}) : "" 
     case "oneOf": case "anyOf": case "allOf": 
-      return t(diff.action, { text: t(`${_key}Item`), target })
+      return t(diff.action, { text: t(`${parentKey}Item`), target })
   }
   return ""
 }
 
-export const requiredChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
+export const schemaRequiredChange: ChangeAnnotationResolver = (diff, ctx) => {
   const { path, target, t, value } = getDiffContext(diff.action, ctx)
   if (!isString(value)) { return "" }
 
   const key = path.length > 1 ? path[path.length-2] : ""
-  const _target = target ? `${target}.${value}` : value
-  switch (key) {
-    case "required": return isString(value) ? t(diff.action, { text: t("status", { key }), target: _target }) : ""
-  }
-  return ""
+  const childTarget = target ? `${target}.${value}` : value
+ 
+  return t(diff.action, { text: t("status", { key }), target: childTarget })
 }

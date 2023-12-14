@@ -88,7 +88,7 @@ export const contentMediaTypeMappingResolver: MappingResolver<string> = (before,
       return true
     })
     
-    if (_afterIndex < 0) {
+    if (_afterIndex < 0 || !mappedIndex.has(_afterIndex)) {
       // removed item
       result.removed.push(beforeKeys[i])
     } else {

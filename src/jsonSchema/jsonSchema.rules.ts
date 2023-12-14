@@ -3,8 +3,8 @@ import {
   onlyAddBreaking, allDeprecated, allNonBreaking, unclassified,
 } from "../constants"
 import { 
-  annotationChange, exampleChange, keyChangeAnnotation, parentKeyChangeAnnotation,
-  requiredChangeAnnotation, statusChange, validationChange
+  schemaAnnotationChange, schemaExampleChange, jsonSchemaKeyChange, schemaParentKeyChange,
+  schemaRequiredChange, schemaStatusChange, schemaValidationChange
 } from "./jsonSchema.annotate"
 import { 
   booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, 
@@ -16,7 +16,7 @@ import { jsonSchemaTransformers, transformMergeAllOf } from "./jsonSchema.transf
 import { enumMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 
-const annotationRule: CompareRules = { $: allAnnotation, annotate: annotationChange }
+const annotationRule: CompareRules = { $: allAnnotation, annotate: schemaAnnotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
 
 const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
@@ -24,12 +24,12 @@ const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
     "/*": () => ({ 
       ...rules,
       $: allBreaking,
-      annotate: parentKeyChangeAnnotation
+      annotate: schemaParentKeyChange
     }),  
   } : {
     ...rules,
     $: allNonBreaking,
-    annotate: keyChangeAnnotation,
+    annotate: jsonSchemaKeyChange,
   }
 }
 
@@ -40,40 +40,40 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
     transform: jsonSchemaTransformers,
 
     "/title": annotationRule,
-    "/multipleOf": simpleRule(multipleOfClassifier, validationChange),
-    "/maximum": simpleRule(maxClassifier, validationChange),
-    "/exclusiveMaximum": simpleRule(exclusiveClassifier, validationChange),
-    "/minimum": simpleRule(minClassifier, validationChange),
-    "/exclusiveMinimum": simpleRule(exclusiveClassifier, validationChange),
-    "/maxLength": simpleRule(maxClassifier, validationChange),
-    "/minLength": simpleRule(minClassifier, validationChange),
-    "/pattern": simpleRule([breaking, nonBreaking, breaking], validationChange),
-    "/maxItems": simpleRule(maxClassifier, validationChange),
-    "/minItems": simpleRule(minClassifier, validationChange),
-    "/uniqueItems": simpleRule(booleanClassifier, validationChange),
-    "/maxProperties": simpleRule(maxClassifier, validationChange),
-    "/minProperties": simpleRule(minClassifier, validationChange),
+    "/multipleOf": simpleRule(multipleOfClassifier, schemaValidationChange),
+    "/maximum": simpleRule(maxClassifier, schemaValidationChange),
+    "/exclusiveMaximum": simpleRule(exclusiveClassifier, schemaValidationChange),
+    "/minimum": simpleRule(minClassifier, schemaValidationChange),
+    "/exclusiveMinimum": simpleRule(exclusiveClassifier, schemaValidationChange),
+    "/maxLength": simpleRule(maxClassifier, schemaValidationChange),
+    "/minLength": simpleRule(minClassifier, schemaValidationChange),
+    "/pattern": simpleRule([breaking, nonBreaking, breaking], schemaValidationChange),
+    "/maxItems": simpleRule(maxClassifier, schemaValidationChange),
+    "/minItems": simpleRule(minClassifier, schemaValidationChange),
+    "/uniqueItems": simpleRule(booleanClassifier, schemaValidationChange),
+    "/maxProperties": simpleRule(maxClassifier, schemaValidationChange),
+    "/minProperties": simpleRule(minClassifier, schemaValidationChange),
     "/required": {
       $: onlyAddBreaking,
       mapping: requiredMappingResolver,
       "/*": { 
         $: requiredItemClassifyRule,
-        annotate: requiredChangeAnnotation
+        annotate: schemaRequiredChange
       },
     },
     "/enum": {
       $: [breaking, nonBreaking, breaking],
       mapping: enumMappingResolver,
-      annotate: keyChangeAnnotation,
-      "/*": { $: [nonBreaking, breaking, breaking], annotate: parentKeyChangeAnnotation },
+      annotate: jsonSchemaKeyChange,
+      "/*": { $: [nonBreaking, breaking, breaking], annotate: schemaParentKeyChange },
     },
     "/const": {
       $: [breaking, nonBreaking, breaking],
-      annotate: keyChangeAnnotation
+      annotate: jsonSchemaKeyChange
     },
     "/type": {
       $: [breaking, nonBreaking, breaking],
-      annotate: keyChangeAnnotation,
+      annotate: jsonSchemaKeyChange,
       "/*": { $: [nonBreaking, breaking, breaking] },
     },
     "/not": () => ({ ...rules, $: allBreaking }),
@@ -82,7 +82,7 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
       "/*": () => ({ 
         ...rules,
         $: allBreaking,
-        annotate: parentKeyChangeAnnotation
+        annotate: schemaParentKeyChange
       }),
     },
     "/oneOf": {
@@ -90,7 +90,7 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
       "/*": () => ({ 
         ...rules, 
         $: [nonBreaking, breaking, breaking],
-        annotate: parentKeyChangeAnnotation
+        annotate: schemaParentKeyChange
       }),
     },
     "/anyOf": {
@@ -98,38 +98,38 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
       "/*": () => ({ 
         ...rules, 
         $: [nonBreaking, breaking, breaking],
-        annotate: parentKeyChangeAnnotation
+        annotate: schemaParentKeyChange
       }),
     },
     "/items": ({ value }) => arrayItemsRules(value, rules),
     "/additionalItems": () => ({
       ...rules,
       $: [nonBreaking, breaking, unclassified],
-      annotate: keyChangeAnnotation,
+      annotate: jsonSchemaKeyChange,
     }),
     "/properties": {
       "/*": () => ({ 
         ...rules, 
         $: [nonBreaking, breaking, unclassified],
-        annotate: parentKeyChangeAnnotation
+        annotate: schemaParentKeyChange
       }),
     },
     "/additionalProperties": () => ({ 
       ...rules, 
       $: allNonBreaking, 
-      annotate: keyChangeAnnotation
+      annotate: jsonSchemaKeyChange
     }),
     "/patternProperties": {
       "/*": () => ({ 
         ...rules, 
         $: [breaking, nonBreaking, unclassified],
-        annotate: parentKeyChangeAnnotation
+        annotate: schemaParentKeyChange
       }),
     },
-    "/propertyNames": () => ({ ...rules, $: onlyAddBreaking, annotate: validationChange }),
+    "/propertyNames": () => ({ ...rules, $: onlyAddBreaking, annotate: schemaValidationChange }),
     "/description": annotationRule,
-    "/format": { $: [breaking, nonBreaking, breaking], annotate: keyChangeAnnotation },
-    "/default": { $: [nonBreaking, breaking, breaking], annotate: keyChangeAnnotation },
+    "/format": { $: [breaking, nonBreaking, breaking], annotate: jsonSchemaKeyChange },
+    "/default": { $: [nonBreaking, breaking, breaking], annotate: jsonSchemaKeyChange },
     "/dependencies": {
 
     },    
@@ -145,24 +145,27 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
         $: allNonBreaking,
       })
     },
-    "/readOnly": { $: booleanClassifier, annotate: statusChange },
-    "/writeOnly": { $: booleanClassifier, annotate: statusChange },
-    "/deprecated": { $: allDeprecated, annotate: statusChange },
+    "/readOnly": { $: booleanClassifier, annotate: schemaStatusChange },
+    "/writeOnly": { $: booleanClassifier, annotate: schemaStatusChange },
+    "/deprecated": { $: allDeprecated, annotate: schemaStatusChange },
     "/examples": {
       $: allAnnotation,
-      annotate: annotationChange,
-      "/*": { $: allAnnotation, annotate: exampleChange }
+      annotate: schemaAnnotationChange,
+      "/*": { $: allAnnotation, annotate: schemaExampleChange }
     },
     
     // openapi extentions
-    "/nullable": { $: booleanClassifier, annotate: keyChangeAnnotation },
-    "/discriminator": { $: allUnclassified, annotate: annotationChange },
+    "/nullable": { $: booleanClassifier, annotate: jsonSchemaKeyChange },
+    "/discriminator": { $: allUnclassified, annotate: schemaAnnotationChange },
     "/example": annotationRule,
     "/externalDocs": annotationRule,
     "/xml": {},
 
     // unknown tags
-    "/**": { $: allUnclassified }
+    "/**": { 
+      annotate: schemaAnnotationChange,
+      $: allUnclassified
+    }
   }
 
   return notMergeAllOf ? rules : { 

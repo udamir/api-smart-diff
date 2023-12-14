@@ -9,7 +9,7 @@ export const createTemplateFunc = (dict: Record<string, string>): TemplateFunc =
     for (const _key of keys) {
       const _params = _key.split("_").slice(1)
       // find params
-      if (!_params.filter((p) => !isExist(params[p])).length) {
+      if (!_params.filter((p) => !isExist(params[p]) || params[p] === "").length) {
         return dict[_key]
       }
     }

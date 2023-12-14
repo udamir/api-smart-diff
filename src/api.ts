@@ -13,7 +13,7 @@ export const discoverCompareRules = (data: any): CompareRules => {
   return jsonSchemaRules()
 }
 
-export const apiMerge = (before: unknown, after: unknown, options: ComapreOptions) => {
+export const apiMerge = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
   const rules = options.rules ?? discoverCompareRules(before)
 
   const { merged } = compare(before, after, { ...options, rules })
@@ -21,7 +21,7 @@ export const apiMerge = (before: unknown, after: unknown, options: ComapreOption
   return merged
 }
 
-export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions) => {
+export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
   const rules = options.rules ?? discoverCompareRules(before)
 
   const { diffs } = compare(before, after, { ...options, rules })
@@ -29,7 +29,7 @@ export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions
   return diffs
 }
 
-export const apiCompare = (before: unknown, after: unknown, options: ComapreOptions) => {
+export const apiCompare = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
   const rules = options.rules ?? discoverCompareRules(before)
 
   return compare(before, after, { ...options, rules })

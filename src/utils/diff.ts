@@ -8,16 +8,16 @@ export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
   const { rules } = ctx.options
   const { $: rule, annotate } = rules ?? {}
 
+  const description = annotate?.(diff, ctx)
+
   if (!rule) { 
-    return { ...diff, type: unclassified }
+    return { ...diff, type: unclassified, ...description ? { description } : {} }
   }
 
   const classifier = Array.isArray(rule) ? rule : allUnclassified
 
   const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
   const changeType = classifier[index]
-
-  const description = annotate?.(diff, ctx)
 
   try {
     if (typeof changeType === "function") {

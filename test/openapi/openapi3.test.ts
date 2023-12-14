@@ -1,11 +1,7 @@
-import { breaking, DiffAction, nonBreaking, unclassified } from "../../src"
+import { annotation, breaking, DiffAction, nonBreaking, unclassified } from "../../src"
 import { addPatch, ExampleResource } from "../helpers"
 
 const exampleResource = new ExampleResource("petstore.yaml")
-
-// document annotation
-// request body
-// responses
 
 describe("Test openapi 3 diff", () => {
   it("add servers should be non-breaking change", () => {
@@ -21,7 +17,7 @@ describe("Test openapi 3 diff", () => {
     expect(diff).toMatchObject([{
       path,
       after: value,
-      type: nonBreaking
+      type: annotation
     }])
   })
 
@@ -74,7 +70,9 @@ describe("Test openapi 3 diff", () => {
     delete after.paths["/pet"].put.requestBody.content["application/json"]
 
     const merged = exampleResource.merge(after)
-    expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({ ["application/*"]: { action: DiffAction.rename, replaced: "application/json", type: unclassified } })
+    expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({ 
+      ["application/*"]: { action: DiffAction.rename, replaced: "application/json", type: nonBreaking }
+    })
   })
 
   it("should classify as non-breaking remove of operation security", () => {
