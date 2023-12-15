@@ -8,12 +8,12 @@ import {
 } from "./jsonSchema.annotate"
 import { 
   booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, 
-  multipleOfClassifier, requiredItemClassifyRule
+  multipleOfClassifier, requiredItemClassifyRule, typeClassifier
 } from "./jsonSchema.classify"
+import { transformJsonSchema, transformJsonSchemaCombiners, transformMergeAllOf } from "./jsonSchema.transform"
+import { enumMappingResolver, jsonSchemaMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
-import { jsonSchemaTransformers, transformMergeAllOf } from "./jsonSchema.transform"
-import { enumMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: schemaAnnotationChange }
@@ -33,28 +33,33 @@ const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
   }
 }
 
-export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}): CompareRules => {
+export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draft-04" }: JsonSchemaRulesOptions = {}): CompareRules => {
   const rules: CompareRules = {
     // important to createCompareRefResolver once for cycle refs cache
     compare: createRefsCompareResolver(),
-    transform: jsonSchemaTransformers,
+    transform: [transformJsonSchemaCombiners(), transformJsonSchema(version)],
+    mapping: jsonSchemaMappingResolver,
 
     "/title": annotationRule,
-    "/multipleOf": simpleRule(multipleOfClassifier, schemaValidationChange),
-    "/maximum": simpleRule(maxClassifier, schemaValidationChange),
-    "/exclusiveMaximum": simpleRule(exclusiveClassifier, schemaValidationChange),
-    "/minimum": simpleRule(minClassifier, schemaValidationChange),
-    "/exclusiveMinimum": simpleRule(exclusiveClassifier, schemaValidationChange),
-    "/maxLength": simpleRule(maxClassifier, schemaValidationChange),
-    "/minLength": simpleRule(minClassifier, schemaValidationChange),
-    "/pattern": simpleRule([breaking, nonBreaking, breaking], schemaValidationChange),
-    "/maxItems": simpleRule(maxClassifier, schemaValidationChange),
-    "/minItems": simpleRule(minClassifier, schemaValidationChange),
-    "/uniqueItems": simpleRule(booleanClassifier, schemaValidationChange),
-    "/maxProperties": simpleRule(maxClassifier, schemaValidationChange),
-    "/minProperties": simpleRule(minClassifier, schemaValidationChange),
+    "/multipleOf": simpleRule(typeClassifier("number", multipleOfClassifier), schemaValidationChange),
+    "/maximum": simpleRule(typeClassifier("number", maxClassifier), schemaValidationChange),
+    "/minimum": simpleRule(typeClassifier("number", minClassifier), schemaValidationChange),
+    ...version === "draft-04" ? {
+      "/exclusiveMaximum": simpleRule(typeClassifier("number", exclusiveClassifier), schemaValidationChange),
+      "/exclusiveMinimum": simpleRule(typeClassifier("number", exclusiveClassifier), schemaValidationChange),
+    } : {
+      "/exclusiveMaximum": simpleRule(typeClassifier("number", maxClassifier), schemaValidationChange),
+      "/exclusiveMinimum": simpleRule(typeClassifier("number", minClassifier), schemaValidationChange),
+    },
+    "/maxLength": simpleRule(typeClassifier("string", maxClassifier), schemaValidationChange),
+    "/minLength": simpleRule(typeClassifier("string", minClassifier), schemaValidationChange),
+    "/pattern": simpleRule(typeClassifier("string", [breaking, nonBreaking, breaking]), schemaValidationChange),
+    "/maxItems": simpleRule(typeClassifier("array", maxClassifier), schemaValidationChange),
+    "/minItems": simpleRule(typeClassifier("array", minClassifier), schemaValidationChange),
+    "/uniqueItems": simpleRule(typeClassifier("array", booleanClassifier), schemaValidationChange),
+    "/maxProperties": simpleRule(typeClassifier("object", maxClassifier), schemaValidationChange),
+    "/minProperties": simpleRule(typeClassifier("object", minClassifier), schemaValidationChange),
     "/required": {
-      $: onlyAddBreaking,
       mapping: requiredMappingResolver,
       "/*": { 
         $: requiredItemClassifyRule,
@@ -62,7 +67,6 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
       },
     },
     "/enum": {
-      $: [breaking, nonBreaking, breaking],
       mapping: enumMappingResolver,
       annotate: jsonSchemaKeyChange,
       "/*": { $: [nonBreaking, breaking, breaking], annotate: schemaParentKeyChange },
@@ -154,22 +158,16 @@ export const jsonSchemaRules = ({ notMergeAllOf }: JsonSchemaRulesOptions = {}):
       "/*": { $: allAnnotation, annotate: schemaExampleChange }
     },
     
-    // openapi extentions
-    "/nullable": { $: booleanClassifier, annotate: jsonSchemaKeyChange },
-    "/discriminator": { $: allUnclassified, annotate: schemaAnnotationChange },
-    "/example": annotationRule,
-    "/externalDocs": annotationRule,
-    "/xml": {},
-
     // unknown tags
     "/**": { 
       annotate: schemaAnnotationChange,
       $: allUnclassified
-    }
+    },
+    ...baseRules
   }
 
   return notMergeAllOf ? rules : { 
     ...rules,
-    transform: [...jsonSchemaTransformers, transformMergeAllOf]
+    transform: [...rules.transform ?? [], transformMergeAllOf(version)]
   }
 }

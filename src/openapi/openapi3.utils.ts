@@ -1,4 +1,5 @@
-import { JsonPath } from "json-crawl"
+import { JsonPath, isObject } from "json-crawl"
+
 import type { ComapreContext } from "../types"
 
 export const emptySecurity = (value?: unknown) => {
@@ -53,4 +54,12 @@ export const isRequestBodyPath = (path: JsonPath) => {
 
 export const isParameterPath = (path: JsonPath) => {
   return path[2] === "parameters" || path[3] === "parameters"
+}
+
+export const getMaxOpenApiVersion = (before: unknown, after: unknown) => {
+  if (!isObject(before) || !isObject(after) || !("openapi" in before) || !("openapi" in after)) { return }
+
+  const version = before.openapi > after.openapi ? before.openapi : after.openapi
+
+  return version.startsWith("3.1") ? "3.1.x" : "3.0.x"
 }

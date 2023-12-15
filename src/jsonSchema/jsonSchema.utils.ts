@@ -3,6 +3,7 @@ import type { JsonPath } from "json-crawl"
 
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
 import type { AllOfNode, JsonSchemaNodeType } from "./jsonSchema.types"
+import { excludeKeys, isObject } from "../utils"
 import type { Diff } from "../types"
 
 export function isAllOfNode(value: any): value is AllOfNode {
@@ -12,7 +13,7 @@ export function isAllOfNode(value: any): value is AllOfNode {
 export const isValidType = (maybeType: unknown): maybeType is JsonSchemaNodeType =>
   typeof maybeType === "string" && jsonSchemaTypes.includes(maybeType as JsonSchemaNodeType)
 
-export function inferTypes(fragment: unknown): JsonSchemaNodeType[] {
+export function inferTypes(fragment: unknown): string[] {
   if (typeof fragment !== 'object' || !fragment) { return [] }
 
   const types: JsonSchemaNodeType[] = []
@@ -27,6 +28,18 @@ export function inferTypes(fragment: unknown): JsonSchemaNodeType[] {
     }
   }
   return types
+}
+
+export const isValidSchemaTypes = (types: string[], value: unknown): boolean => {
+  if (!isObject(value)) { return false }
+
+  for (const type of types) {
+    if (!value.type || Array.isArray(value.type) && value.type.includes(type) || value.type === type || type === "any") {
+      return true
+    }
+  }
+
+  return false
 }
 
 export function unwrapStringOrNull(value: unknown): string | null {
@@ -73,4 +86,56 @@ export const getRef = ($ref?: string) => {
 
 export const changeDiffsPath = (diffs: Diff[], path: JsonPath = [], newPath: JsonPath = []): Diff[] => {
   return diffs.map((diff) => ({ ...diff, path: [...newPath, ...diff.path.slice(path.length)] }))
+}
+
+export const mergeCombinarySibling = (value: Record<string, unknown>, combiner: string, allowedSibling: string[] = []) => {
+  const sibling = { ...value }
+  const { [combiner]: list, ...allowedProps } = excludeKeys(sibling, [...allowedSibling, combiner])
+
+  if (!Object.keys(sibling).length) {
+    return value
+  }
+
+  return {
+    ...Array.isArray(list) ? { [combiner]: list.map((item) => ({ allOf: [item, sibling] })) } : sibling,
+    ...allowedProps
+  }
+}
+
+export const mergeAllOfSibling = (value: Record<string, unknown>, allowedSibling: string[] = []) => {
+  const sibling = { ...value }
+  const { allOf, ...allowedProps } = excludeKeys(sibling, [...allowedSibling, "allOf"])
+
+  if (!Object.keys(sibling).length) {
+    return value
+  }
+
+  return {
+    ...Array.isArray(allOf) ? { allOf: [...allOf, sibling] } : sibling,
+    ...allowedProps
+  }
+}
+
+export const mergeRefSibling = (value: Record<string, unknown>, allowedSibling: string[] = []) => {
+  const sibling = { ...value }
+  const { $ref, ...allowedProps } = excludeKeys(sibling, [...allowedSibling, "$ref"])
+
+  if (!Object.keys(sibling).length) {
+    return value
+  }
+
+  return {
+    allOf: [{ $ref }, sibling],
+    ...allowedProps
+  }
+}
+
+export const createEmptyCombiner = (value: Record<string, unknown>, combiner: string, allowedSibling: string[] = []) => {
+  const sibling = { ...value }
+  const { [combiner]: list, ...allowedProps } = excludeKeys(sibling, [...allowedSibling])
+
+  return { 
+    ...allowedProps,
+    [combiner]: Object.keys(sibling).length ? [sibling] : [],
+  }
 }

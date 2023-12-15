@@ -25,3 +25,7 @@ export const isString = (value: unknown): value is string => {
 export const isNumber = (value: unknown): value is number => {
   return typeof value === "number" || isString(value) && !Number.isNaN(+value)
 }
+
+export const isFunc = (value: unknown): value is Function => {
+  return typeof value === "function"
+}

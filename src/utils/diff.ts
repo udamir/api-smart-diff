@@ -82,6 +82,6 @@ export const getParentContext = (ctx: DiffContext, ...path: JsonPath): DiffConte
   return { path: _path, key, value, parent: parentValue, root: ctx.root }
 }
 
-export const compareTransformationFactory = (resolver: TransformResolver): CompareTransformResolver => {
+export const compareTransformationFactory = <T = unknown>(resolver: TransformResolver<T>): CompareTransformResolver<T> => {
   return (before, after) => [resolver(before, after), resolver(after, before)]
 }

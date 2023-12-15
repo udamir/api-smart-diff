@@ -116,3 +116,41 @@ export const transformParameterItem = compareTransformationFactory((value, other
   
   return result
 })
+
+
+export const transformOpenApiSchema = compareTransformationFactory((value, other) => {
+  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
+    return value
+  }
+
+  // 1. convert discriminator to consts
+  // 2. add custom tag to descriminator property
+  // if (("discriminator" in value && isOneOfNode(value)) || isAnyOfNode(value)) {
+  //   const { discriminator, ...rest } = value
+
+  //   if (
+  //     typeof discriminator !== "object" ||
+  //     !discriminator ||
+  //     Array.isArray(discriminator) ||
+  //     !("propertyName" in discriminator)
+  //   ) {
+  //     return rest
+  //   }
+
+  //   const prop = discriminator.propertyName
+  //   const mapping: Record<string, string> = discriminator.mapping ?? {}
+  //   const refs = Object.entries(mapping).reduce((res, [key, $ref]) => (res[$ref] = key), {} as any)
+
+  //   const transformCombinary = (item: unknown) =>
+  //     isRefNode(item) && item.$ref in refs
+  //       ? { ...item, properties: { [prop]: { ...(item.properties ?? {}), const: refs[item.$ref] } } }
+  //       : item
+
+  //   if (isAnyOfNode(value)) {
+  //     return { ...rest, anyOf: value.anyOf.map(transformCombinary) }
+  //   } else if (isOneOfNode(value)) {
+  //     return { ...rest, oneOf: value.oneOf.map(transformCombinary) }
+  //   }
+  // }
+  return value
+})

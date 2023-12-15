@@ -69,7 +69,6 @@ describe("Compare object jsonSchema", () => {
     })
 
     expect(merged).toMatchObject({
-      type: "object",
       required: ["id", "foo", "name"],
       properties: {
         name: {
@@ -114,7 +113,6 @@ describe("Compare object jsonSchema", () => {
     })
 
     expect(merged).toMatchObject({
-      type: "object",
       required: ["id", "name"],
       properties: {
         id: { type: "string" },
@@ -159,7 +157,6 @@ describe("Compare object jsonSchema", () => {
     })
 
     expect(merged).toMatchObject({
-      type: "object",
       properties: {
         id: { type: "string" },
         name: { type: "string" },

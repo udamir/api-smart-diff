@@ -1,8 +1,14 @@
 import { syncClone } from "json-crawl"
 
+import { 
+  booleanClassifier, jsonSchemaAllowedSibling, jsonSchemaKeyChange, jsonSchemaRules, 
+  schemaAnnotationChange, transformJsonSchema, transformJsonSchemaCombiners
+} from "../jsonSchema"
 import type { ClassifyRule, ComapreContext, CompareRules, DiffType, DiffTypeClassifier } from "../types"
+import { allAnnotation, allUnclassified, breaking, nonBreaking } from "../constants"
+import type { OpenApi3SchemaRulesOptions } from "./openapi3.types"
+import { transformOpenApiSchema } from "./openapi3.transform"
 import { openApiSchemaAnnotate } from "./openapi3.annotate"
-import { breaking, nonBreaking } from "../constants"
 import { isObject } from "../utils"
 
 const reverseDiffType = (diffType: DiffType | DiffTypeClassifier): DiffType | DiffTypeClassifier => {
@@ -17,14 +23,14 @@ const reverseDiffType = (diffType: DiffType | DiffTypeClassifier): DiffType | Di
   }
 }
 
-const reverseClassifyRule = ([add, remove, replace]: ClassifyRule): ClassifyRule => {
+export const reverseClassifyRule = ([add, remove, replace]: ClassifyRule): ClassifyRule => {
   return [reverseDiffType(add), reverseDiffType(remove), reverseDiffType(replace)]
 }
 
-export const openApiSchemaRules = (rules: CompareRules, response = false): CompareRules => {
+export const convertJsonSchemaRules = (rules: CompareRules, response = false): CompareRules => {
   return syncClone(rules, ({ value }) => {
     if (typeof value === "function") {
-      return { value: (...args: unknown[]) => openApiSchemaRules(value(...args), response) }
+      return { value: (...args: unknown[]) => convertJsonSchemaRules(value(...args), response) }
     } else if (!Array.isArray(value) && isObject(value)) {
       const _value = { ...value } as CompareRules
       // reverse classify rules
@@ -39,4 +45,29 @@ export const openApiSchemaRules = (rules: CompareRules, response = false): Compa
       return { value: _value }
     }
   })
+}
+
+export const openApiSchemaRules = (options: OpenApi3SchemaRulesOptions = {}): CompareRules => {
+  const version = options.version === "3.0.x" ? "draft-04" : "2020-12"
+  return convertJsonSchemaRules(jsonSchemaRules({ 
+    baseRules: {
+      transform: [
+        transformJsonSchemaCombiners([...jsonSchemaAllowedSibling, "discriminator"]),
+        transformJsonSchema(version),
+        transformOpenApiSchema
+      ],
+      // openapi extentions
+      "/nullable": { $: booleanClassifier, annotate: jsonSchemaKeyChange },
+      "/discriminator": { $: allUnclassified, annotate: schemaAnnotationChange },
+      "/example": { $: allAnnotation, annotate: schemaAnnotationChange },
+      "/externalDocs": { 
+        $: allAnnotation, 
+        annotate: schemaAnnotationChange,
+        "/*": { $: allAnnotation }
+      },
+      "/xml": {},
+    },
+    notMergeAllOf: options.notMergeAllOf, 
+    version
+  }), options.response)
 }

@@ -25,8 +25,8 @@ export type ComapreContext = {
 
 export type CompareResolver = (ctx: ComapreContext) => CompareResult | void
 
-export type TransformResolver = (value: unknown, other: unknown) => unknown
-export type CompareTransformResolver = (before: unknown, after: unknown) => [unknown, unknown]
+export type TransformResolver<T = unknown> = (value: T, other: T) => T
+export type CompareTransformResolver<T = unknown> = (before: T, after: T) => [T, T]
 
 export type MappingResolver<T extends string | number> = T extends string ? MappingObjectResolver : MappingArrayResolver
 export type MappingObjectResolver = (before: Record<string, unknown>, after: Record<string, unknown>, ctx: ComapreContext) => MapKeysResult<string>

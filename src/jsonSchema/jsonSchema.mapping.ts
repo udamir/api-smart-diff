@@ -1,4 +1,22 @@
 import type { MapKeysResult, MappingResolver } from "../types"
+import { objectMappingResolver } from "../mapping"
+
+export const jsonSchemaMappingResolver: MappingResolver<string> = (before, after, ctx) => {
+  const { added, removed, mapped } = objectMappingResolver(before, after, ctx)
+
+  const beforeCombinaryIndex = removed.findIndex((item) => item == "oneOf" || item === "anyOf")
+  const afterCombinaryIndex = added.findIndex((item) => item == "oneOf" || item === "anyOf")
+
+  if (beforeCombinaryIndex < 0 || afterCombinaryIndex < 0) {
+    return { added, removed, mapped }
+  }
+
+  const [ bkey] = removed.splice(beforeCombinaryIndex, 1)
+  const [ akey] = added.splice(afterCombinaryIndex, 1)
+  mapped[bkey] = akey
+  
+  return { added, removed, mapped }
+}
 
 export const enumMappingResolver: MappingResolver<number> = (before, after) => {
 

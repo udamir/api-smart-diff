@@ -1,8 +1,14 @@
 import { getNodeRules, syncCrawl, SyncCrawlHook } from "json-crawl"
 
-import type { ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, SourceContext, ContextInput, MergeFactoryResult } from "./types"
-import { changeFactory, convertDiffToMeta, createMergeMeta, getKeyValue, isArray, isNumber, isObject, objectKeys, typeOf } from "./utils"
-import { mapObjectKeysRule, mapArraysKeysRule } from "./mapping"
+import type { 
+  ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, 
+  SourceContext, ContextInput, MergeFactoryResult
+} from "./types"
+import { 
+  changeFactory, convertDiffToMeta, createMergeMeta, getKeyValue, isArray, 
+  isNumber, isObject, objectKeys, typeOf 
+} from "./utils"
+import { objectMappingResolver, arrayMappingResolver } from "./mapping"
 import type { Diff, JsonNode, MergeState } from "./types"
 import { DIFF_META_KEY } from "./constants"
 
@@ -93,7 +99,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
 
       mNode[mkey] = merged
 
-      const mapKeys = mapping ?? (isArray(before) ? mapArraysKeysRule : mapObjectKeysRule)
+      const mapKeys = mapping ?? (isArray(before) ? arrayMappingResolver : objectMappingResolver)
       const { added, removed, mapped } = mapKeys(before as any, after as any, ctx)
       const renamed = isArray(before) ? [] : objectKeys(mapped).filter((key) => key !== mapped[key])
 

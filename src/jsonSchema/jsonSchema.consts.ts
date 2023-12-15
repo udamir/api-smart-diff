@@ -33,3 +33,5 @@ export const jsonSchemaTypeProps: Record<string, string[]> = {
   object:  [...jsonSchemaValidators.object,  ...jsonSchemaCommonProps, ...jsonSchemaNodeMetaProps],
   array:   [...jsonSchemaValidators.array,   ...jsonSchemaCommonProps, ...jsonSchemaNodeMetaProps],
 }
+
+export const jsonSchemaAllowedSibling = ["$defs", "definitions", "$schema", "$id"]

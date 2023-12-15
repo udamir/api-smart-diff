@@ -1,4 +1,4 @@
-import { CompareRules, breaking, nonBreaking, openApiSchemaRules, unclassified } from "../../src"
+import { CompareRules, breaking, convertJsonSchemaRules, nonBreaking, openApiSchemaRules, unclassified } from "../../src"
 
 describe("Openapi utils unit tests", () => {
   it("should reverse simple rules", () => {
@@ -7,7 +7,7 @@ describe("Openapi utils unit tests", () => {
         $: [nonBreaking, breaking, unclassified]
       }
     }
-    const reversed = openApiSchemaRules(rules, true)
+    const reversed = convertJsonSchemaRules(rules, true)
     expect(reversed).toMatchObject({
       "/*": { $: [breaking, nonBreaking, unclassified] }
     })
@@ -23,7 +23,7 @@ describe("Openapi utils unit tests", () => {
       },
     }
                   
-    const reversed = openApiSchemaRules(rules, true)
+    const reversed = convertJsonSchemaRules(rules, true)
 
     expect(reversed).toMatchObject({
       "/*": { 
@@ -42,7 +42,7 @@ describe("Openapi utils unit tests", () => {
       },
     }
                   
-    const reversed: any = openApiSchemaRules(rules, true)
+    const reversed: any = convertJsonSchemaRules(rules, true)
 
     expect(reversed["/*"].$[2]({ before: { path: [] }})).toEqual(breaking)
     expect(reversed["/*"].$[2]({ before: { path: [1] }})).toEqual(nonBreaking)
@@ -59,7 +59,7 @@ describe("Openapi utils unit tests", () => {
       },
     }
                   
-    const reversed: any = openApiSchemaRules(rules, true)
+    const reversed: any = convertJsonSchemaRules(rules, true)
 
     expect(reversed["/*"]["/*"]()).toMatchObject({
       $: [nonBreaking, breaking, unclassified],

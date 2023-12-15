@@ -27,6 +27,15 @@ export const filterObj = <T extends {}>(value: T, func: (key: number | string | 
   return result
 }
 
+export const excludeKeys = <T extends {}>(value: T, keys: Array<keyof T>): Partial<T> => {
+  const excluded: Partial<T> = {}
+  for (const key of keys) {
+    excluded[key] = value[key]
+    delete value[key]
+  }
+  return excluded
+}
+
 export const getKeyValue = (obj: unknown, ...path: JsonPath): unknown | undefined => {
   let value: unknown = obj
   for (const key of path) {

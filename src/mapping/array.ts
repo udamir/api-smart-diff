@@ -1,6 +1,6 @@
 import { MappingResolver } from "../types"
 
-export const mapArraysKeysRule: MappingResolver<number> = (before, after) => {
+export const arrayMappingResolver: MappingResolver<number> = (before, after) => {
   const length = Math.abs(before.length - after.length)
   const arr = Array.from({ length: Math.min(before.length, after.length) }, ((_, i) => i))
   return {

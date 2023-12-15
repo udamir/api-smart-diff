@@ -1,13 +1,20 @@
 import { applyOperation, Operation } from "fast-json-patch"
+import { buildFromSchema, GraphApiSchema } from "gqlapi"
+import { buildSchema } from "graphql"
 import { JsonPath } from "json-crawl"
 import YAML from "js-yaml"
 import path from "path"
 import fs from "fs"
 
+
 import { apiDiff, apiMerge, getKeyValue, buildPath, ComapreOptions, CompareRules } from "../../src"
 
-export const yaml = (strings: TemplateStringsArray): string => {
-  return YAML.load(strings[0]) as string
+export const yaml = (strings: TemplateStringsArray): object => {
+  return YAML.load(strings[0]) as object
+}
+
+export const graphapi = (strings: TemplateStringsArray): GraphApiSchema => {
+  return buildFromSchema(buildSchema(strings[0], { noLocation: true }))
 }
 
 export class ExampleResource {

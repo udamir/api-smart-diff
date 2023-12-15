@@ -9,7 +9,7 @@ describe("Compare simple jsonSchema", () => {
       type: "boolean",
       description: "Boolean schema",
       default: false,
-      maximum: 10,  // should be ignored
+      maximum: 10,  // should be unclassified
     }
 
     const after = {
@@ -21,12 +21,12 @@ describe("Compare simple jsonSchema", () => {
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(4)
+    expect(diffs.length).toEqual(5)
 
-    diffs.forEach((diff) => {
+    diffs.forEach((diff, i) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
-      expect(diff.type).not.toEqual("unclassified")
+      i !== 1 && expect(diff.type).not.toEqual("unclassified")
     })
 
     expect(merged).toMatchObject({
@@ -34,14 +34,16 @@ describe("Compare simple jsonSchema", () => {
       type: "boolean",
       description: "Updated Boolean schema",
       default: false,
-      const: true
+      const: true,
+      maximum: 10,
     })
-    expect(merged).not.toHaveProperty("maximum")
+
     expect(merged[metaKey]).toMatchObject({
       const: { action: "add", type: breaking },
       title: { action: "replace", replaced: "Boolean", type: annotation },
       description: { action: "replace", replaced: "Boolean schema", type: annotation },
-      default: { action: "remove", type: breaking }
+      default: { action: "remove", type: breaking },
+      maximum: { action: "remove", type: unclassified }
     })
   })
 
@@ -52,7 +54,7 @@ describe("Compare simple jsonSchema", () => {
       format: "int64",
       maximum: 10,
       exclusiveMaximum: true, // should be converted to number
-      minLength: 3, // should be ignored
+      minLength: 3, // should be unclassified
     }
 
     const after = {
@@ -60,12 +62,12 @@ describe("Compare simple jsonSchema", () => {
       "x-prop": "Added custom tag",
       default: 0,
       exclusiveMaximum: 10,
-      pattern: "w+", // should be ignored
+      pattern: "w+", // should be unclassified
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(4)
+    expect(diffs.length).toEqual(6)
 
     diffs.forEach((diff) => diff.type !== unclassified && expect(diff).toHaveProperty("description"))
 
@@ -76,14 +78,17 @@ describe("Compare simple jsonSchema", () => {
       exclusiveMaximum: 10,
       "x-prop": "Added custom tag",
       default: 0,
+      minLength: 3,
+      pattern: "w+"
     })
-    expect(merged).not.toHaveProperty("minLength")
-    expect(merged).not.toHaveProperty("pattern")
+
     expect(merged[metaKey]).toMatchObject({
       default: { action: "add", type: nonBreaking },
       title: { action: "remove", type: annotation },
       "x-prop": { action: "add", type: unclassified },
       format: { action: "remove", type: nonBreaking },
+      minLength: { action: "remove", type: unclassified },
+      pattern: { action: "add", type: unclassified },
     })
   })
 
@@ -91,7 +96,6 @@ describe("Compare simple jsonSchema", () => {
     const before = {
       title: "Title",
       type: "string",
-      maximum: 10,  // should be ignored
       const: "foo", // should be converted to enum
       minLength: 3,
     }
@@ -109,7 +113,7 @@ describe("Compare simple jsonSchema", () => {
 
     expect(diffs.length).toEqual(6)
 
-    diffs.forEach((diff) => {
+    diffs.forEach((diff, i) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
@@ -124,7 +128,7 @@ describe("Compare simple jsonSchema", () => {
       pattern: "w+",
       minLength: 1,
     })
-    expect(merged).not.toHaveProperty("maximum")
+
     expect(merged[metaKey]).toMatchObject({
       default: { action: "add", type: nonBreaking },
       enum: { array: { 1: { action: "add", type: nonBreaking }}},

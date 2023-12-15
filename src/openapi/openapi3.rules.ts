@@ -16,7 +16,7 @@ import {
 } from "./openapi3.annotate"
 import { transformOperation, transformParameterItem, transformPathItems, transformPaths } from "./openapi3.transform"
 import { contentMediaTypeMappingResolver, paramMappingResolver, pathMappingResolver } from "./openapi3.mapping"
-import { breakingIfAfterTrue, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
+import { breakingIfAfterTrue, createRefsCompareResolver } from "../jsonSchema"
 import type { OpenApi3RulesOptions } from "./openapi3.types"
 import type { ClassifyRule, CompareRules } from "../types"
 import { openApiSchemaRules } from "./openapi3.schema"
@@ -27,9 +27,10 @@ const paramRule = (classify: ClassifyRule) => ({ $: classify, annotate: paramete
 const documentAnnotationRule: CompareRules = { $: allAnnotation, annotate: documentChangeAnnotation }
 const operationAnnotationRule: CompareRules = { $: allAnnotation, annotate: operationChangeAnnotation }
 
-export const openapi3Rules = ({ notMergeAllOf = false }: OpenApi3RulesOptions = {}): CompareRules => {
-  const requestSchemaRules = openApiSchemaRules(jsonSchemaRules({ notMergeAllOf }))
-  const responseSchemaRules = openApiSchemaRules(jsonSchemaRules({ notMergeAllOf }), true)
+export const openapi3Rules = (options: OpenApi3RulesOptions = {}): CompareRules => {
+  const requestSchemaRules = openApiSchemaRules(options)
+  const responseSchemaRules = openApiSchemaRules({ ...options, response: true })
+
   const refsCompareResolver = createRefsCompareResolver()
 
   const serversRules: CompareRules = {
