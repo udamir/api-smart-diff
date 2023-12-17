@@ -6,7 +6,7 @@ export const annotationTemplate = (template: string, params?: AnnotateTemplate["
   ...params ? { params } : {} 
 })
 
-export const createTemplateAnnotation = (dict: Record<string, string>, annotationTemplate?: AnnotateTemplate): string => {
+export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Record<string, string> = {}): string => {
   const findTemplate = (key: string, params: AnnotateTemplate["params"] = {}) => {
 
     const keys = objectKeys(dict).filter((k) => k.startsWith(`${key}_`))
@@ -32,7 +32,7 @@ export const createTemplateAnnotation = (dict: Record<string, string>, annotatio
 
     for (const key of objectKeys(_params)) {
       const param = _params[key]
-      params[key] = isObject(param) ? createTemplateAnnotation(dict, param as AnnotateTemplate) : param as string
+      params[key] = isObject(param) ? createAnnotation(param as AnnotateTemplate, dict) : param as string
     }
     
     for (const match of [...template.matchAll(/{{(\w+)}}/g)].reverse()) {

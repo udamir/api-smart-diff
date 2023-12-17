@@ -1,6 +1,6 @@
-import { createTemplateAnnotation, getObjectValue, isFunc, annotationTemplate as t } from "../utils"
-import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { isParameterSchema, isRequestBodySchema, isResponseSchema } from "./openapi3.utils"
+import { createAnnotation, getObjectValue, annotationTemplate as t } from "../utils"
+import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { jsonSchemaAnnotations, resolveRef } from "../jsonSchema"
 
 const openApiAnnotations = {
@@ -38,20 +38,20 @@ export const openApi3AnnotateHook: AnnotateHook = (diff, ctx) => {
 
   if (!annotate || diff.path[0] === "components") { return "" }
   if (isResponseSchema(diff.path)) {
-    const schemaChange = createTemplateAnnotation(jsonSchemaAnnotations, annotate(diff, ctx))
+    const schemaChange = createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
     annotate = () => t("responseSchema", { schemaChange, responseCode: diff.path[4], contentType: diff.path[6] })
   } else if (isRequestBodySchema(diff.path)) {
-    const schemaChange = createTemplateAnnotation(jsonSchemaAnnotations, annotate(diff, ctx))
+    const schemaChange = createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
     annotate = () => t("requestBodySchema", { schemaChange, contentType: diff.path[5] })
   } else if (isParameterSchema(diff.path)) {
-    const schemaChange = createTemplateAnnotation(jsonSchemaAnnotations, annotate(diff, ctx))
+    const schemaChange = createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
     const { root } = diff.action === "add" ? ctx.after : ctx.before
     const paramPath = diff.path.slice(0, diff.path[2] === "parameters" ? 4 : 5)
     const node = getObjectValue(root, ...paramPath)
     annotate = () => t("parameterSchema", { ...resolveRef(node, root), schemaChange })
   }
 
-  return createTemplateAnnotation(openApiAnnotations, annotate(diff, ctx) )
+  return createAnnotation(annotate(diff, ctx), openApiAnnotations)
 }
 
 export const pathMethodChangeAnnotation: ChangeAnnotationResolver = ({ action, path }) => {

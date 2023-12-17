@@ -1,34 +1,10 @@
 import { booleanClassifier, jsonSchemaKeyChange, jsonSchemaRules, transformJsonSchema, transformJsonSchemaCombiners } from "../jsonSchema"
-import { reverseClassifyRule, transformComapreRules } from "../utils"
-import type { CompareRules, CompareRulesTransformer } from "../types"
+import { reverseClassifyRuleTransformer, transformComapreRules } from "../utils"
 import { allAnnotation, allDeprecated } from "../constants"
 import { transformGraphSchema } from "./graphapi.transform"
+import type { CompareRules } from "../types"
 
 export const graphApiSchemaRules = (response = false): CompareRules => {
-
-  const argsRuleTransformer: CompareRulesTransformer = (value) => {
-    const _value = { ...value }
-    
-    // reverse classify rules
-    if ("$" in _value && Array.isArray(_value.$)) {
-      _value.$ = reverseClassifyRule(_value.$)
-    }
-    return _value
-  }
-
-  const jsonSchemaTransformer: CompareRulesTransformer = (value) => {
-    const _value = { ...value }
-    
-    // reverse classify rules
-    if (response && "$" in _value && Array.isArray(_value.$)) {
-      _value.$ = reverseClassifyRule(_value.$)
-    }
-    // convert annotations
-    // if ("annotate" in _value && _value.annotate) {
-    //   _value.annotate = graphApiSchemaAnnotate(_value.annotate)
-    // }
-    return _value
-  }
 
   const graphApiDirectiveRules: CompareRules = {
     "/*": { $: allAnnotation },
@@ -46,7 +22,7 @@ export const graphApiSchemaRules = (response = false): CompareRules => {
       "/nullable": { $: booleanClassifier, annotate: jsonSchemaKeyChange },
       "/specifiedByURL": { $: allAnnotation },
       "/args": () => ({
-        ...transformComapreRules(graphSchemaRules, argsRuleTransformer),
+        ...transformComapreRules(graphSchemaRules, reverseClassifyRuleTransformer),
       }),
       "/values": {
         "/*": {
@@ -66,5 +42,7 @@ export const graphApiSchemaRules = (response = false): CompareRules => {
     },
   })
 
-  return transformComapreRules(graphSchemaRules, jsonSchemaTransformer)
+  return response 
+    ? transformComapreRules(graphSchemaRules, reverseClassifyRuleTransformer)
+    : graphSchemaRules
 }

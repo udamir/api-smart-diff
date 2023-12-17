@@ -1,4 +1,4 @@
-import { createTemplateAnnotation, annotationTemplate as t } from "../src"
+import { createAnnotation, annotationTemplate as t } from "../src"
 
 describe("", () => {
   const dict = {
@@ -7,7 +7,7 @@ describe("", () => {
   }
 
   it("should create string from template with params", () => {  
-    expect(createTemplateAnnotation(dict, t("foo", { world: "World!" }))).toEqual("Hello World!")
-    expect(createTemplateAnnotation(dict, t("foo", { name: "Foo!", world: "World!" }))).toEqual("Hello Foo!")
+    expect(createAnnotation(t("foo", { world: "World!" }), dict)).toEqual("Hello World!")
+    expect(createAnnotation(t("foo", { name: "Foo!", world: "World!" }), dict)).toEqual("Hello Foo!")
   })
 })

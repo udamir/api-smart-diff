@@ -2,7 +2,7 @@ import { getNodeRules, syncCrawl, SyncCrawlHook } from "json-crawl"
 
 import type { 
   ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, 
-  SourceContext, ContextInput, MergeFactoryResult
+  SourceContext, ContextInput, MergeFactoryResult, CompareEngine
 } from "./types"
 import { 
   diffFactory, convertDiffToMeta, createMergeMeta, getKeyValue, isArray, 
@@ -156,7 +156,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
   return { diffs: _diffs, hook }
 }
 
-export const compare = (before: unknown, after: unknown, options: ComapreOptions = {}, context: SourceContext = {}): CompareResult => {
+export const compare: CompareEngine = (before: unknown, after: unknown, options: ComapreOptions = {}, context: SourceContext = {}): CompareResult => {
   // set default context if not assigned
   const { jsonPath: _bPath = [], source: bSource = before } = context.before ?? {}
   const { jsonPath: _aPath = [], source: aSource = after } = context.after ?? {}

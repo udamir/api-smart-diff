@@ -1,6 +1,4 @@
-import type { JsonPath } from "json-crawl"
-
-import { createTemplateAnnotation, isFunc, isNumber, isString, annotationTemplate as t } from "../utils"
+import { createAnnotation, isNumber, isString, annotationTemplate as t } from "../utils"
 import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { getTarget } from "./jsonSchema.utils"
 
@@ -38,7 +36,7 @@ export const jsonSchemaAnnotationHook: AnnotateHook = (diff, ctx) => {
 
   if (!annotate) { return "" }
 
-  return createTemplateAnnotation(jsonSchemaAnnotations, isFunc(annotate) ? annotate(diff, ctx) : annotate )
+  return createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
 } 
 
 export const schemaAnnotationChange: ChangeAnnotationResolver = ({ action, path }) => {
@@ -95,7 +93,7 @@ export const schemaKeyItemChange: ChangeAnnotationResolver = ({ action, path }, 
     case "oneOf": case "anyOf": case "allOf": 
       return t(action, { text: t(`${parentKey}Item`), target })
     case "required":
-      return isString(value) ? t(action, { text: t("status", { key }), target: target ? `${target}.${value}` : value }) : undefined
+      return isString(value) ? t(action, { text: t("status", { key: parentKey }), target: target ? `${target}.${value}` : value }) : undefined
   }
   return
 }

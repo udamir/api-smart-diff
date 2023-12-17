@@ -1,36 +1,36 @@
-import type { ComapreOptions, CompareRules } from "./types"
-import { jsonSchemaRules } from "./jsonSchema"
-import { openapi3Rules } from "./openapi"
-import { compare } from "./compare"
+import type { ComapreOptions, CompareEngine } from "./types"
+import { compareJsonSchema } from "./jsonSchema"
+import { compareGraphApi } from "./graphapi"
+import { compareOpenApi } from "./openapi"
 
-export const discoverCompareRules = (data: any): CompareRules => {
-  if (typeof data !== "object" || !data) { return jsonSchemaRules() }
+export const discoverCompareEngine = (data: any): CompareEngine => {
+  if (typeof data !== "object" || !data) { return compareJsonSchema }
 
-  if (/3.+/.test(data?.openapi || "")) return openapi3Rules()
+  if (/3.+/.test(data?.openapi || "")) return compareOpenApi
   // if (/2.+/.test(data?.asyncapi || "")) return asyncApi2Rules
   // if (/2.+/.test(data?.swagger || "")) return swagger2Rules
-  // if (data?.graphapi) return graphapiRules
-  return jsonSchemaRules()
+  if (data?.graphapi) return compareGraphApi
+  return compareJsonSchema
 }
 
 export const apiMerge = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
-  const rules = options.rules ?? discoverCompareRules(before)
+  const engine = discoverCompareEngine(before)
 
-  const { merged } = compare(before, after, { ...options, rules })
+  const { merged } = engine(before, after, options)
 
   return merged
 }
 
 export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
-  const rules = options.rules ?? discoverCompareRules(before)
+  const engine = discoverCompareEngine(before)
 
-  const { diffs } = compare(before, after, { ...options, rules })
+  const { diffs } = engine(before, after, options)
 
   return diffs
 }
 
 export const apiCompare = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
-  const rules = options.rules ?? discoverCompareRules(before)
+  const engine = discoverCompareEngine(before)
 
-  return compare(before, after, { ...options, rules })
+  return engine(before, after, options)
 }

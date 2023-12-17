@@ -59,6 +59,8 @@ export type ComapreOptions = {
   }
 }
 
+export type CompareEngine = (before: unknown, after: unknown, options?: ComapreOptions, context?: SourceContext) => CompareResult
+
 export type AnnotateHook = (diff: Diff, ctx: ComapreContext) => string
 export type NodeRoot = { "#": any }
 export type KeyMapping = Record<string | number, string | number>
