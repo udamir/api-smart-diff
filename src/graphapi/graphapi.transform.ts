@@ -1,5 +1,7 @@
-import { compareTransformationFactory } from "../utils"
+import { graphapiMergeRules, merge } from "allof-merge"
+
 import { graphApiComponents, graphApiOperations, graphSchemaCustomProps } from "./graphapi.const"
+import { compareTransformationFactory } from "../utils"
 
 export const transformGraphApiComponents = compareTransformationFactory((value, other) => {
   if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
@@ -61,4 +63,8 @@ export const transformGraphApiDirective = compareTransformationFactory((value, o
   }
 
   return result
+})
+
+export const graphApiMergeAllOf = compareTransformationFactory((value) => {
+  return merge(value, { rules: graphapiMergeRules, mergeCombinarySibling: true, mergeRefSibling: true })
 })

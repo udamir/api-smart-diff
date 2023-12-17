@@ -10,7 +10,7 @@ import {
   booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, 
   multipleOfClassifier, requiredItemClassifyRule, typeClassifier
 } from "./jsonSchema.classify"
-import { transformJsonSchema, transformJsonSchemaCombiners, transformMergeAllOf } from "./jsonSchema.transform"
+import { transformJsonSchema, transformJsonSchemaCombiners, jsonSchemaMergeAllOf } from "./jsonSchema.transform"
 import { enumMappingResolver, jsonSchemaMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
@@ -168,6 +168,6 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
 
   return notMergeAllOf ? rules : { 
     ...rules,
-    transform: [...rules.transform ?? [], transformMergeAllOf(version)]
+    transform: [...rules.transform ?? [], jsonSchemaMergeAllOf(version)]
   }
 }

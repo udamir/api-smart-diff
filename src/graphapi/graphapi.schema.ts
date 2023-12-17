@@ -12,6 +12,7 @@ export const graphApiSchemaRules = (response = false): CompareRules => {
   }
 
   const graphSchemaRules = jsonSchemaRules({ 
+    notMergeAllOf: true,
     baseRules: {
       transform: [
         transformJsonSchemaCombiners(),

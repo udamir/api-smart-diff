@@ -1,14 +1,18 @@
-import { transformGraphApiComponents, transformGraphApiDirective, transformGraphApiDocument } from "./graphapi.transform"
+import { graphApiMergeAllOf, transformGraphApiComponents, transformGraphApiDirective, transformGraphApiDocument } from "./graphapi.transform"
 import { allAnnotation, addNonBreaking } from "../constants"
 import { graphApiSchemaRules } from "./graphapi.schema"
 import type { CompareRules } from "../types"
 
-export const graphApiRules = (): CompareRules => {  
+export type GraphApiRulesOptions = {
+  notMergeAllOf?: boolean
+}
+
+export const graphApiRules = ({ notMergeAllOf = false }: GraphApiRulesOptions = {}): CompareRules => {  
   const argsSchemaRules = graphApiSchemaRules()
   const schemaRules = graphApiSchemaRules(true)
 
   return {
-    transform: [transformGraphApiDocument],
+    transform: [...notMergeAllOf ? [] : [graphApiMergeAllOf], transformGraphApiDocument],
 
     "/queries": {
       "/*": graphApiSchemaRules(true)
