@@ -141,5 +141,5 @@ export const transformJsonSchema = (version: "draft-04" | "2020-12" = "2020-12")
 
 export const jsonSchemaMergeAllOf = (version: "draft-04" | "2020-12") => compareTransformationFactory((value) => {
   const draft = version === "draft-04" ? version : "draft-06"
-  return merge(value, { rules: jsonSchemaMergeRules({}, draft), mergeCombinarySibling: true, mergeRefSibling: true })
+  return merge(value, { rules: jsonSchemaMergeRules(draft), mergeCombinarySibling: true, mergeRefSibling: true })
 })
