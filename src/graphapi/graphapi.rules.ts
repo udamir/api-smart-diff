@@ -1,62 +1,29 @@
-import { transformGraphApiComponents, transformGraphApiDirective, transformGraphApiDocument, transformGraphSchema } from "./graphapi.transform"
-import { allAnnotation, addNonBreaking, allDeprecated } from "../constants"
+import { transformGraphApiComponents, transformGraphApiDirective, transformGraphApiDocument } from "./graphapi.transform"
+import { allAnnotation, addNonBreaking } from "../constants"
 import { graphApiSchemaRules } from "./graphapi.schema"
-import { jsonSchemaRules } from "../jsonSchema"
 import type { CompareRules } from "../types"
 
-export const graphApiRules = (): CompareRules => {
-  const graphSchemaRules = (): CompareRules => {
-    const schemaRules = jsonSchemaRules()
-    return {
-      ...schemaRules,
-      transform: [...schemaRules.transform ?? [], transformGraphSchema],
-      "/specifiedByURL": { $: allAnnotation },
-      "/args": () => ({
-        ...argsSchemaRules
-      }),
-      "/values": {
-        "/*": {
-          "/description": { $: allAnnotation },
-          "/deprecated": {
-            $: allDeprecated,
-            "/reason": { $: allDeprecated }
-          }
-        }
-      },
-      "/interfaces": {
-        "/*": { $: allAnnotation }
-      },
-      "/directives": {
-        "/*": () => graphApiDirectiveRules
-      }
-    }
-  }
-  
-  const argsSchemaRules = graphApiSchemaRules(graphSchemaRules())
-  const resultSchemaRules = graphApiSchemaRules(graphSchemaRules(), true)
+export const graphApiRules = (): CompareRules => {  
+  const argsSchemaRules = graphApiSchemaRules()
+  const schemaRules = graphApiSchemaRules(true)
 
-  const graphApiDirectiveRules: CompareRules = {
-    "/*": { $: allAnnotation },
-    "/meta": { $: allAnnotation }
-  }
-  
   return {
     transform: [transformGraphApiDocument],
 
     "/queries": {
-      "/*": resultSchemaRules
+      "/*": graphApiSchemaRules(true)
     },
     "/mutations": {
-      "/*": resultSchemaRules
+      "/*": schemaRules
     },
     "/subscriptions": {
-      "/*": resultSchemaRules
+      "/*": schemaRules
     },
 
     "/components": {
       transform: [transformGraphApiComponents],
       "/*": {
-        "/*": resultSchemaRules,
+        "/*": schemaRules,
       },
       "/directives": {
         "/*": {

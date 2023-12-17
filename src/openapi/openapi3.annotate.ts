@@ -1,7 +1,7 @@
-import { isParameterPath, isRequestBodyPath, isResponsePath } from "./openapi3.utils"
-import type { ChangeAnnotationResolver, ComapreContext, Diff } from "../types"
-import { getObjectValue, createTemplateFunc } from "../utils"
-import { resolveRef } from "../jsonSchema"
+import { createTemplateAnnotation, getObjectValue, isFunc, annotationTemplate as t } from "../utils"
+import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
+import { isParameterSchema, isRequestBodySchema, isResponseSchema } from "./openapi3.utils"
+import { jsonSchemaAnnotations, resolveRef } from "../jsonSchema"
 
 const openApiAnnotations = {
   requestBodySchema: "{{schemaChange}} in Request Body content ({{contentType}})",
@@ -33,26 +33,40 @@ const openApiAnnotations = {
   encoding_key: "Encoding details ({{key}})",
 }
 
-export const pathMethodChangeAnnotation: ChangeAnnotationResolver = ({ action, path }, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
+export const openApi3AnnotateHook: AnnotateHook = (diff, ctx) => {
+  let annotate = ctx.rules?.annotate
 
-  return t(action, { text: t("method", { path: path[1], method: String(path[2]).toUpperCase() }) })
+  if (!annotate || diff.path[0] === "components") { return "" }
+  if (isResponseSchema(diff.path)) {
+    const schemaChange = createTemplateAnnotation(jsonSchemaAnnotations, annotate(diff, ctx))
+    annotate = () => t("responseSchema", { schemaChange, responseCode: diff.path[4], contentType: diff.path[6] })
+  } else if (isRequestBodySchema(diff.path)) {
+    const schemaChange = createTemplateAnnotation(jsonSchemaAnnotations, annotate(diff, ctx))
+    annotate = () => t("requestBodySchema", { schemaChange, contentType: diff.path[5] })
+  } else if (isParameterSchema(diff.path)) {
+    const schemaChange = createTemplateAnnotation(jsonSchemaAnnotations, annotate(diff, ctx))
+    const { root } = diff.action === "add" ? ctx.after : ctx.before
+    const paramPath = diff.path.slice(0, diff.path[2] === "parameters" ? 4 : 5)
+    const node = getObjectValue(root, ...paramPath)
+    annotate = () => t("parameterSchema", { ...resolveRef(node, root), schemaChange })
+  }
+
+  return createTemplateAnnotation(openApiAnnotations, annotate(diff, ctx) )
 }
 
-export const documentChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
-  const key = diff.path.join(".")
-  return t(diff.action, { text: t("document", { key }) })
+export const pathMethodChangeAnnotation: ChangeAnnotationResolver = ({ action, path }) => {
+  return t(action, { text: t("method", { path: path[1], method: String(path[2]).toUpperCase() })})
 }
 
-export const operationSecurityChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
-
-  return t(diff.action, { text: t("security") })
+export const documentChangeAnnotation: ChangeAnnotationResolver = ({ action, path }) => {
+  return t(action, { text: t("document", { key: path.join(".") })})
 }
 
-export const requestBodyChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
+export const operationSecurityChangeAnnotation: ChangeAnnotationResolver = ({ action }) => {
+  return t(action, { text: t("security")})
+}
+
+export const requestBodyChangeAnnotation: ChangeAnnotationResolver = ({ path, action }) => {
   const key = path[path.length-1]
 
   if (key === "required" || key === "deprecated") {
@@ -62,23 +76,21 @@ export const requestBodyChangeAnnotation: ChangeAnnotationResolver = ({ path, ac
   return t(action, { text: t("annotation", { key }), target: t("requestBody") })
 }
 
-export const responseChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
+export const responseChangeAnnotation: ChangeAnnotationResolver = ({ path, action }) => {
   const responseCode = path[4]
   const key = path[path.length-1]
   
   if (responseCode === key) {
-    return t(action, { text: t("response", { responseCode }) })
+    return t(action, { text: t("response", { responseCode })})
   }
 
-  return t(action, { text: t("annotation", { key }), target: t("response", { responseCode }) })
+  return t(action, { text: t("annotation", { key }), target: t("response", { responseCode })})
 }
 
 export const contentChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
-  const contentType = isResponsePath(path) ? path[6] : path[5]
-  const responseCode = isResponsePath(path) ? path[4] : undefined
-  const target = isResponsePath(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
+  const contentType = isResponseSchema(path) ? path[6] : path[5]
+  const responseCode = isResponseSchema(path) ? path[4] : undefined
+  const target = isResponseSchema(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
   const key = path[path.length-1]
 
   if (contentType && contentType !== key) {
@@ -89,20 +101,18 @@ export const contentChangeAnnotation: ChangeAnnotationResolver = ({ path, action
 }
 
 export const encodingChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
-  const contentType = isResponsePath(path) ? path[6] : path[5]
-  const responseCode = isResponsePath(path) ? path[4] : undefined
-  const target = isResponsePath(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
+  const contentType = isResponseSchema(path) ? path[6] : path[5]
+  const responseCode = isResponseSchema(path) ? path[4] : undefined
+  const target = isResponseSchema(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
 
-  const encodingPath = isResponsePath(path) ? path.slice(8) : path.slice(7)
+  const encodingPath = isResponseSchema(path) ? path.slice(8) : path.slice(7)
   const key = encodingPath.join(".")
 
   return t(action, { text: t("encoding", { key }), target })
 }
 
 export const operationChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
-  const key = path[path.length-1]
+  const { value, key } = action === "add" ? ctx.after : ctx.before
 
   if (key === "deprecated") {
     if (ctx.after.value) {
@@ -110,7 +120,7 @@ export const operationChangeAnnotation: ChangeAnnotationResolver = ({ path, acti
     } else if (ctx.before.value) {
       return t("remove", { text: t("status", { key }) })
     }
-    return ""
+    return
   } else if (key === "requestBody") {
     return t(action, { text: t(key) })
   }
@@ -123,40 +133,16 @@ export const operationChangeAnnotation: ChangeAnnotationResolver = ({ path, acti
   return t(action, { text: t("annotation", { key }) })
 }
 
-export const parameterChangeAnnotation: ChangeAnnotationResolver = (diff, ctx): string => {
-  const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
-  const key = diff.path[diff.path.length-1]
+export const parameterChangeAnnotation: ChangeAnnotationResolver = ({ action }, ctx) => {
+  const { path, root, key } = action === "add" ? ctx.after : ctx.before
 
-  const { path, root } = diff.action === "add" ? ctx.after : ctx.before
   const paramPath = path.slice(0, path[2] === "parameters" ? 4 : 5)
   const node = getObjectValue(root, ...paramPath)
   const param = resolveRef(node, root)
 
   if (key === "required" || key === "deprecated") {
-    return t(diff.action, { text: t("status", { key }), target: t("param", param) })
+    return t(action, { text: t("status", { key }), target: t("param", param) })
   } else {
-    return t(diff.action, { text: t("param", param) })
+    return t(action, { text: t("param", param) })
   }
 }
-
-export const openApiSchemaAnnotate = (resolver: ChangeAnnotationResolver): ChangeAnnotationResolver => {
-  return (diff: Diff, ctx: ComapreContext): string => {
-    const t = createTemplateFunc(ctx.options.dictionary?.openapi ?? openApiAnnotations)
-    const schemaChange = resolver(diff, ctx) 
-    if (!schemaChange) { return "" }
-
-    if (isResponsePath(ctx.before.path)) {
-      return t("responseSchema", { schemaChange, responseCode: ctx.before.path[4], contentType: ctx.before.path[6] })
-    } else if (isRequestBodyPath(ctx.before.path)) {
-      return t("requestBodySchema", { schemaChange, contentType: ctx.before.path[5] })
-    } else if (isParameterPath(ctx.before.path)) {
-      const { path, root } = diff.action === "add" ? ctx.after : ctx.before
-      const paramPath = path.slice(0, path[2] === "parameters" ? 4 : 5)
-      const node = getObjectValue(root, ...paramPath)
-      return t("parameterSchema", { ...resolveRef(node, root), schemaChange })
-    }
-
-    return ""
-  }
-}
-

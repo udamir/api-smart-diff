@@ -3,7 +3,7 @@ import type { JsonPath } from "json-crawl"
 
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
 import type { AllOfNode, JsonSchemaNodeType } from "./jsonSchema.types"
-import { excludeKeys, isObject } from "../utils"
+import { excludeKeys, isNumber, isObject } from "../utils"
 import type { Diff } from "../types"
 
 export function isAllOfNode(value: any): value is AllOfNode {
@@ -138,4 +138,23 @@ export const createEmptyCombiner = (value: Record<string, unknown>, combiner: st
     ...allowedProps,
     [combiner]: Object.keys(sibling).length ? [sibling] : [],
   }
+}
+
+export const getTarget = (path: JsonPath, prefix = ""): string | undefined => {
+  for (let i = 0; i < path.length; i++) {
+    if (path[i] === "properties" && i < path.length - 1) {
+      prefix += prefix ? "." + String(path[++i]) : String(path[++i]) 
+    } else if (path[i] === "additionalProperties") {
+      prefix += "{.*}" 
+    } else if (path[i] === "patternProperties" && i < path.length - 1) {
+      prefix += `{${String(path[++i])}}` 
+    } else if (path[i] === "items") {
+      if ((i < path.length - 1) && isNumber(path[i+1])) {
+        prefix += `[${path[++i]}]`
+      } else {
+        prefix += "[]"
+      }
+    }
+  }
+  return prefix ? prefix : undefined
 }

@@ -1,13 +1,13 @@
-import { CompareRules, breaking, convertJsonSchemaRules, nonBreaking, openApiSchemaRules, unclassified } from "../../src"
+import { CompareRules, breaking, nonBreaking, reverseClassifyRuleTransformer, transformComapreRules, unclassified } from "../src"
 
-describe("Openapi utils unit tests", () => {
+describe("Diff type classify transformer tests", () => {
   it("should reverse simple rules", () => {
     const rules: CompareRules = {
       "/*": {
         $: [nonBreaking, breaking, unclassified]
       }
     }
-    const reversed = convertJsonSchemaRules(rules, true)
+    const reversed = transformComapreRules(rules, reverseClassifyRuleTransformer)
     expect(reversed).toMatchObject({
       "/*": { $: [breaking, nonBreaking, unclassified] }
     })
@@ -23,7 +23,7 @@ describe("Openapi utils unit tests", () => {
       },
     }
                   
-    const reversed = convertJsonSchemaRules(rules, true)
+    const reversed = transformComapreRules(rules, reverseClassifyRuleTransformer)
 
     expect(reversed).toMatchObject({
       "/*": { 
@@ -42,7 +42,7 @@ describe("Openapi utils unit tests", () => {
       },
     }
                   
-    const reversed: any = convertJsonSchemaRules(rules, true)
+    const reversed: any = transformComapreRules(rules, reverseClassifyRuleTransformer)
 
     expect(reversed["/*"].$[2]({ before: { path: [] }})).toEqual(breaking)
     expect(reversed["/*"].$[2]({ before: { path: [1] }})).toEqual(nonBreaking)
@@ -59,7 +59,7 @@ describe("Openapi utils unit tests", () => {
       },
     }
                   
-    const reversed: any = convertJsonSchemaRules(rules, true)
+    const reversed: any = transformComapreRules(rules, reverseClassifyRuleTransformer)
 
     expect(reversed["/*"]["/*"]()).toMatchObject({
       $: [nonBreaking, breaking, unclassified],

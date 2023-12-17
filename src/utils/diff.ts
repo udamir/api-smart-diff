@@ -1,45 +1,37 @@
 import { JsonPath } from "json-crawl"
 
-import type { ChangeFactory, ComapreContext, CompareTransformResolver, Diff, DiffContext, DiffMeta, FormatDiffFunc, MergeMeta, TransformResolver } from "../types"
+import type { DiffFactory, ComapreContext, CompareTransformResolver, Diff, DiffContext, DiffMeta, MergeMeta, TransformResolver } from "../types"
 import { DiffAction, allUnclassified, unclassified } from "../constants"
 import { getKeyValue, joinPath } from "./misc"
+import { isFunc } from "./guards"
 
-export const classifyDiff = (diff: Diff, ctx: ComapreContext): Diff => {
-  const { rules } = ctx.options
-  const { $: rule, annotate } = rules ?? {}
+export const createDiff = (diff: Omit<Diff, "type">, ctx: ComapreContext): Diff => {
+  const rule = ctx.rules?.$ ?? {}
+  const _diff: Diff = { ...diff, type: unclassified }
 
-  const description = annotate?.(diff, ctx)
+  if (rule) { 
+    const classifier = Array.isArray(rule) ? rule : allUnclassified
 
-  if (!rule) { 
-    return { ...diff, type: unclassified, ...description ? { description } : {} }
-  }
+    const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
+    const changeType = classifier[index]
 
-  const classifier = Array.isArray(rule) ? rule : allUnclassified
-
-  const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
-  const changeType = classifier[index]
-
-  try {
-    if (typeof changeType === "function") {
-      return { ...diff, type: changeType(ctx), ...description ? { description } : {} }
-    } else {
-      return { ...diff, type: changeType, ...description ? { description } : {} }
+    try {
+      _diff.type = isFunc(changeType) ? changeType(ctx) : changeType  
+    } catch (error) {
+      const message = error instanceof Error ? error.message : ""
+      console.error(`Classification Rule error for node: ${ctx.before.path.join(".")}. ${message}`)
     }
-
-  } catch (error) {
-    return { ...diff, type: unclassified, ...description ? { description } : {} }
   }
+  
+  const description = ctx.options.annotateHook?.(_diff, ctx)
+  return { ..._diff, ...description ? { description } : {} }
 }
 
-export const changeFactory = <T extends Diff>(formatDiffFunc?: FormatDiffFunc<T>): ChangeFactory<T> => {
-  const formatDiff = formatDiffFunc ? formatDiffFunc : ((diff: Diff) => diff as T)
-
-  return {
-    added: (path, after, ctx) => formatDiff(classifyDiff({ path, after, action: DiffAction.add }, ctx), ctx),
-    removed: (path, before, ctx) => formatDiff(classifyDiff({ path, before, action: DiffAction.remove }, ctx), ctx),
-    replaced: (path, before, after, ctx) => formatDiff(classifyDiff({ path, before, after, action: DiffAction.replace }, ctx), ctx),
-    renamed: (path, before, after, ctx) => formatDiff(classifyDiff({ path, before, after, action: DiffAction.rename }, ctx), ctx),
-  }
+export const diffFactory: DiffFactory = {
+  added: (path, after, ctx) => createDiff({ path, after, action: DiffAction.add }, ctx),
+  removed: (path, before, ctx) => createDiff({ path, before, action: DiffAction.remove }, ctx),
+  replaced: (path, before, after, ctx) => createDiff({ path, before, after, action: DiffAction.replace }, ctx),
+  renamed: (path, before, after, ctx) => createDiff({ path, before, after, action: DiffAction.rename }, ctx),
 }
 
 export const convertDiffToMeta = (diff: Diff): DiffMeta => {

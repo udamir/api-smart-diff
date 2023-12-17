@@ -3,8 +3,8 @@ import {
   onlyAddBreaking, allDeprecated, allNonBreaking, unclassified,
 } from "../constants"
 import { 
-  schemaAnnotationChange, schemaExampleChange, jsonSchemaKeyChange, schemaParentKeyChange,
-  schemaRequiredChange, schemaStatusChange, schemaValidationChange
+  schemaAnnotationChange, schemaExampleChange, jsonSchemaKeyChange, schemaKeyItemChange,
+  schemaStatusChange, schemaValidationChange
 } from "./jsonSchema.annotate"
 import { 
   booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, 
@@ -14,7 +14,9 @@ import { transformJsonSchema, transformJsonSchemaCombiners, transformMergeAllOf 
 import { enumMappingResolver, jsonSchemaMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
+import { reverseClassifyRuleTransformer, transformComapreRules } from "../utils"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
+
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: schemaAnnotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
@@ -24,7 +26,7 @@ const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
     "/*": () => ({ 
       ...rules,
       $: allBreaking,
-      annotate: schemaParentKeyChange
+      annotate: schemaKeyItemChange
     }),  
   } : {
     ...rules,
@@ -33,10 +35,10 @@ const arrayItemsRules = (value: unknown, rules: CompareRules): CompareRules => {
   }
 }
 
-export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draft-04" }: JsonSchemaRulesOptions = {}): CompareRules => {
+export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draft-04", cache = {}}: JsonSchemaRulesOptions = {}): CompareRules => {
   const rules: CompareRules = {
     // important to createCompareRefResolver once for cycle refs cache
-    compare: createRefsCompareResolver(),
+    compare: createRefsCompareResolver(cache),
     transform: [transformJsonSchemaCombiners(), transformJsonSchema(version)],
     mapping: jsonSchemaMappingResolver,
 
@@ -61,32 +63,30 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
     "/minProperties": simpleRule(typeClassifier("object", minClassifier), schemaValidationChange),
     "/required": {
       mapping: requiredMappingResolver,
-      "/*": { 
-        $: requiredItemClassifyRule,
-        annotate: schemaRequiredChange
-      },
+      "/*": simpleRule(requiredItemClassifyRule, schemaKeyItemChange),
     },
     "/enum": {
       mapping: enumMappingResolver,
       annotate: jsonSchemaKeyChange,
-      "/*": { $: [nonBreaking, breaking, breaking], annotate: schemaParentKeyChange },
+      "/*": { $: [nonBreaking, breaking, breaking], annotate: schemaKeyItemChange },
     },
-    "/const": {
-      $: [breaking, nonBreaking, breaking],
-      annotate: jsonSchemaKeyChange
-    },
+    "/const": simpleRule([breaking, nonBreaking, breaking], jsonSchemaKeyChange),
     "/type": {
       $: [breaking, nonBreaking, breaking],
       annotate: jsonSchemaKeyChange,
       "/*": { $: [nonBreaking, breaking, breaking] },
     },
-    "/not": () => ({ ...rules, $: allBreaking }),
+    "/not": () => ({ 
+      // TODO check
+      ...transformComapreRules(rules, reverseClassifyRuleTransformer),
+      $: allBreaking
+    }),
     "/allOf": {
       compare: combinaryCompareResolver,
       "/*": () => ({ 
         ...rules,
         $: allBreaking,
-        annotate: schemaParentKeyChange
+        annotate: schemaKeyItemChange
       }),
     },
     "/oneOf": {
@@ -94,7 +94,7 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
       "/*": () => ({ 
         ...rules, 
         $: [nonBreaking, breaking, breaking],
-        annotate: schemaParentKeyChange
+        annotate: schemaKeyItemChange
       }),
     },
     "/anyOf": {
@@ -102,7 +102,7 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
       "/*": () => ({ 
         ...rules, 
         $: [nonBreaking, breaking, breaking],
-        annotate: schemaParentKeyChange
+        annotate: schemaKeyItemChange
       }),
     },
     "/items": ({ value }) => arrayItemsRules(value, rules),
@@ -115,7 +115,7 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
       "/*": () => ({ 
         ...rules, 
         $: [nonBreaking, breaking, unclassified],
-        annotate: schemaParentKeyChange
+        annotate: schemaKeyItemChange
       }),
     },
     "/additionalProperties": () => ({ 
@@ -127,7 +127,7 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
       "/*": () => ({ 
         ...rules, 
         $: [breaking, nonBreaking, unclassified],
-        annotate: schemaParentKeyChange
+        annotate: schemaKeyItemChange
       }),
     },
     "/propertyNames": () => ({ ...rules, $: onlyAddBreaking, annotate: schemaValidationChange }),

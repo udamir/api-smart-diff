@@ -1,10 +1,10 @@
 import type { JsonPath } from "json-crawl"
 
-import type { ChangeAnnotationResolver, ComapreContext } from "../types"
-import { isNumber, isString, createTemplateFunc } from "../utils"
-import type { AnnotationContext } from "./jsonSchema.types"
+import { createTemplateAnnotation, isFunc, isNumber, isString, annotationTemplate as t } from "../utils"
+import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
+import { getTarget } from "./jsonSchema.utils"
 
-const jsonSchemaAnnotations = {
+export const jsonSchemaAnnotations = {
   add: "[Added] {{text}}",
   add_target: "[Added] {{text}} to `{{target}}`",
   remove: "[Removed] {{text}}",
@@ -33,97 +33,69 @@ const jsonSchemaAnnotations = {
   allOfItem: `allOf schema`,
 } as const
 
-const getTarget = (path: JsonPath, prefix = ""): string | undefined => {
-  for (let i = 0; i < path.length; i++) {
-    if (path[i] === "properties" && i < path.length - 1) {
-      prefix += prefix ? "." + String(path[++i]) : String(path[++i]) 
-    } else if (path[i] === "additionalProperties") {
-      prefix += "{.*}" 
-    } else if (path[i] === "patternProperties" && i < path.length - 1) {
-      prefix += `{${String(path[++i])}}` 
-    } else if (path[i] === "items") {
-      if ((i < path.length - 1) && isNumber(path[i+1])) {
-        prefix += `[${path[++i]}]`
-      } else {
-        prefix += "[]"
-      }
-    }
-  }
-  return prefix ? prefix : undefined
+export const jsonSchemaAnnotationHook: AnnotateHook = (diff, ctx) => {
+  const annotate = ctx.rules?.annotate
+
+  if (!annotate) { return "" }
+
+  return createTemplateAnnotation(jsonSchemaAnnotations, isFunc(annotate) ? annotate(diff, ctx) : annotate )
+} 
+
+export const schemaAnnotationChange: ChangeAnnotationResolver = ({ action, path }) => {
+  const key = path[path.length-1]
+
+  return { template: action, params: { text: { template: "annotation", params: { key }}, target: getTarget(path) } }
 }
 
-const getDiffContext = (action: string, ctx: ComapreContext): AnnotationContext => {
-  const _ctx = action === "add" ? ctx.after : ctx.before
+export const schemaExampleChange: ChangeAnnotationResolver = ({ action, path }) => {
+  const key = path[path.length-1]
 
-  return {
-    ..._ctx,
-    t: createTemplateFunc(ctx.options.dictionary?.jsonSchema ?? jsonSchemaAnnotations),
-    target: getTarget(_ctx.path)
-  }
+  return t(action, { text: t("annotation", { key: "example" }), target: getTarget(path) })
 }
 
-export const schemaAnnotationChange: ChangeAnnotationResolver = (diff, ctx) => {
-  const { t, key, target } = getDiffContext(diff.action, ctx)
+export const schemaValidationChange: ChangeAnnotationResolver = ({ action, path }) => {
+  const key = path[path.length-1]
 
-  return t(diff.action, { text: t("annotation", { key }), target })
+  return t(action, { text: t("validation", { key }), target: getTarget(path) })
 }
 
-export const schemaExampleChange: ChangeAnnotationResolver = (diff, ctx) => {
-  const { t, target } = getDiffContext(diff.action, ctx)
-
-  return t(diff.action, { text: t("annotation", { key: "example" }), target })
-}
-
-export const schemaValidationChange: ChangeAnnotationResolver = (diff, ctx) => {
-  const { key, t, target } = getDiffContext(diff.action, ctx)
-
-  return t(diff.action, { text: t("validation", { key }), target })
-}
-
-export const schemaStatusChange: ChangeAnnotationResolver = (diff, ctx) => {
-  const { t, key, target } = getDiffContext(diff.action, ctx)
+export const schemaStatusChange: ChangeAnnotationResolver = ({ path }, ctx) => {
+  const key = path[path.length-1]
 
   if (ctx.after.value) {
-    return t("add", { text: t("status", { key }), target })
+    return t("add", { text: t("status", { key }), target: getTarget(path) })
   } else if (ctx.before.value) {
-    return t("remove", { text: t("status", { key }), target })
-  }
-  return ""
+    return t("remove", { text: t("status", { key }), target: getTarget(path) })  }
 }
 
-export const jsonSchemaKeyChange: ChangeAnnotationResolver = (diff, ctx) => {
-  const { t, key, target } = getDiffContext(diff.action, ctx)
+export const jsonSchemaKeyChange: ChangeAnnotationResolver = ({ action, path }) => {
+  const key = path[path.length-1]
 
-  if (isNumber(key)) { return "" }
+  if (isNumber(key)) { return }
 
-  return t(diff.action, { target, text: t(key) })
+  return t(action, { target: getTarget(path), text: t(key) })
 }
 
-export const schemaParentKeyChange: ChangeAnnotationResolver = (diff, ctx) => {
-  const { key, path, target, t } = getDiffContext(diff.action, ctx)
+export const schemaKeyItemChange: ChangeAnnotationResolver = ({ action, path }, ctx) => {
+  const key = path[path.length-1]
+  const { value } = action === "add" ? ctx.after : ctx.before
   const parentKey = path.length > 1 ? path[path.length-2] : ""
   const parentTarget = getTarget(path.slice(0, -1))
+  const target = getTarget(path)
+  
   switch (parentKey) {
     case "enum": 
       return t("replace", { text: t("enum"), target })
     case "properties": 
-      return isString(key) ? t(diff.action, { text: t("property", { key }), target: parentTarget }) : "" 
+      return isString(key) ? t(action, { text: t("property", { key }), target: parentTarget }) : undefined
     case "items": 
-      return isNumber(key) ? t(diff.action, { text: t("arratItem", { key }), target: parentTarget }) : "" 
+      return isNumber(key) ? t(action, { text: t("arratItem", { key }), target: parentTarget }) : undefined 
     case "patternProperties": 
-      return isString(key) ? t(diff.action, { text: t("patternProperty", { key }), target: parentTarget}) : "" 
+      return isString(key) ? t(action, { text: t("patternProperty", { key }), target: parentTarget}) : undefined
     case "oneOf": case "anyOf": case "allOf": 
-      return t(diff.action, { text: t(`${parentKey}Item`), target })
+      return t(action, { text: t(`${parentKey}Item`), target })
+    case "required":
+      return isString(value) ? t(action, { text: t("status", { key }), target: target ? `${target}.${value}` : value }) : undefined
   }
-  return ""
-}
-
-export const schemaRequiredChange: ChangeAnnotationResolver = (diff, ctx) => {
-  const { path, target, t, value } = getDiffContext(diff.action, ctx)
-  if (!isString(value)) { return "" }
-
-  const key = path.length > 1 ? path[path.length-2] : ""
-  const childTarget = target ? `${target}.${value}` : value
- 
-  return t(diff.action, { text: t("status", { key }), target: childTarget })
+  return
 }

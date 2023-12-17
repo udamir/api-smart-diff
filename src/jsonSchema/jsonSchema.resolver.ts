@@ -2,8 +2,8 @@ import { getNodeRules } from "json-crawl"
 import { isRefNode } from "allof-merge"
 
 import { buildPath, changeDiffsPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
-import { changeFactory, convertDiffToMeta, createMergeMeta, isArray } from "../utils"
-import type { CompareResultCache } from "./jsonSchema.types"
+import { diffFactory, convertDiffToMeta, createMergeMeta, isArray } from "../utils"
+import type { CompareResultCache, JsonSchemaComapreCache } from "./jsonSchema.types"
 import { compareJsonSchema } from "./jsonSchema.compare"
 import { compare, createChildContext } from "../compare"
 import type { CompareResolver, Diff } from "../types"
@@ -13,9 +13,8 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   const { before, after, options } = ctx
   const { arrayMeta, metaKey = DIFF_META_KEY } = options
 
-  const change = changeFactory(options.formatDiffFunc)
   if (!isArray(before.value) || !isArray(after.value)) {
-    const diff = change.replaced(before.path, before.value, after.value, ctx)
+    const diff = diffFactory.replaced(before.path, before.value, after.value, ctx)
     return { diffs: [diff], merged: after.value, rootMergeMeta: convertDiffToMeta(diff) }
   }
   // match combinaries
@@ -25,7 +24,7 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   const _merged: any = []
   const _diffs: Diff[] = []
 
-  const rules = getNodeRules(options.rules, "*", before.path, before.value)
+  const rules = getNodeRules(ctx.rules, "*", before.path, before.value)
 
   // compare all combinations, find min diffs
   for (const i of before.value.keys()) {
@@ -62,13 +61,13 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   const arrayMetaDiffs: Diff[] = []
   for (const i of beforeMached.values()) {
     _merged[i] = before.value[i]
-    const diff = change.removed([...before.path, i], before.value[i], createChildContext(ctx, i, ""))
+    const diff = diffFactory.removed([...before.path, i], before.value[i], createChildContext(ctx, i, ""))
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
 
   for (const j of afterMatched.values()) {
-    const diff = change.added([...after.path, _merged.length], after.value[j], createChildContext(ctx, "", j))
+    const diff = diffFactory.added([...after.path, _merged.length], after.value[j], createChildContext(ctx, "", j))
     _merged.push(after.value[j])
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
@@ -82,19 +81,21 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   return { diffs: _diffs, merged: _merged, ...(!arrayMeta && Object.keys(rootArrayMeta).length) ? { rootMergeMeta: { array: rootArrayMeta } } : {} }
 }
 
-export const createRefsCompareResolver = (): CompareResolver => {
-  const compareCache = new Map<string, CompareResultCache>()
-  const aRefs: Record<string, string[]> = {}
-  const bRefs: Record<string, string[]> = {}
+export const createRefsCompareResolver = (cache: JsonSchemaComapreCache = {}): CompareResolver => {
+  cache.results = cache.results ?? new Map<string, CompareResultCache>()
+  cache.bRefs = cache.bRefs ?? {}
+  cache.aRefs = cache.aRefs ?? {}
 
-  const resolver: CompareResolver = ({ before, after, options }) => {
+  const { results, bRefs, aRefs } = cache
+
+  const resolver: CompareResolver = ({ before, after, rules, options }) => {
     // check if current path has already been compared via $refs
     const bPath = buildPath(before.path)
     const aPath = buildPath(after.path)
 
     let compareRefsId = getCompareId(bPath, aPath)
-    if (compareCache.has(compareRefsId)) {
-      return compareCache.get(compareRefsId)
+    if (results.has(compareRefsId)) {
+      return results.get(compareRefsId)
     }
 
     // normalize ref
@@ -116,8 +117,8 @@ export const createRefsCompareResolver = (): CompareResolver => {
     if (bRef && aRef) {
       compareRefsId = getCompareId(bRef, aRef)
       
-      if (compareCache.has(compareRefsId)) {
-        const { path, diffs, ...rest } = compareCache.get(compareRefsId)!
+      if (results.has(compareRefsId)) {
+        const { path, diffs, ...rest } = results.get(compareRefsId)!
         return { ...rest, diffs: changeDiffsPath(diffs, path, before.path) }
       }
     }
@@ -131,14 +132,14 @@ export const createRefsCompareResolver = (): CompareResolver => {
     }
 
     // compare content
-    const result = compare(_before, _after, options, {
+    const result = compare(_before, _after, { ...options, rules }, {
       before: { jsonPath: before.path, source: before.root }, 
       after: { jsonPath: after.path, source: after.root }, 
     })
 
     // save compare result
     if (bRef && aRef) {
-      compareCache.set(compareRefsId, { ...result, path: before.path })
+      results.set(compareRefsId, { ...result, path: before.path })
     }
 
     return result

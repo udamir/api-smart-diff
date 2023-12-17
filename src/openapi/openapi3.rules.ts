@@ -21,7 +21,7 @@ import type { OpenApi3RulesOptions } from "./openapi3.types"
 import type { ClassifyRule, CompareRules } from "../types"
 import { openApiSchemaRules } from "./openapi3.schema"
 import { enumMappingResolver } from "../jsonSchema"
-import { isResponsePath } from "./openapi3.utils"
+import { isResponseSchema } from "./openapi3.utils"
 
 const paramRule = (classify: ClassifyRule) => ({ $: classify, annotate: parameterChangeAnnotation })
 const documentAnnotationRule: CompareRules = { $: allAnnotation, annotate: documentChangeAnnotation }
@@ -110,7 +110,7 @@ export const openapi3Rules = (options: OpenApi3RulesOptions = {}): CompareRules 
       },
       $: [nonBreaking, breaking, nonBreaking],
       "/schema": ({ path }) => ({
-        ...isResponsePath(path) ? responseSchemaRules : requestSchemaRules,
+        ...isResponseSchema(path) ? responseSchemaRules : requestSchemaRules,
         $: allBreaking
       }),
       "/example": { $: allAnnotation },

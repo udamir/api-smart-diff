@@ -82,7 +82,6 @@ describe("Openapi response changes", () => {
             properties:
               id:
                 type: integer
-                format: int64
               name:
                 type: string
                 example: doggie
@@ -92,11 +91,11 @@ describe("Openapi response changes", () => {
 
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(5)
+    expect(diffs.length).toEqual(7)
     diffs.forEach((diff, i) => {
-      expect(diff).toHaveProperty("description")
-      expect(diff.description).not.toEqual("")
-      i !== 3 && expect(diff.type).not.toEqual("unclassified")
+      i !== 6 && expect(diff).toHaveProperty("description")
+      i !== 6 && expect(diff.description).not.toEqual("")
+      i !== 4 && expect(diff.type).not.toEqual("unclassified")
     })
 
     expect(merged.paths["/pet/findByStatus"].get.responses[metaKey]).toMatchObject({ 
@@ -114,6 +113,14 @@ describe("Openapi response changes", () => {
     expect(merged.paths["/pet/findByStatus"].get.responses[200].content["application/json"][metaKey]).toMatchObject({ 
       encoding: { action: DiffAction.add, type: breaking },
       examples: { action: DiffAction.add, type: annotation },
+    })
+
+    expect(merged.paths["/pet/findByStatus"].get.responses[200].content["application/json"].schema.items.properties.id[metaKey]).toMatchObject({ 
+      format: { action: DiffAction.remove, type: breaking },
+    })
+
+    expect(merged.components.schemas.Pet.properties.id[metaKey]).toMatchObject({ 
+      format: { action: DiffAction.remove, type: nonBreaking },
     })
   })
 })

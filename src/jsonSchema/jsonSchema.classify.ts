@@ -1,4 +1,4 @@
-import { isExist, getParentContext, isString, isNumber, isFunc } from "../utils"
+import { isExist, getParentContext, isString, isNumber, transformClassifyRule } from "../utils"
 import type { ClassifyRule, DiffType, DiffTypeClassifier } from "../types"
 import { breaking, nonBreaking, unclassified } from "../constants"
 import { isValidSchemaTypes } from "./jsonSchema.utils"
@@ -11,11 +11,10 @@ export const typeClassifier = (types: string[] | string, base: ClassifyRule): Cl
   if (_types.includes("number")) {
     _types.push("integer")
   }
-  return [
-    (ctx) => isValidSchemaTypes(_types, ctx.after.parent) ? (isFunc(base[0]) ? base[0](ctx) : base[0]) : unclassified,
-    (ctx) => isValidSchemaTypes(_types,ctx.before.parent) ? (isFunc(base[1]) ? base[1](ctx) : base[1]) : unclassified,
-    (ctx) => isValidSchemaTypes(_types,ctx.after.parent) ? (isFunc(base[2]) ? base[2](ctx) : base[2]) : unclassified,
-  ]
+
+  return transformClassifyRule(base, (diffType, { before, after }, action) => {
+    return isValidSchemaTypes(_types, action === "remove" ? before.parent : after.parent) ? diffType : unclassified
+  })
 }
 
 export const maxClassifier: ClassifyRule = [

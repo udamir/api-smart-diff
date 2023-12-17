@@ -7,17 +7,17 @@ export type ActionType = keyof typeof DiffAction
 export type DiffType = typeof ClassifierType[keyof typeof ClassifierType]
 
 export type Diff = {
+  type: DiffType
   action: ActionType
   path: JsonPath
   before?: any
   after?: any
-  type?: DiffType
   description?: string
 }
 
 export type DiffMeta = {
   action: ActionType
-  type?: DiffType
+  type: DiffType
   replaced?: any
 }
 
@@ -43,7 +43,7 @@ export type ComapreOptions = {
 
   metaKey?: string | symbol         // metakey for merge changes
   arrayMeta?: boolean               // add changes to arrays via metakey
-  formatDiffFunc?: FormatDiffFunc   // custom format hook
+  annotateHook?: AnnotateHook       // custom format hook
 
   externalSources?: {               // external $ref sources
     before?: {
@@ -59,7 +59,7 @@ export type ComapreOptions = {
   }
 }
 
-export type FormatDiffFunc<T extends Diff = Diff> = (diff: Diff, ctx: ComapreContext) => T
+export type AnnotateHook = (diff: Diff, ctx: ComapreContext) => string
 export type NodeRoot = { "#": any }
 export type KeyMapping = Record<string | number, string | number>
 
@@ -83,11 +83,11 @@ export type MergeMeta = Record<string | number, DiffMeta | MergeArrayMeta>
 
 export type JsonNode<T extends string | number = string> = T extends string ? Record<string | number, unknown> : Array<unknown>
 
-export interface ChangeFactory<T extends Diff = Diff> {
-  added: (path: JsonPath, after: unknown, ctx: ComapreContext) => T
-  removed: (path: JsonPath, before: unknown, ctx: ComapreContext) => T
-  replaced: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => T
-  renamed: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => T
+export interface DiffFactory {
+  added: (path: JsonPath, after: unknown, ctx: ComapreContext) => Diff
+  removed: (path: JsonPath, before: unknown, ctx: ComapreContext) => Diff
+  replaced: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => Diff
+  renamed: (path: JsonPath, before: unknown, after: unknown, ctx: ComapreContext) => Diff
 }
 
 export interface MergeFactoryResult {
@@ -101,4 +101,5 @@ export interface ContextInput extends MergeState {
   bPath: JsonPath
   akey: string | number
   bkey: string | number
+  rules: CompareRules
 }

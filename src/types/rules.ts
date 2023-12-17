@@ -5,9 +5,10 @@ import type { Diff, DiffType, ComapreOptions, CompareResult } from "./compare"
 export type DiffTypeClassifier = (ctx: ComapreContext) => DiffType
 
 export type ClassifyRule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
-export type AddDiffType = DiffType | DiffTypeClassifier
-export type RemoveDiffType = DiffType | DiffTypeClassifier
-export type ReplaceDiffType = DiffType | DiffTypeClassifier
+export type AddDiffType = RuleDiffType
+export type RemoveDiffType = RuleDiffType
+export type ReplaceDiffType = RuleDiffType
+export type RuleDiffType = DiffType | DiffTypeClassifier
 
 export type DiffContext =  {
   path: JsonPath
@@ -20,6 +21,7 @@ export type DiffContext =  {
 export type ComapreContext = {
   before: DiffContext
   after: DiffContext
+  rules: CompareRules
   options: ComapreOptions
 }
 
@@ -32,7 +34,12 @@ export type MappingResolver<T extends string | number> = T extends string ? Mapp
 export type MappingObjectResolver = (before: Record<string, unknown>, after: Record<string, unknown>, ctx: ComapreContext) => MapKeysResult<string>
 export type MappingArrayResolver = (before: Array<unknown>, after: Array<unknown>, ctx: ComapreContext) => MapKeysResult<number>
 
-export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => string
+export interface AnnotateTemplate {
+  template: string,
+  params?: { [key: string]: AnnotateTemplate | string | number | undefined }
+}
+
+export type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => AnnotateTemplate | undefined
 
 export type CompareRule = {
   $?: ClassifyRule                            // classifier for current node
@@ -52,4 +59,5 @@ export interface MapKeysResult<T extends string | number> {
   mapped: Record<T, T>
 }
 
-export type TemplateFunc = (key: string, params?: Record<string | number, unknown>) => string
+export type CompareRulesTransformer = (rules: CompareRules) => CompareRules
+export type ClassifyRuleTransformer = (type: DiffType, ctx: ComapreContext, action: "add" | "remove" | "replace") => DiffType

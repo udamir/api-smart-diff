@@ -32,4 +32,44 @@ describe("Build GraphApi", () => {
 
     expect(diffs.length).toEqual(5)
   })
+
+  it("should be nullable query for Scalar result", () => {
+    const before = graphapi`
+      type Query {
+        company(id: ID!): Company
+      }
+
+      type Company {
+        id: ID!
+        name: String
+        offices(limit: Int!, after: ID): Office
+      }
+
+      type Office {
+        id: ID!
+        name: String
+      }
+    `
+
+    const after = graphapi`
+      type Query {
+        company(id: ID!): Company
+      }
+
+      type Company {
+        id: ID!
+        name: String
+        offices(limit: Int, after: ID): Office
+      }
+
+      type Office {
+        id: ID!
+        name: String
+      }
+    `
+
+    const { diffs, merged } = compareGraphApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+  })
 })

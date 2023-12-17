@@ -30,8 +30,10 @@ export const filterObj = <T extends {}>(value: T, func: (key: number | string | 
 export const excludeKeys = <T extends {}>(value: T, keys: Array<keyof T>): Partial<T> => {
   const excluded: Partial<T> = {}
   for (const key of keys) {
-    excluded[key] = value[key]
-    delete value[key]
+    if (key in value) {
+      excluded[key] = value[key]
+      delete value[key]
+    }
   }
   return excluded
 }

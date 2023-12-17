@@ -44,16 +44,16 @@ export const getDefaultStyle = (type: unknown) => {
   }
 }
 
-export const isResponsePath = (path: JsonPath) => {
-  return path[3] === "responses"
+export const isResponseSchema = (path: JsonPath) => {
+  return path[3] === "responses" && path[7] === "schema"
 }
 
-export const isRequestBodyPath = (path: JsonPath) => {
-  return path[3] === "requestBody"
+export const isRequestBodySchema = (path: JsonPath) => {
+  return path[3] === "requestBody" && path[6] === "schema"
 }
 
-export const isParameterPath = (path: JsonPath) => {
-  return path[2] === "parameters" || path[3] === "parameters"
+export const isParameterSchema = (path: JsonPath) => {
+  return (path[2] === "parameters" && path[4] === "schema") || (path[3] === "parameters" && path[5] === "schema")
 }
 
 export const getMaxOpenApiVersion = (before: unknown, after: unknown) => {

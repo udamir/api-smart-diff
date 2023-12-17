@@ -1,7 +1,7 @@
 
 import { JsonPath } from "json-crawl"
 
-import type { ComapreOptions, CompareResult, CompareRules, DiffContext, TemplateFunc } from "../types"
+import type { ComapreOptions, CompareResult, CompareRules } from "../types"
 import { jsonSchemaTypes } from "./jsonSchema.consts"
 
 export type JsonSchemaNodeType = typeof jsonSchemaTypes[number]
@@ -10,11 +10,7 @@ export type JsonSchemaRulesOptions = {
   version?: "draft-04" | "2020-12"
   baseRules?: CompareRules
   notMergeAllOf?: boolean
-}
-
-export type AnnotationContext = DiffContext & {
-  t: TemplateFunc
-  target: string | undefined
+  cache?: JsonSchemaComapreCache
 }
 
 export type AllOfNode = {
@@ -28,4 +24,10 @@ export type JsonSchemaCompareOptions = ComapreOptions & {
 
 export type CompareResultCache = CompareResult & {
   path: JsonPath
+}
+
+export type JsonSchemaComapreCache = {
+  results?: Map<string, CompareResultCache>
+  bRefs?: Record<string, string[]>
+  aRefs?: Record<string, string[]>
 }

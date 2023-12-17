@@ -1,8 +1,13 @@
-import type { TemplateFunc } from "../types"
-import { isExist, objectKeys } from "../utils"
+import type { AnnotateTemplate } from "../types"
+import { isExist, isObject, objectKeys } from "../utils"
 
-export const createTemplateFunc = (dict: Record<string, string>): TemplateFunc => {
-  const findKey = (key: string, params: Record<string | number, unknown>) => {
+export const annotationTemplate = (template: string, params?: AnnotateTemplate["params"]): AnnotateTemplate => ({ 
+  template,
+  ...params ? { params } : {} 
+})
+
+export const createTemplateAnnotation = (dict: Record<string, string>, annotationTemplate?: AnnotateTemplate): string => {
+  const findTemplate = (key: string, params: AnnotateTemplate["params"] = {}) => {
 
     const keys = objectKeys(dict).filter((k) => k.startsWith(`${key}_`))
     
@@ -19,18 +24,29 @@ export const createTemplateFunc = (dict: Record<string, string>): TemplateFunc =
     }
   }
 
-  return (key, params = {}) => {
+  const applyTemplateParams = (name: string = "", _params: AnnotateTemplate["params"] = {}) => {
+    let template = findTemplate(name, _params)
+    if (!template) { return "" }
 
-    let expr = findKey(key, params)
+    const params: Record<string, string | number | undefined> = {}
 
-    if (!expr) { return "" }
+    for (const key of objectKeys(_params)) {
+      const param = _params[key]
+      params[key] = isObject(param) ? createTemplateAnnotation(dict, param as AnnotateTemplate) : param as string
+    }
     
-    for (const match of [...expr.matchAll(/{{(\w+)}}/g)].reverse()) {
+    for (const match of [...template.matchAll(/{{(\w+)}}/g)].reverse()) {
       if (!(match[1] in params)) { continue }
 
       const index = match.index ?? 0
-      expr = expr.substring(0, index) + String(params[match[1]]) + expr.substring(index + match[0].length)
+      template = template.substring(0, index) + String(params[match[1]]) + template.substring(index + match[0].length)
     }
-    return expr
+    return template
   }
+
+  if (!annotationTemplate) { return "" }
+
+  const { template, params } = annotationTemplate
+  
+  return applyTemplateParams(template, params)
 }

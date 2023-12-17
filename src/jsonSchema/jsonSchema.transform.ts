@@ -19,7 +19,7 @@ export const transformJsonSchemaCombiners = (allowedSibling = jsonSchemaAllowedS
     if ("oneOf" in value) {
       return mergeCombinarySibling(value, "oneOf", allowedSibling)
     } else if ("anyOf" in value) {
-      return mergeCombinarySibling(value, "oneOf", allowedSibling)
+      return mergeCombinarySibling(value, "anyOf", allowedSibling)
     } else if ("allOf" in value) {
       return mergeAllOfSibling(value, allowedSibling)
     } else if ("$ref" in value) {
@@ -39,7 +39,7 @@ export const transformJsonSchemaCombiners = (allowedSibling = jsonSchemaAllowedS
   return [values.before, values.after]
 }
 
-export const transformJsonSchema = (version: "draft-04" | "2020-12"): CompareTransformResolver => (before, after) => {
+export const transformJsonSchema = (version: "draft-04" | "2020-12" = "2020-12"): CompareTransformResolver => (before, after) => {
   if (!isObject(before) || !isObject(after)) {
     return [before, after]
   }

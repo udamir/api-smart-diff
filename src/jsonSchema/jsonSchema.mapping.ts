@@ -11,8 +11,8 @@ export const jsonSchemaMappingResolver: MappingResolver<string> = (before, after
     return { added, removed, mapped }
   }
 
-  const [ bkey] = removed.splice(beforeCombinaryIndex, 1)
-  const [ akey] = added.splice(afterCombinaryIndex, 1)
+  const [bkey] = removed.splice(beforeCombinaryIndex, 1)
+  const [akey] = added.splice(afterCombinaryIndex, 1)
   mapped[bkey] = akey
   
   return { added, removed, mapped }
