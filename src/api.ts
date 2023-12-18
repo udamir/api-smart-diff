@@ -6,7 +6,7 @@ import { compareOpenApi } from "./openapi"
 export const discoverCompareEngine = (data: any): CompareEngine => {
   if (typeof data !== "object" || !data) { return compareJsonSchema }
 
-  if (/3.+/.test(data?.openapi || "")) return compareOpenApi
+  if (/3.+/.test(data.openapi ?? "")) return compareOpenApi
   // if (/2.+/.test(data?.asyncapi || "")) return asyncApi2Rules
   // if (/2.+/.test(data?.swagger || "")) return swagger2Rules
   if (data?.graphapi) return compareGraphApi

@@ -9,4 +9,4 @@ export type OpenApi3SchemaRulesOptions = OpenApi3RulesOptions & {
   response?: boolean
 }
 
-export type OpenApiComapreOptions = ComapreOptions & OpenApi3RulesOptions
+export type OpenApiComapreOptions = ComapreOptions & Omit<OpenApi3RulesOptions, "version">

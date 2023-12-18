@@ -14,7 +14,7 @@ import { transformJsonSchema, transformJsonSchemaCombiners, jsonSchemaMergeAllOf
 import { enumMappingResolver, jsonSchemaMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
-import { reverseClassifyRuleTransformer, transformComapreRules } from "../utils"
+import { reverseClassifyRuleTransformer, transformComapreRules } from "../core"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 
 

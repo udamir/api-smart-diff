@@ -2,10 +2,9 @@ import {
   booleanClassifier, jsonSchemaAllowedSibling, jsonSchemaKeyChange, jsonSchemaRules, 
   schemaAnnotationChange, transformJsonSchema, transformJsonSchemaCombiners
 } from "../jsonSchema"
-import { reverseClassifyRuleTransformer, transformComapreRules } from "../utils"
+import { reverseClassifyRuleTransformer, transformComapreRules, allAnnotation, allUnclassified } from "../core"
 import type { OpenApi3SchemaRulesOptions } from "./openapi3.types"
 import { transformOpenApiSchema } from "./openapi3.transform"
-import { allAnnotation, allUnclassified } from "../core"
 import type { CompareRules } from "../types"
 
 export const openApiSchemaRules = (options: OpenApi3SchemaRulesOptions = {}): CompareRules => {

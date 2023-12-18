@@ -203,5 +203,5 @@ export const compare: CompareEngine = (before: unknown, after: unknown, options:
   bNode[bKey] = _before
   aNode[aKey] = _after
 
-  return { diffs, merged: root.merged[aKey], rootMergeMeta: rootState.parentMeta?.[aKey] }
+  return { diffs, merged: root.merged[aKey], rootMergeMeta: rootState.parentMeta[aKey] }
 }

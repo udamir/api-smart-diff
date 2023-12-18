@@ -1,7 +1,6 @@
 import { booleanClassifier, jsonSchemaKeyChange, jsonSchemaRules, transformJsonSchema, transformJsonSchemaCombiners } from "../jsonSchema"
-import { reverseClassifyRuleTransformer, transformComapreRules } from "../utils"
+import { reverseClassifyRuleTransformer, transformComapreRules, allAnnotation, allDeprecated } from "../core"
 import { transformGraphSchema } from "./graphapi.transform"
-import { allAnnotation, allDeprecated } from "../core"
 import type { CompareRules } from "../types"
 
 export const graphApiSchemaRules = (response = false): CompareRules => {

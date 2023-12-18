@@ -3,9 +3,15 @@ import { compareGraphApi } from "../../src"
 
 const metaKey = Symbol('diff')
 
-describe("Build GraphApi", () => {
+// TODO:
+// operations
+// graphschema
+// arguments
+// directives
 
-  it("should be nullable query for Scalar result", () => {
+describe("Compare simple GraphQL schemas", () => {
+
+  it("should compare schemas with changes in arguments", () => {
     const before = graphapi`
       type Query {
         "A Query with 1 required argument and 1 optional argument"
