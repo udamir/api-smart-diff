@@ -1,9 +1,10 @@
 import { jsonSchemaMergeRules, merge } from "allof-merge"
 
 import { createEmptyCombiner, inferTypes, mergeAllOfSibling, mergeCombinarySibling, mergeRefSibling } from "./jsonSchema.utils"
-import { isArray, isObject, compareTransformationFactory, isString } from "../utils"
 import type { CompareTransformResolver, TransformResolver } from "../types"
 import { jsonSchemaAllowedSibling } from "./jsonSchema.consts"
+import { compareTransformationFactory } from "../core"
+import { isArray, isObject, isString } from "../utils"
 
 export const valuesTransformation = <T = unknown>(values: Record<"before" | "after", T>, resolver: TransformResolver<T>) => {
   values.before = resolver(values.before, values.after)

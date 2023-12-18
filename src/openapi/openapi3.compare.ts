@@ -3,7 +3,7 @@ import type { CompareResult, SourceContext } from "../types"
 import { openApi3AnnotateHook } from "./openapi3.annotate"
 import { getMaxOpenApiVersion } from "./openapi3.utils"
 import { openapi3Rules } from "./openapi3.rules"
-import { compare } from "../compare"
+import { compare } from "../core"
 
 export const compareOpenApi = (before: unknown, after: unknown, options: OpenApiComapreOptions = {}, context: SourceContext = {}): CompareResult => {
   const { notMergeAllOf } = options

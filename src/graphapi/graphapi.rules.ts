@@ -1,5 +1,5 @@
 import { graphApiMergeAllOf, transformGraphApiComponents, transformGraphApiDirective, transformGraphApiDocument } from "./graphapi.transform"
-import { allAnnotation, addNonBreaking } from "../constants"
+import { allAnnotation, addNonBreaking } from "../core/constants"
 import { graphApiSchemaRules } from "./graphapi.schema"
 import type { CompareRules } from "../types"
 

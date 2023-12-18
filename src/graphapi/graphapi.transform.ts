@@ -1,7 +1,7 @@
 import { graphapiMergeRules, merge } from "allof-merge"
 
 import { graphApiComponents, graphApiOperations, graphSchemaCustomProps } from "./graphapi.const"
-import { compareTransformationFactory } from "../utils"
+import { compareTransformationFactory } from "../core"
 
 export const transformGraphApiComponents = compareTransformationFactory((value, other) => {
   if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }

@@ -1,8 +1,8 @@
 import type { JsonSchemaCompareOptions } from "./jsonSchema.types"
+import { jsonSchemaAnnotationHook } from "./jsonSchema.annotate"
 import type { CompareResult, SourceContext } from "../types"
 import { jsonSchemaRules } from "./jsonSchema.rules"
-import { compare } from "../compare"
-import { jsonSchemaAnnotationHook } from "./jsonSchema.annotate"
+import { compare } from "../core"
 
 export const compareJsonSchema = (before: unknown, after: unknown, options: JsonSchemaCompareOptions = {}, context: SourceContext = {}): CompareResult => {
  

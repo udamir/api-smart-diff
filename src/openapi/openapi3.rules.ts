@@ -6,7 +6,7 @@ import {
 import { 
   addNonBreaking, allAnnotation, allBreaking, allDeprecated, allNonBreaking, breaking, 
   nonBreaking, unclassified
-} from "../constants"
+} from "../core"
 import { 
   contentChangeAnnotation,
   documentChangeAnnotation, encodingChangeAnnotation, operationChangeAnnotation, operationSecurityChangeAnnotation, parameterChangeAnnotation, 

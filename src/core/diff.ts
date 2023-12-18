@@ -1,9 +1,8 @@
 import { JsonPath } from "json-crawl"
 
 import type { DiffFactory, ComapreContext, CompareTransformResolver, Diff, DiffContext, DiffMeta, MergeMeta, TransformResolver } from "../types"
-import { DiffAction, allUnclassified, unclassified } from "../constants"
-import { getKeyValue, joinPath } from "./misc"
-import { isFunc } from "./guards"
+import { DiffAction, allUnclassified, unclassified } from "./constants"
+import { getKeyValue, joinPath, isFunc } from "../utils"
 
 export const createDiff = (diff: Omit<Diff, "type">, ctx: ComapreContext): Diff => {
   const rule = ctx.rules?.$ ?? {}

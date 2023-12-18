@@ -1,7 +1,7 @@
 import { 
   breaking, nonBreaking,allAnnotation, allBreaking, allUnclassified,
   onlyAddBreaking, allDeprecated, allNonBreaking, unclassified,
-} from "../constants"
+} from "../core/constants"
 import { 
   schemaAnnotationChange, schemaExampleChange, jsonSchemaKeyChange, schemaKeyItemChange,
   schemaStatusChange, schemaValidationChange

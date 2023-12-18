@@ -5,7 +5,7 @@ import {
 import { reverseClassifyRuleTransformer, transformComapreRules } from "../utils"
 import type { OpenApi3SchemaRulesOptions } from "./openapi3.types"
 import { transformOpenApiSchema } from "./openapi3.transform"
-import { allAnnotation, allUnclassified } from "../constants"
+import { allAnnotation, allUnclassified } from "../core"
 import type { CompareRules } from "../types"
 
 export const openApiSchemaRules = (options: OpenApi3SchemaRulesOptions = {}): CompareRules => {

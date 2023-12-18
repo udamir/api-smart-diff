@@ -1,39 +1,36 @@
 import { compareJsonSchema } from "../../src"
+import { yaml } from "../helpers"
 
 const metaKey = Symbol('diff')
 
 describe("schema with references", () => {
   it("should merge jsonSchema with refs", () => {
-    const before = {
-      type: "object",
-      properties: {
-        id: { $ref: "#/definitions/id" },
-      },
-      definitions: {
-        id: {
-          title: "id",
-          type: "string",
-        },
-      },
-    }
+    const before = yaml`
+      type: object
+      properties:
+        id:
+          $ref: '#/definitions/id'
+      definitions:
+        id:
+          title: id
+          type: string
+    `
 
-    const after = {
-      type: "object",
-      properties: {
-        id: { $ref: "#/definitions/id" },
-        name: { $ref: "#/definitions/name" },
-      },
-      definitions: {
-        id: {
-          title: "id",
-          type: "number",
-        },
-        name: {
-          title: "name",
-          type: "string",
-        },
-      },
-    }
+    const after = yaml`
+      type: object
+      properties:
+        id:
+          $ref: '#/definitions/id'
+        name:
+          $ref: '#/definitions/name'
+      definitions:
+        id:
+          title: id
+          type: number
+        name:
+          title: name
+          type: string
+    `
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
@@ -63,39 +60,34 @@ describe("schema with references", () => {
   })
 
   it("should merge jsonSchema with refs change", () => {
-    const before = {
-      type: "object",
-      properties: {
-        id: { $ref: "#/definitions/id" },
-        name: {
-          type: "string",
-        }
-      },
-      definitions: {
-        id: {
-          title: "id",
-          type: "string",
-        }
-      },
-    }
+    const before = yaml`
+      type: object
+      properties:
+        id:
+          $ref: '#/definitions/id'
+        name:
+          type: string
+      definitions:
+        id:
+          title: id
+          type: string
+    `
 
-    const after = {
-      type: "object",
-      properties: {
-        id: { $ref: "#/definitions/id" },
-        name: { $ref: "#/definitions/name" },
-      },
-      definitions: {
-        id: {
-          title: "id",
-          type: "number",
-        },
-        name: {
-          title: "name",
-          type: "string",
-        },
-      },
-    }
+    const after = yaml`
+      type: object
+      properties:
+        id:
+          $ref: '#/definitions/id'
+        name:
+          $ref: '#/definitions/name'
+      definitions:
+        id:
+          title: id
+          type: number
+        name:
+          title: name
+          type: string
+    `
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
@@ -128,28 +120,27 @@ describe("schema with references", () => {
   })
 
   it("should merge jsonSchema with cycle refs", () => {
-    const before = {
-      type: "object",
-      properties: {
-        id: {
-          title: "id",
-          type: "string",
-        },
-        parent: { $ref: "#" },
-      }
-    }
+    const before = yaml`
+      type: object
+      properties:
+        id:
+          title: id
+          type: string
+        parent:
+          $ref: '#'
+    `
 
-    const after = {
-      type: "object",
-      required: ['id'],
-      properties: {
-        id: {
-          title: "id",
-          type: "string",
-        },
-        parent: { $ref: "#" },
-      }
-    }
+    const after = yaml`
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          title: id
+          type: string
+        parent:
+          $ref: '#'
+    `
     
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
@@ -160,50 +151,39 @@ describe("schema with references", () => {
   })
 
   it("should merge jsonSchema with changes in cycle refs", () => {
-    const before = {
-      type: "object",
-      properties: {
-        model: { $ref: "#/definitions/model" },
-      },
-      definitions: {
-        id: {
-          title: "id",
-          type: "string",
-        },
-        model: {
-          type: "object",
-          properties: {
-            id: {
-              $ref: "#/definitions/id",
-            },
-            parent: {
-              $ref: "#/definitions/model",
-            },
-          },
-        },
-      },
-    }
+    const before = yaml`
+      type: object
+      properties:
+        model:
+          $ref: '#/definitions/model'
+      definitions:
+        id:
+          title: id
+          type: string
+        model:
+          type: object
+          properties:
+            id:
+              $ref: '#/definitions/id'
+            parent:
+              $ref: '#/definitions/model'
+    `
 
-    const after = {
-      type: "object",
-      properties: {
-        model: { $ref: "#/definitions/model" },
-      },
-      definitions: {
-        id: {
-          title: "id",
-          type: "string",
-        },
-        model: {
-          type: "object",
-          properties: {
-            id: {
-              $ref: "#/definitions/id",
-            },
-          },
-        },
-      },
-    }
+    const after = yaml`
+      type: object
+      properties:
+        model:
+          $ref: '#/definitions/model'
+      definitions:
+        id:
+          title: id
+          type: string
+        model:
+          type: object
+          properties:
+            id:
+              $ref: '#/definitions/id'
+    `
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
@@ -219,19 +199,19 @@ describe("schema with references", () => {
 
 describe("schema with broken reference", () => {
   it("should merge jsonSchema with broken refs", () => {
-    const before = {
-      type: "object",
-      properties: {
-        id: { type: "string" },
-      },
-    }
+    const before = yaml`
+      type: object
+      properties:
+        id:
+          type: string
+    `
 
-    const after = {
-      type: "object",
-      properties: {
-        id: { $ref: "#/definitions/id" },
-      },
-    }
+    const after = yaml`
+      type: object
+      properties:
+        id:
+          $ref: '#/definitions/id'
+    `
     
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 

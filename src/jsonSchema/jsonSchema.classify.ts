@@ -1,6 +1,6 @@
-import { isExist, getParentContext, isString, isNumber, transformClassifyRule } from "../utils"
+import { getParentContext, breaking, nonBreaking, unclassified } from "../core"
+import { isExist, isString, isNumber, transformClassifyRule } from "../utils"
 import type { ClassifyRule, DiffType, DiffTypeClassifier } from "../types"
-import { breaking, nonBreaking, unclassified } from "../constants"
 import { isValidSchemaTypes } from "./jsonSchema.utils"
 
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)

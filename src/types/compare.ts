@@ -1,7 +1,7 @@
 import { JsonPath, SyncCrawlHook } from "json-crawl"
 
 import { ComapreContext, CompareRule, CompareRules } from "./rules"
-import { ClassifierType, DiffAction } from "../constants"
+import { ClassifierType, DiffAction } from "../core/constants"
 
 export type ActionType = keyof typeof DiffAction
 export type DiffType = typeof ClassifierType[keyof typeof ClassifierType]

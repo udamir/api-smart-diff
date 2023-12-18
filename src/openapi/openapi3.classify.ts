@@ -1,6 +1,6 @@
-import { getParentContext, getKeyValue, isNotEmptyArray, isExist } from "../utils"
+import { getParentContext, annotation, breaking, nonBreaking, unclassified } from "../core"
+import { getKeyValue, isNotEmptyArray, isExist } from "../utils"
 import { emptySecurity, includeSecurity } from "./openapi3.utils"
-import { annotation, breaking, nonBreaking, unclassified } from "../constants"
 import { breakingIfAfterTrue } from "../jsonSchema"
 import type { ClassifyRule } from "../types"
 

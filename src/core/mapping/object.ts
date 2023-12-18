@@ -1,4 +1,4 @@
-import { MapKeysResult, MappingResolver } from "../types"
+import { MapKeysResult, MappingResolver } from "../../types"
 
 export const objectMappingResolver: MappingResolver<string> = (before, after) => {
 

@@ -1,41 +1,37 @@
 import { annotation, breaking, compareJsonSchema, nonBreaking } from "../../src"
+import { yaml } from "../helpers"
 
 const metaKey = Symbol('diff')
 
 describe("schema with combinary", () => {
   it("should compare oneOf combinary jsonSchema with added object", () => {
-    const before = {
-      oneOf: [
-        { type: "string" },
-        {
-          type: "object",
-          required: ['id'],
-          properties: {
-            id: { type: "number" },
-            name: { type: "string" },
-          },
-        },
-      ],
-    }
+    const before = yaml`
+      oneOf:
+        - type: string
+        - type: object
+          required:
+            - id
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+    `
 
-    const after = {
-      oneOf: [
-        { type: "string" },
-        { type: "number" },
-        {
-          type: "object",
-          required: ['name', 'id'],
-          properties: {
-            id: {
-              type: "number",
-            },
-            name: {
-              type: "string",
-            },
-          },
-        },
-      ],
-    }
+    const after: any = yaml`
+      oneOf:
+        - type: string
+        - type: number
+        - type: object
+          required:
+            - name
+            - id
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+    `
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
@@ -57,49 +53,45 @@ describe("schema with combinary", () => {
   })
 
   it("should compare oneOf combinary jsonSchema with sibling content", () => {
-    const before = {
-      title: "Title",
-      type: "object",
-      required: ['id'],  
-      properties: {
-        id: { type: "number" },
-      },
-      oneOf: [
-        {
-          required: ['foo'],  
-          properties: {
-            foo: { type: "number" },
-          },
-        },
-        {
-          properties: {
-            name: { type: "string" },
-          },
-        },
-      ],
-    }
+    const before = yaml`
+      title: Title
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: number
+      oneOf:
+        - required:
+            - foo
+          properties:
+            foo:
+              type: number
+        - properties:
+            name:
+              type: string
+    `
 
-    const after = {
-      type: "object",
-      required: ['id'],  
-      oneOf: [
-        {
-          title: "Title",
-          properties: {
-            id: { type: "number" },
-            foo: { type: "number" },
-          },
-        },
-        {
-          title: "Title2",
-          required: ['name'],  
-          properties: {
-            id: { type: "number" },
-            name: { type: "string" },
-          },
-        },
-      ],
-    }
+    const after = yaml`
+      type: object
+      required:
+        - id
+      oneOf:
+        - title: Title
+          properties:
+            id:
+              type: number
+            foo:
+              type: number
+        - title: Title2
+          required:
+            - name
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+    `
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
@@ -139,62 +131,56 @@ describe("schema with combinary", () => {
   })
 
   it("should compare jsonSchema with nested oneOf object", () => {
-    const before = {
-      type: "object",
-      required: ["id"],
-      oneOf: [
-        {
-          title: "opt1",
-          properties: {
-            id: { type: "string" },
-            name: { type: "string" },
-          },
-        },
-        {
-          title: "opt3",
-          properties: {
-            id: { type: "number" },
-            name: { type: "string" },
-          },
-        },
-      ],
-    }
+    const before = yaml`
+      type: object
+      required:
+        - id
+      oneOf:
+        - title: opt1
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+        - title: opt3
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+    `
 
-    const after = {
-      oneOf: [
-        {
-          oneOf: [
-            {
-              type: "object",
-              title: "opt1",
-              required: ["id"],
-              properties: {
-                id: { type: "string" },
-                name: { type: "string" },
-              },
-            },
-            {
-              type: "object",
-              title: "opt2",
-              required: ["id"],
-              properties: {
-                id: { type: "string" },
-                test: { type: "string" },
-              },
-            },
-          ],
-        },
-        {
-          type: "object",
-          title: "opt3",
-          required: ["id"],
-          properties: {
-            id: { type: "number" },
-            name: { type: "string" },
-          },
-        },
-      ],
-    }
+    const after = yaml`
+      oneOf:
+      - oneOf:
+          - type: object
+            title: opt1
+            required:
+              - id
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+          - type: object
+            title: opt2
+            required:
+              - id
+            properties:
+              id:
+                type: string
+              test:
+                type: string
+      - type: object
+        title: opt3
+        required:
+          - id
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+    `
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 

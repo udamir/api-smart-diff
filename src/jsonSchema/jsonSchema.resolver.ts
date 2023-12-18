@@ -1,13 +1,12 @@
 import { getNodeRules } from "json-crawl"
 import { isRefNode } from "allof-merge"
 
+import { diffFactory, convertDiffToMeta, createMergeMeta, compare, createChildContext, DIFF_META_KEY } from "../core"
 import { buildPath, changeDiffsPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
-import { diffFactory, convertDiffToMeta, createMergeMeta, isArray } from "../utils"
 import type { CompareResultCache, JsonSchemaComapreCache } from "./jsonSchema.types"
 import { compareJsonSchema } from "./jsonSchema.compare"
-import { compare, createChildContext } from "../compare"
 import type { CompareResolver, Diff } from "../types"
-import { DIFF_META_KEY } from "../constants"
+import { isArray } from "../utils"
 
 export const combinaryCompareResolver: CompareResolver = (ctx) => {
   const { before, after, options } = ctx

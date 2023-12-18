@@ -1,4 +1,4 @@
-import { createAnnotation, annotationTemplate as t } from "../utils"
+import { createAnnotation, annotationTemplate as t } from "../core"
 import { getTarget, jsonSchemaAnnotations } from "../jsonSchema"
 import { isArgSchema } from "./graphapi.utils"
 import type { AnnotateHook } from "../types"

@@ -1,7 +1,7 @@
 import { syncClone } from "json-crawl"
 
 import type { ClassifyRule, ClassifyRuleTransformer, ComapreContext, CompareRules, CompareRulesTransformer, DiffType, DiffTypeClassifier } from "../types"
-import { breaking, nonBreaking } from "../constants"
+import { breaking, nonBreaking } from "../core/constants"
 import { isFunc, isObject, isString } from "./guards"
 
 export const transformComapreRules = (rules: CompareRules, tranformer: CompareRulesTransformer): CompareRules => {
