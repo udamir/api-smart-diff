@@ -15,16 +15,19 @@ This package provides utils to compute the diff between two Json based API docum
 - [JsonSchema](https://json-schema.org/draft/2020-12/json-schema-core.html)
 - [Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)
 - GraphQL via [GraphApi](https://github.com/udamir/graphapi)
+- ~~[AsyncApi 3.x](https://www.asyncapi.com/docs/specifications/)~~ (Roadmap)
 - ~~gRPC~~ (Roadmap)
 
 ## Features
 - Generate diff for supported specifications
-- Generate merged spec with changes in metadata 
-- Classify all changes as breaking, non-breaking, annotation
-- Human-readable change description (OpenApi only)
+- Generate merged document with changes in metadata 
+- Classify all changes as breaking, non-breaking, deprecated and annotation
+- Human-readable change description
 - Supports custom classification rules
-- Supports custom match rules for array items and object keys
-- Resolves all $ref pointers, including external and circular
+- Supports custom comparison or match rules
+- Supports custom transformations
+- Supports custom human-readable changes annotation
+- Resolves all $ref pointers, including circular
 - Typescript syntax support out of the box
 - No dependencies, can be used in nodejs or browser
 
@@ -44,6 +47,7 @@ const diffs = apiDiff(oldSpec, newSpec)
 //   action: "add" | "remove" | "replace" | "rename",
 //   after: 'value in newSpec',
 //   before: 'value in oldSpec',
+//   description: 'human-readable description'
 //   path: ['path, 'in', 'array', 'format'],
 //   type: "annotation" | "breaking" | "non-breaking" | "unclassified" | "deprecated"
 // }
@@ -110,6 +114,7 @@ Function returns array of differences:
 type Diff = {
   action: "add" | "remove" | "replace" | "rename"
   path: Array<string | number>
+  description?: string 
   before?: any
   after?: any
   type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"
@@ -135,6 +140,7 @@ Function returns object with `$diff` key for all differences:
 ```ts
 type Diff = {
   action: "add" | "remove" | "replace" | "rename"
+  description?: string
   before?: any
   after?: any
   type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"

@@ -11,17 +11,19 @@ export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Re
 
     const keys = objectKeys(dict).filter((k) => k.startsWith(`${key}_`))
     
+    let result = key in dict ? dict[key] : undefined
+    let matchCount = 1
+
     for (const _key of keys) {
       const _params = _key.split("_").slice(1)
       // find params
-      if (!_params.filter((p) => !isExist(params[p]) || params[p] === "").length) {
-        return dict[_key]
+      if (!_params.filter((p) => !isExist(params[p]) || params[p] === "").length && _params.length >= matchCount) {
+        result = dict[_key]
+        matchCount = _params.length
       }
     }
     
-    if (key in dict) {
-      return dict[key]
-    }
+    return result
   }
 
   const applyTemplateParams = (name: string = "", _params: AnnotateTemplate["params"] = {}) => {

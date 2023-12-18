@@ -31,6 +31,12 @@ describe("Build GraphApi", () => {
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(5)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+    
   })
 
   it("should be nullable query for Scalar result", () => {
