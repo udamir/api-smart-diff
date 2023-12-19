@@ -2,28 +2,41 @@ import {
   reverseClassifyRuleTransformer, transformComapreRules, addNonBreaking, allBreaking, 
   allNonBreaking, allUnclassified, allAnnotation
 } from "../core"
-import { jsonSchemaRules } from "../jsonSchema"
+import { createFields, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
 import type { CompareRules } from "../types"
 
 export const asyncApi2Rules = (): CompareRules => {
   const subSchemaRules = transformComapreRules(jsonSchemaRules(), reverseClassifyRuleTransformer)
   const pubSchemaRules = jsonSchemaRules()
+  const refsCompareResolver = createRefsCompareResolver()
 
   const correlationIdRules: CompareRules = {
-    "/": { $: addNonBreaking },
+    $: addNonBreaking,
     "/location": { $: addNonBreaking },
     "/description": { $: allAnnotation },
   }
 
+  const bindingsRule: CompareRules = {
+    $: allUnclassified,
+    "/*": {
+      $: allUnclassified,
+      compare: refsCompareResolver,
+      "/*": { $: allUnclassified },
+      "/query": () => subSchemaRules,
+      "/headers": () => pubSchemaRules,
+    }
+  }
+
   const commonRules: CompareRules = {
+    transform: [createFields("tags", "traits", "bindings", "examples")],
     "/summary": { $: allAnnotation },
     "/tags": { $: allAnnotation },
     "/externalDocs": { $: allAnnotation },
-    "/bindings": { $: allUnclassified },
+    "/bindings": bindingsRule,
   }
 
   const pubsubTraitsRules: CompareRules = {
-    "/": { $: addNonBreaking },
+    $: addNonBreaking,
     "/*": { $: addNonBreaking },
     "/operationId": { $: allAnnotation },
     "/description": { $: allAnnotation },
@@ -31,7 +44,7 @@ export const asyncApi2Rules = (): CompareRules => {
   }
 
   const messageTraitsRules: CompareRules = {
-    "/": { $: addNonBreaking },
+    $: addNonBreaking,
     "/*": { $: addNonBreaking },
     "/headers": { $: allUnclassified },
     "/correlationId": correlationIdRules,
@@ -44,7 +57,7 @@ export const asyncApi2Rules = (): CompareRules => {
   }
 
   const messageRules = (sub = false): CompareRules => ({
-    "/": { $: allBreaking },
+    $: allBreaking,
     "/headers": { $: allUnclassified },
     "/correlationId": correlationIdRules,
     "/schemaFormat": { $: allBreaking },
@@ -62,7 +75,7 @@ export const asyncApi2Rules = (): CompareRules => {
   })
 
   const pubsubRules = (sub = false): CompareRules => ({
-    "/": { $: addNonBreaking },
+    $: addNonBreaking,
     "/operationId": { $: allAnnotation },
     "/description": { $: allAnnotation },
     "/traits": pubsubTraitsRules,
@@ -71,18 +84,18 @@ export const asyncApi2Rules = (): CompareRules => {
   })
 
   const infoRules: CompareRules = {
-    "/": { $: allAnnotation },
+    $: allAnnotation,
     "/version": { $: allAnnotation },
     "/termsOfService": { $: allAnnotation },
     "/license": {
-      "/": { $: allAnnotation },
+      $: allAnnotation,
       "/name": { $: allAnnotation },
       "/url": { $: allAnnotation },
     },
     "/title": { $: allAnnotation },
     "/description": { $: allAnnotation },
     "/contact": {
-      "/": { $: allAnnotation },
+      $: allAnnotation,
       "/name": { $: allAnnotation },
       "/url": { $: allAnnotation },
       "/email": { $: allAnnotation },
@@ -90,19 +103,22 @@ export const asyncApi2Rules = (): CompareRules => {
   }
 
   const serversRules: CompareRules = {
-    "/": { $: allAnnotation },
+    $: allAnnotation,
     "/*": {
-      "/": { $: allAnnotation },
+      compare: refsCompareResolver,
+      transform: [createFields("variables", "bindings", "security")],
+      $: allAnnotation,
       "/url": { $: allAnnotation },
       "/description": { $: allAnnotation },
       "/protocol": { $: allAnnotation },
       "/protocolVersion": { $: allAnnotation },
       "/variables": {
-        "/": { $: allAnnotation },
+        $: allAnnotation,
         "/*": {
-          "/": { $: allAnnotation },
+          compare: refsCompareResolver,
+          $: allAnnotation,
           "/enum": {
-            "/": { $: allAnnotation },
+            $: allAnnotation,
             "/*": { $: allAnnotation },
           },
           "/default": { $: allAnnotation },
@@ -111,23 +127,26 @@ export const asyncApi2Rules = (): CompareRules => {
         },
       },
       "/security": {
-        "/": { $: allAnnotation },
+        $: allAnnotation,
         "/*": { $: allAnnotation },
       },
-      "/bindings": { $: allAnnotation },
+      "/bindings": bindingsRule,
     },
   }
 
   const channelRules: CompareRules = {
-    "/": { $: addNonBreaking },
+    compare: refsCompareResolver,
+    transform: [createFields("parameters", "bindings")],
+    $: addNonBreaking,
     "/description": { $: allAnnotation },
-    "/bindings": { $: allUnclassified },
+    "/bindings": bindingsRule,
     "/subscribe": pubsubRules(true),
     "/publish": pubsubRules(false),
     "/parameters": {
-      "/": { $: allBreaking },
+      $: allBreaking,
       "/*": {
-        "/": { $: addNonBreaking },
+        compare: refsCompareResolver,
+        $: addNonBreaking,
         "/description": { $: allAnnotation },
         "/schema": () => ({
           ...pubSchemaRules,
@@ -139,19 +158,20 @@ export const asyncApi2Rules = (): CompareRules => {
   }
 
   return {
-  "/asyncapi": { $: allAnnotation },
-  "/id": { $: allAnnotation },
-  "/defaultContentType": { $: allBreaking },
-  "/info": infoRules,
-  "/servers": serversRules,
-  "/channels": {
-    "/": { $: addNonBreaking },
-    "/*": channelRules,
-  },
-  "/components": { 
-    "/*": { $: allAnnotation }
-  },
-  "/tags": { $: allAnnotation },
-  "/externalDocs": { $: allAnnotation },
+    transform: [createFields("channels", "components", "tags", "servers")],
+    "/asyncapi": { $: allAnnotation },
+    "/id": { $: allAnnotation },
+    "/defaultContentType": { $: allBreaking },
+    "/info": infoRules,
+    "/servers": serversRules,
+    "/channels": {
+      $: addNonBreaking,
+      "/*": channelRules,
+    },
+    "/components": { 
+      "/*": { $: allAnnotation }
+    },
+    "/tags": { $: allAnnotation },
+    "/externalDocs": { $: allAnnotation },
   }
 }

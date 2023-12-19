@@ -40,6 +40,24 @@ export const transformJsonSchemaCombiners = (allowedSibling = jsonSchemaAllowedS
   return [values.before, values.after]
 }
 
+export const createFields = (...fields: string[]): CompareTransformResolver => (before, after) => {
+  if (!isObject(before) || !isObject(after)) {
+    return [before, after]
+  }
+  const values = { before: { ...before }, after: { ...after } }
+  
+  valuesTransformation(values, (value, other) => {
+    for (const prop of fields) {
+      if (prop in other && isObject(other[prop]) && !(prop in value)) {
+        value[prop] = Array.isArray(other[prop]) ? [] : {}
+      }
+    }
+    return value
+  })
+
+  return [values.before, values.after]
+}
+
 export const transformJsonSchema = (version: "draft-04" | "2020-12" = "2020-12"): CompareTransformResolver => (before, after) => {
   if (!isObject(before) || !isObject(after)) {
     return [before, after]

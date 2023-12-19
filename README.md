@@ -8,13 +8,38 @@ This package provides utils to compute the diff between two Json based API docum
 - Identify breaking changes
 - Ensure API versioning consistency
 
-## Supported API specifications
+## Supported API specifications (work on progress)
 
 - [OpenApi 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md)
-- [AsyncApi 2.1](https://www.asyncapi.com/docs/specifications/v2.1.0)
+  - [x] Rules
+  - [x] Transformations
+  - [x] Annotations
+  - [x] Unit Tests
+  - [x] E2E Tests
+- [AsyncApi 2.x](https://v2.asyncapi.com/docs/reference)
+  - [ ] Rules
+  - [ ] Transformations
+  - [ ] Annotations
+  - [ ] Unit Tests
+  - [ ] E2E Tests
 - [JsonSchema](https://json-schema.org/draft/2020-12/json-schema-core.html)
+  - [x] Rules
+  - [x] Transformations
+  - [x] Annotations
+  - [x] Unit Tests
+  - [x] E2E Tests
 - [Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)
+  - [ ] Rules
+  - [ ] Transformations
+  - [ ] Annotations
+  - [ ] Unit Tests
+  - [ ] E2E Tests
 - GraphQL via [GraphApi](https://github.com/udamir/graphapi)
+  - [x] Rules
+  - [x] Transformations
+  - [ ] Annotations
+  - [ ] Unit Tests
+  - [ ] E2E Tests
 - ~~[AsyncApi 3.x](https://www.asyncapi.com/docs/specifications/)~~ (Roadmap)
 - ~~gRPC~~ (Roadmap)
 
