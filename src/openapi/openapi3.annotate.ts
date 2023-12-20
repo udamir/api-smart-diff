@@ -10,13 +10,13 @@ const openApiAnnotations = {
   parameterSchema: "{{schemaChange}} in {{in}} parameter `{{name}}`",
 
   add: "[Added] {{text}}",
-  add_target: "[Added] {{text}} to `{{target}}`",
+  add_target: "[Added] {{text}} to {{target}}",
   remove: "[Removed] {{text}}",
-  remove_target: "[Removed] {{text}} from `{{target}}`",
+  remove_target: "[Removed] {{text}} from {{target}}",
   replace: "[Replaced] {{text}}",
-  replace_target: "[Replaced] {{text}} of `{{target}}`",
+  replace_target: "[Replaced] {{text}} of {{target}}",
   rename: "[Renamed] {{text}}",
-  rename_target: "[Renamed] {{text}} of `{{target}}`",
+  rename_target: "[Renamed] {{text}} of {{target}}",
 
   param: "{{in}} parameter `{{name}}`",
   param_required: "required {{in}} parameter `{{name}}`",
@@ -113,7 +113,7 @@ export const encodingChangeAnnotation: ChangeAnnotationResolver = ({ path, actio
 }
 
 export const operationChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
-  const { value, key } = action === "add" ? ctx.after : ctx.before
+  const { key } = action === "add" ? ctx.after : ctx.before
 
   if (key === "deprecated") {
     if (ctx.after.value) {

@@ -1,22 +1,25 @@
 import { createAnnotation, annotationTemplate as t } from "../core"
 import { getTarget, jsonSchemaAnnotations } from "../jsonSchema"
 import { isArgSchema } from "./graphapi.utils"
-import type { AnnotateHook } from "../types"
+import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 
 const graphSchemaArgAnnotations = {
   add: "[Added] {{text}} to Argument `{{target}}`",
   add_target: "[Added] {{text}} to Argument `{{target}}`",
-  add_target_schema: "[Added] {{text}} to Argument `{{target}}` of property`{{schema}}`",
+  add_target_schema: "[Added] {{text}} to Argument `{{target}}` of property`{{schema}}(...)`",
   remove: "[Removed] {{text}} from Argument {{target}}",
   remove_target: "[Removed] {{text}} from Argument `{{target}}`",
-  remove_target_schema: "[Removed] {{text}} from Argument `{{target}}` of property `{{schema}}`",
+  remove_target_schema: "[Removed] {{text}} from Argument `{{target}}` of property `{{schema}}(...)`",
   replace: "[Replaced] {{text}} of Argument {{target}}",
   replace_target: "[Replaced] {{text}} of Argument `{{target}}`",
-  replace_target_schema: "[Replaced] {{text}} of Argument `{{target}}` of property `{{schema}}`",
+  replace_target_schema: "[Replaced] {{text}} of Argument `{{target}}` of property `{{schema}}(...)`",
 }
 
 const graphApiAnnotations = {
   ...jsonSchemaAnnotations,
+
+  directive: "directive `@{{key}}`",
+  directive_meta: "directive meta `@{{key}}({{meta}})`"
 }
 
 export const graphApiAnnotateHook: AnnotateHook = (diff, ctx) => {
@@ -36,4 +39,17 @@ export const graphApiAnnotateHook: AnnotateHook = (diff, ctx) => {
   } 
 
   return createAnnotation(annotate(diff, ctx), graphApiAnnotations)
+}
+
+export const directiveChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
+  const key = path[path.length-1]
+  const target = getTarget(path)
+  return t(action, { text: t("directive", { key }), target })
+}
+
+export const directiveMetaChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
+  const key = path[path.length-3]
+  const meta = path[path.length-1]
+  const target = getTarget(path.slice(0,-4))
+  return t(action, { text: t("directive", { key, meta }), target })
 }

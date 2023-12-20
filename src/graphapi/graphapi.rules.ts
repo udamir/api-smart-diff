@@ -15,7 +15,7 @@ export const graphApiRules = ({ notMergeAllOf = false }: GraphApiRulesOptions = 
     transform: [...notMergeAllOf ? [] : [graphApiMergeAllOf], transformGraphApiDocument],
 
     "/queries": {
-      "/*": graphApiSchemaRules(true)
+      "/*": schemaRules
     },
     "/mutations": {
       "/*": schemaRules

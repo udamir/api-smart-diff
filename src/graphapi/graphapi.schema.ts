@@ -1,14 +1,10 @@
 import { booleanClassifier, jsonSchemaKeyChange, jsonSchemaRules, transformJsonSchema, transformJsonSchemaCombiners } from "../jsonSchema"
-import { reverseClassifyRuleTransformer, transformComapreRules, allAnnotation, allDeprecated } from "../core"
-import { transformGraphSchema } from "./graphapi.transform"
+import { reverseClassifyRuleTransformer, transformComapreRules, allAnnotation, allDeprecated, reverseClassifyRule, nonBreaking, breaking } from "../core"
+import { transformGraphSchema, transfromGraphSchemaDirective } from "./graphapi.transform"
 import type { CompareRules } from "../types"
+import { directiveMetaChangeAnnotation, directiveChangeAnnotation } from "./graphapi.annotate"
 
 export const graphApiSchemaRules = (response = false): CompareRules => {
-
-  const graphApiDirectiveRules: CompareRules = {
-    "/*": { $: allAnnotation },
-    "/meta": { $: allAnnotation }
-  }
 
   const graphSchemaRules = jsonSchemaRules({ 
     notMergeAllOf: true,
@@ -19,10 +15,10 @@ export const graphApiSchemaRules = (response = false): CompareRules => {
         transformGraphSchema
       ],
       // graphschema extentions
-      "/nullable": { $: booleanClassifier, annotate: jsonSchemaKeyChange },
+      "/nullable": { $: [ nonBreaking, breaking, nonBreaking], annotate: jsonSchemaKeyChange },
       "/specifiedByURL": { $: allAnnotation },
       "/args": () => ({
-        ...transformComapreRules(graphSchemaRules, reverseClassifyRuleTransformer),
+        ...graphApiSchemaRules(),
       }),
       "/values": {
         "/*": {
@@ -37,7 +33,16 @@ export const graphApiSchemaRules = (response = false): CompareRules => {
         "/*": { $: allAnnotation }
       },
       "/directives": {
-        "/*": () => graphApiDirectiveRules
+        "/*": {
+          annotate: directiveChangeAnnotation,
+          transform: [transfromGraphSchemaDirective],
+          "/meta": { 
+            "/*": {
+              annotate: directiveMetaChangeAnnotation,
+              $: allAnnotation
+            }
+          }
+        }
       }
     },
   })

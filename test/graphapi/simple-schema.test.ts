@@ -7,7 +7,6 @@ const metaKey = Symbol('diff')
 // operations
 // graphschema
 // arguments
-// directives
 
 describe("Compare simple GraphQL schemas", () => {
 

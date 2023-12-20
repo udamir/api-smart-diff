@@ -27,8 +27,25 @@ export const transformGraphSchema = compareTransformationFactory((value, other) 
       result[comp] = {}
     }
   }
+
+  if ("nullable" in value && !value.nullable) {
+    delete result.nullable
+  }
   
   return result
+})
+
+export const transfromGraphSchemaDirective = compareTransformationFactory((value, other) => {
+  if (typeof value !== 'object' || !value || typeof other !== 'object' || !other ) { return value }
+
+  if ("meta" in value) {
+    const { meta, ...rest } = value
+    return { meta }
+  } else if ("meta" in other) {
+    return { meta: {} }
+  }
+
+  return {}
 })
 
 export const transformGraphApiDocument = compareTransformationFactory((value, other) => {
