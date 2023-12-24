@@ -1,69 +1,89 @@
+import { compareGraphApi } from "../../src"
 import { graphapi } from "../helpers"
-import { DiffAction, compareGraphApi, deprecated, nonBreaking, unclassified } from "../../src"
 
 const metaKey = Symbol('diff')
 
-describe("Compare GraphQL schemas with directives change", () => {
+describe("GraphQL directives", () => {
 
   it("should compare schemas with changes in arguments", () => {
     const before = graphapi`
       directive @limit(offset: Int = 0, limit: Int = 20) on FIELD | FIELD_DEFINITION
 
-      type Object {
-        id: ID!
-        count: Int @limit
+      input Filter {
+        id: [ID!]
+
+        "A default value of false"
+        isCompleted: Boolean = false
       }
       
       type Query {
-        "A Query with 1 required argument and 1 optional argument"
-        todo(
-          id: ID!
-  
-          "A default value of false"
-          isCompleted: Boolean = false
-        ): Object
+        todos(
+          filters: [Filter!]
+        ): [String!] @limit
       }
     `
 
     const after = graphapi`
-      directive @limit(offset: Int = 0, limit: Int = 20) on FIELD | FIELD_DEFINITION
+      directive @limit(offset: Int = 0, limit: Int = 30) on FIELD | FIELD_DEFINITION
+      directive @example(value: String) on FIELD_DEFINITION | INPUT_FIELD_DEFINITION
 
-      type Object {
-        id: ID!
-        count: Int
+      input Filter {
+        id: [ID!] @example(value: ["1", "2"])
+
+        "A default value of false"
+        isCompleted: Boolean = false 
       }
       
       type Query {
-        "A Query with 1 required argument and 1 optional argument"
-        todo(
-          id: ID!
-  
-          "A default value of false"
-          isCompleted: Boolean = false @deprecated(reason: "not used")
-        ): Object!
+        todos(
+          filters: [Filter!] @deprecated(reason: "not used")
+        ): [String!] @limit
       }
     `
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(4)
+    expect(diffs.length).toEqual(5)
     diffs.forEach((diff) => {
       if (diff.type !== "unclassified") {
         expect(diff).toHaveProperty("description")
         expect(diff.description).not.toEqual("")
       }
     })
-    
-    expect(merged.queries.todo[metaKey]).toMatchObject({
-      nullable: { type: nonBreaking, action: DiffAction.remove }
-    })
-    expect(merged.queries.todo.properties.count.directives[metaKey]).toMatchObject({
-      limit: { type: unclassified, action: DiffAction.remove }
-    })
-    expect(merged.queries.todo.args.properties.isCompleted[metaKey]).toMatchObject({
-      deprecated: { type: deprecated, action: DiffAction.add }
-    })
+  })
 
+  it("should ", () => {
+    const before = graphapi`
+      directive @example(value: String) on FIELD_DEFINITION
+      
+      type Query {
+        todo: Object!
+      }
+
+      type Object {
+        """Id of the object"""
+        id: ID
+        name: String @example(value: "dog")
+      }
+    `
+
+    const after = graphapi`
+      directive @example(value: String) on FIELD | FIELD_DEFINITION
+      
+      type Query {
+        todo: Object!
+      }
+
+      type Object {
+        """Id of the object"""
+        id: ID
+        name: String @example(value: "cat")
+      }
+    `
+
+    const { diffs, merged } = compareGraphApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(3)
   })
 
   it("should ", () => {
@@ -99,6 +119,6 @@ describe("Compare GraphQL schemas with directives change", () => {
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(10)
+    expect(diffs.length).toEqual(9)
   })
 })

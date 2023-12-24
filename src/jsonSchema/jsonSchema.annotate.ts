@@ -64,7 +64,8 @@ export const schemaStatusChange: ChangeAnnotationResolver = ({ path }, ctx) => {
   if (ctx.after.value) {
     return t("add", { text: t("status", { key }), target: getTarget(path) })
   } else if (ctx.before.value) {
-    return t("remove", { text: t("status", { key }), target: getTarget(path) })  }
+    return t("remove", { text: t("status", { key }), target: getTarget(path) })
+  }
 }
 
 export const jsonSchemaKeyChange: ChangeAnnotationResolver = ({ action, path }) => {

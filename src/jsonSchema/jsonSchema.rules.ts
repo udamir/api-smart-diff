@@ -134,9 +134,7 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
     "/description": annotationRule,
     "/format": { $: [breaking, nonBreaking, breaking], annotate: jsonSchemaKeyChange },
     "/default": { $: [nonBreaking, breaking, breaking], annotate: jsonSchemaKeyChange },
-    "/dependencies": {
-
-    },    
+    // TODO "/dependencies": {},    
     "/definitions": {
       "/*": () => ({
         ...rules, 

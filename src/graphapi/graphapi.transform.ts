@@ -26,6 +26,15 @@ export const transformGraphSchema = compareTransformationFactory((value, other) 
     if (!(comp in value) && (comp in other)) {
       result[comp] = {}
     }
+
+    // add empty values items
+    if (comp === "values" && comp in other) {
+      const items = other[comp] as object
+      for (const item of Object.keys(items)) {
+        if (item in result[comp]) { continue }
+        result[comp][item] = {}
+      }
+    }
   }
 
   if ("nullable" in value && !value.nullable) {

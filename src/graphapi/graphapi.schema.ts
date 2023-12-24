@@ -1,8 +1,8 @@
-import { booleanClassifier, jsonSchemaKeyChange, jsonSchemaRules, transformJsonSchema, transformJsonSchemaCombiners } from "../jsonSchema"
-import { reverseClassifyRuleTransformer, transformComapreRules, allAnnotation, allDeprecated, reverseClassifyRule, nonBreaking, breaking } from "../core"
+import { jsonSchemaKeyChange, jsonSchemaRules, schemaStatusChange, transformJsonSchema, transformJsonSchemaCombiners } from "../jsonSchema"
+import { reverseClassifyRuleTransformer, transformComapreRules, allAnnotation, allDeprecated, nonBreaking, breaking } from "../core"
 import { transformGraphSchema, transfromGraphSchemaDirective } from "./graphapi.transform"
+import { parentKeyChangeAnnotation, valuesAnnotationChange } from "./graphapi.annotate"
 import type { CompareRules } from "../types"
-import { directiveMetaChangeAnnotation, directiveChangeAnnotation } from "./graphapi.annotate"
 
 export const graphApiSchemaRules = (response = false): CompareRules => {
 
@@ -22,11 +22,26 @@ export const graphApiSchemaRules = (response = false): CompareRules => {
       }),
       "/values": {
         "/*": {
-          "/description": { $: allAnnotation },
+          "/description": { 
+            annotate: valuesAnnotationChange,
+            $: allAnnotation
+          },
           "/deprecated": {
+            annotate: valuesAnnotationChange,
             $: allDeprecated,
-            "/reason": { $: allDeprecated }
+            "/reason": { 
+              annotate: valuesAnnotationChange,
+              $: allDeprecated
+            }
           }
+        }
+      },
+      "/deprecated": { 
+        $: allDeprecated, 
+        annotate: schemaStatusChange,
+        "/reason": { 
+          annotate: parentKeyChangeAnnotation,
+          $: allDeprecated
         }
       },
       "/interfaces": {
@@ -34,11 +49,11 @@ export const graphApiSchemaRules = (response = false): CompareRules => {
       },
       "/directives": {
         "/*": {
-          annotate: directiveChangeAnnotation,
+          annotate: parentKeyChangeAnnotation,
           transform: [transfromGraphSchemaDirective],
           "/meta": { 
             "/*": {
-              annotate: directiveMetaChangeAnnotation,
+              annotate: parentKeyChangeAnnotation,
               $: allAnnotation
             }
           }

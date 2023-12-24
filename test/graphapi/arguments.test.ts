@@ -1,19 +1,13 @@
-import { graphapi } from "../helpers"
 import { compareGraphApi } from "../../src"
+import { graphapi } from "../helpers"
 
 const metaKey = Symbol('diff')
 
-// TODO:
-// operations
-// graphschema
-// arguments
+describe("GraphQL arguments", () => {
 
-describe("Compare simple GraphQL schemas", () => {
-
-  it("should compare schemas with changes in arguments", () => {
+  it("should compare schemas with changes in operation arguments", () => {
     const before = graphapi`
       type Query {
-        "A Query with 1 required argument and 1 optional argument"
         todo(
           id: ID!
           isCompleted: Boolean
@@ -23,19 +17,20 @@ describe("Compare simple GraphQL schemas", () => {
 
     const after = graphapi`
       type Query {
-        "A Query with 2 required argument and 0 optional argument"
         todo(
           id: ID!
       
           "A default value of false"
           isCompleted: Boolean! = false
-        ): String!
+
+          newArgument: String
+        ): String
       }
     `
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(5)
+    expect(diffs.length).toEqual(4)
     diffs.forEach((diff) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
@@ -44,7 +39,7 @@ describe("Compare simple GraphQL schemas", () => {
     
   })
 
-  it("should be nullable query for Scalar result", () => {
+  it("should compare schemas with changes in type arguments", () => {
     const before = graphapi`
       type Query {
         company(id: ID!): Company
