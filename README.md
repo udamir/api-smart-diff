@@ -17,7 +17,7 @@ This package provides utils to compute the diff between two Json based API docum
   - [x] Unit Tests
   - [x] E2E Tests
 - [AsyncApi 2.x](https://v2.asyncapi.com/docs/reference)
-  - [ ] Rules
+  - [x] Rules
   - [ ] Transformations
   - [ ] Annotations
   - [ ] Unit Tests
@@ -65,19 +65,26 @@ npm install api-smart-diff --save
 
 ### Nodejs
 ```ts
-import { apiDiff } from 'api-smart-diff'
+import { apiCompare } from 'api-smart-diff'
 
-const diffs = apiDiff(oldSpec, newSpec)
+const { diffs, merged } = apiCompare(before, after)
+// diff: 
 // {
 //   action: "add" | "remove" | "replace" | "rename",
-//   after: 'value in newSpec',
-//   before: 'value in oldSpec',
+//   after: 'value in after',
+//   before: 'value in before',
 //   description: 'human-readable description'
 //   path: ['path, 'in', 'array', 'format'],
 //   type: "annotation" | "breaking" | "non-breaking" | "unclassified" | "deprecated"
+// } 
+
+// merged meta:
+// {
+//   action: "add" | "remove" | "replace" | "rename",
+//   type: "annotation" | "breaking" | "non-breaking" | "unclassified" | "deprecated",
+//   replaced: "value in before",
 // }
 
-const merged = apiMerge(oldSpec, newSpec)
 
 ```
 
@@ -92,8 +99,7 @@ A browser version of `api-smart-diff` is also available via CDN:
 Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiSmartDiff`.
 ```HTML
 <script>
-  var diffs = ApiSmartDiff.apiDiff(oldSpec, newSpec)
-  var merged = ApiSmartDiff.apiMerge(oldSpec, newSpec)
+  var { diffs, merged } = ApiSmartDiff.apiCompare(before, after)
 </script>
 ```
 
@@ -101,40 +107,34 @@ Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiS
 
 Package provides the following public functions:
 
-`apiDiff (before, after, options?: CompareOptions): Array<Diff>`
-> Calculates the difference list between two objects and classify difference in accordinance with before document type: OpenApi3, AsyncApi2, JsonSchema.
+`apiCompare (before, after, options?: CompareOptions): { diffs: Diff[], merged: object }`
+> Calculates the difference and merge two objects and classify difference in accordinance with before document type
 
-`apiDiffTree (before, after, options?: CompareOptions): object`
-> Calculates the difference tree between two objects and classify difference in accordinance with before document type: OpenApi3, AsyncApi2, JsonSchema.
 
-`apiMerge (before, after, options?: MergeOptions): object`
-> Merge two objects and inject difference as meta data. 
-
-### **apiDiff(before, after, options)**
+### **apiCompare(before, after, options)**
 The apiDiff function calculates the difference between two objects.
+
+#### *Arguments*
 - `before: any` - the origin object
 - `after: any` - the object being compared structurally with the origin object\
 - `options: CompareOptions` [optional] - comparison options
 
 ```ts
-type CompareOptions = {
-  rules?: Rules
-  trimStrings?: boolean
-  caseSensitive?: boolean
-  strictArrays?: boolean
-  externalRefs?: { [key: string]: any }
+export type ComapreOptions = {
+  rules?: CompareRules              // custom rules for compare
+
+  metaKey?: string | symbol         // metakey for merge changes
+  arrayMeta?: boolean               // add changes to arrays via metakey
+  annotateHook?: AnnotateHook       // custom format hook
+
+  externalSources?: {               // resolved external $ref sources
+    before?: Record<string, object>
+    after?: Record<string, object>
+  }
 }
 ```
-#### *Arguments*
-- `rules` - custom match and classification rules
-- `trimString` - ignore spaces in matching, default `false`
-- `caseSensitive` - ignore case in matching, default `false`
-- `strictArrays` - use strict match algorithm for array items, default `false`
-- `externalRefs` - object with external refs
-
-
 #### *Result*
-Function returns array of differences:
+Function returns object with `diffs` array and `merged` object with metadata
 ```ts
 type Diff = {
   action: "add" | "remove" | "replace" | "rename"
@@ -144,127 +144,89 @@ type Diff = {
   after?: any
   type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"
 }
-```
 
-#### *Example*
-```ts
-const diffs = apiDiff(before, after)
-if (diffs.length) {
-  // do something with the changes
-}
-```
+type MergeMeta = DiffMeta | MergeArrayMeta
+type MergeArrayMeta = { array: Record<number, MergeMeta> }
 
-### **apiDiffTree(before, after, options)**
-The apiDiff function calculates the difference between two objects.
-- `before: any` - the origin object
-- `after: any` - the object being compared structurally with the origin object\
-- `options: CompareOptions` [optional] - comparison options
-
-#### *Result*
-Function returns object with `$diff` key for all differences:
-```ts
-type Diff = {
+export type DiffMeta = {
   action: "add" | "remove" | "replace" | "rename"
-  description?: string
-  before?: any
-  after?: any
   type: "breaking" | "non-breaking" | "annotation" | "unclassified" | "deprecated"
-}
-```
-
-#### *Example*
-```ts
-const diff = apiDiffTree(before, after)
-// do something with the changes object
-```
-
-### **apiMerge(before, after, options)**
-The apiDiff function calculates the difference between two objects.
-- `before: any` - the origin object
-- `after: any` - the object being compared structurally with the origin object\
-- `options: MergeOptions` [optional] - comparison options
-
-```ts
-type MergeOptions<T> = CompareOptions & {
-  resolveUnchangedRefs?: boolean
-  arrayMeta?: boolean
-  formatMergedMeta?: (diff: T) => any
-  metaKey?: string | symbol
-}
-```
-#### *Arguments*
-Additional to compare options:
-- `arrayMeta` - inject meta to arrays for items changes, default `false`
-- `resolveUnchangedRefs` - resolve refs even if no changes, default `false`
-- `metaKey` - key for diff metadata, default `$diff`
-- `formatMergedMeta` - custom formatting function for meta
-
-#### *Result*
-Function returns merged object with metadata. Metadata includes merged keys and differences:
-```ts
-type MergedMeta = {
-  [key: string]: MergedKeyMeta | MergedArrayMeta
-}
-
-type MergedKeyMeta = {
-  type: DiffType
-  action: ActionType
   replaced?: any
 }
-
-type MergedArrayMeta = {
-  array: { [key: number]: MergedArrayMeta }
-}
 ```
 
 #### *Example*
 ```ts
-const apiKey = Symbol("diff")
-const merged = apiMerge(before, after, { apiKey })
+const metaKey = Symbol("diff")
+const { diffs, merged } = apiCompare(before, after, { metaKey })
 
-// do something with merged object
-```
-
-### Human-readable change description example
-
-```ts
-import { apiDiff, changeDoc, changeDocOpenApiRules } from "api-smart-diff"
-
-const diff = apiDiff(before, after, { 
-  formatMergedMeta: (diff) => ({ ...diff, description: changeDoc(diff, before, after, changeDocOpenApiRules) })
-})
+// do something with diffs or merged object
 ```
 
 ### **Custom rules**
-Custom match and classification rules can be defined as object:
+Custom compare rules can be defined as CrawlRules:
 ```ts
-type Rules = {
-  // root property (or array item) rule
-  "/"?: Rule
+import { CrawlRules } from "json-crawl"
 
-  // rule for all unspecified properties (or nested array items)
-  "/*"?: Rule | Rules | (before) => Rules
+type CompareRules = CrawlRules<CompareRule>
 
-  // rule for specified properties
-  [key: `/${string}`]?: Rule | Rules | (before) => Rules
-
-  // custom match function for object (or array)
-  "#"?: (before, after) => boolean
+type CompareRule = {
+  $?: ClassifyRule                            // classifier for current node
+  compare?: CompareResolver                   // compare handler for current node
+  transform?: CompareTransformResolver[]      // transformations before compare/merge
+  mapping?: MappingResolver<string | number>  // keys mapping rules
+  annotate?: ChangeAnnotationResolver         // resolver for annotation template
 }
 
 // Change classifier
-type Rule = [ 
-  DiffType | (ctx: IChangeContext) => DiffType, // add
-  DiffType | (ctx: IChangeContext) => DiffType, // remove
-  DiffType | (ctx: IChangeContext) => DiffType  // replace (rename)
+type ClassifyRule = [ 
+  DiffType | (ctx: ComapreContext) => DiffType, // add
+  DiffType | (ctx: ComapreContext) => DiffType, // remove
+  DiffType | (ctx: ComapreContext) => DiffType  // replace (rename)
 ]
 
-// Current path Change context
-interface IChageContext {
-  before: any // before value
-  after: any // after value
-  root: IChageContext // get root Change context
-  up: (n?: number) => IChageContext // get parent Change Context
+// Compare context
+type ComapreContext = {
+  before: NodeContext       // before node context
+  after: NodeContext        // after node context
+  rules: CompareRules       // rules for compared nodes
+  options: ComapreOptions   // compare options
+}
+
+// Node context
+type NodeContext =  {
+  path: JsonPath
+  key: string | number
+  value: unknown
+  parent?: unknown
+  root: unknown
+}
+
+// Custom compare resolver
+type CompareResolver = (ctx: ComapreContext) => CompareResult | void
+
+// Transformation rules
+type CompareTransformResolver<T = unknown> = (before: T, after: T) => [T, T]
+
+// Mapping rules
+type MappingResolver = (
+  before: Record<string, unknown> | unknown[],
+  after: Record<string, unknown> | unknown[], 
+  ctx: ComapreContext
+) => MapKeysResult
+
+type MapKeysResult<T extends string | number> = {
+  added: Array<T>
+  removed: Array<T>
+  mapped: Record<T, T>
+}
+
+// Annotation tempalte resolver
+type ChangeAnnotationResolver = (diff: Diff, ctx: ComapreContext) => AnnotateTemplate | undefined
+
+type AnnotateTemplate = {
+  template: string,
+  params?: { [key: string]: AnnotateTemplate | string | number | undefined }
 }
 
 ```
@@ -272,7 +234,7 @@ interface IChageContext {
 Please check predefined rules in `/src/rules` folder to get examples
 
 ## Contributing
-When contributing, keep in mind that it is an objective of `api-smart-diff` to have no package dependencies. This may change in the future, but for now, no-dependencies.
+When contributing, keep in mind that it is an objective of `api-smart-diff` to have no additional package dependencies. This may change in the future, but for now, no new dependencies.
 
 Please run the unit tests before submitting your PR: `npm test`. Hopefully your PR includes additional unit tests to illustrate your change/modification!
 

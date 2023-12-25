@@ -10,7 +10,7 @@ export type RemoveDiffType = RuleDiffType
 export type ReplaceDiffType = RuleDiffType
 export type RuleDiffType = DiffType | DiffTypeClassifier
 
-export type DiffContext =  {
+export type NodeContext =  {
   path: JsonPath
   key: string | number
   value: unknown
@@ -19,8 +19,8 @@ export type DiffContext =  {
 }
 
 export type ComapreContext = {
-  before: DiffContext
-  after: DiffContext
+  before: NodeContext
+  after: NodeContext
   rules: CompareRules
   options: ComapreOptions
 }
@@ -46,7 +46,7 @@ export type CompareRule = {
   compare?: CompareResolver                   // compare handler for current node
   transform?: CompareTransformResolver[]      // transformations 
   mapping?: MappingResolver<string | number>  // key mapping rules
-  annotate?: ChangeAnnotationResolver         // 
+  annotate?: ChangeAnnotationResolver         // resolver for annotation template
   skip?: boolean                              // skip comparison, use before value as merge result
 }
 

@@ -24,8 +24,11 @@ export type DiffMeta = {
 export interface CompareResult {
   diffs: Diff[]
   merged: any
-  rootMergeMeta?: DiffMeta | MergeArrayMeta
+  rootMergeMeta?: MergeMeta
 }
+
+export type MergeMeta = DiffMeta | MergeArrayMeta
+export type MergeArrayMeta = { array: Record<number, MergeMeta> }
 
 export type SourceContext = {
   before?: {
@@ -46,16 +49,8 @@ export type ComapreOptions = {
   annotateHook?: AnnotateHook       // custom format hook
 
   externalSources?: {               // external $ref sources
-    before?: {
-      [key: string]: unknown
-    },
-    after?: {
-      [key: string]: unknown
-    }
-  }
-
-  dictionary?: {
-    [name: string]: Record<string, string>
+    before?: Record<string, unknown>
+    after?: Record<string, unknown>
   }
 }
 
@@ -72,7 +67,7 @@ export interface MergeState<T extends string | number = string> {
   bPath: JsonPath         // before path from root
   bNode: JsonNode<T>      // before Node 
   mNode: any              // merged Node
-  parentMeta: MergeMeta   // parent merge meta
+  parentMeta: MergeMetaRecord   // parent merge meta
   root: { 
     before: NodeRoot      // before root Node
     after: NodeRoot       // after root Node
@@ -80,8 +75,7 @@ export interface MergeState<T extends string | number = string> {
   },
 }
 
-export type MergeArrayMeta = { array: Record<number, DiffMeta | MergeArrayMeta> }
-export type MergeMeta = Record<string | number, DiffMeta | MergeArrayMeta>
+export type MergeMetaRecord = Record<string | number, MergeMeta>
 
 export type JsonNode<T extends string | number = string> = T extends string ? Record<string | number, unknown> : Array<unknown>
 

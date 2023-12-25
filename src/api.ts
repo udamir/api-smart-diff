@@ -13,6 +13,7 @@ export const discoverCompareEngine = (data: any): CompareEngine => {
   return compareJsonSchema
 }
 
+// !Deprecated
 export const apiMerge = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
   const engine = discoverCompareEngine(before)
 
@@ -21,6 +22,7 @@ export const apiMerge = (before: unknown, after: unknown, options: ComapreOption
   return merged
 }
 
+// !Deprecated
 export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
   const engine = discoverCompareEngine(before)
 

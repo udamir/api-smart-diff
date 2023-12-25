@@ -1,7 +1,8 @@
 import { 
   breaking, nonBreaking,allAnnotation, allBreaking, allUnclassified,
   onlyAddBreaking, allDeprecated, allNonBreaking, unclassified,
-} from "../core/constants"
+  reverseClassifyRuleTransformer, transformComapreRules
+} from "../core"
 import { 
   schemaAnnotationChange, schemaExampleChange, jsonSchemaKeyChange, schemaKeyItemChange,
   schemaStatusChange, schemaValidationChange
@@ -14,7 +15,6 @@ import { transformJsonSchema, transformJsonSchemaCombiners, jsonSchemaMergeAllOf
 import { enumMappingResolver, jsonSchemaMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
-import { reverseClassifyRuleTransformer, transformComapreRules } from "../core"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
 
 

@@ -1,6 +1,9 @@
 import { JsonPath } from "json-crawl"
 
-import type { DiffFactory, ComapreContext, CompareTransformResolver, Diff, DiffContext, DiffMeta, MergeMeta, TransformResolver } from "../types"
+import type { 
+  DiffFactory, ComapreContext, CompareTransformResolver, Diff, NodeContext, DiffMeta, 
+  MergeMetaRecord, TransformResolver 
+} from "../types"
 import { DiffAction, allUnclassified, unclassified } from "./constants"
 import { getKeyValue, joinPath, isFunc } from "../utils"
 
@@ -41,8 +44,8 @@ export const convertDiffToMeta = (diff: Diff): DiffMeta => {
   }
 }
 
-export const createMergeMeta = (diffs: Diff[]): MergeMeta => {
-  const meta: MergeMeta = {}
+export const createMergeMeta = (diffs: Diff[]): MergeMetaRecord => {
+  const meta: MergeMetaRecord = {}
 
   for (const diff of diffs) {
     const _meta = convertDiffToMeta(diff)
@@ -53,7 +56,7 @@ export const createMergeMeta = (diffs: Diff[]): MergeMeta => {
   return meta
 }
 
-export const getParentContext = (ctx: DiffContext, ...path: JsonPath): DiffContext | undefined => {
+export const getParentContext = (ctx: NodeContext, ...path: JsonPath): NodeContext | undefined => {
   const _path = joinPath(ctx.path.slice(0, -1), path)
   
   if (!_path.length) {

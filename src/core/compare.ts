@@ -1,7 +1,7 @@
 import { getNodeRules, syncCrawl, SyncCrawlHook } from "json-crawl"
 
 import type { 
-  ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMeta, 
+  ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMetaRecord, 
   SourceContext, ContextInput, MergeFactoryResult, CompareEngine
 } from "../types"
 import { getKeyValue, isArray, isNumber, isObject, objectKeys, typeOf } from "../utils"
@@ -38,7 +38,7 @@ const mergedResult = (mNode: JsonNode, key: number | string, value: unknown) => 
   return { done: true } 
 }
 
-const setMergeMeta = (parentMeta: MergeMeta, key: string | number, diff: Diff) => {
+const setMergeMeta = (parentMeta: MergeMetaRecord, key: string | number, diff: Diff) => {
   parentMeta[key] = convertDiffToMeta(diff)
   return diff
 }
