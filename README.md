@@ -11,11 +11,6 @@ This package provides utils to compute the diff between two Json based API docum
 ## Supported API specifications (work on progress)
 
 - [OpenApi 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md)
-  - [x] Rules
-  - [x] Transformations
-  - [x] Annotations
-  - [x] Unit Tests
-  - [x] E2E Tests
 - [AsyncApi 2.x](https://v2.asyncapi.com/docs/reference)
   - [x] Rules
   - [ ] Transformations
@@ -23,11 +18,6 @@ This package provides utils to compute the diff between two Json based API docum
   - [ ] Unit Tests
   - [ ] E2E Tests
 - [JsonSchema](https://json-schema.org/draft/2020-12/json-schema-core.html)
-  - [x] Rules
-  - [x] Transformations
-  - [x] Annotations
-  - [x] Unit Tests
-  - [x] E2E Tests
 - [Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)
   - [ ] Rules
   - [ ] Transformations
