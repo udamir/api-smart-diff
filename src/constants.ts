@@ -18,6 +18,10 @@ export enum ClassifierType {
   deprecated = "deprecated"
 }
 
+export enum JsonSchemaLocation {
+  requestBody = "requestBody",
+}
+
 export const { breaking, nonBreaking, unclassified, annotation, deprecated } = ClassifierType
 
 // predefined classifiers

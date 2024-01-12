@@ -1,11 +1,26 @@
-import { breakingIfAfterTrue, emptySecurity, includeSecurity, matchRule } from "../utils"
-import { jsonSchemaRules } from "./jsonschema"
-import { Rules, Rule } from "../types"
 import {
-  breaking, nonBreaking, unclassified,
-  allAnnotation, addNonBreaking,
-  allBreaking, allNonBreaking, allDeprecated, annotation,
-} from "../constants"
+  breakingIf,
+  breakingIfAfterTrue,
+  emptySecurity,
+  getFirstKey,
+  includeSecurity,
+  matchRule,
+  toLowerCase,
+} from '../utils'
+import { jsonSchemaRules } from './jsonschema'
+import { Rule, Rules } from '../types'
+import {
+  addNonBreaking,
+  allAnnotation,
+  allBreaking,
+  allDeprecated,
+  allNonBreaking,
+  annotation,
+  breaking,
+  JsonSchemaLocation,
+  nonBreaking,
+  unclassified,
+} from '../constants'
 
 const pathArrayRules = (rules: Rules) => matchRule(rules, ({ before, after }) => {
   const beforePath: string = String(before.key).replace(new RegExp("\{.*?\}", "g"), "*")
@@ -67,21 +82,46 @@ const paramSchemaRules = (param: any): Rules => {
 }
 
 const parameterStyleRule: Rule = [
-  ({ after }) => after === "form" ? annotation : breaking, 
+  ({ after }) => after === "form" ? annotation : breaking,
   ({ before }) => before === "form" ? annotation : breaking,
   breaking
 ]
 
 const parameterExplodeRule = (style = "form"): Rule => [
-  ({ after }) => (after && style === "form") || (!after && style !== "form") ? annotation : breaking, 
+  ({ after }) => (after && style === "form") || (!after && style !== "form") ? annotation : breaking,
   ({ before }) => (before && style === "form") || (!before && style !== "form") ? annotation : breaking,
   breaking
 ]
 
+const NON_BREAKING_HEADERS = ["Accept", "Content-Type", "Authorization", "authorization"]
+const isNonBreakingParamRemoval = (param: any): boolean => {
+  return param.in === "header" && NON_BREAKING_HEADERS.includes(param.name)
+}
+
+const parameterClassifierRule: Rule = [
+  nonBreaking,
+  ({ before }) => {
+    if (!Array.isArray(before)) {
+      return breaking
+    }
+
+    return before.every(isNonBreakingParamRemoval)
+      ? nonBreaking
+      : breaking
+  },
+  breaking,
+]
+
+const parameterItemClassifierRule: Rule = [
+  nonBreaking,
+  ({ before }) => (isNonBreakingParamRemoval(before) ? nonBreaking : breaking),
+  breaking,
+]
+
 const parametersRules: Rules = paramArrayRules({
-  "/": [nonBreaking, breaking, breaking],
+  "/": parameterClassifierRule,
   "/*": (param) => ({
-    "/": [nonBreaking, breaking, breaking],
+    "/": parameterItemClassifierRule,
     "/name": [nonBreaking, breaking, (ctx) => ctx.up().before?.in === "path" ? nonBreaking : breaking ],
     "/in": [nonBreaking, breaking, breaking],
     "/schema": paramSchemaRules(param),
@@ -114,11 +154,11 @@ const encodingRules: Rules = {
   },
 }
 
-const contentRules: Rules = contentMediaTypeRules({
+const contentRules = (location?: JsonSchemaLocation): Rules => contentMediaTypeRules({
   "/": [nonBreaking, breaking, breaking],
   "/*": {
     "/": [nonBreaking, breaking, unclassified],
-    "/schema": jsonSchemaRules(allBreaking),
+    "/schema": jsonSchemaRules(allBreaking, location),
     "/example": allAnnotation,
     "/examples": allAnnotation,
     "/encoding": encodingRules,
@@ -128,19 +168,22 @@ const contentRules: Rules = contentMediaTypeRules({
 const requestBodiesRules: Rules = {
   "/": [nonBreaking, breaking, breaking],
   "/description": allAnnotation,
-  "/content": contentRules,
+  "/content": contentRules(JsonSchemaLocation.requestBody),
   "/required": [breaking, nonBreaking, breakingIfAfterTrue],
 }
 
-const responsesRules: Rules = {
+const responsesRules: Rules = matchRule({
   "/": [nonBreaking, breaking, breaking],
   "/*": {
-    "/": [nonBreaking, breaking, breaking],
+    "/": [
+      nonBreaking,
+      breaking,
+      ({ before, after }) => breakingIf(toLowerCase(getFirstKey(before)) !== toLowerCase(getFirstKey(after)))],
     "/description": allAnnotation,
     "/headers": headersRules,
     "/content": contentRules,
   },
-}
+}, ({ before, after }) => toLowerCase(before.key) === toLowerCase(after.key))
 
 const globalSecurityRules: Rules = {
   "/": [

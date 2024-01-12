@@ -1,10 +1,10 @@
 import { breakingIf, breakingIfAfterTrue } from "../utils"
 import { DiffTypeFunc, Rule, Rules } from "../types"
 import {
-  breaking, nonBreaking, addNonBreaking, 
+  breaking, nonBreaking, addNonBreaking,
   allAnnotation, allBreaking, allUnclassified,
-  onlyAddBreaking, allDeprecated,
-} from "../constants"
+  onlyAddBreaking, allDeprecated, JsonSchemaLocation,
+} from '../constants'
 
 const maxClassifier: Rule = [
   breaking, 
@@ -36,9 +36,15 @@ const multipleOfClassifier: Rule = [
   ({ before, after }) => breakingIf(!!(before % after))
 ]
 
+const additionalPropertiesClassifier = (location?: JsonSchemaLocation): Rule => [
+  breaking,
+  breaking,
+  ({ after }) => (after === true && location === JsonSchemaLocation.requestBody ? nonBreaking : breakingIf(after)),
+]
+
 const nonBreakingIfDefault: DiffTypeFunc = ({ after, up }) => up(2).after?.properties?.[after]?.default !== undefined ? nonBreaking : breaking
 
-export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
+export const jsonSchemaRules = (rootRule: Rule = allUnclassified, location?: JsonSchemaLocation): Rules => ({
   "/": rootRule,
   "/title": allAnnotation,
   "/multipleOf": multipleOfClassifier,
@@ -68,26 +74,26 @@ export const jsonSchemaRules = (rootRule: Rule = allUnclassified): Rules => ({
   },
   "/not": {
     "/": [breaking, nonBreaking, breaking],
-    "/*": () => jsonSchemaRules(allBreaking),
+    "/*": () => jsonSchemaRules(allBreaking, location),
   },
   "/allOf": {
     "/": [breaking, nonBreaking, breaking],
-    "/*": () => jsonSchemaRules(allBreaking),
+    "/*": () => jsonSchemaRules(allBreaking, location),
   },
   "/oneOf": {
     "/": [breaking, nonBreaking, breaking],
-    "/*": () => jsonSchemaRules(addNonBreaking),
+    "/*": () => jsonSchemaRules(addNonBreaking, location),
   },
   "/anyOf": {
     "/": [breaking, nonBreaking, breaking],
-    "/*": () => jsonSchemaRules(addNonBreaking),
+    "/*": () => jsonSchemaRules(addNonBreaking, location),
   },
-  "/items": () => jsonSchemaRules(addNonBreaking),
+  "/items": () => jsonSchemaRules(addNonBreaking, location),
   "/properties": {
     "/": [breaking, nonBreaking, breaking],
-    "/*": () => jsonSchemaRules(addNonBreaking),
+    "/*": () => jsonSchemaRules(addNonBreaking, location),
   },
-  "/additionalProperties": () => jsonSchemaRules([breaking, breaking, breakingIfAfterTrue]),
+  "/additionalProperties": () => jsonSchemaRules(additionalPropertiesClassifier(location), location),
   "/description": allAnnotation,
   "/format": [breaking, nonBreaking, breaking],
   "/default": [nonBreaking, breaking, breaking],

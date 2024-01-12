@@ -1,5 +1,5 @@
-import { addPatch, ExampleResource } from "./helpers"
-import { annotation, breaking, DiffAction, nonBreaking, unclassified } from "../src"
+import { addPatch, ExampleResource } from './helpers'
+import { annotation, breaking, DiffAction, nonBreaking, unclassified } from '../src'
 
 const exampleResource = new ExampleResource("petstore.yaml")
 
@@ -156,5 +156,22 @@ describe("Test openapi 3 diff", () => {
 
     const diffs = exampleResource.diff(after)
     expect(diffs).toMatchObject([{ type: nonBreaking }, { type: nonBreaking }])
-  }) 
+  })
+
+  it("should classify as non-breaking change of additionalProperties from any type to true in request", () => {
+    const after = exampleResource.clone()
+    after.paths["/pet/{petId}"].post.requestBody.content["application/x-www-form-urlencoded"].schema.properties.customProperties.additionalProperties = true
+
+    const diffs = exampleResource.diff(after)
+    expect(diffs).toMatchObject([{ type: nonBreaking }])
+  })
+
+  it("should classify as non-breaking change of response code from 5XX to 5xx", () => {
+    const after = exampleResource.clone()
+    after.paths["/pet"].put.responses["5xx"] = after.paths["/pet"].put.responses["5XX"]
+    delete after.paths["/pet"].put.responses["5XX"]
+
+    const diffs = exampleResource.diff(after)
+    expect(diffs).toMatchObject([{ type: nonBreaking }])
+  })
 })
