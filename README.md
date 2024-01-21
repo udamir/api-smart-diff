@@ -12,24 +12,9 @@ This package provides utils to compute the diff between two Json based API docum
 
 - [OpenApi 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md)
 - [AsyncApi 2.x](https://v2.asyncapi.com/docs/reference)
-  - [x] Rules
-  - [ ] Transformations
-  - [ ] Annotations
-  - [ ] Unit Tests
-  - [ ] E2E Tests
 - [JsonSchema](https://json-schema.org/draft/2020-12/json-schema-core.html)
-- [Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)
-  - [ ] Rules
-  - [ ] Transformations
-  - [ ] Annotations
-  - [ ] Unit Tests
-  - [ ] E2E Tests
 - GraphQL via [GraphApi](https://github.com/udamir/graphapi)
-  - [x] Rules
-  - [x] Transformations
-  - [ ] Annotations
-  - [ ] Unit Tests
-  - [ ] E2E Tests
+- ~~[Swagger 2.0](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md)~~
 - ~~[AsyncApi 3.x](https://www.asyncapi.com/docs/specifications/)~~ (Roadmap)
 - ~~gRPC~~ (Roadmap)
 
@@ -44,11 +29,15 @@ This package provides utils to compute the diff between two Json based API docum
 - Supports custom human-readable changes annotation
 - Resolves all $ref pointers, including circular
 - Typescript syntax support out of the box
-- No dependencies, can be used in nodejs or browser
+- Can be used in nodejs or browser
 
 ## Installation
 ```SH
 npm install api-smart-diff --save
+```
+or
+```SH
+yarn add api-smart-diff
 ```
 
 ## Usage
@@ -75,15 +64,13 @@ const { diffs, merged } = apiCompare(before, after)
 //   replaced: "value in before",
 // }
 
-
 ```
 
 ### Browsers
 
 A browser version of `api-smart-diff` is also available via CDN:
 ```html
-<script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/browser/api-smart-diff.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/api-smart-diff@latest/dist/api-smart-diff.min.js"></script>
 ```
 
 Reference `api-smart-diff.min.js` in your HTML and use the global variable `ApiSmartDiff`.
@@ -226,7 +213,7 @@ Please check predefined rules in `/src/rules` folder to get examples
 ## Contributing
 When contributing, keep in mind that it is an objective of `api-smart-diff` to have no additional package dependencies. This may change in the future, but for now, no new dependencies.
 
-Please run the unit tests before submitting your PR: `npm test`. Hopefully your PR includes additional unit tests to illustrate your change/modification!
+Please run the unit tests before submitting your PR: `yarn test`. Hopefully your PR includes additional unit tests to illustrate your change/modification!
 
 ## License
 
