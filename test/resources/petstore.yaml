@@ -57,6 +57,9 @@ paths:
         '405':
           description: Validation exception
           content: {}
+        '5XX':
+          description: Internal Server Error
+          content: { }
       security:
       - petstore_auth:
         - write:pets
@@ -228,6 +231,11 @@ paths:
                 status:
                   type: string
                   description: Updated status of the pet
+                customProperties:
+                  type: object
+                  additionalProperties:
+                    type: string
+                    description: Custom additional property
       responses:
         '405':
           description: Invalid input

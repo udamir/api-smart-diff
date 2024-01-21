@@ -1,23 +1,32 @@
 import { applyOperation, Operation } from "fast-json-patch"
-import { buildFromSchema } from "gqlapi"
+import { buildFromSchema, GraphApiSchema } from "gqlapi"
 import { buildSchema } from "graphql"
-import yaml from "js-yaml"
+import { JsonPath } from "json-crawl"
+import YAML from "js-yaml"
 import path from "path"
 import fs from "fs"
 
-import { apiDiff, apiMerge, ObjPath, Rules, apiDiffTree, ApiDiffOptions } from "../../src"
-import { buildPath, findExternalRefs, getValueByPath, parsePath } from "../../src/utils"
+
+import { apiDiff, apiMerge, getKeyValue, buildPath, ComapreOptions, CompareRules } from "../../src"
+
+export const yaml = (strings: TemplateStringsArray): object => {
+  return YAML.load(strings[0]) as object
+}
+
+export const graphapi = (strings: TemplateStringsArray): GraphApiSchema => {
+  return buildFromSchema(buildSchema(strings[0], { noLocation: true }))
+}
 
 export class ExampleResource {
   private res: any = {}
   public externalSources: any = {}
 
-  constructor(private filename: string, public rules?: Rules) {
+  constructor(private filename: string, public rules?: CompareRules) {
     const resPath = path.join(__dirname, "../resources/", this.filename)
     const data = fs.readFileSync(resPath, "utf8")
     if (new RegExp(".(yaml|YAML|yml|YML)$", "g").test(filename)) {
       try {
-        this.res = yaml.load(data)
+        this.res = YAML.load(data)
       } catch (e) {
         console.log(e)
       }
@@ -40,25 +49,21 @@ export class ExampleResource {
   }
 
   public diff(after: any) {
-    return apiDiff(this.res, after, { rules: this.rules, externalRefs: this.externalSources })
+    return apiDiff(this.res, after, { rules: this.rules, externalSources: this.externalSources })
   }
 
-  public merge(after: any, options?: ApiDiffOptions) {
-    return apiMerge(this.res, after, { ...options, rules: this.rules, externalRefs: this.externalSources })
+  public merge(after: any, options?: ComapreOptions) {
+    return apiMerge(this.res, after, { ...options, rules: this.rules, externalSources: this.externalSources })
   }
 
-  public diffTree(after: any, options?: ApiDiffOptions) {
-    return apiDiffTree(this.res, after, { ...options, rules: this.rules, externalRefs: this.externalSources })
+  public getValue(path: JsonPath) {
+    // path = typeof path === "string" ? parsePath(path) : path
+    return getKeyValue(this.res, ...path)
   }
 
-  public getValue(path: ObjPath | string) {
-    path = typeof path === "string" ? parsePath(path) : path
-    return getValueByPath(this.res, path)
-  }
-
-  public findExternalSources () {
-    return findExternalRefs(this.res)
-  }
+  // public findExternalSources () {
+  //   return findExternalRefs(this.res)
+  // }
 }
 
 export const addPatch = (pathArr: any[], value: any): Operation => {

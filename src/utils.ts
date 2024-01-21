@@ -1,199 +1,123 @@
-import { Rule, MatchFunc, Rules, DiffType, ObjPath, DiffTypeFunc, JsonDiff } from "./types"
-import { breaking, nonBreaking, DiffAction } from "./constants"
+import { JsonPath } from "json-crawl"
 
-export type PathItem = string | number
-
-export class PathPointer implements Iterable<PathItem> {
-  public escapedKey: string
-  public items: PathItem[] = []
-
-  public get ref(): string {
-    return this.parent ? this.parent.ref + "/" + this.escapedKey : this.escapedKey
-  }
-
-  [Symbol.iterator]() : Iterator<PathItem> {
-    let i = 0
-    return {
-      next: () => ({ 
-        done: !(i < this.items.length),
-        value: this.items[i++]
-      })
-    }
-  }
-
-  constructor(public key?: string | number, public parent?: PathPointer) {
-    if (key === undefined) {
-      this.escapedKey = ""
-    } else {
-      this.escapedKey = typeof key === "string" ? key.replace(new RegExp("~1", "g"), "/") : String(key)
-      this.items = parent ? [...parent.items, key] : [key]
-    }
-  }
-
-  public childPath(key: string | number): PathPointer {
-    return new PathPointer(key, this)
-  }
+export const isKey = <T extends object>(x: T, k: PropertyKey): k is keyof T => {
+  return k in x;
 }
 
-export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
-export const breakingIfAfterTrue: DiffTypeFunc = ({ after }): DiffType => breakingIf(after)
-
-export const added = (path: PathPointer, after: any): JsonDiff => ({ path: path.items, after, action: DiffAction.add })
-export const removed = (path: PathPointer, before: any): JsonDiff => ({ path: path.items, before, action: DiffAction.remove })
-export const replaced = (path: PathPointer, before: any, after: any): JsonDiff => ({ path: path.items, before, after, action: DiffAction.replace })
-export const renamed = (path: PathPointer, before: any, after: any): JsonDiff => ({ path: path.items, before, after, action: DiffAction.rename })
-export const unchanged = (path: PathPointer, before: any): JsonDiff => ({ path: path.items, before, action: DiffAction.test })
-
-export const isEmptyObject = (obj:any) => {
-  for (const key in obj)
-    return false
-  return true
+export const isObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === 'object' && value !== null
 }
 
-export const typeOf = (value: any) => {
+export const isArray = (value: unknown): value is Array<unknown> => {
+  return Array.isArray(value)
+}
+
+export const isNotEmptyArray = (value: unknown): boolean => {
+  return !!(Array.isArray(value) && value.length)
+}
+
+export const isExist = (value: unknown): boolean => {
+  return typeof value !== "undefined"
+}
+
+export const isString = (value: unknown): value is string => {
+  return typeof value === "string"
+}
+
+export const isNumber = (value: unknown): value is number => {
+  return typeof value === "number" || isString(value) && !Number.isNaN(+value)
+}
+
+export const isFunc = (value: unknown): value is Function => {
+  return typeof value === "function"
+}
+
+export const typeOf = (value: unknown): string  => {
   if (Array.isArray(value)) {
     return "array"
   }
   return value == null ? "null" : typeof value
 }
 
-export const parsePath = (path: string): string[] => {
-  const [_, ...pathArr] = path.split("/").map((i) => i.replace(new RegExp("~1", "g"), "/"))
-  return pathArr
+export const objectKeys = <T extends {}>(value: T): (keyof T)[] => {
+  return Object.keys(value) as (keyof T)[]
 }
 
-export const buildPath = (path: ObjPath): string => {
-  return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
+export const setKeyValue = (obj: Record<string | number, unknown>, key: string | number, value: unknown): Record<string | number, unknown> => {
+  obj[key] = value
+  return obj
 }
 
-export const getPathRules = (rules: Rules, path: ObjPath, source: any): Rules | Rule | undefined => {
-  let _rules = rules
-  let value = source
-  for (let key of [...path]) {
-    value = (key !== undefined && value !== undefined) ? value[key] : undefined
-    // check if rules dont have key of key is array index
-    if (!_rules.hasOwnProperty(`/${key}`) || typeof key === "number") {
-      key = "*"
-    }
+export const filterObj = <T extends {}>(value: T, func: (key: number | string | symbol, obj: T) => boolean ): Partial<T> => {
+  const result: Partial<T> = {}
+  for (const key of objectKeys(value)) {
+    if (!func(key, value)) { continue }
+    result[key] = value[key]
+  }
+  return result
+}
 
-    // check if rules have key
-    if (_rules.hasOwnProperty(`/${key}`)) {
-      const rule = _rules[`/${key}`]
-      if (Array.isArray(rule)) {
-        return rule
-      }
-      _rules = typeof rule === "function" ? rule(value) : rule
-    } else {
-      return undefined
+export const excludeKeys = <T extends {}>(value: T, keys: Array<keyof T>): Partial<T> => {
+  const excluded: Partial<T> = {}
+  for (const key of keys) {
+    if (key in value) {
+      excluded[key] = value[key]
+      delete value[key]
     }
   }
-  return _rules
+  return excluded
 }
 
-export const getPathMatchFunc = (rules: Rules, path: PathPointer, source: any): MatchFunc | undefined => {
-  const _rules = getPathRules(rules, path.items, source)
-  return (_rules && !Array.isArray(_rules)) ? _rules["#"] : undefined
-}
-
-export const findExternalRefs = (source: any | any[]): string[] => {
-  if (typeof source !== "object") {
-    return []
-  }
-  let refs: Set<string> = new Set()
-  if (typeOf(source) === "array") {
-    for (const item of source) {
-      if (typeof item === "object") {
-        refs = new Set([...refs, ...findExternalRefs(item)])
-      }
+export const getKeyValue = (obj: unknown, ...path: JsonPath): unknown | undefined => {
+  let value: unknown = obj
+  for (const key of path) {
+    if (Array.isArray(value) && typeof +key === "number" && value.length < +key) {
+      value = value[+key]
+    } else if (isObject(value) && key in value) {
+      value = value[key]
+    } else { 
+      return
     }
-  } else {
-    for (const key of Object.keys(source)) {
-      if (key === "$ref") {
-        const [external] = source[key].split("#")
-        external && refs.add(external)
-      } else {
-        if (typeof source[key] === "object") {
-          refs = new Set([...refs, ...findExternalRefs(source[key])])
-        }
-      }
-    }
-  }
-  return [...refs]
-}
-
-export const matchRule = (rules: Rules, matchFunc: MatchFunc): Rules => {
-  rules["#"] = matchFunc
-  return rules
-}
-
-export const objArray = (key: string, rules: Rules): Rules => {
-  return matchRule(rules, ({ before, after }) => after.value[key] === before.value[key])
-}
-
-export const resolveRef = (val: any, source: any, cache: any) => {
-  const { $ref, ...rest } = val
-  if ($ref) {
-    const [external, path] = $ref.split("#")
-    if (external && !cache.has(external)) { return val }
-    const value = getValueByPath(external ? cache.get(external) : source, parsePath(path))
-    if (value === undefined) {
-      return val
-    } else {
-      return !isEmptyObject(rest) ? mergeValues(value, rest) : value
-    }
-  } else {
-    return val
-  }
-}
-
-export const getValueByPath = (obj: any, objPath: ObjPath) => {
-  let value = obj
-  for (const key of objPath) {
-    value = typeOf(value) === "array" ? value[+key] : value[key]
-    if (value === undefined) {
-      break
-    }
+    if (value === undefined) { return }
   }
   return value
 }
 
-export const setValueByPath = (obj: any, objPath: ObjPath, value: any, i = 0) => {
-  if (i >= objPath.length) { return }
-  
-  const key = objPath[i]
-  if (typeof obj[key] !== "object") {
-    obj[key] = {}
-  }
-
-  if (i === objPath.length - 1) {
-    obj[key] = value
-  } else {
-    setValueByPath(obj[key], objPath, value, i + 1)
-  }
+export const getStringValue = (obj: unknown, ...path: JsonPath): string | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return typeof value === "string" ? value : undefined
 }
 
-export const mergeValues = (value: any, patch: any) => {
-  if (!Array.isArray(value) && typeof value === "object" && typeof patch === "object" && patch) {
-    for(const key of Reflect.ownKeys(patch)) {
-      value[key] = mergeValues(value[key], patch[key])
-    }
-    return value
-  } else {
-    return patch
-  }
+export const getObjectValue = (obj: unknown, ...path: JsonPath): Record<string | number, unknown> | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return isObject(value) ? value : undefined
 }
 
-export const emptySecurity = (value?: Array<any>) => {
-  return !!value && (value.length === 0 || (value.length === 1 && Object.keys(value[0]).length === 0))
+export const getArrayValue = (obj: unknown, ...path: JsonPath): Array<unknown> | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return Array.isArray(value) ? value : undefined
 }
 
-export const includeSecurity = (value: Array<any> = [], items: Array<any> = []) => {
-  // TODO match security schema
-  const valueSet = new Set(value.map((item) => Object.keys(item)[0]))
+export const getNumberValue = (obj: unknown, ...path: JsonPath): number | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return typeof value === "number" ? value : ((typeof value === "string" && +value) ? +value : undefined)
+}
 
+export const getBooleanValue = (obj: unknown, ...path: JsonPath): boolean | undefined => {
+  const value = getKeyValue(obj, ...path)
+  return typeof value === "boolean" ? value : ((typeof value === "string" && (value === "true" || value === "false") ? Boolean(value) : undefined))
+}
+
+export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
+  const result = [...base]
   for (const item of items) {
-    if (!valueSet.has(Object.keys(item)[0])) { return false }
+    for (const step of item) {
+      if (step === "") {
+        result.pop()
+      } else {
+        result.push(step)
+      }
+    }
   }
-
-  return true
+  return result
 }
