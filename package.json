@@ -1,7 +1,7 @@
 {
   "name": "api-smart-diff",
   "version": "1.0.0",
-  "description": "Generate the diff between two API specifications (OpenAPI, AsyncAPI, JsonSchema)",
+  "description": "Generate the diff between two API specifications (OpenAPI, AsyncAPI, GraphApi, JsonSchema)",
   "module": "dist/index.mjs",
   "main": "dist/index.cjs",
   "browser": "dist/index.iife.js",
@@ -11,6 +11,7 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     }
@@ -33,6 +34,10 @@
     "graphapi",
     "api"
   ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/udamir/api-smart-diff"
+  },
   "author": "Damir Yusipov",
   "license": "MIT",
   "devDependencies": {

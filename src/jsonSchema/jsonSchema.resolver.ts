@@ -4,7 +4,6 @@ import { isRefNode } from "allof-merge"
 import { diffFactory, convertDiffToMeta, createMergeMeta, compare, createChildContext, DIFF_META_KEY } from "../core"
 import { buildPath, changeDiffsPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
 import type { CompareResultCache, JsonSchemaComapreCache } from "./jsonSchema.types"
-import { compareJsonSchema } from "./jsonSchema.compare"
 import type { CompareResolver, Diff } from "../types"
 import { isArray } from "../utils"
 
@@ -32,7 +31,7 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
       if (!afterMatched.has(j)) { continue }
       const _after = after.value[j]
 
-      const { diffs, merged } = compareJsonSchema(_before, _after, { ...options, rules }, {
+      const { diffs, merged } = compare(_before, _after, { ...options, rules }, {
         before: { jsonPath: [ ...before.path, i ], source: before.root },
         after: { jsonPath: [ ...after.path, j ], source: after.root }
       })
