@@ -1,15 +1,17 @@
 import type { ComapreOptions, CompareEngine } from "./types"
 import { compareJsonSchema } from "./jsonSchema"
 import { compareGraphApi } from "./graphapi"
+import { compareAsyncApi } from "./asyncapi"
 import { compareOpenApi } from "./openapi"
+import { isObject, isString } from "./utils"
 
-export const discoverCompareEngine = (data: any): CompareEngine => {
-  if (typeof data !== "object" || !data) { return compareJsonSchema }
+export const discoverCompareEngine = (data: unknown): CompareEngine => {
+  if (!isObject(data)) { return compareJsonSchema }
 
-  if (/3.+/.test(data.openapi ?? "")) return compareOpenApi
-  // if (/2.+/.test(data?.asyncapi || "")) return asyncApi2Rules
+  if ("openapi" in data && isString(data.openapi) && /3.+/.test(data.openapi)) return compareOpenApi
+  if ("asyncapi" in data && isString(data.asyncapi) && /2.+/.test(data.asyncapi)) return compareAsyncApi
   // if (/2.+/.test(data?.swagger || "")) return swagger2Rules
-  if (data?.graphapi) return compareGraphApi
+  if ("graphapi" in data && data.graphapi) return compareGraphApi
   return compareJsonSchema
 }
 
