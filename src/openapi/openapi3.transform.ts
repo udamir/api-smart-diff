@@ -5,7 +5,7 @@ import { compareTransformationFactory } from "../core"
 import { getDefaultStyle } from "./openapi3.utils"
 
 export const transformPathItems = compareTransformationFactory((value) => {
-  if (typeof value !== 'object' || !value) { return value }
+  if (!isObject(value)) { return value }
   
   const methods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
   
@@ -58,7 +58,7 @@ export const transformPathItems = compareTransformationFactory((value) => {
 })
 
 export const transformOperation = compareTransformationFactory((value, other) => {
-  if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
+  if (!isObject(value) || !isObject(other)) { return value }
   const result: any = { ...value }
   
   // add empty tags array
@@ -86,7 +86,7 @@ export const transformPaths: CompareTransformResolver = (before, after) => {
 }
 
 export const transformParameterItem = compareTransformationFactory((value, other) => {
-  if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
+  if (!isObject(value) || !isObject(other)) { return value }
   
   const result: any = { ...value }
 
@@ -120,7 +120,7 @@ export const transformParameterItem = compareTransformationFactory((value, other
 
 
 export const transformOpenApiSchema = compareTransformationFactory((value, other) => {
-  if (typeof value !== "object" || !value || typeof other !== "object" || !other) {
+  if (!isObject(value) || !isObject(other)) {
     return value
   }
 

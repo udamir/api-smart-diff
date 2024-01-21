@@ -12,7 +12,7 @@ export const transformComapreRules = (rules: CompareRules, tranformer: CompareRu
     } else if (!Array.isArray(value) && isObject(value)) {
       return { value: tranformer(value as CompareRules) }
     }
-  })
+  }) as CompareRules
 }
 
 export const reverseClassifyRuleTransformer: CompareRulesTransformer = (value) => {

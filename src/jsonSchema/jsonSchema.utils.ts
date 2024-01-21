@@ -1,4 +1,4 @@
-import { isRefNode, parseRef, resolveRefNode } from "allof-merge"
+import { isRefNode, parseRef, resolvePointer } from "allof-merge"
 import type { JsonPath } from "json-crawl"
 
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
@@ -8,6 +8,12 @@ import type { Diff } from "../types"
 
 export function isAllOfNode(value: any): value is AllOfNode {
   return value && value.allOf && Array.isArray(value.allOf)
+}
+
+export const resolveRefNode = (data: any, node: any) => {
+  const { $ref, ...rest } = node
+  const _ref = parseRef($ref)
+  return !_ref.filePath ? resolvePointer(data, _ref.pointer) : undefined
 }
 
 export const isValidType = (maybeType: unknown): maybeType is JsonSchemaNodeType =>

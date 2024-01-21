@@ -5,13 +5,11 @@ import {
 } from "./openapi3.classify"
 import { 
   addNonBreaking, allAnnotation, allBreaking, allDeprecated, allNonBreaking, breaking, 
-  nonBreaking, unclassified
+  caseInsensitiveKeyMappingResolver, nonBreaking, unclassified
 } from "../core"
 import { 
-  contentChangeAnnotation,
-  documentChangeAnnotation, encodingChangeAnnotation, operationChangeAnnotation, operationSecurityChangeAnnotation, parameterChangeAnnotation, 
-  pathMethodChangeAnnotation, 
-  requestBodyChangeAnnotation,
+  documentChangeAnnotation, encodingChangeAnnotation, operationChangeAnnotation, operationSecurityChangeAnnotation,
+  parameterChangeAnnotation, contentChangeAnnotation, pathMethodChangeAnnotation, requestBodyChangeAnnotation, 
   responseChangeAnnotation
 } from "./openapi3.annotate"
 import { transformOperation, transformParameterItem, transformPathItems, transformPaths } from "./openapi3.transform"
@@ -135,6 +133,7 @@ export const openapi3Rules = (options: OpenApi3RulesOptions = {}): CompareRules 
   
   const responsesRules: CompareRules = {
     $: [nonBreaking, breaking, breaking],
+    mapping: caseInsensitiveKeyMappingResolver,
     "/*": {
       annotate: responseChangeAnnotation,
       "/*": {
