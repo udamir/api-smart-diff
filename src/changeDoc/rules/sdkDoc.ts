@@ -173,7 +173,7 @@ const parameterArrayChangeDoc = (data: any) => {
         isFirst = false;
     }
     else{
-        change += "- ";
+        change += ",\n";
     }
     change += `${breakingChange(data.type, isBreaking)}${actions[data.action]}${param.required ? " Required" : ""} \`${param.in}\` parameter \`${param.name}\` (type: \`${param.schema.type}\`)\n`;
   }
@@ -215,7 +215,7 @@ const parameterChangeDoc = (data: any) => {
       }
       if(data.after){
         if(change !== ""){
-          change += `\n\n- ${data.after.required ? getBreakingTag(): ""}`;
+          change += `,\n ${data.after.required ? getBreakingTag(): ""}`;
         }
         else{
           change += `${breakingChange(data.type, true)}`;
