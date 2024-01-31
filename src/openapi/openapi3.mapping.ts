@@ -42,8 +42,8 @@ export const paramMappingResolver: MappingResolver<number> = (before, after, ctx
   const _after = after.map((a) => resolveRef(a, ctx.after.root))
   
   for (let i = 0; i < _before.length; i++) {
-    const beforeIn = getStringValue(before[i], "in")
-    const beforeName = getStringValue(before[i], "name") ?? ""
+    const beforeIn = getStringValue(_before[i], "in")
+    const beforeName = getStringValue(_before[i], "name") ?? ""
     
     const _afterIndex = _after.findIndex((a) => {
       const afterIn = getStringValue(a, "in")

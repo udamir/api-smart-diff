@@ -8,7 +8,7 @@ This package provides utils to compute the diff between two Json based API docum
 - Identify breaking changes
 - Ensure API versioning consistency
 
-## Supported API specifications (work on progress)
+## Supported API specifications
 
 - [OpenApi 3.0](https://github.com/OAI/OpenAPI-Specification/blob/main/versions/3.0.3.md)
 - [AsyncApi 2.x](https://v2.asyncapi.com/docs/reference)

@@ -41,6 +41,56 @@ describe("Test openapi 3 parameters compare", () => {
     })
   })
 
+  it("should map query $ref parameters correctly", () => {
+    const before = yaml`
+      paths:
+        /test/endpoint:
+          get:
+            parameters:
+              - $ref: "#/components/parameters/name"
+      components:
+        parameters:
+          name:
+            name: name
+            in: query
+            schema:
+              type: string
+            required: true
+    `
+    const after = yaml`
+      paths:
+        /test/endpoint:
+          get:
+            parameters:
+              - name: name
+                in: query
+                schema:
+                  type: string
+                required: false
+      components:
+        parameters:
+          name:
+            name: name
+            in: query
+            schema:
+              type: string
+            required: true
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(1)
+
+    expect(diffs[0]).toHaveProperty("description")
+    expect(diffs[0].description).not.toEqual("")
+    expect(diffs[0].type).not.toEqual("unclassified")
+  
+
+    expect(merged.paths["/test/endpoint"].get.parameters[0][metaKey]).toMatchObject({
+      required: { action: DiffAction.remove, type: nonBreaking },
+    })
+  })
+
   it("should not add rename diff on query parameter name change", () => {
     const before = yaml`
       paths:
