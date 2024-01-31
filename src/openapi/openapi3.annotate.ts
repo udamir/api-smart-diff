@@ -141,7 +141,9 @@ export const parameterChangeAnnotation: ChangeAnnotationResolver = ({ action }, 
   const node = getObjectValue(root, ...paramPath)
   const param = resolveRef(node, root)
 
-  if (key === "required" || key === "deprecated") {
+  if (key === "required") {
+    return t(action, { text: t("status", { key }), target: t("param", { ...param, requred: false }) })
+  } else if (key === "deprecated") {
     return t(action, { text: t("status", { key }), target: t("param", param) })
   } else {
     return t(action, { text: t("param", param) })
