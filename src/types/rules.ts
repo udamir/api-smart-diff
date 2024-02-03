@@ -4,7 +4,7 @@ import type { Diff, DiffType, ComapreOptions, CompareResult } from "./compare"
 
 export type DiffTypeClassifier = (ctx: ComapreContext) => DiffType
 
-export type ClassifyRule = [AddDiffType, RemoveDiffType, ReplaceDiffType]
+export type ClassifyRule = [AddDiffType, RemoveDiffType, ReplaceDiffType] | [AddDiffType, RemoveDiffType, ReplaceDiffType, AddDiffType, RemoveDiffType, ReplaceDiffType]
 export type AddDiffType = RuleDiffType
 export type RemoveDiffType = RuleDiffType
 export type ReplaceDiffType = RuleDiffType

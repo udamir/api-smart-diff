@@ -40,7 +40,7 @@ describe("Compare object jsonSchema", () => {
     })
     expect(merged.properties[metaKey]).toMatchObject({
       id: { action: "add", type: nonBreaking },
-      name: { action: "remove", type: breaking },
+      name: { action: "remove", type: nonBreaking },
     })
   })
 
@@ -126,12 +126,13 @@ describe("Compare object jsonSchema", () => {
       }}
     })
     expect(merged.properties[metaKey]).toMatchObject({
-      name: { action: "add", type: nonBreaking },
+      name: { action: "add", type: breaking },
     })
   })
 
   it("should compare object jsonSchema with additionalProperties", () => {
     const before = {
+      required: ["id"],
       properties: {
         id: { type: "string" },
         name: { type: "string" },
@@ -139,6 +140,7 @@ describe("Compare object jsonSchema", () => {
     }
 
     const after = {
+      required: ["id"],
       additionalProperties: { type: "string" },
       minProperties: 1,
       maxProperties: 3,
@@ -175,8 +177,8 @@ describe("Compare object jsonSchema", () => {
       propertyNames: { action: "add", type: breaking },
     })
     expect(merged.properties[metaKey]).toMatchObject({
-      name: { action: "remove", type: breaking },
-      id: { action: "remove", type: breaking },
+      name: { action: "remove", type: nonBreaking },
+      id: { action: "remove", type: nonBreaking },
     })
   })
 

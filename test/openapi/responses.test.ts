@@ -123,4 +123,133 @@ describe("Openapi response changes", () => {
       format: { action: DiffAction.remove, type: nonBreaking },
     })
   })
+
+  it("should be non-breaking change to add any property to response", () => {
+    const before = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            responses:
+              '200':
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      required:
+                        - id
+                        - name
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            responses:
+              '200':
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      required:
+                        - id
+                        - name
+                        - test2
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        test1:
+                          type: string
+                        test2:
+                          type: string
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(3)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
+    expect(merged.paths["/pet/findByStatus"].get.responses['200'].content["application/json"].schema[metaKey]).toMatchObject({ 
+      required: { array: { 2: { action: DiffAction.add, type: nonBreaking }}},
+    })
+
+    expect(merged.paths["/pet/findByStatus"].get.responses['200'].content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+      test1: { action: DiffAction.add, type: nonBreaking },
+      test2: { action: DiffAction.add, type: nonBreaking },
+    })
+  })
+
+  it("should be breaking change to remove required property from response", () => {
+    const before = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            responses:
+              '200':
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      required:
+                        - id
+                        - name
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        test:
+                          type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet/findByStatus":
+          get:
+            responses:
+              '200':
+                description: successful operation
+                content:
+                  application/json:
+                    schema:
+                      type: object
+                      required:
+                        - id
+                      properties:
+                        id:
+                          type: integer
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(3)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
+    expect(merged.paths["/pet/findByStatus"].get.responses['200'].content["application/json"].schema[metaKey]).toMatchObject({ 
+      required: { array: { 1: { action: DiffAction.remove, type: breaking }}},
+    })
+
+    expect(merged.paths["/pet/findByStatus"].get.responses['200'].content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+      name: { action: DiffAction.remove, type: breaking },
+      test: { action: DiffAction.remove, type: nonBreaking },
+    })
+  })
+
+
+
 })

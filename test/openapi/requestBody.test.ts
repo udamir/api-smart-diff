@@ -102,4 +102,210 @@ describe("Openapi request body changes", () => {
     })
   })
 
+  it("should be non-breaking change to add not required property to requestBody", () => {
+    const before = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                      - name
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                      - name
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      test:
+                        type: number
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(1)
+    expect(diffs[0]).toHaveProperty("description")
+    expect(diffs[0].description).not.toEqual("")
+
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+      test: { action: DiffAction.add, type: nonBreaking },
+    })
+  })
+
+  it("should be breaking change to add required property to requestBody", () => {
+    const before = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                      - name
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                      - name
+                      - test
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+                      test:
+                        type: number
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+    expect(diffs[0]).toHaveProperty("description")
+    expect(diffs[0].description).not.toEqual("")
+    expect(diffs[1]).toHaveProperty("description")
+    expect(diffs[1].description).not.toEqual("")
+
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema[metaKey]).toMatchObject({ 
+      required: { array: { 2: { action: DiffAction.add, type: breaking }}},
+    })
+
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+      test: { action: DiffAction.add, type: breaking },
+    })
+  })
+
+  it("should be non-breaking change to remove not required property to requestBody", () => {
+    const before = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                    properties:
+                      id:
+                        type: integer
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(1)
+    expect(diffs[0]).toHaveProperty("description")
+    expect(diffs[0].description).not.toEqual("")
+
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+      name: { action: DiffAction.remove, type: nonBreaking },
+    })
+  })
+
+  it("should be non breaking change to remove required property to requestBody", () => {
+    const before = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                      - name
+                    properties:
+                      id:
+                        type: integer
+                      name:
+                        type: string
+    `
+    const after = yaml`
+      paths:
+        "/pet":
+          put:
+            requestBody:
+              content:
+                application/json:
+                  schema:
+                    type: object
+                    required:
+                      - id
+                    properties:
+                      id:
+                        type: integer
+    `
+
+    const { diffs, merged } = compareOpenApi(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+    expect(diffs[0]).toHaveProperty("description")
+    expect(diffs[0].description).not.toEqual("")
+    expect(diffs[1]).toHaveProperty("description")
+    expect(diffs[1].description).not.toEqual("")
+
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema[metaKey]).toMatchObject({ 
+      required: { array: { 1: { action: DiffAction.remove, type: nonBreaking }}},
+    })
+
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+      name: { action: DiffAction.remove, type: nonBreaking },
+    })
+  })
+
 })

@@ -1,7 +1,7 @@
 import { transformClassifyRule, getParentContext, breaking, nonBreaking, unclassified } from "../core"
+import { isExist, isString, isNumber, getArrayValue, getKeyValue } from "../utils"
 import type { ClassifyRule, DiffType, DiffTypeClassifier } from "../types"
 import { isValidSchemaTypes } from "./jsonSchema.utils"
-import { isExist, isString, isNumber } from "../utils"
 
 export const breakingIf = (v: boolean): DiffType => (v ? breaking : nonBreaking)
 export const breakingIfAfterTrue: DiffTypeClassifier = ({ after }): DiffType => breakingIf(!!after.value)
@@ -51,4 +51,14 @@ export const requiredItemClassifyRule: ClassifyRule = [
   ({ after }) => !isString(after.value) || isExist(getParentContext(after, "", "properties", after.value, "default")?.value) ? nonBreaking : breaking,
   nonBreaking, 
   ({ after }) => !isString(after.value) || isExist(getParentContext(after, "", "properties", after.value, "default")?.value) ? nonBreaking : breaking
+]
+
+export const propertyClassifyRule: ClassifyRule = [
+  ({ after }) => !isExist(getKeyValue(after.value, "default")) && 
+    getArrayValue((getParentContext(after, "", "required")?.value))?.includes(after.key) ? breaking : nonBreaking,
+  nonBreaking,
+  unclassified,
+  nonBreaking,
+  ({ before }) => getArrayValue(getParentContext(before, "", "required")?.value)?.includes(before.key) ? breaking : nonBreaking, 
+  unclassified
 ]

@@ -37,11 +37,11 @@ const reverseDiffType = (diffType: DiffType | DiffTypeClassifier): DiffType | Di
   }
 }
 
-export const reverseClassifyRule = ([add, remove, replace]: ClassifyRule): ClassifyRule => {
+export const reverseClassifyRule = ([add, remove, replace, r_add, r_remove, r_replace]: ClassifyRule): ClassifyRule => {
   return [
-    reverseDiffType(add),
-    reverseDiffType(remove),
-    reverseDiffType(replace),
+    r_add ?? reverseDiffType(add),
+    r_remove ?? reverseDiffType(remove),
+    r_replace ?? reverseDiffType(replace),
   ]
 }
 

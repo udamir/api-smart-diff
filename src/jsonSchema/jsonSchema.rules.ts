@@ -9,14 +9,13 @@ import {
 } from "./jsonSchema.annotate"
 import { 
   booleanClassifier, exclusiveClassifier, maxClassifier, minClassifier, 
-  multipleOfClassifier, requiredItemClassifyRule, typeClassifier
+  multipleOfClassifier, propertyClassifyRule, requiredItemClassifyRule, typeClassifier
 } from "./jsonSchema.classify"
 import { transformJsonSchema, transformJsonSchemaCombiners, jsonSchemaMergeAllOf } from "./jsonSchema.transform"
 import { enumMappingResolver, jsonSchemaMappingResolver, requiredMappingResolver } from "./jsonSchema.mapping"
 import { combinaryCompareResolver, createRefsCompareResolver } from "./jsonSchema.resolver"
 import type { ChangeAnnotationResolver, ClassifyRule, CompareRules } from "../types"
 import type { JsonSchemaRulesOptions } from "./jsonSchema.types"
-
 
 const annotationRule: CompareRules = { $: allAnnotation, annotate: schemaAnnotationChange }
 const simpleRule = (classify: ClassifyRule, annotate: ChangeAnnotationResolver) => ({ $: classify, annotate })
@@ -114,7 +113,7 @@ export const jsonSchemaRules = ({ baseRules = {}, notMergeAllOf, version = "draf
     "/properties": {
       "/*": () => ({ 
         ...rules, 
-        $: [nonBreaking, breaking, unclassified],
+        $: propertyClassifyRule,
         annotate: schemaKeyItemChange
       }),
     },
