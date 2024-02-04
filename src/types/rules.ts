@@ -4,10 +4,19 @@ import type { Diff, DiffType, ComapreOptions, CompareResult } from "./compare"
 
 export type DiffTypeClassifier = (ctx: ComapreContext) => DiffType
 
-export type ClassifyRule = [AddDiffType, RemoveDiffType, ReplaceDiffType] | [AddDiffType, RemoveDiffType, ReplaceDiffType, AddDiffType, RemoveDiffType, ReplaceDiffType]
+export type ClassifyRule = 
+  [AddDiffType, RemoveDiffType, ReplaceDiffType] |
+  [AddDiffType, RemoveDiffType, ReplaceDiffType, ReversedAddDiffType, ReversedRemoveDiffType, ReversedReplaceDiffType]
+
 export type AddDiffType = RuleDiffType
 export type RemoveDiffType = RuleDiffType
 export type ReplaceDiffType = RuleDiffType
+
+// Reversed DiffType uses to specify rule for reverse case
+export type ReversedAddDiffType = RuleDiffType
+export type ReversedRemoveDiffType = RuleDiffType
+export type ReversedReplaceDiffType = RuleDiffType
+
 export type RuleDiffType = DiffType | DiffTypeClassifier
 
 export type NodeContext =  {

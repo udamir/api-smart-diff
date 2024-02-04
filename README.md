@@ -159,7 +159,10 @@ type CompareRule = {
 type ClassifyRule = [ 
   DiffType | (ctx: ComapreContext) => DiffType, // add
   DiffType | (ctx: ComapreContext) => DiffType, // remove
-  DiffType | (ctx: ComapreContext) => DiffType  // replace (rename)
+  DiffType | (ctx: ComapreContext) => DiffType, // replace (rename)
+  DiffType | (ctx: ComapreContext) => DiffType, // (optional) reversed rule for add
+  DiffType | (ctx: ComapreContext) => DiffType, // (optional) reversed rule for remove
+  DiffType | (ctx: ComapreContext) => DiffType  // (optional) reversed rule for replace (rename)
 ]
 
 // Compare context
