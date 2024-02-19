@@ -31,6 +31,9 @@ This package provides utils to compute the diff between two Json based API docum
 - Typescript syntax support out of the box
 - Can be used in nodejs or browser
 
+## External $ref
+If schema contains an external $ref, you should bundle it via [api-ref-bundler](https://github.com/udamir/api-ref-bundler) first.
+
 ## Installation
 ```SH
 npm install api-smart-diff --save
