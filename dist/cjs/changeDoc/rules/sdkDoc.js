@@ -36,7 +36,7 @@ const targetProperty = (path, from, prefix = "") => {
     }
     return targetProperty(path, from + 1, prefix);
 };
-const mark = (text) => "`" + text + "`";
+const mark = (text) => "<code>" + text + "</code>";
 const validatorRule = (location, index) => ({ action, key, path }) => {
     let target = targetProperty(path, index);
     return `${actions[action]} ${key} validator ${target ? "for " + target : ""} in ${location}`;
@@ -158,9 +158,9 @@ const parameterArrayChangeDoc = (data) => {
             isFirst = false;
         }
         else {
-            change += "- ";
+            change += ",\n";
         }
-        change += `${breakingChange(data.type, isBreaking)}${actions[data.action]}${param.required ? " Required" : ""} \`${param.in}\` parameter \`${param.name}\` (type: \`${param.schema.type}\`)\n`;
+        change += `${breakingChange(data.type, isBreaking)}${actions[data.action]}${param.required ? " Required" : ""} ${mark(param.in)} parameter ${mark(param.name)} (type: ${mark(param.schema.type)})\n`;
     }
     return change;
 };
@@ -196,17 +196,17 @@ const parameterChangeDoc = (data) => {
             // change += `${breakingChange(data.type, true)}${actions['add']}`;
             if (data.before) {
                 change += `${breakingChange(data.type, true)}${actions['remove']}`;
-                change += `${data.before.required ? " Required" : ""} \`${data.before.in}\` parameter \`${data.before.name}\` (type: \`${data.before.schema.type}\`)`;
+                change += `${data.before.required ? " Required" : ""} ${mark(data.before.in)} parameter ${mark(data.before.name)} (type: ${mark(data.before.schema.type)})`;
             }
             if (data.after) {
                 if (change !== "") {
-                    change += `\n\n- ${data.after.required ? getBreakingTag() : ""}`;
+                    change += `,\n ${data.after.required ? getBreakingTag() : ""}`;
                 }
                 else {
                     change += `${breakingChange(data.type, true)}`;
                 }
                 change += `${actions['add']}`;
-                change += `${data.after.required ? " Required" : ""} \`${data.after.in}\` parameter \`${data.after.name}\` (type: \`${data.after.schema.type}\`)`;
+                change += `${data.after.required ? " Required" : ""} ${mark(data.after.in)} parameter ${mark(data.after.name)} (type: ${mark(data.after.schema.type)})`;
             }
         }
         return change;
@@ -214,7 +214,7 @@ const parameterChangeDoc = (data) => {
     else {
         const param = (_a = data.before) !== null && _a !== void 0 ? _a : data.after;
         const isBreaking = param.required ? true : false;
-        return `${breakingChange(data.type, isBreaking)}${actions[data.action]}${param.required ? " Required" : ""} \`${param.in}\` parameter \`${param.name}\` (type: \`${param.schema.type}\`)\n`;
+        return `${breakingChange(data.type, isBreaking)}${actions[data.action]}${param.required ? " Required" : ""} ${mark(param.in)} parameter ${mark(param.name)} (type: ${mark(param.schema.type)})\n`;
     }
 };
 const changeDocParametersRules = {
@@ -235,12 +235,12 @@ const changeDocParametersRules = {
 exports.changeDocSDKRules = {
     "/paths": {
         "/*": {
-            "/": ({ action, key }) => `${actions[action]} method \`${key}\`\n`,
+            "/": ({ action, key }) => `${actions[action]} method ${mark(key)}\n`,
             // "/": ({ action, node }) => `${actions[action]} operation ${operationMethods(node)}`,
             "/parameters": changeDocParametersRules,
             "/*": {
                 // "/": ({ action }) => `${actions[action]} operation`,
-                "/": ({ action, node }) => `${actions[action]} method \`${node.operationId}\`\n`,
+                "/": ({ action, node }) => `${actions[action]} method ${mark(node.operationId)}\n`,
                 "/parameters": changeDocParametersRules,
                 "/requestBody": {
                     // [Removed] Body content in Request
@@ -300,13 +300,13 @@ exports.changeDocSDKRules = {
                         },
                     }
                 },
-                "/operationId": (data) => `${actions[data.action]} operationId${data.before ? ` from \`${data.before}\`` : ""}${data.after ? ` to \`${data.after}\`` : ""}`,
-                "/methodType": (data) => `${actions[data.action]} http method type ${data.before ? `from \`${data.before}\`` : ""} ${data.after ? `To \`${data.after}\`` : ""}`,
+                "/operationId": (data) => `${actions[data.action]} operationId${data.before ? ` from ${mark(data.before)}` : ""}${data.after ? ` to ${mark(data.after)}` : ""}`,
+                "/methodType": (data) => `${actions[data.action]} http method type ${data.before ? `from ${mark(data.before)}` : ""} ${data.after ? `To ${mark(data.after)}` : ""}`,
                 "/path": (data) => {
                     const beforePath = String(data.before).replace(new RegExp("\{.*?\}", "g"), "*");
                     const afterPath = String(data.after).replace(new RegExp("\{.*?\}", "g"), "*");
                     if (beforePath !== afterPath) {
-                        return `${actions[data.action]} Path ${data.before ? "From \`" + data.before + "\`" : ""} ${data.after ? "To \`" + data.after + "\`" : ""}`;
+                        return `${actions[data.action]} Path ${data.before ? "From " + mark(data.before) : ""} ${data.after ? "To " + mark(data.after) : ""}`;
                     }
                     return "";
                 }
@@ -317,7 +317,7 @@ exports.changeDocSDKRules = {
         "/schemas": {
             "/*": {
                 //Schema changed
-                "/": (data) => `${breakingChange(data.type, false)}${actions[data.action]} schema \`${data.key}\``,
+                "/": (data) => `${breakingChange(data.type, false)}${actions[data.action]} schema ${mark(data.key)}`,
                 //property of schema changed
                 "/properties": {
                     //inside parameter
@@ -325,9 +325,9 @@ exports.changeDocSDKRules = {
                         // parameter added or deleted
                         // "/": `parameter added`,
                         "/": (data) => {
-                            return `${breakingChange(data.type, false)}${actions[data.action]} parameter \`${data.key}\` in ${data.path[2]}`;
+                            return `${breakingChange(data.type, false)}${actions[data.action]} parameter ${mark(data.key)} in ${data.path[2]}`;
                         },
-                        "/type": (data) => `${breakingChange(data.type, false)} ${actions[data.action]} type of property \`${data.path[data.path.length - 2]}\` from \`${data.before}\` to \`${data.after}\` in schema \`${data.path[data.path.length - 4]}\``
+                        "/type": (data) => `${breakingChange(data.type, false)} ${actions[data.action]} type of property ${mark(data.path[data.path.length - 2])} from ${mark(data.before)} to ${mark(data.after)} in schema ${mark(data.path[data.path.length - 4])}`
                     },
                 },
                 //   "/*": (data) => {
