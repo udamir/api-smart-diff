@@ -39,7 +39,7 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
       if (!diffs.length) {
         afterMatched.delete(j)
         beforeMached.delete(i)
-        _merged[j] = merged
+        _merged[j] = _after
         break
       }
       comparedItems.push({ before: i, after: j, diffs, merged })
@@ -52,21 +52,21 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
     if (!afterMatched.has(compared.after) || !beforeMached.has(compared.before)) { continue }
     afterMatched.delete(compared.after)
     beforeMached.delete(compared.before)
-    _merged[compared.before] = compared.merged
+    _merged[compared.after] = compared.merged
     _diffs.push(...compared.diffs)
   }
 
   const arrayMetaDiffs: Diff[] = []
   for (const i of beforeMached.values()) {
-    _merged[i] = before.value[i]
-    const diff = diffFactory.removed([...before.path, i], before.value[i], createChildContext(ctx, i, ""))
+    const diff = diffFactory.removed([...before.path, _merged.length], before.value[i], createChildContext(ctx, i, ""))
+    _merged.push(before.value[i])
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }
 
   for (const j of afterMatched.values()) {
-    const diff = diffFactory.added([...after.path, _merged.length], after.value[j], createChildContext(ctx, "", j))
-    _merged.push(after.value[j])
+    _merged[j] = after.value[j]
+    const diff = diffFactory.added([...after.path, j], after.value[j], createChildContext(ctx, "", j))
     arrayMetaDiffs.push(diff)
     _diffs.push(diff)
   }

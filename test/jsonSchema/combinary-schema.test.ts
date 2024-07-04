@@ -43,11 +43,11 @@ describe("schema with combinary", () => {
     })
 
     expect(merged.oneOf[0]).toMatchObject(after.oneOf[0])
-    expect(merged.oneOf[1]).toMatchObject({...after.oneOf[2], required: ["id", "name"] })
-    expect(merged.oneOf[2]).toMatchObject(after.oneOf[1])
+    expect(merged.oneOf[1]).toMatchObject(after.oneOf[1])
+    expect(merged.oneOf[2]).toMatchObject({...after.oneOf[2], required: ["id", "name"] })
 
-    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 2: { action: "add", type: nonBreaking }}} })
-    expect(merged.oneOf[1][metaKey]).toMatchObject({
+    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 1: { action: "add", type: nonBreaking }}} })
+    expect(merged.oneOf[2][metaKey]).toMatchObject({
       required: { array: { 1: { action: "add", type: breaking }}}
     })
   })
@@ -188,6 +188,126 @@ describe("schema with combinary", () => {
     expect(merged).toMatchObject(after)
     expect(merged.oneOf[0][metaKey]).toMatchObject({
       oneOf: { array: { 1: { action: "add", type: nonBreaking }}}
+    })
+  })
+})
+
+describe("schema with combinary and refs", () => {
+  it("should compare oneOf combinary jsonSchema with added ref objct", () => {
+    const before = yaml`
+      oneOf:
+        - $ref: '#/$defs/string'
+        - $ref: '#/$defs/object'
+      $defs:
+        string:
+          type: string
+        object:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+    `
+
+    const after: any = yaml`
+      oneOf:
+        - $ref: '#/$defs/number'
+        - $ref: '#/$defs/string'
+        - $ref: '#/$defs/object'
+      $defs:
+        number:
+          type: number
+        string:
+          type: string
+        object:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+    `
+
+    const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
+    expect(merged.oneOf[0]).toMatchObject(after.oneOf[0])
+    expect(merged.oneOf[1]).toMatchObject(after.oneOf[1])
+    expect(merged.oneOf[2]).toMatchObject(after.oneOf[2])
+
+    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 0: { action: "add", type: nonBreaking }}} })
+    expect(merged.$defs[metaKey]).toMatchObject({
+      number: { action: "add", type: nonBreaking }
+    })
+  })
+
+  it("should compare oneOf combinary jsonSchema with removed ref objct", () => {
+    const before: any = yaml`
+      oneOf:
+        - $ref: '#/$defs/number'
+        - $ref: '#/$defs/string'
+        - $ref: '#/$defs/object'
+      $defs:
+        number:
+          type: number
+        string:
+          type: string
+        object:
+          type: object
+          required:
+            - id
+          properties:
+            id:
+              type: number
+            name:
+              type: string
+    `
+
+    const after: any = yaml`
+    oneOf:
+      - $ref: '#/$defs/string'
+      - $ref: '#/$defs/object'
+    $defs:
+      string:
+        type: string
+      object:
+        type: object
+        required:
+          - id
+        properties:
+          id:
+            type: number
+          name:
+            type: string
+  `
+
+    const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
+
+    expect(diffs.length).toEqual(2)
+    diffs.forEach((diff) => {
+      expect(diff).toHaveProperty("description")
+      expect(diff.description).not.toEqual("")
+      expect(diff.type).not.toEqual("unclassified")
+    })
+
+    expect(merged.oneOf[0]).toMatchObject(after.oneOf[0])
+    expect(merged.oneOf[1]).toMatchObject(after.oneOf[1])
+    expect(merged.oneOf[2]).toMatchObject(before.oneOf[0])
+
+    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 2: { action: "remove", type: breaking }}} })
+    expect(merged.$defs[metaKey]).toMatchObject({
+      number: { action: "remove", type: nonBreaking }
     })
   })
 })
