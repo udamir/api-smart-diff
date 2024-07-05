@@ -41,6 +41,7 @@
   "author": "Damir Yusipov",
   "license": "MIT",
   "devDependencies": {
+    "@biomejs/biome": "1.8.3",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-json": "^6.0.1",
@@ -61,7 +62,6 @@
     "ts-jest": "^29.1.1",
     "ts-loader": "^8.4.0",
     "ts-node": "^10.9.2",
-    "tslint": "^6.1.3",
     "typescript": "^5.3.3"
   },
   "jest": {
