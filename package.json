@@ -19,6 +19,7 @@
   "scripts": {
     "prebuild": "rimraf ./dist",
     "build": "rollup -c",
+    "check": "biome check",
     "test": "jest --verbose",
     "test:coverage": "jest --verbose --coverage"
   },
