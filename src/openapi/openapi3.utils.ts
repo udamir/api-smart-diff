@@ -1,4 +1,4 @@
-import { JsonPath, isObject } from "json-crawl"
+import { type JsonPath, isObject } from "json-crawl"
 
 import type { ComapreContext } from "../types"
 
@@ -24,8 +24,8 @@ export const includeSecurity = (value: unknown = [], items: unknown = []) => {
 export const mapPathParams = ({ before, after }: ComapreContext): Record<string, string> => {
   if (typeof before.path[1] !== "string" || typeof after.path[1] !== "string") { return {} }
 
-  const beforeParams = [...before.path[1].matchAll(new RegExp("\{(.*?)\}", "g"))].map((arr) => arr.pop()) as string[]
-  const afterParams = [...after.path[1].matchAll(new RegExp("\{(.*?)\}", "g"))].map((arr) => arr.pop()) as string[]
+  const beforeParams = [...before.path[1].matchAll(/\{(.*?)\}/g)].map((arr) => arr.pop()) as string[]
+  const afterParams = [...after.path[1].matchAll(/\{(.*?)\}/g)].map((arr) => arr.pop()) as string[]
 
   const result: Record<string, string> = {}
   for (let i = 0; i < beforeParams.length && i < afterParams.length; i++) {

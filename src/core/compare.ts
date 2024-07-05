@@ -1,4 +1,4 @@
-import { getNodeRules, syncCrawl, SyncCrawlHook } from "json-crawl"
+import { getNodeRules, syncCrawl, type SyncCrawlHook } from "json-crawl"
 
 import type { 
   ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMetaRecord, 

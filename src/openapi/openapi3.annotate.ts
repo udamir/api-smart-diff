@@ -118,11 +118,11 @@ export const operationChangeAnnotation: ChangeAnnotationResolver = ({ path, acti
   if (key === "deprecated") {
     if (ctx.after.value) {
       return t("add", { text: t("status", { key }) })
-    } else if (ctx.before.value) {
+    }if (ctx.before.value) {
       return t("remove", { text: t("status", { key }) })
     }
     return
-  } else if (key === "requestBody") {
+  }if (key === "requestBody") {
     return t(action, { text: t(key) })
   }
 
@@ -143,9 +143,8 @@ export const parameterChangeAnnotation: ChangeAnnotationResolver = ({ action }, 
 
   if (key === "required") {
     return t(action, { text: t("status", { key }), target: t("param", { ...param, requred: false }) })
-  } else if (key === "deprecated") {
+  }if (key === "deprecated") {
     return t(action, { text: t("status", { key }), target: t("param", param) })
-  } else {
-    return t(action, { text: t("param", param) })
   }
+    return t(action, { text: t("param", param) })
 }

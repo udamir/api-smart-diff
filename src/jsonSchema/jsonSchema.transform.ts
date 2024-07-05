@@ -19,11 +19,11 @@ export const transformJsonSchemaCombiners = (allowedSibling = jsonSchemaAllowedS
   valuesTransformation(values, (value) => {
     if ("oneOf" in value) {
       return mergeCombinarySibling(value, "oneOf", allowedSibling)
-    } else if ("anyOf" in value) {
+    }if ("anyOf" in value) {
       return mergeCombinarySibling(value, "anyOf", allowedSibling)
-    } else if ("allOf" in value) {
+    }if ("allOf" in value) {
       return mergeAllOfSibling(value, allowedSibling)
-    } else if ("$ref" in value) {
+    }if ("$ref" in value) {
       return mergeRefSibling(value, allowedSibling)
     }
     return value
@@ -32,7 +32,7 @@ export const transformJsonSchemaCombiners = (allowedSibling = jsonSchemaAllowedS
   for (const prop of ["oneOf", "anyOf"]) {
     if ((prop in values.before) && !("oneOf" in values.after || "anyOf" in values.after)) {
       return [values.before, createEmptyCombiner(values.after, prop, allowedSibling)]
-    } else if (prop in values.after && !("oneOf" in values.before || "anyOf" in values.before)) {
+    }if (prop in values.after && !("oneOf" in values.before || "anyOf" in values.before)) {
       return [createEmptyCombiner(values.before, prop, allowedSibling), values.after]
     }
   }
@@ -107,9 +107,8 @@ export const transformJsonSchema = (version: "draft-04" | "2020-12" = "2020-12")
     if ("items" in other && isArray(other.items)) {
       if ("items" in value && typeof value.items === "object") {
         return isArray(value.items) ? value : {...value, items: other.items.map(() => value.items), additionalItems: value.items }
-      } else {
-        return { ...value, items: [] }
       }
+        return { ...value, items: [] }
     }
   
     return value

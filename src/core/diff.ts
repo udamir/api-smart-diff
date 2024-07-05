@@ -1,4 +1,4 @@
-import { JsonPath } from "json-crawl"
+import type { JsonPath } from "json-crawl"
 
 import type { 
   DiffFactory, ComapreContext, CompareTransformResolver, Diff, NodeContext, DiffMeta, 

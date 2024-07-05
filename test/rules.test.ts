@@ -1,4 +1,4 @@
-import { CompareRules, breaking, nonBreaking, reverseClassifyRuleTransformer, transformComapreRules, unclassified } from "../src"
+import { type CompareRules, breaking, nonBreaking, reverseClassifyRuleTransformer, transformComapreRules, unclassified } from "../src"
 
 describe("Diff type classify transformer tests", () => {
   it("should reverse simple rules", () => {

@@ -38,7 +38,7 @@ export const transformGraphSchema = compareTransformationFactory((value, other) 
   }
 
   if ("nullable" in value && !value.nullable) {
-    delete result.nullable
+    result.nullable = undefined
   }
   
   return result
@@ -50,7 +50,7 @@ export const transfromGraphSchemaDirective = compareTransformationFactory((value
   if ("meta" in value) {
     const { meta, ...rest } = value
     return { meta }
-  } else if ("meta" in other) {
+  }if ("meta" in other) {
     return { meta: {} }
   }
 

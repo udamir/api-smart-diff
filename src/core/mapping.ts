@@ -1,4 +1,4 @@
-import { MapKeysResult, MappingResolver } from "../types"
+import type { MapKeysResult, MappingResolver } from "../types"
 
 export const arrayMappingResolver: MappingResolver<number> = (before, after) => {
   const length = Math.abs(before.length - after.length)

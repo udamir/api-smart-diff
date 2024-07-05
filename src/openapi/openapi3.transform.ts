@@ -68,7 +68,7 @@ export const transformOperation = compareTransformationFactory((value, other) =>
 
   // remvoe deprecated: false
   if ("deprecated" in result && !result.deprecated) {
-    delete result.deprecated
+    result.deprecated = undefined
   } 
   
   return result
@@ -107,12 +107,12 @@ export const transformParameterItem = compareTransformationFactory((value, other
 
   // remove deprecated: false
   if ("deprecated" in result && !result.deprecated) {
-    delete result.deprecated
+    result.deprecated = undefined
   } 
 
   // remove required: false
   if ("required" in result && !result.required) {
-    delete result.required
+    result.required = undefined
   } 
   
   return result

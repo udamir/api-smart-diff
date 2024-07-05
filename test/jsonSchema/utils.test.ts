@@ -1,5 +1,5 @@
 
-import { Diff, changeDiffsPath } from "../../src"
+import { type Diff, changeDiffsPath } from "../../src"
 
 describe("Comapre array jsonSchema", () => {
   it("should update diffs path correctly", () => {

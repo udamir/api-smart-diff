@@ -1,4 +1,4 @@
-import { JsonPath } from "json-crawl"
+import type { JsonPath } from "json-crawl"
 
 export const isKey = <T extends object>(x: T, k: PropertyKey): k is keyof T => {
   return k in x;

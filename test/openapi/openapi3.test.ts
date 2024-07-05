@@ -24,7 +24,7 @@ describe("Test openapi 3 diff", () => {
   it("should add diff for rename change with non-breaking change", () => {
     const after = exampleResource.clone()
     after.paths["/pet/{pet}/uploadImage"] = after.paths["/pet/{petId}/uploadImage"]
-    delete after.paths["/pet/{petId}/uploadImage"]
+    after.paths["/pet/{petId}/uploadImage"] = undefined
     after.paths["/pet/{pet}/uploadImage"].post.parameters[0].name = "pet"
 
     const diff = exampleResource.diff(after)
@@ -38,22 +38,22 @@ describe("Test openapi 3 diff", () => {
   it("should add rename diff to merged with non-breaking change", () => {
     const after = exampleResource.clone()
     after.paths["/pet/{pet}/uploadImage"] = after.paths["/pet/{petId}/uploadImage"]
-    delete after.paths["/pet/{petId}/uploadImage"]
+    after.paths["/pet/{petId}/uploadImage"] = undefined
     after.paths["/pet/{pet}/uploadImage"].post.parameters[0].name = "pet"
 
     const merged = exampleResource.merge(after)
-    expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}/uploadImage"]: { action: DiffAction.rename, replaced: "/pet/{petId}/uploadImage", type: nonBreaking } })
+    expect(merged.paths.$diff).toMatchObject({ "/pet/{pet}/uploadImage": { action: DiffAction.rename, replaced: "/pet/{petId}/uploadImage", type: nonBreaking } })
   })
 
   it("should classify required change after rename", () => {
     const after = exampleResource.clone()
     after.paths["/pet/{pet}"] = after.paths["/pet/{petId}"]
-    delete after.paths["/pet/{petId}"]
+    after.paths["/pet/{petId}"] = undefined
     after.components.schemas.Pet.required[0] = "id"
     after.components.schemas.Pet.properties.id.default = 0
 
     const merged = exampleResource.merge(after)
-    expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}"]: { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking } })
+    expect(merged.paths.$diff).toMatchObject({ "/pet/{pet}": { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking } })
     expect(merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array).toMatchObject({
       0: { action: DiffAction.remove, type: breaking },
       2: { action: DiffAction.add, type: breaking }
@@ -67,11 +67,11 @@ describe("Test openapi 3 diff", () => {
   it("should add rename diff on media type rename", () => {
     const after = exampleResource.clone()
     after.paths["/pet"].put.requestBody.content["application/*"] = after.paths["/pet"].put.requestBody.content["application/json"]
-    delete after.paths["/pet"].put.requestBody.content["application/json"]
+    after.paths["/pet"].put.requestBody.content["application/json"] = undefined
 
     const merged = exampleResource.merge(after)
     expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({ 
-      ["application/*"]: { action: DiffAction.rename, replaced: "application/json", type: nonBreaking }
+      "application/*": { action: DiffAction.rename, replaced: "application/json", type: nonBreaking }
     })
   })
 
@@ -93,7 +93,7 @@ describe("Test openapi 3 diff", () => {
 
   it("should classify as non-breaking set to default operation security if equal to default", () => {
     const after = exampleResource.clone()
-    delete after.paths["/pet/{petId}"].get.security
+    after.paths["/pet/{petId}"].get.security = undefined
 
     const diffs = exampleResource.diff(after)
     expect(diffs).toMatchObject([{ type: nonBreaking }])
@@ -101,7 +101,7 @@ describe("Test openapi 3 diff", () => {
 
   it("should classify as breaking set to default operation security if not equal to default", () => {
     const after = exampleResource.clone()
-    delete after.paths["/pet/findByTags"].get.security
+    after.paths["/pet/findByTags"].get.security = undefined
 
     const diffs = exampleResource.diff(after)
     expect(diffs).toMatchObject([{ type: breaking }])
@@ -136,7 +136,7 @@ describe("Test openapi 3 diff", () => {
   it("should not classify as change of response code from 5XX to 5xx", () => {
     const after = exampleResource.clone()
     after.paths["/pet"].put.responses["5xx"] = after.paths["/pet"].put.responses["5XX"]
-    delete after.paths["/pet"].put.responses["5XX"]
+    after.paths["/pet"].put.responses["5XX"] = undefined
 
     const diffs = exampleResource.diff(after)
     expect(diffs.length).toEqual(0)

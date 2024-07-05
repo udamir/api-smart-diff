@@ -4,8 +4,8 @@ import { objectMappingResolver } from "../core"
 export const jsonSchemaMappingResolver: MappingResolver<string> = (before, after, ctx) => {
   const { added, removed, mapped } = objectMappingResolver(before, after, ctx)
 
-  const beforeCombinaryIndex = removed.findIndex((item) => item == "oneOf" || item === "anyOf")
-  const afterCombinaryIndex = added.findIndex((item) => item == "oneOf" || item === "anyOf")
+  const beforeCombinaryIndex = removed.findIndex((item) => item === "oneOf" || item === "anyOf")
+  const afterCombinaryIndex = added.findIndex((item) => item === "oneOf" || item === "anyOf")
 
   if (beforeCombinaryIndex < 0 || afterCombinaryIndex < 0) {
     return { added, removed, mapped }

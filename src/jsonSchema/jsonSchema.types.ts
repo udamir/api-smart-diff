@@ -1,8 +1,8 @@
 
-import { JsonPath } from "json-crawl"
+import type { JsonPath } from "json-crawl"
 
 import type { ComapreOptions, CompareResult, CompareRules } from "../types"
-import { jsonSchemaTypes } from "./jsonSchema.consts"
+import type { jsonSchemaTypes } from "./jsonSchema.consts"
 
 export type JsonSchemaNodeType = typeof jsonSchemaTypes[number]
 

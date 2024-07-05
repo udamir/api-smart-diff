@@ -17,7 +17,7 @@ export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Re
     for (const _key of keys) {
       const _params = _key.split("_").slice(1)
       // find params
-      if (!_params.filter((p) => !isExist(params![p]) || params![p] === "").length && _params.length >= matchCount) {
+      if (!_params.filter((p) => !isExist(params?.[p]) || params?.[p] === "").length && _params.length >= matchCount) {
         result = dict[_key]
         matchCount = _params.length
       }
@@ -26,7 +26,7 @@ export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Re
     return result
   }
 
-  const applyTemplateParams = (name: string = "", _params: AnnotateTemplate["params"] = {}) => {
+  const applyTemplateParams = (name = "", _params: AnnotateTemplate["params"] = {}) => {
     let template = findTemplate(name, _params)
     if (!template) { return "" }
 
