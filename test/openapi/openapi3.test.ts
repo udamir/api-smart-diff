@@ -141,4 +141,12 @@ describe("Test openapi 3 diff", () => {
     const diffs = exampleResource.diff(after)
     expect(diffs.length).toEqual(0)
   })
+
+  it("should annotate response content type correctly on content schema change", () => {
+    const after = exampleResource.clone()
+    after.components.schemas.Pet.description = "some description" 
+    
+    const diffs = exampleResource.diff(after)
+    expect(diffs[0].description).not.toEqual(diffs[1].description)
+  })
 })

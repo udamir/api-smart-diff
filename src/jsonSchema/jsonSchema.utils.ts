@@ -4,7 +4,6 @@ import type { JsonPath } from "json-crawl"
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
 import type { AllOfNode, JsonSchemaNodeType } from "./jsonSchema.types"
 import { excludeKeys, isNumber, isObject } from "../utils"
-import type { Diff } from "../types"
 
 export function isAllOfNode(value: any): value is AllOfNode {
   return value && value.allOf && Array.isArray(value.allOf)
@@ -88,10 +87,6 @@ export const resolveRef = (node: unknown, source: unknown) => {
 export const getRef = ($ref?: string) => {
   if (!$ref) { return "" }
   return parseRef($ref).normalized ?? ""
-}
-
-export const changeDiffsPath = (diffs: Diff[], path: JsonPath = [], newPath: JsonPath = []): Diff[] => {
-  return diffs.map((diff) => ({ ...diff, path: [...newPath, ...diff.path.slice(path.length)] }))
 }
 
 export const mergeCombinarySibling = (value: Record<string, unknown>, combiner: string, allowedSibling: string[] = []) => {

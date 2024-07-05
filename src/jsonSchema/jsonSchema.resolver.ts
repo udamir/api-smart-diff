@@ -2,9 +2,9 @@ import { getNodeRules } from "json-crawl"
 import { isRefNode } from "allof-merge"
 
 import { diffFactory, convertDiffToMeta, createMergeMeta, compare, createChildContext, DIFF_META_KEY } from "../core"
-import { buildPath, changeDiffsPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
+import { buildPath, getCompareId, getRef, isCycleRef, resolveRef } from "./jsonSchema.utils"
 import type { CompareResultCache, JsonSchemaComapreCache } from "./jsonSchema.types"
-import type { CompareResolver, Diff } from "../types"
+import type { ComapreContext, CompareResolver, Diff } from "../types"
 import { isArray } from "../utils"
 
 export const combinaryCompareResolver: CompareResolver = (ctx) => {
@@ -86,7 +86,8 @@ export const createRefsCompareResolver = (cache: JsonSchemaComapreCache = {}): C
 
   const { results, bRefs, aRefs } = cache
 
-  const resolver: CompareResolver = ({ before, after, rules, options }) => {
+  const resolver: CompareResolver = (ctx: ComapreContext) => {
+    const { before, after, rules, options } = ctx
     // check if current path has already been compared via $refs
     const bPath = buildPath(before.path)
     const aPath = buildPath(after.path)
@@ -117,7 +118,14 @@ export const createRefsCompareResolver = (cache: JsonSchemaComapreCache = {}): C
       
       if (results.has(compareRefsId)) {
         const { path, diffs, ...rest } = results.get(compareRefsId)!
-        return { ...rest, diffs: changeDiffsPath(diffs, path, before.path) }
+        return { 
+          ...rest, 
+          diffs: diffs.map((diff) => { 
+            const _diff: Diff = { ...diff, description: '', path: [...before.path, ...diff.path.slice(path.length)] }
+            _diff.description = options.annotateHook?.(_diff, ctx)
+            return _diff
+          })
+        }
       }
     }
       
