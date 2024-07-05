@@ -12,6 +12,9 @@
       },
       "complexity": {
         "noForEach": "info"
+      },
+      "style": {
+        "noParameterAssign": "info"
       }
     }
   },
