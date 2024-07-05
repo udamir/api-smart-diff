@@ -6,17 +6,29 @@ import { compareOpenApi } from "./openapi"
 import { isObject, isString } from "./utils"
 
 export const discoverCompareEngine = (data: unknown): CompareEngine => {
-  if (!isObject(data)) { return compareJsonSchema }
+  if (!isObject(data)) {
+    return compareJsonSchema
+  }
 
-  if ("openapi" in data && isString(data.openapi) && /3.+/.test(data.openapi)) return compareOpenApi
-  if ("asyncapi" in data && isString(data.asyncapi) && /2.+/.test(data.asyncapi)) return compareAsyncApi
+  if ("openapi" in data && isString(data.openapi) && /3.+/.test(data.openapi))
+    return compareOpenApi
+  if (
+    "asyncapi" in data &&
+    isString(data.asyncapi) &&
+    /2.+/.test(data.asyncapi)
+  )
+    return compareAsyncApi
   // if (/2.+/.test(data?.swagger || "")) return swagger2Rules
   if ("graphapi" in data && data.graphapi) return compareGraphApi
   return compareJsonSchema
 }
 
 // !Deprecated
-export const apiMerge = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
+export const apiMerge = (
+  before: unknown,
+  after: unknown,
+  options: ComapreOptions = {},
+) => {
   const engine = discoverCompareEngine(before)
 
   const { merged } = engine(before, after, options)
@@ -25,7 +37,11 @@ export const apiMerge = (before: unknown, after: unknown, options: ComapreOption
 }
 
 // !Deprecated
-export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
+export const apiDiff = (
+  before: unknown,
+  after: unknown,
+  options: ComapreOptions = {},
+) => {
   const engine = discoverCompareEngine(before)
 
   const { diffs } = engine(before, after, options)
@@ -33,7 +49,11 @@ export const apiDiff = (before: unknown, after: unknown, options: ComapreOptions
   return diffs
 }
 
-export const apiCompare = (before: unknown, after: unknown, options: ComapreOptions = {}) => {
+export const apiCompare = (
+  before: unknown,
+  after: unknown,
+  options: ComapreOptions = {},
+) => {
   const engine = discoverCompareEngine(before)
 
   return engine(before, after, options)

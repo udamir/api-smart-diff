@@ -1,7 +1,7 @@
 import { annotation, breaking, compareJsonSchema, nonBreaking } from "../../src"
 import { yaml } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("schema with combinary", () => {
   it("should compare oneOf combinary jsonSchema with added object", () => {
@@ -44,11 +44,16 @@ describe("schema with combinary", () => {
 
     expect(merged.oneOf[0]).toMatchObject(after.oneOf[0])
     expect(merged.oneOf[1]).toMatchObject(after.oneOf[1])
-    expect(merged.oneOf[2]).toMatchObject({...after.oneOf[2], required: ["id", "name"] })
+    expect(merged.oneOf[2]).toMatchObject({
+      ...after.oneOf[2],
+      required: ["id", "name"],
+    })
 
-    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 1: { action: "add", type: nonBreaking }}} })
+    expect(merged[metaKey]).toMatchObject({
+      oneOf: { array: { 1: { action: "add", type: nonBreaking } } },
+    })
     expect(merged.oneOf[2][metaKey]).toMatchObject({
-      required: { array: { 1: { action: "add", type: breaking }}}
+      required: { array: { 1: { action: "add", type: breaking } } },
     })
   })
 
@@ -105,7 +110,7 @@ describe("schema with combinary", () => {
     expect(merged.oneOf[0]).toMatchObject({
       title: "Title",
       type: "object",
-      required: [ "foo", "id"],
+      required: ["foo", "id"],
       properties: {
         foo: { type: "number" },
         id: { type: "number" },
@@ -114,19 +119,19 @@ describe("schema with combinary", () => {
     expect(merged.oneOf[1]).toMatchObject({
       title: "Title2",
       type: "object",
-      required: [ "id", "name" ],
+      required: ["id", "name"],
       properties: {
         name: { type: "string" },
         id: { type: "number" },
       },
     })
 
-    expect(merged.oneOf[0][metaKey]).toMatchObject({ 
-      required: { array: { 0: { action: "remove", type: nonBreaking }}} 
+    expect(merged.oneOf[0][metaKey]).toMatchObject({
+      required: { array: { 0: { action: "remove", type: nonBreaking } } },
     })
     expect(merged.oneOf[1][metaKey]).toMatchObject({
-      required: { array: { 1: { action: "add", type: breaking }}},
-      title: { action: "replace", type: annotation, replaced: "Title" }
+      required: { array: { 1: { action: "add", type: breaking } } },
+      title: { action: "replace", type: annotation, replaced: "Title" },
     })
   })
 
@@ -187,7 +192,7 @@ describe("schema with combinary", () => {
     expect(diffs.length).toEqual(1)
     expect(merged).toMatchObject(after)
     expect(merged.oneOf[0][metaKey]).toMatchObject({
-      oneOf: { array: { 1: { action: "add", type: nonBreaking }}}
+      oneOf: { array: { 1: { action: "add", type: nonBreaking } } },
     })
   })
 })
@@ -246,9 +251,11 @@ describe("schema with combinary and refs", () => {
     expect(merged.oneOf[1]).toMatchObject(after.oneOf[1])
     expect(merged.oneOf[2]).toMatchObject(after.oneOf[2])
 
-    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 0: { action: "add", type: nonBreaking }}} })
+    expect(merged[metaKey]).toMatchObject({
+      oneOf: { array: { 0: { action: "add", type: nonBreaking } } },
+    })
     expect(merged.$defs[metaKey]).toMatchObject({
-      number: { action: "add", type: nonBreaking }
+      number: { action: "add", type: nonBreaking },
     })
   })
 
@@ -305,9 +312,11 @@ describe("schema with combinary and refs", () => {
     expect(merged.oneOf[1]).toMatchObject(after.oneOf[1])
     expect(merged.oneOf[2]).toMatchObject(before.oneOf[0])
 
-    expect(merged[metaKey]).toMatchObject({ oneOf: { array: { 2: { action: "remove", type: breaking }}} })
+    expect(merged[metaKey]).toMatchObject({
+      oneOf: { array: { 2: { action: "remove", type: breaking } } },
+    })
     expect(merged.$defs[metaKey]).toMatchObject({
-      number: { action: "remove", type: nonBreaking }
+      number: { action: "remove", type: nonBreaking },
     })
   })
 })

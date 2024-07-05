@@ -1,4 +1,3 @@
-
 import { type Diff, changeDiffsPath } from "../../src"
 
 describe("Comapre array jsonSchema", () => {
@@ -9,10 +8,12 @@ describe("Comapre array jsonSchema", () => {
       { path: ["a", "b", "c", "d", "1", "2", "3"] },
     ] as Diff[]
 
-    expect(changeDiffsPath(diffs, ["a", "b", "c"], ["aa", "bb"])).toMatchObject([
-      { path: ["aa", "bb", "d", "1"] },
-      { path: ["aa", "bb", "d", "1", "2"] },
-      { path: ["aa", "bb", "d", "1", "2", "3"] },
-    ])
+    expect(changeDiffsPath(diffs, ["a", "b", "c"], ["aa", "bb"])).toMatchObject(
+      [
+        { path: ["aa", "bb", "d", "1"] },
+        { path: ["aa", "bb", "d", "1", "2"] },
+        { path: ["aa", "bb", "d", "1", "2", "3"] },
+      ],
+    )
   })
 })

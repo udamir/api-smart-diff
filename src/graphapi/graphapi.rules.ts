@@ -1,4 +1,9 @@
-import { graphApiMergeAllOf, transformGraphApiComponents, transformGraphApiDirective, transformGraphApiDocument } from "./graphapi.transform"
+import {
+  graphApiMergeAllOf,
+  transformGraphApiComponents,
+  transformGraphApiDirective,
+  transformGraphApiDocument,
+} from "./graphapi.transform"
 import { allAnnotation, addNonBreaking } from "../core/constants"
 import { parentKeyChangeAnnotation } from "./graphapi.annotate"
 import { graphApiSchemaRules } from "./graphapi.schema"
@@ -9,21 +14,26 @@ export type GraphApiRulesOptions = {
   notMergeAllOf?: boolean
 }
 
-export const graphApiRules = ({ notMergeAllOf = false }: GraphApiRulesOptions = {}): CompareRules => {  
+export const graphApiRules = ({
+  notMergeAllOf = false,
+}: GraphApiRulesOptions = {}): CompareRules => {
   const argsSchemaRules = graphApiSchemaRules()
   const schemaRules = graphApiSchemaRules(true)
 
   return {
-    transform: [...notMergeAllOf ? [] : [graphApiMergeAllOf], transformGraphApiDocument],
+    transform: [
+      ...(notMergeAllOf ? [] : [graphApiMergeAllOf]),
+      transformGraphApiDocument,
+    ],
 
     "/queries": {
-      "/*": schemaRules
+      "/*": schemaRules,
     },
     "/mutations": {
-      "/*": schemaRules
+      "/*": schemaRules,
     },
     "/subscriptions": {
-      "/*": schemaRules
+      "/*": schemaRules,
     },
 
     "/components": {
@@ -39,14 +49,14 @@ export const graphApiRules = ({ notMergeAllOf = false }: GraphApiRulesOptions = 
           // TODO annotations
           "/title": { $: allAnnotation },
           "/description": { $: allAnnotation },
-          "/locations": { 
+          "/locations": {
             mapping: enumMappingResolver,
-            $: allAnnotation
+            $: allAnnotation,
           },
-          "/repeatable": { $: allAnnotation }, 
+          "/repeatable": { $: allAnnotation },
           "/args": argsSchemaRules,
         },
       },
-    }
+    },
   }
 }

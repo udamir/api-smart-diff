@@ -1,12 +1,18 @@
-import { isParameterSchema, isRequestBodySchema, isResponseSchema } from "./openapi3.utils"
+import {
+  isParameterSchema,
+  isRequestBodySchema,
+  isResponseSchema,
+} from "./openapi3.utils"
 import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { createAnnotation, annotationTemplate as t } from "../core"
 import { jsonSchemaAnnotations, resolveRef } from "../jsonSchema"
 import { getObjectValue } from "../utils"
 
 const openApiAnnotations = {
-  requestBodySchema: "{{schemaChange}} in Request Body content ({{contentType}})",
-  responseSchema: "{{schemaChange}} in Response {{responseCode}} content ({{contentType}})",
+  requestBodySchema:
+    "{{schemaChange}} in Request Body content ({{contentType}})",
+  responseSchema:
+    "{{schemaChange}} in Response {{responseCode}} content ({{contentType}})",
   parameterSchema: "{{schemaChange}} in {{in}} parameter `{{name}}`",
 
   add: "[Added] {{text}}",
@@ -37,62 +43,104 @@ const openApiAnnotations = {
 export const openApi3AnnotateHook: AnnotateHook = (diff, ctx) => {
   let annotate = ctx.rules?.annotate
 
-  if (!annotate || diff.path[0] === "components") { return "" }
+  if (!annotate || diff.path[0] === "components") {
+    return ""
+  }
   if (isResponseSchema(diff.path)) {
-    const schemaChange = createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
-    annotate = () => t("responseSchema", { schemaChange, responseCode: diff.path[4], contentType: diff.path[6] })
+    const schemaChange = createAnnotation(
+      annotate(diff, ctx),
+      jsonSchemaAnnotations,
+    )
+    annotate = () =>
+      t("responseSchema", {
+        schemaChange,
+        responseCode: diff.path[4],
+        contentType: diff.path[6],
+      })
   } else if (isRequestBodySchema(diff.path)) {
-    const schemaChange = createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
-    annotate = () => t("requestBodySchema", { schemaChange, contentType: diff.path[5] })
+    const schemaChange = createAnnotation(
+      annotate(diff, ctx),
+      jsonSchemaAnnotations,
+    )
+    annotate = () =>
+      t("requestBodySchema", { schemaChange, contentType: diff.path[5] })
   } else if (isParameterSchema(diff.path)) {
-    const schemaChange = createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
+    const schemaChange = createAnnotation(
+      annotate(diff, ctx),
+      jsonSchemaAnnotations,
+    )
     const { root } = diff.action === "add" ? ctx.after : ctx.before
     const paramPath = diff.path.slice(0, diff.path[2] === "parameters" ? 4 : 5)
     const node = getObjectValue(root, ...paramPath)
-    annotate = () => t("parameterSchema", { ...resolveRef(node, root), schemaChange })
+    annotate = () =>
+      t("parameterSchema", { ...resolveRef(node, root), schemaChange })
   }
 
   return createAnnotation(annotate(diff, ctx), openApiAnnotations)
 }
 
-export const pathMethodChangeAnnotation: ChangeAnnotationResolver = ({ action, path }) => {
-  return t(action, { text: t("method", { path: path[1], method: String(path[2]).toUpperCase() })})
+export const pathMethodChangeAnnotation: ChangeAnnotationResolver = ({
+  action,
+  path,
+}) => {
+  return t(action, {
+    text: t("method", { path: path[1], method: String(path[2]).toUpperCase() }),
+  })
 }
 
-export const documentChangeAnnotation: ChangeAnnotationResolver = ({ action, path }) => {
-  return t(action, { text: t("document", { key: path.join(".") })})
+export const documentChangeAnnotation: ChangeAnnotationResolver = ({
+  action,
+  path,
+}) => {
+  return t(action, { text: t("document", { key: path.join(".") }) })
 }
 
-export const operationSecurityChangeAnnotation: ChangeAnnotationResolver = ({ action }) => {
-  return t(action, { text: t("security")})
+export const operationSecurityChangeAnnotation: ChangeAnnotationResolver = ({
+  action,
+}) => {
+  return t(action, { text: t("security") })
 }
 
-export const requestBodyChangeAnnotation: ChangeAnnotationResolver = ({ path, action }) => {
-  const key = path[path.length-1]
+export const requestBodyChangeAnnotation: ChangeAnnotationResolver = ({
+  path,
+  action,
+}) => {
+  const key = path[path.length - 1]
 
   if (key === "required" || key === "deprecated") {
     return t(action, { text: t("status", { key }), target: t("requestBody") })
-  } 
-  
+  }
+
   return t(action, { text: t("annotation", { key }), target: t("requestBody") })
 }
 
-export const responseChangeAnnotation: ChangeAnnotationResolver = ({ path, action }) => {
+export const responseChangeAnnotation: ChangeAnnotationResolver = ({
+  path,
+  action,
+}) => {
   const responseCode = path[4]
-  const key = path[path.length-1]
-  
+  const key = path[path.length - 1]
+
   if (responseCode === key) {
-    return t(action, { text: t("response", { responseCode })})
+    return t(action, { text: t("response", { responseCode }) })
   }
 
-  return t(action, { text: t("annotation", { key }), target: t("response", { responseCode })})
+  return t(action, {
+    text: t("annotation", { key }),
+    target: t("response", { responseCode }),
+  })
 }
 
-export const contentChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
+export const contentChangeAnnotation: ChangeAnnotationResolver = (
+  { path, action },
+  ctx,
+) => {
   const contentType = isResponseSchema(path) ? path[6] : path[5]
   const responseCode = isResponseSchema(path) ? path[4] : undefined
-  const target = isResponseSchema(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
-  const key = path[path.length-1]
+  const target = isResponseSchema(path)
+    ? t("response", { contentType, responseCode })
+    : t("requestBody", { contentType })
+  const key = path[path.length - 1]
 
   if (contentType && contentType !== key) {
     return t(action, { text: t("annotation", { key }), target })
@@ -101,10 +149,15 @@ export const contentChangeAnnotation: ChangeAnnotationResolver = ({ path, action
   return t(action, { text: t("contentType"), target })
 }
 
-export const encodingChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
+export const encodingChangeAnnotation: ChangeAnnotationResolver = (
+  { path, action },
+  ctx,
+) => {
   const contentType = isResponseSchema(path) ? path[6] : path[5]
   const responseCode = isResponseSchema(path) ? path[4] : undefined
-  const target = isResponseSchema(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
+  const target = isResponseSchema(path)
+    ? t("response", { contentType, responseCode })
+    : t("requestBody", { contentType })
 
   const encodingPath = isResponseSchema(path) ? path.slice(8) : path.slice(7)
   const key = encodingPath.join(".")
@@ -112,29 +165,39 @@ export const encodingChangeAnnotation: ChangeAnnotationResolver = ({ path, actio
   return t(action, { text: t("encoding", { key }), target })
 }
 
-export const operationChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
+export const operationChangeAnnotation: ChangeAnnotationResolver = (
+  { path, action },
+  ctx,
+) => {
   const { key } = action === "add" ? ctx.after : ctx.before
 
   if (key === "deprecated") {
     if (ctx.after.value) {
       return t("add", { text: t("status", { key }) })
-    }if (ctx.before.value) {
+    }
+    if (ctx.before.value) {
       return t("remove", { text: t("status", { key }) })
     }
     return
-  }if (key === "requestBody") {
+  }
+  if (key === "requestBody") {
     return t(action, { text: t(key) })
   }
 
   if (typeof key === "number") {
     const { value } = action === "add" ? ctx.after : ctx.before
-    return t(action, { text: t("annotation", { key: `${path[path.length-2]}: ${value}` }) })
+    return t(action, {
+      text: t("annotation", { key: `${path[path.length - 2]}: ${value}` }),
+    })
   }
 
   return t(action, { text: t("annotation", { key }) })
 }
 
-export const parameterChangeAnnotation: ChangeAnnotationResolver = ({ action }, ctx) => {
+export const parameterChangeAnnotation: ChangeAnnotationResolver = (
+  { action },
+  ctx,
+) => {
   const { path, root, key } = action === "add" ? ctx.after : ctx.before
 
   const paramPath = path.slice(0, path[2] === "parameters" ? 4 : 5)
@@ -142,9 +205,13 @@ export const parameterChangeAnnotation: ChangeAnnotationResolver = ({ action }, 
   const param = resolveRef(node, root)
 
   if (key === "required") {
-    return t(action, { text: t("status", { key }), target: t("param", { ...param, requred: false }) })
-  }if (key === "deprecated") {
+    return t(action, {
+      text: t("status", { key }),
+      target: t("param", { ...param, requred: false }),
+    })
+  }
+  if (key === "deprecated") {
     return t(action, { text: t("status", { key }), target: t("param", param) })
   }
-    return t(action, { text: t("param", param) })
+  return t(action, { text: t("param", param) })
 }

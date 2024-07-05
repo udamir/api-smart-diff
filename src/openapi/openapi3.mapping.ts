@@ -4,7 +4,6 @@ import { mapPathParams } from "./openapi3.utils"
 import { resolveRef } from "../jsonSchema"
 
 export const pathMappingResolver: MappingResolver<string> = (before, after) => {
-
   const result: MapKeysResult<string> = { added: [], removed: [], mapped: {} }
 
   const beforeKeys = objectKeys(before)
@@ -16,7 +15,7 @@ export const pathMappingResolver: MappingResolver<string> = (before, after) => {
 
   for (let i = 0; i < beforeKeys.length; i++) {
     const _afterIndex = _afterKeys.indexOf(_beforeKeys[i])
-    
+
     if (_afterIndex < 0) {
       // removed item
       result.removed.push(beforeKeys[i])
@@ -33,26 +32,34 @@ export const pathMappingResolver: MappingResolver<string> = (before, after) => {
   return result
 }
 
-export const paramMappingResolver: MappingResolver<number> = (before, after, ctx) => {
+export const paramMappingResolver: MappingResolver<number> = (
+  before,
+  after,
+  ctx,
+) => {
   const result: MapKeysResult<number> = { added: [], removed: [], mapped: {} }
 
   const pathParamMapping = mapPathParams(ctx)
   const mappedIndex = new Set(after.keys())
   const _before = before.map((b) => resolveRef(b, ctx.before.root))
   const _after = after.map((a) => resolveRef(a, ctx.after.root))
-  
+
   for (let i = 0; i < _before.length; i++) {
     const beforeIn = getStringValue(_before[i], "in")
     const beforeName = getStringValue(_before[i], "name") ?? ""
-    
+
     const _afterIndex = _after.findIndex((a) => {
       const afterIn = getStringValue(a, "in")
       const afterName = getStringValue(a, "name") ?? ""
 
       // use extra mapping logic for path parameters
-      return beforeIn === afterIn && (beforeName === afterName || (beforeIn === "path" && pathParamMapping[beforeName] === afterName))
+      return (
+        beforeIn === afterIn &&
+        (beforeName === afterName ||
+          (beforeIn === "path" && pathParamMapping[beforeName] === afterName))
+      )
     })
-    
+
     if (_afterIndex < 0) {
       // removed item
       result.removed.push(i)
@@ -68,7 +75,10 @@ export const paramMappingResolver: MappingResolver<number> = (before, after, ctx
   return result
 }
 
-export const contentMediaTypeMappingResolver: MappingResolver<string> = (before, after) => {
+export const contentMediaTypeMappingResolver: MappingResolver<string> = (
+  before,
+  after,
+) => {
   const result: MapKeysResult<string> = { added: [], removed: [], mapped: {} }
 
   const beforeKeys = objectKeys(before)
@@ -80,14 +90,22 @@ export const contentMediaTypeMappingResolver: MappingResolver<string> = (before,
 
   for (let i = 0; i < beforeKeys.length; i++) {
     const _afterIndex = _afterKeys.findIndex((key) => {
-      const [ afterType, afterSubType ] = key.split("/")
-      const [ beforeType, beforeSubType ] = _beforeKeys[i].split("/")
+      const [afterType, afterSubType] = key.split("/")
+      const [beforeType, beforeSubType] = _beforeKeys[i].split("/")
 
-      if (afterType !== beforeType && afterType !== "*" && beforeType !== "*") { return false }
-      if (afterSubType !== beforeSubType && afterSubType !== "*" && beforeSubType !== "*") { return false }
+      if (afterType !== beforeType && afterType !== "*" && beforeType !== "*") {
+        return false
+      }
+      if (
+        afterSubType !== beforeSubType &&
+        afterSubType !== "*" &&
+        beforeSubType !== "*"
+      ) {
+        return false
+      }
       return true
     })
-    
+
     if (_afterIndex < 0 || !mappedIndex.has(_afterIndex)) {
       // removed item
       result.removed.push(beforeKeys[i])

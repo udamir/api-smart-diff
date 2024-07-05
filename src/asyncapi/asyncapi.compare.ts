@@ -4,7 +4,12 @@ import { getAsyncApiVersion } from "./asyncapi.utils"
 import { asyncApi2Rules } from "./asyncapi2.rules"
 import { compare } from "../core"
 
-export const compareAsyncApi = (before: unknown, after: unknown, options: AsyncApiComapreOptions = {}, context: SourceContext = {}): CompareResult => {
+export const compareAsyncApi = (
+  before: unknown,
+  after: unknown,
+  options: AsyncApiComapreOptions = {},
+  context: SourceContext = {},
+): CompareResult => {
   // const { notMergeAllOf } = options
 
   const version = getAsyncApiVersion(before, after)

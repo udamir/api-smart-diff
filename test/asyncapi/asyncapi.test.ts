@@ -1,10 +1,9 @@
 import { compareAsyncApi } from "../../src"
 import { yaml } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("Compare simple AsyncApi documents", () => {
-
   it("should compare simple AsyncApi documents", () => {
     const before = yaml`
       asyncapi: 2.6.0
@@ -41,7 +40,6 @@ describe("Compare simple AsyncApi documents", () => {
     //   expect(diff.description).not.toEqual("")
     //   expect(diff.type).not.toEqual("unclassified")
     // })
-    
   })
 
   it("should be nullable query for Scalar result", () => {

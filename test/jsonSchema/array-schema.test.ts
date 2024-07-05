@@ -1,6 +1,6 @@
 import { breaking, compareJsonSchema, nonBreaking } from "../../src"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("Comapre array jsonSchema", () => {
   it("should compare array jsonSchema with validations change", () => {
@@ -8,7 +8,7 @@ describe("Comapre array jsonSchema", () => {
       items: {
         type: "string",
       },
-      minItems: 1
+      minItems: 1,
     }
 
     const after = {
@@ -53,12 +53,10 @@ describe("Comapre array jsonSchema", () => {
 
     const after = {
       type: "array",
-      items: [
-        { type: "number" }
-      ],
+      items: [{ type: "number" }],
       additionalItems: {
-        type: "string"
-      }
+        type: "string",
+      },
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -72,7 +70,7 @@ describe("Comapre array jsonSchema", () => {
 
     expect(merged).toMatchObject(after)
     expect(merged.items[0][metaKey]).toMatchObject({
-      type: { action: "replace", replaced: "string", type: breaking }
+      type: { action: "replace", replaced: "string", type: breaking },
     })
   })
 
@@ -106,15 +104,10 @@ describe("Comapre array jsonSchema", () => {
 
   it("should merge jsonSchema with array items", () => {
     const before = {
-      items: [
-        { type: "string" },
-        { type: "boolean" },
-      ],
+      items: [{ type: "string" }, { type: "boolean" }],
     }
     const after = {
-      items: [
-        { type: "boolean" }
-      ],
+      items: [{ type: "boolean" }],
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -127,7 +120,7 @@ describe("Comapre array jsonSchema", () => {
     })
 
     expect(merged[metaKey]).toMatchObject({
-      items: { array: { 1: { action: "remove", type: breaking }}},
+      items: { array: { 1: { action: "remove", type: breaking } } },
     })
     expect(merged.items[0][metaKey]).toMatchObject({
       type: { action: "replace", replaced: "string", type: breaking },
@@ -137,13 +130,10 @@ describe("Comapre array jsonSchema", () => {
   it("should merge jsonSchema with array items", () => {
     const before = {
       type: "array",
-      items: [
-        { type: "string" },
-        { type: "boolean" },
-      ],
+      items: [{ type: "string" }, { type: "boolean" }],
     }
     const after = {
-      type: "array"
+      type: "array",
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -156,36 +146,32 @@ describe("Comapre array jsonSchema", () => {
     })
 
     expect(merged[metaKey]).toMatchObject({
-      items: { array: { 
-        0: { action: "remove", type: breaking },
-        1: { action: "remove", type: breaking }
-      }},
+      items: {
+        array: {
+          0: { action: "remove", type: breaking },
+          1: { action: "remove", type: breaking },
+        },
+      },
     })
   })
 
   it("should merge jsonSchema with array items change", () => {
     const before: any = {
       type: "array",
-      items: [
-        { type: "string" },
-        { type: "boolean" },
-      ],
+      items: [{ type: "string" }, { type: "boolean" }],
     }
     const after: any = {
       items: {
-        type: "string"
-      }
+        type: "string",
+      },
     }
 
     const expectedMerged = {
       type: "array",
-      items: [
-        { type: "string" },
-        { type: "string" },
-      ],
+      items: [{ type: "string" }, { type: "string" }],
       additionalItems: {
         type: "string",
-      }
+      },
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })

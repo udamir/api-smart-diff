@@ -5,7 +5,7 @@ export const graphApiComponents = {
   InputObjectTypeDefinition: "inputObjects",
   DirectiveDefinition: "directives",
   UnionTypeDefinition: "unions",
-  EnumTypeDefinition: "enums"
+  EnumTypeDefinition: "enums",
 } as const
 
 export const graphApiOperations = {
@@ -14,4 +14,9 @@ export const graphApiOperations = {
   subscription: "subscription",
 } as const
 
-export const graphSchemaCustomProps = ["args", "values", "interfaces", "directives"] as const
+export const graphSchemaCustomProps = [
+  "args",
+  "values",
+  "interfaces",
+  "directives",
+] as const

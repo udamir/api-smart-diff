@@ -1,7 +1,13 @@
-import { annotation, breaking, compareOpenApi, DiffAction, nonBreaking } from "../../src"
+import {
+  annotation,
+  breaking,
+  compareOpenApi,
+  DiffAction,
+  nonBreaking,
+} from "../../src"
 import { yaml } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("Test openapi 3 parameters compare", () => {
   it("should add rename diff on path parameter name change", () => {
@@ -33,11 +39,19 @@ describe("Test openapi 3 parameters compare", () => {
     expect(diffs[1].description).not.toEqual("")
     expect(diffs[1].type).not.toEqual("unclassified")
 
-    expect(merged.paths[metaKey]).toMatchObject({ 
-      "/pet/{id}": { action: DiffAction.rename, type: nonBreaking, replaced: "/pet/{petId}" },
+    expect(merged.paths[metaKey]).toMatchObject({
+      "/pet/{id}": {
+        action: DiffAction.rename,
+        type: nonBreaking,
+        replaced: "/pet/{petId}",
+      },
     })
-    expect(merged.paths["/pet/{id}"].get.parameters[0][metaKey]).toMatchObject({ 
-      name: { action: DiffAction.replace, type: nonBreaking, replaced: "petId" },
+    expect(merged.paths["/pet/{id}"].get.parameters[0][metaKey]).toMatchObject({
+      name: {
+        action: DiffAction.replace,
+        type: nonBreaking,
+        replaced: "petId",
+      },
     })
   })
 
@@ -84,9 +98,10 @@ describe("Test openapi 3 parameters compare", () => {
     expect(diffs[0]).toHaveProperty("description")
     expect(diffs[0].description).not.toEqual("")
     expect(diffs[0].type).not.toEqual("unclassified")
-  
 
-    expect(merged.paths["/test/endpoint"].get.parameters[0][metaKey]).toMatchObject({
+    expect(
+      merged.paths["/test/endpoint"].get.parameters[0][metaKey],
+    ).toMatchObject({
       required: { action: DiffAction.remove, type: nonBreaking },
     })
   })
@@ -122,10 +137,14 @@ describe("Test openapi 3 parameters compare", () => {
       expect(diff.type).not.toEqual("unclassified")
     })
 
-    expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
-      0: { action: DiffAction.remove, type: breaking },
-      1: { action: DiffAction.add, type: nonBreaking }
-    }}})
+    expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({
+      parameters: {
+        array: {
+          0: { action: DiffAction.remove, type: breaking },
+          1: { action: DiffAction.add, type: nonBreaking },
+        },
+      },
+    })
   })
 
   it("should be add diff on query parameter add", () => {
@@ -174,11 +193,15 @@ describe("Test openapi 3 parameters compare", () => {
       expect(diff.type).not.toEqual("unclassified")
     })
 
-    expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
-      1: { action: DiffAction.add, type: nonBreaking },
-      2: { action: DiffAction.add, type: breaking },
-      3: { action: DiffAction.add, type: nonBreaking },
-    }}})
+    expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({
+      parameters: {
+        array: {
+          1: { action: DiffAction.add, type: nonBreaking },
+          2: { action: DiffAction.add, type: breaking },
+          3: { action: DiffAction.add, type: nonBreaking },
+        },
+      },
+    })
   })
 
   it("should classify operation parameter schema change", () => {
@@ -214,10 +237,12 @@ describe("Test openapi 3 parameters compare", () => {
       expect(diff.type).not.toEqual("unclassified")
     })
 
-    expect(merged.paths["/pet/findByStatus"].get.parameters[0][metaKey]).toMatchObject({ 
+    expect(
+      merged.paths["/pet/findByStatus"].get.parameters[0][metaKey],
+    ).toMatchObject({
       description: { action: DiffAction.add, type: annotation },
       required: { action: DiffAction.add, type: breaking },
-      style: { action: DiffAction.replace, replaced: "form", type: breaking }
+      style: { action: DiffAction.replace, replaced: "form", type: breaking },
     })
   })
 
@@ -251,7 +276,7 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(1)
-  }) 
+  })
 
   it("should classify as breaking change of query param type from array to string", () => {
     const before = yaml`
@@ -285,7 +310,7 @@ describe("Test openapi 3 parameters compare", () => {
 
     expect(diffs.length).toEqual(1)
     expect(diffs).toMatchObject([{ type: breaking }])
-  }) 
+  })
 
   it("should classify as non-breaking change of query param type from string to array", () => {
     const before = yaml`
@@ -318,5 +343,5 @@ describe("Test openapi 3 parameters compare", () => {
 
     expect(diffs.length).toEqual(1)
     expect(diffs).toMatchObject([{ type: nonBreaking }])
-  }) 
+  })
 })

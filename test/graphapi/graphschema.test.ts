@@ -1,10 +1,9 @@
 import { compareGraphApi } from "../../src"
 import { graphapi } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("GraphQL schema", () => {
-
   it("should compare schemas with changes in enum", () => {
     const before = graphapi`
       type Query {
@@ -39,12 +38,13 @@ describe("GraphQL schema", () => {
 
     expect(diffs.length).toEqual(6)
     diffs.forEach((diff, i) => {
-      if (i > 2) { return }
+      if (i > 2) {
+        return
+      }
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
     })
-    
   })
 
   it("should compare schemas with changes in union", () => {

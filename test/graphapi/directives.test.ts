@@ -1,10 +1,9 @@
 import { compareGraphApi } from "../../src"
 import { graphapi } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("GraphQL directives", () => {
-
   it("should compare schemas with changes in arguments", () => {
     const before = graphapi`
       directive @limit(offset: Int = 0, limit: Int = 20) on FIELD | FIELD_DEFINITION
