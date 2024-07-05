@@ -1,27 +1,27 @@
 import {
+  allAnnotation,
+  allDeprecated,
+  breaking,
+  nonBreaking,
+  reverseClassifyRuleTransformer,
+  transformComapreRules,
+} from "../core"
+import {
   jsonSchemaKeyChange,
   jsonSchemaRules,
   schemaStatusChange,
   transformJsonSchema,
   transformJsonSchemaCombiners,
 } from "../jsonSchema"
-import {
-  reverseClassifyRuleTransformer,
-  transformComapreRules,
-  allAnnotation,
-  allDeprecated,
-  nonBreaking,
-  breaking,
-} from "../core"
-import {
-  transformGraphSchema,
-  transfromGraphSchemaDirective,
-} from "./graphapi.transform"
+import type { CompareRules } from "../types"
 import {
   parentKeyChangeAnnotation,
   valuesAnnotationChange,
 } from "./graphapi.annotate"
-import type { CompareRules } from "../types"
+import {
+  transformGraphSchema,
+  transfromGraphSchemaDirective,
+} from "./graphapi.transform"
 
 export const graphApiSchemaRules = (response = false): CompareRules => {
   const graphSchemaRules = jsonSchemaRules({

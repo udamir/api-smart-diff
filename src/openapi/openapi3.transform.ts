@@ -1,7 +1,7 @@
+import { compareTransformationFactory } from "../core"
 import type { ComapreContext, CompareTransformResolver } from "../types"
 import { isKey, isObject, objectKeys, setKeyValue } from "../utils"
 import { pathMappingResolver } from "./openapi3.mapping"
-import { compareTransformationFactory } from "../core"
 import { getDefaultStyle } from "./openapi3.utils"
 
 export const transformPathItems = compareTransformationFactory((value) => {

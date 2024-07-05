@@ -1,9 +1,9 @@
-import type { OpenApiComapreOptions } from "./openapi3.types"
+import { compare } from "../core"
 import type { CompareResult, SourceContext } from "../types"
 import { openApi3AnnotateHook } from "./openapi3.annotate"
-import { getMaxOpenApiVersion } from "./openapi3.utils"
 import { openapi3Rules } from "./openapi3.rules"
-import { compare } from "../core"
+import type { OpenApiComapreOptions } from "./openapi3.types"
+import { getMaxOpenApiVersion } from "./openapi3.utils"
 
 export const compareOpenApi = (
   before: unknown,

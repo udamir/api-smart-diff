@@ -1,5 +1,5 @@
-import { isExist, isObject, objectKeys } from "../utils"
 import type { AnnotateTemplate } from "../types"
+import { isExist, isObject, objectKeys } from "../utils"
 
 export const annotationTemplate = (
   template: string,

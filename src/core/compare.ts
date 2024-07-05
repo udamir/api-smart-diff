@@ -1,16 +1,17 @@
-import { getNodeRules, syncCrawl, type SyncCrawlHook } from "json-crawl"
+import { type SyncCrawlHook, getNodeRules, syncCrawl } from "json-crawl"
 
 import type {
   ComapreContext,
-  CompareRule,
   ComapreOptions,
+  CompareEngine,
   CompareResult,
-  MergeMetaRecord,
-  SourceContext,
+  CompareRule,
   ContextInput,
   MergeFactoryResult,
-  CompareEngine,
+  MergeMetaRecord,
+  SourceContext,
 } from "../types"
+import type { Diff, JsonNode, MergeState } from "../types"
 import {
   getKeyValue,
   isArray,
@@ -19,10 +20,9 @@ import {
   objectKeys,
   typeOf,
 } from "../utils"
-import { diffFactory, convertDiffToMeta, createMergeMeta } from "./diff"
-import { objectMappingResolver, arrayMappingResolver } from "./mapping"
-import type { Diff, JsonNode, MergeState } from "../types"
 import { DIFF_META_KEY } from "./constants"
+import { convertDiffToMeta, createMergeMeta, diffFactory } from "./diff"
+import { arrayMappingResolver, objectMappingResolver } from "./mapping"
 
 export const createContext = (
   data: ContextInput,

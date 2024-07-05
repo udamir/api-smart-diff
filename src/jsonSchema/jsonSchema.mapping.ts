@@ -1,5 +1,5 @@
-import type { MapKeysResult, MappingResolver } from "../types"
 import { objectMappingResolver } from "../core"
+import type { MapKeysResult, MappingResolver } from "../types"
 
 export const jsonSchemaMappingResolver: MappingResolver<string> = (
   before,

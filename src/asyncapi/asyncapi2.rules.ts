@@ -1,11 +1,11 @@
 import {
-  reverseClassifyRuleTransformer,
-  transformComapreRules,
   addNonBreaking,
+  allAnnotation,
   allBreaking,
   allNonBreaking,
   allUnclassified,
-  allAnnotation,
+  reverseClassifyRuleTransformer,
+  transformComapreRules,
 } from "../core"
 import {
   createFields,

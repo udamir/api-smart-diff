@@ -1,17 +1,17 @@
 import type { JsonPath } from "json-crawl"
 
 import type {
-  DiffFactory,
   ComapreContext,
   CompareTransformResolver,
   Diff,
-  NodeContext,
+  DiffFactory,
   DiffMeta,
   MergeMetaRecord,
+  NodeContext,
   TransformResolver,
 } from "../types"
+import { getKeyValue, isFunc, joinPath } from "../utils"
 import { DiffAction, allUnclassified, unclassified } from "./constants"
-import { getKeyValue, joinPath, isFunc } from "../utils"
 
 export const createDiff = (
   diff: Omit<Diff, "type">,

@@ -1,7 +1,7 @@
+import { resolveRef } from "../jsonSchema"
 import type { MapKeysResult, MappingResolver } from "../types"
 import { getStringValue, objectKeys } from "../utils"
 import { mapPathParams } from "./openapi3.utils"
-import { resolveRef } from "../jsonSchema"
 
 export const pathMappingResolver: MappingResolver<string> = (before, after) => {
   const result: MapKeysResult<string> = { added: [], removed: [], mapped: {} }

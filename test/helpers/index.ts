@@ -1,18 +1,18 @@
-import { applyOperation, type Operation } from "fast-json-patch"
-import { buildFromSchema, type GraphApiSchema } from "gqlapi"
-import { buildSchema } from "graphql"
-import type { JsonPath } from "json-crawl"
-import YAML from "js-yaml"
-import path from "node:path"
 import fs from "node:fs"
+import path from "node:path"
+import { type Operation, applyOperation } from "fast-json-patch"
+import { type GraphApiSchema, buildFromSchema } from "gqlapi"
+import { buildSchema } from "graphql"
+import YAML from "js-yaml"
+import type { JsonPath } from "json-crawl"
 
 import {
-  apiDiff,
-  apiMerge,
-  getKeyValue,
-  buildPath,
   type ComapreOptions,
   type CompareRules,
+  apiDiff,
+  apiMerge,
+  buildPath,
+  getKeyValue,
 } from "../../src"
 
 export const yaml = (strings: TemplateStringsArray): object => {

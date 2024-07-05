@@ -1,11 +1,11 @@
 import { graphapiMergeRules, merge } from "allof-merge"
 
+import { compareTransformationFactory } from "../core"
 import {
   graphApiComponents,
   graphApiOperations,
   graphSchemaCustomProps,
 } from "./graphapi.const"
-import { compareTransformationFactory } from "../core"
 
 export const transformGraphApiComponents = compareTransformationFactory(
   (value, other) => {

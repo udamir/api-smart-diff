@@ -1,8 +1,8 @@
-import type { AsyncApiComapreOptions } from "./asyncapi.types"
+import { compare } from "../core"
 import type { CompareResult, SourceContext } from "../types"
+import type { AsyncApiComapreOptions } from "./asyncapi.types"
 import { getAsyncApiVersion } from "./asyncapi.utils"
 import { asyncApi2Rules } from "./asyncapi2.rules"
-import { compare } from "../core"
 
 export const compareAsyncApi = (
   before: unknown,

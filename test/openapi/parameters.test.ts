@@ -1,8 +1,8 @@
 import {
+  DiffAction,
   annotation,
   breaking,
   compareOpenApi,
-  DiffAction,
   nonBreaking,
 } from "../../src"
 import { yaml } from "../helpers"

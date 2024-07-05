@@ -1,8 +1,8 @@
-import type { ComapreOptions, CompareEngine } from "./types"
-import { compareJsonSchema } from "./jsonSchema"
-import { compareGraphApi } from "./graphapi"
 import { compareAsyncApi } from "./asyncapi"
+import { compareGraphApi } from "./graphapi"
+import { compareJsonSchema } from "./jsonSchema"
 import { compareOpenApi } from "./openapi"
+import type { ComapreOptions, CompareEngine } from "./types"
 import { isObject, isString } from "./utils"
 
 export const discoverCompareEngine = (data: unknown): CompareEngine => {

@@ -1,12 +1,12 @@
+import { createAnnotation, annotationTemplate as t } from "../core"
+import { jsonSchemaAnnotations, resolveRef } from "../jsonSchema"
+import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
+import { getObjectValue } from "../utils"
 import {
   isParameterSchema,
   isRequestBodySchema,
   isResponseSchema,
 } from "./openapi3.utils"
-import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
-import { createAnnotation, annotationTemplate as t } from "../core"
-import { jsonSchemaAnnotations, resolveRef } from "../jsonSchema"
-import { getObjectValue } from "../utils"
 
 const openApiAnnotations = {
   requestBodySchema:

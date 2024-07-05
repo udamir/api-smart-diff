@@ -1,7 +1,7 @@
+import { compare } from "../core"
 import type { ComapreOptions, CompareResult, SourceContext } from "../types"
 import { graphApiAnnotateHook } from "./graphapi.annotate"
 import { graphApiRules } from "./graphapi.rules"
-import { compare } from "../core"
 
 export const compareGraphApi = (
   before: unknown,

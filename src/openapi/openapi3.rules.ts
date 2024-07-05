@@ -1,4 +1,29 @@
 import {
+  addNonBreaking,
+  allAnnotation,
+  allBreaking,
+  allDeprecated,
+  allNonBreaking,
+  breaking,
+  caseInsensitiveKeyMappingResolver,
+  nonBreaking,
+  unclassified,
+} from "../core"
+import { breakingIfAfterTrue, createRefsCompareResolver } from "../jsonSchema"
+import { enumMappingResolver } from "../jsonSchema"
+import type { ClassifyRule, CompareRules } from "../types"
+import {
+  contentChangeAnnotation,
+  documentChangeAnnotation,
+  encodingChangeAnnotation,
+  operationChangeAnnotation,
+  operationSecurityChangeAnnotation,
+  parameterChangeAnnotation,
+  pathMethodChangeAnnotation,
+  requestBodyChangeAnnotation,
+  responseChangeAnnotation,
+} from "./openapi3.annotate"
+import {
   globalSecurityClassifyRule,
   globalSecurityItemClassifyRule,
   operationSecurityClassifyRule,
@@ -11,43 +36,18 @@ import {
   parameterStyleClassifyRule,
 } from "./openapi3.classify"
 import {
-  addNonBreaking,
-  allAnnotation,
-  allBreaking,
-  allDeprecated,
-  allNonBreaking,
-  breaking,
-  caseInsensitiveKeyMappingResolver,
-  nonBreaking,
-  unclassified,
-} from "../core"
-import {
-  documentChangeAnnotation,
-  encodingChangeAnnotation,
-  operationChangeAnnotation,
-  operationSecurityChangeAnnotation,
-  parameterChangeAnnotation,
-  contentChangeAnnotation,
-  pathMethodChangeAnnotation,
-  requestBodyChangeAnnotation,
-  responseChangeAnnotation,
-} from "./openapi3.annotate"
+  contentMediaTypeMappingResolver,
+  paramMappingResolver,
+  pathMappingResolver,
+} from "./openapi3.mapping"
+import { openApiSchemaRules } from "./openapi3.schema"
 import {
   transformOperation,
   transformParameterItem,
   transformPathItems,
   transformPaths,
 } from "./openapi3.transform"
-import {
-  contentMediaTypeMappingResolver,
-  paramMappingResolver,
-  pathMappingResolver,
-} from "./openapi3.mapping"
-import { breakingIfAfterTrue, createRefsCompareResolver } from "../jsonSchema"
 import type { OpenApi3RulesOptions } from "./openapi3.types"
-import type { ClassifyRule, CompareRules } from "../types"
-import { openApiSchemaRules } from "./openapi3.schema"
-import { enumMappingResolver } from "../jsonSchema"
 import { isResponseSchema } from "./openapi3.utils"
 
 const paramRule = (classify: ClassifyRule) => ({

@@ -1,14 +1,14 @@
 import {
-  getParentContext,
   annotation,
   breaking,
+  getParentContext,
   nonBreaking,
   unclassified,
 } from "../core"
-import { getKeyValue, isNotEmptyArray, isExist } from "../utils"
-import { emptySecurity, includeSecurity } from "./openapi3.utils"
 import { breakingIfAfterTrue } from "../jsonSchema"
 import type { ClassifyRule } from "../types"
+import { getKeyValue, isExist, isNotEmptyArray } from "../utils"
+import { emptySecurity, includeSecurity } from "./openapi3.utils"
 
 export const parameterStyleClassifyRule: ClassifyRule = [
   ({ after }) => (after.value === "form" ? annotation : breaking),

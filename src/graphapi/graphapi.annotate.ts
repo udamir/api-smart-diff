@@ -1,6 +1,6 @@
-import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { createAnnotation, annotationTemplate as t } from "../core"
 import { getTarget, jsonSchemaAnnotations } from "../jsonSchema"
+import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { isArgSchema } from "./graphapi.utils"
 
 const graphSchemaArgAnnotations = {

@@ -1,11 +1,11 @@
 import {
+  DiffAction,
   annotation,
   breaking,
-  DiffAction,
   nonBreaking,
   unclassified,
 } from "../../src"
-import { addPatch, ExampleResource } from "../helpers"
+import { ExampleResource, addPatch } from "../helpers"
 
 const exampleResource = new ExampleResource("petstore.yaml")
 

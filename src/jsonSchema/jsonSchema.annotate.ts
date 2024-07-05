@@ -1,7 +1,7 @@
-import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { createAnnotation, annotationTemplate as t } from "../core"
-import { getTarget } from "./jsonSchema.utils"
+import type { AnnotateHook, ChangeAnnotationResolver } from "../types"
 import { isNumber, isString } from "../utils"
+import { getTarget } from "./jsonSchema.utils"
 
 export const jsonSchemaAnnotations = {
   add: "[Added] {{text}}",

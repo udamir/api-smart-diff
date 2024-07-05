@@ -1,6 +1,6 @@
 import type { CrawlRules, CrawlRulesFunc, JsonPath } from "json-crawl"
 
-import type { Diff, DiffType, ComapreOptions, CompareResult } from "./compare"
+import type { ComapreOptions, CompareResult, Diff, DiffType } from "./compare"
 
 export type DiffTypeClassifier = (ctx: ComapreContext) => DiffType
 
