@@ -2,7 +2,7 @@ import {
   reverseClassifyRuleTransformer, transformComapreRules, addNonBreaking, allBreaking, 
   allNonBreaking, allUnclassified, allAnnotation
 } from "../core"
-import { createFields, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
+import { combinaryCompareResolver, createFields, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
 import type { CompareRules } from "../types"
 
 export const asyncApi2Rules = (): CompareRules => {
@@ -79,7 +79,16 @@ export const asyncApi2Rules = (): CompareRules => {
     "/operationId": { $: allAnnotation },
     "/description": { $: allAnnotation },
     "/traits": pubsubTraitsRules,
-    "/message": messageRules(sub),
+    "/message": {
+      "/oneOf": {
+        compare: combinaryCompareResolver,
+        "/*": {
+          ...messageRules(sub),
+          $: addNonBreaking,
+        }
+      },
+      ...messageRules(sub),
+    },
     ...commonRules,
   })
 

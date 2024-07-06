@@ -27,15 +27,15 @@ export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Re
   }
 
   const applyTemplateParams = (name: string = "", _params: AnnotateTemplate["params"] = {}) => {
-    let template = findTemplate(name, _params)
-    if (!template) { return "" }
-
     const params: Record<string, string | number | undefined> = {}
 
     for (const key of objectKeys(_params)) {
       const param = _params[key]
       params[key] = isObject(param) ? createAnnotation(param as AnnotateTemplate, dict) : param as string
     }
+
+    let template = findTemplate(name, params)
+    if (!template) { return "" }
     
     for (const match of [...template.matchAll(/{{(\w+)}}/g)].reverse()) {
       if (!(match[1] in params)) { continue }
