@@ -14,13 +14,12 @@ export const jsonSchemaMappingResolver: MappingResolver<string> = (before, after
   const [bkey] = removed.splice(beforeCombinaryIndex, 1)
   const [akey] = added.splice(afterCombinaryIndex, 1)
   mapped[bkey] = akey
-  
+
   return { added, removed, mapped }
 }
 
 export const enumMappingResolver: MappingResolver<number> = (before, after) => {
-
-  const result: MapKeysResult<number> = { added: [], removed: [],  mapped: {} }
+  const result: MapKeysResult<number> = { added: [], removed: [], mapped: {} }
 
   const afterItems = [...after]
   const unmappedAfter = new Set(after.keys())
@@ -28,7 +27,7 @@ export const enumMappingResolver: MappingResolver<number> = (before, after) => {
 
   for (let i = 0; i < before.length; i++) {
     const _afterIndex = afterItems.indexOf(before[i])
-    
+
     if (_afterIndex < 0) {
       unmappedBefore.push(i)
     } else {
@@ -39,7 +38,7 @@ export const enumMappingResolver: MappingResolver<number> = (before, after) => {
   }
 
   let j = 0
-  for(const i of unmappedAfter) {
+  for (const i of unmappedAfter) {
     if (j < unmappedBefore.length) {
       // replaced items
       result.mapped[unmappedBefore[j++]] = i
@@ -58,15 +57,14 @@ export const enumMappingResolver: MappingResolver<number> = (before, after) => {
 }
 
 export const requiredMappingResolver: MappingResolver<number> = (before, after) => {
-
-  const result: MapKeysResult<number> = { added: [], removed: [],  mapped: {} }
+  const result: MapKeysResult<number> = { added: [], removed: [], mapped: {} }
 
   const afterItems = [...after]
   const unmappedAfter = new Set(after.keys())
 
   for (let i = 0; i < before.length; i++) {
     const _afterIndex = afterItems.indexOf(before[i])
-    
+
     if (_afterIndex < 0) {
       result.removed.push(i)
     } else {
@@ -76,7 +74,7 @@ export const requiredMappingResolver: MappingResolver<number> = (before, after) 
     }
   }
 
-  for(const i of unmappedAfter) {
+  for (const i of unmappedAfter) {
     // added items
     result.added.push(i)
   }

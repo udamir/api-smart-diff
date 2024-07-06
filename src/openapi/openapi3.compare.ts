@@ -5,7 +5,12 @@ import { getMaxOpenApiVersion } from "./openapi3.utils"
 import { openapi3Rules } from "./openapi3.rules"
 import { compare } from "../core"
 
-export const compareOpenApi = (before: unknown, after: unknown, options: OpenApiComapreOptions = {}, context: SourceContext = {}): CompareResult => {
+export const compareOpenApi = (
+  before: unknown,
+  after: unknown,
+  options: OpenApiComapreOptions = {},
+  context: SourceContext = {},
+): CompareResult => {
   const { notMergeAllOf } = options
 
   // set default options
@@ -13,7 +18,7 @@ export const compareOpenApi = (before: unknown, after: unknown, options: OpenApi
     ...options,
     rules: options.rules ?? openapi3Rules({ notMergeAllOf }),
     version: getMaxOpenApiVersion(before, after),
-    annotateHook: options.annotateHook ?? openApi3AnnotateHook
+    annotateHook: options.annotateHook ?? openApi3AnnotateHook,
   }
 
   return compare(before, after, _options, context)

@@ -28,13 +28,20 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   for (const i of before.value.keys()) {
     const _before = before.value[i]
     for (const j of after.value.keys()) {
-      if (!afterMatched.has(j)) { continue }
+      if (!afterMatched.has(j)) {
+        continue
+      }
       const _after = after.value[j]
 
-      const { diffs, merged } = compare(_before, _after, { ...options, rules }, {
-        before: { jsonPath: [ ...before.path, i ], source: before.root },
-        after: { jsonPath: [ ...after.path, j ], source: after.root }
-      })
+      const { diffs, merged } = compare(
+        _before,
+        _after,
+        { ...options, rules },
+        {
+          before: { jsonPath: [...before.path, i], source: before.root },
+          after: { jsonPath: [...after.path, j], source: after.root },
+        },
+      )
 
       if (!diffs.length) {
         afterMatched.delete(j)
@@ -49,7 +56,9 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
   comparedItems.sort((a, b) => a.diffs.length - b.diffs.length)
 
   for (const compared of comparedItems) {
-    if (!afterMatched.has(compared.after) || !beforeMached.has(compared.before)) { continue }
+    if (!afterMatched.has(compared.after) || !beforeMached.has(compared.before)) {
+      continue
+    }
     afterMatched.delete(compared.after)
     beforeMached.delete(compared.before)
     _merged[compared.after] = compared.merged
@@ -76,7 +85,11 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
     _merged[metaKey] = rootArrayMeta
   }
 
-  return { diffs: _diffs, merged: _merged, ...(!arrayMeta && Object.keys(rootArrayMeta).length) ? { rootMergeMeta: { array: rootArrayMeta } } : {} }
+  return {
+    diffs: _diffs,
+    merged: _merged,
+    ...(!arrayMeta && Object.keys(rootArrayMeta).length ? { rootMergeMeta: { array: rootArrayMeta } } : {}),
+  }
 }
 
 export const createRefsCompareResolver = (cache: JsonSchemaComapreCache = {}): CompareResolver => {
@@ -101,7 +114,9 @@ export const createRefsCompareResolver = (cache: JsonSchemaComapreCache = {}): C
     const bRef = isRefNode(before.value) ? getRef(before.value.$ref) : ""
     const aRef = isRefNode(after.value) ? getRef(after.value.$ref) : ""
 
-    if (!bRef && !aRef) { return }
+    if (!bRef && !aRef) {
+      return
+    }
 
     // skip if cycle ref
     if (isCycleRef(bRef, `#${bPath}`, bRefs) || isCycleRef(aRef, `#${aPath}`, aRefs)) {
@@ -109,39 +124,44 @@ export const createRefsCompareResolver = (cache: JsonSchemaComapreCache = {}): C
     }
 
     // save refs to refs history
-    bRef && (bRefs[bRef] = [...bRefs[bRef] ?? [], `#${bPath}`])
-    aRef && (aRefs[aRef] = [...aRefs[aRef] ?? [], `#${aPath}`])
+    bRef && (bRefs[bRef] = [...(bRefs[bRef] ?? []), `#${bPath}`])
+    aRef && (aRefs[aRef] = [...(aRefs[aRef] ?? []), `#${aPath}`])
 
     // compare $refs
     if (bRef && aRef) {
       compareRefsId = getCompareId(bRef, aRef)
-      
+
       if (results.has(compareRefsId)) {
         const { path, diffs, ...rest } = results.get(compareRefsId)!
-        return { 
-          ...rest, 
-          diffs: diffs.map((diff) => { 
-            const _diff: Diff = { ...diff, description: '', path: [...before.path, ...diff.path.slice(path.length)] }
+        return {
+          ...rest,
+          diffs: diffs.map((diff) => {
+            const _diff: Diff = { ...diff, description: "", path: [...before.path, ...diff.path.slice(path.length)] }
             _diff.description = options.annotateHook?.(_diff, ctx)
             return _diff
-          })
+          }),
         }
       }
     }
-      
+
     // compare $refs content
     const _before = resolveRef(before.value, before.root)
     const _after = resolveRef(after.value, after.root)
-    
+
     if (_before === undefined || _after === undefined) {
       return
     }
 
     // compare content
-    const result = compare(_before, _after, { ...options, rules }, {
-      before: { jsonPath: before.path, source: before.root }, 
-      after: { jsonPath: after.path, source: after.root }, 
-    })
+    const result = compare(
+      _before,
+      _after,
+      { ...options, rules },
+      {
+        before: { jsonPath: before.path, source: before.root },
+        after: { jsonPath: after.path, source: after.root },
+      },
+    )
 
     // save compare result
     if (bRef && aRef) {

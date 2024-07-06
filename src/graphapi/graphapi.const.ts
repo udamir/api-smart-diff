@@ -5,7 +5,7 @@ export const graphApiComponents = {
   InputObjectTypeDefinition: "inputObjects",
   DirectiveDefinition: "directives",
   UnionTypeDefinition: "unions",
-  EnumTypeDefinition: "enums"
+  EnumTypeDefinition: "enums",
 } as const
 
 export const graphApiOperations = {

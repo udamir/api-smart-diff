@@ -6,7 +6,9 @@ import { compareOpenApi } from "./openapi"
 import { isObject, isString } from "./utils"
 
 export const discoverCompareEngine = (data: unknown): CompareEngine => {
-  if (!isObject(data)) { return compareJsonSchema }
+  if (!isObject(data)) {
+    return compareJsonSchema
+  }
 
   if ("openapi" in data && isString(data.openapi) && /3.+/.test(data.openapi)) return compareOpenApi
   if ("asyncapi" in data && isString(data.asyncapi) && /2.+/.test(data.asyncapi)) return compareAsyncApi

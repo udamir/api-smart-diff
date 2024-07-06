@@ -6,7 +6,6 @@ import YAML from "js-yaml"
 import path from "node:path"
 import fs from "node:fs"
 
-
 import { apiDiff, apiMerge, getKeyValue, buildPath, type ComapreOptions, type CompareRules } from "../../src"
 
 export const yaml = (strings: TemplateStringsArray): object => {
@@ -21,7 +20,10 @@ export class ExampleResource {
   private res: any = {}
   public externalSources: any = {}
 
-  constructor(private filename: string, public rules?: CompareRules) {
+  constructor(
+    private filename: string,
+    public rules?: CompareRules,
+  ) {
     const resPath = path.join(__dirname, "../resources/", this.filename)
     const data = fs.readFileSync(resPath, "utf8")
     if (/.(yaml|YAML|yml|YML)$/g.test(filename)) {

@@ -1,6 +1,6 @@
 import { annotation, breaking, compareJsonSchema, deprecated, nonBreaking, unclassified } from "../../src"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("Compare simple jsonSchema", () => {
   it("should compare boolean jsonSchema", () => {
@@ -9,14 +9,14 @@ describe("Compare simple jsonSchema", () => {
       type: "boolean",
       description: "Boolean schema",
       default: false,
-      maximum: 10,  // should be unclassified
+      maximum: 10, // should be unclassified
     }
 
     const after = {
       title: "boolean",
       type: "boolean",
       description: "Updated Boolean schema",
-      const: true
+      const: true,
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -43,7 +43,7 @@ describe("Compare simple jsonSchema", () => {
       title: { action: "replace", replaced: "Boolean", type: annotation },
       description: { action: "replace", replaced: "Boolean schema", type: annotation },
       default: { action: "remove", type: breaking },
-      maximum: { action: "remove", type: unclassified }
+      maximum: { action: "remove", type: unclassified },
     })
   })
 
@@ -79,7 +79,7 @@ describe("Compare simple jsonSchema", () => {
       "x-prop": "Added custom tag",
       default: 0,
       minLength: 3,
-      pattern: "w+"
+      pattern: "w+",
     })
 
     expect(merged[metaKey]).toMatchObject({
@@ -131,7 +131,7 @@ describe("Compare simple jsonSchema", () => {
 
     expect(merged[metaKey]).toMatchObject({
       default: { action: "add", type: nonBreaking },
-      enum: { array: { 1: { action: "add", type: nonBreaking }}},
+      enum: { array: { 1: { action: "add", type: nonBreaking } } },
       title: { action: "remove", type: annotation },
       description: { action: "add", type: annotation },
       pattern: { action: "add", type: breaking },
@@ -151,7 +151,7 @@ describe("Compare simple jsonSchema", () => {
       title: "test1",
       type: "string",
       enum: ["a", "d", "c"],
-      examples: ["a", "c"]
+      examples: ["a", "c"],
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -172,8 +172,8 @@ describe("Compare simple jsonSchema", () => {
     })
     expect(merged[metaKey]).toMatchObject({
       title: { action: "replace", replaced: "test", type: annotation },
-      enum: { array: { 1: { action: "replace", replaced: "b", type: breaking }}},
-      examples: { array: { 1 : { action: "add", type: annotation }}},
+      enum: { array: { 1: { action: "replace", replaced: "b", type: breaking } } },
+      examples: { array: { 1: { action: "add", type: annotation } } },
     })
   })
 
@@ -182,7 +182,7 @@ describe("Compare simple jsonSchema", () => {
       title: "test",
       type: "string",
       description: "test description",
-      readOnly: true
+      readOnly: true,
     }
 
     const after = {
@@ -212,7 +212,7 @@ describe("Compare simple jsonSchema", () => {
     expect(merged[metaKey]).toMatchObject({
       description: { action: "replace", replaced: "test description", type: annotation },
       deprecated: { action: "add", type: deprecated },
-      readOnly: { action: "remove", type: nonBreaking }
+      readOnly: { action: "remove", type: nonBreaking },
     })
   })
 })

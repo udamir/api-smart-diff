@@ -2,17 +2,22 @@ import type { MapKeysResult, MappingResolver } from "../types"
 
 export const arrayMappingResolver: MappingResolver<number> = (before, after) => {
   const length = Math.abs(before.length - after.length)
-  const arr = Array.from({ length: Math.min(before.length, after.length) }, ((_, i) => i))
+  const arr = Array.from({ length: Math.min(before.length, after.length) }, (_, i) => i)
 
   return {
-    removed: before.length > after.length ? Array.from({length}, (_, i) => after.length + i) : [],
-    added: before.length < after.length ? Array.from({length}, (_, i) => before.length + i) : [],
-    mapped: arr.reduce((res, i) => { res[i] = i; return res }, {} as Record<number, number>)
+    removed: before.length > after.length ? Array.from({ length }, (_, i) => after.length + i) : [],
+    added: before.length < after.length ? Array.from({ length }, (_, i) => before.length + i) : [],
+    mapped: arr.reduce(
+      (res, i) => {
+        res[i] = i
+        return res
+      },
+      {} as Record<number, number>,
+    ),
   }
 }
 
 export const objectMappingResolver: MappingResolver<string> = (before, after) => {
-
   const result: MapKeysResult<string> = { added: [], removed: [], mapped: {} }
   const afterKeys = new Set(Object.keys(after))
 
@@ -25,7 +30,7 @@ export const objectMappingResolver: MappingResolver<string> = (before, after) =>
     }
   }
 
-  for(const key of afterKeys) {
+  for (const key of afterKeys) {
     result.added.push(key)
   }
 
@@ -33,7 +38,6 @@ export const objectMappingResolver: MappingResolver<string> = (before, after) =>
 }
 
 export const caseInsensitiveKeyMappingResolver: MappingResolver<string> = (before, after) => {
-
   const result: MapKeysResult<string> = { added: [], removed: [], mapped: {} }
   const afterKeys = new Set(Object.keys(after).map((k) => k.toLocaleLowerCase()))
 
@@ -47,9 +51,9 @@ export const caseInsensitiveKeyMappingResolver: MappingResolver<string> = (befor
     }
   }
 
-  for(const key of afterKeys) {
+  for (const key of afterKeys) {
     result.added.push(key)
   }
-  
+
   return result
 }

@@ -1,68 +1,74 @@
-import { jsonSchemaKeyChange, jsonSchemaRules, schemaStatusChange, transformJsonSchema, transformJsonSchemaCombiners } from "../jsonSchema"
-import { reverseClassifyRuleTransformer, transformComapreRules, allAnnotation, allDeprecated, nonBreaking, breaking } from "../core"
+import {
+  jsonSchemaKeyChange,
+  jsonSchemaRules,
+  schemaStatusChange,
+  transformJsonSchema,
+  transformJsonSchemaCombiners,
+} from "../jsonSchema"
+import {
+  reverseClassifyRuleTransformer,
+  transformComapreRules,
+  allAnnotation,
+  allDeprecated,
+  nonBreaking,
+  breaking,
+} from "../core"
 import { transformGraphSchema, transfromGraphSchemaDirective } from "./graphapi.transform"
 import { parentKeyChangeAnnotation, valuesAnnotationChange } from "./graphapi.annotate"
 import type { CompareRules } from "../types"
 
 export const graphApiSchemaRules = (response = false): CompareRules => {
-
-  const graphSchemaRules = jsonSchemaRules({ 
+  const graphSchemaRules = jsonSchemaRules({
     notMergeAllOf: true,
     baseRules: {
-      transform: [
-        transformJsonSchemaCombiners(),
-        transformJsonSchema(),
-        transformGraphSchema
-      ],
+      transform: [transformJsonSchemaCombiners(), transformJsonSchema(), transformGraphSchema],
       // graphschema extentions
-      "/nullable": { $: [ nonBreaking, breaking, nonBreaking], annotate: jsonSchemaKeyChange },
+      "/nullable": { $: [nonBreaking, breaking, nonBreaking], annotate: jsonSchemaKeyChange },
       "/specifiedByURL": { $: allAnnotation },
       "/args": () => ({
         ...graphApiSchemaRules(),
       }),
       "/values": {
         "/*": {
-          "/description": { 
+          "/description": {
             annotate: valuesAnnotationChange,
-            $: allAnnotation
+            $: allAnnotation,
           },
           "/deprecated": {
             annotate: valuesAnnotationChange,
             $: allDeprecated,
-            "/reason": { 
+            "/reason": {
               annotate: valuesAnnotationChange,
-              $: allDeprecated
-            }
-          }
-        }
+              $: allDeprecated,
+            },
+          },
+        },
       },
-      "/deprecated": { 
-        $: allDeprecated, 
+      "/deprecated": {
+        $: allDeprecated,
         annotate: schemaStatusChange,
-        "/reason": { 
+        "/reason": {
           annotate: parentKeyChangeAnnotation,
-          $: allDeprecated
-        }
+          $: allDeprecated,
+        },
       },
       "/interfaces": {
-        "/*": { $: allAnnotation }
+        "/*": { $: allAnnotation },
       },
       "/directives": {
         "/*": {
           annotate: parentKeyChangeAnnotation,
           transform: [transfromGraphSchemaDirective],
-          "/meta": { 
+          "/meta": {
             "/*": {
               annotate: parentKeyChangeAnnotation,
-              $: allAnnotation
-            }
-          }
-        }
-      }
+              $: allAnnotation,
+            },
+          },
+        },
+      },
     },
   })
 
-  return response 
-    ? transformComapreRules(graphSchemaRules, reverseClassifyRuleTransformer)
-    : graphSchemaRules
+  return response ? transformComapreRules(graphSchemaRules, reverseClassifyRuleTransformer) : graphSchemaRules
 }

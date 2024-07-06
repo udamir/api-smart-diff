@@ -1,10 +1,9 @@
-
 import type { JsonPath } from "json-crawl"
 
 import type { ComapreOptions, CompareResult, CompareRules } from "../types"
 import type { jsonSchemaTypes } from "./jsonSchema.consts"
 
-export type JsonSchemaNodeType = typeof jsonSchemaTypes[number]
+export type JsonSchemaNodeType = (typeof jsonSchemaTypes)[number]
 
 export type JsonSchemaRulesOptions = {
   version?: "draft-04" | "2020-12"
@@ -19,7 +18,7 @@ export type AllOfNode = {
 }
 
 export type JsonSchemaCompareOptions = ComapreOptions & {
-  notMergeAllOf?: boolean           // do not merge allOf combiners before compare
+  notMergeAllOf?: boolean // do not merge allOf combiners before compare
 }
 
 export type CompareResultCache = CompareResult & {

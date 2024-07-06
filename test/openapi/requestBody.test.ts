@@ -1,7 +1,7 @@
 import { DiffAction, annotation, breaking, compareOpenApi, nonBreaking, unclassified } from "../../src"
 import { yaml } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("Openapi request body changes", () => {
   it("should compare requestBody", () => {
@@ -84,18 +84,18 @@ describe("Openapi request body changes", () => {
       i !== 7 && expect(diff.type).not.toEqual("unclassified")
     })
 
-    expect(merged.paths["/pet"].put.requestBody[metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet"].put.requestBody[metaKey]).toMatchObject({
       "x-test": { action: DiffAction.add, type: unclassified },
       description: { action: DiffAction.replace, type: annotation },
       required: { action: DiffAction.add, type: breaking },
     })
 
-    expect(merged.paths["/pet"].put.requestBody.content[metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet"].put.requestBody.content[metaKey]).toMatchObject({
       "application/*": { action: DiffAction.rename, type: nonBreaking },
       "application/xml": { action: DiffAction.remove, type: breaking },
     })
 
-    expect(merged.paths["/pet"].put.requestBody.content["application/*"][metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet"].put.requestBody.content["application/*"][metaKey]).toMatchObject({
       encoding: { action: DiffAction.add, type: breaking },
       example: { action: DiffAction.remove, type: annotation },
       examples: { action: DiffAction.add, type: annotation },
@@ -148,7 +148,7 @@ describe("Openapi request body changes", () => {
     expect(diffs[0]).toHaveProperty("description")
     expect(diffs[0].description).not.toEqual("")
 
-    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({
       test: { action: DiffAction.add, type: nonBreaking },
     })
   })
@@ -202,11 +202,11 @@ describe("Openapi request body changes", () => {
     expect(diffs[1]).toHaveProperty("description")
     expect(diffs[1].description).not.toEqual("")
 
-    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema[metaKey]).toMatchObject({ 
-      required: { array: { 2: { action: DiffAction.add, type: breaking }}},
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema[metaKey]).toMatchObject({
+      required: { array: { 2: { action: DiffAction.add, type: breaking } } },
     })
 
-    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({
       test: { action: DiffAction.add, type: breaking },
     })
   })
@@ -251,7 +251,7 @@ describe("Openapi request body changes", () => {
     expect(diffs[0]).toHaveProperty("description")
     expect(diffs[0].description).not.toEqual("")
 
-    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({
       name: { action: DiffAction.remove, type: nonBreaking },
     })
   })
@@ -299,13 +299,12 @@ describe("Openapi request body changes", () => {
     expect(diffs[1]).toHaveProperty("description")
     expect(diffs[1].description).not.toEqual("")
 
-    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema[metaKey]).toMatchObject({ 
-      required: { array: { 1: { action: DiffAction.remove, type: nonBreaking }}},
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema[metaKey]).toMatchObject({
+      required: { array: { 1: { action: DiffAction.remove, type: nonBreaking } } },
     })
 
-    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({
       name: { action: DiffAction.remove, type: nonBreaking },
     })
   })
-
 })

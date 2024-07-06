@@ -1,11 +1,11 @@
 import type { JsonPath } from "json-crawl"
 
 export const isKey = <T extends object>(x: T, k: PropertyKey): k is keyof T => {
-  return k in x;
+  return k in x
 }
 
 export const isObject = (value: unknown): value is Record<string, unknown> => {
-  return typeof value === 'object' && value !== null
+  return typeof value === "object" && value !== null
 }
 
 export const isArray = (value: unknown): value is Array<unknown> => {
@@ -25,14 +25,14 @@ export const isString = (value: unknown): value is string => {
 }
 
 export const isNumber = (value: unknown): value is number => {
-  return typeof value === "number" || isString(value) && !Number.isNaN(+value)
+  return typeof value === "number" || (isString(value) && !Number.isNaN(+value))
 }
 
 export const isFunc = (value: unknown): value is Function => {
   return typeof value === "function"
 }
 
-export const typeOf = (value: unknown): string  => {
+export const typeOf = (value: unknown): string => {
   if (Array.isArray(value)) {
     return "array"
   }
@@ -43,15 +43,24 @@ export const objectKeys = <T extends {}>(value: T): (keyof T)[] => {
   return Object.keys(value) as (keyof T)[]
 }
 
-export const setKeyValue = (obj: Record<string | number, unknown>, key: string | number, value: unknown): Record<string | number, unknown> => {
+export const setKeyValue = (
+  obj: Record<string | number, unknown>,
+  key: string | number,
+  value: unknown,
+): Record<string | number, unknown> => {
   obj[key] = value
   return obj
 }
 
-export const filterObj = <T extends {}>(value: T, func: (key: number | string | symbol, obj: T) => boolean ): Partial<T> => {
+export const filterObj = <T extends {}>(
+  value: T,
+  func: (key: number | string | symbol, obj: T) => boolean,
+): Partial<T> => {
   const result: Partial<T> = {}
   for (const key of objectKeys(value)) {
-    if (!func(key, value)) { continue }
+    if (!func(key, value)) {
+      continue
+    }
     result[key] = value[key]
   }
   return result
@@ -75,10 +84,12 @@ export const getKeyValue = (obj: unknown, ...path: JsonPath): unknown | undefine
       value = value[+key]
     } else if (isObject(value) && key in value) {
       value = value[key]
-    } else { 
+    } else {
       return
     }
-    if (value === undefined) { return }
+    if (value === undefined) {
+      return
+    }
   }
   return value
 }
@@ -100,12 +111,16 @@ export const getArrayValue = (obj: unknown, ...path: JsonPath): Array<unknown> |
 
 export const getNumberValue = (obj: unknown, ...path: JsonPath): number | undefined => {
   const value = getKeyValue(obj, ...path)
-  return typeof value === "number" ? value : ((typeof value === "string" && +value) ? +value : undefined)
+  return typeof value === "number" ? value : typeof value === "string" && +value ? +value : undefined
 }
 
 export const getBooleanValue = (obj: unknown, ...path: JsonPath): boolean | undefined => {
   const value = getKeyValue(obj, ...path)
-  return typeof value === "boolean" ? value : ((typeof value === "string" && (value === "true" || value === "false") ? Boolean(value) : undefined))
+  return typeof value === "boolean"
+    ? value
+    : typeof value === "string" && (value === "true" || value === "false")
+      ? Boolean(value)
+      : undefined
 }
 
 export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {

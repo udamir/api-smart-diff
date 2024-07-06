@@ -11,19 +11,19 @@
     "rules": {
       "recommended": true,
       "suspicious": {
-        "noExplicitAny": "info",
+        "noExplicitAny": "off",
         "noAssignInExpressions": "info"
       },
       "complexity": {
-        "noForEach": "info",
-        "noBannedTypes": "info"
+        "noForEach": "off",
+        "noBannedTypes": "off"
       },
       "style": {
         "noParameterAssign": "info",
         "noNonNullAssertion": "info"
       },
       "performance": {
-        "noDelete": "info"
+        "noDelete": "off"
       }
     }
   },

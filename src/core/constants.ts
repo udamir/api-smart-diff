@@ -14,7 +14,7 @@ export const ClassifierType = {
   nonBreaking: "non-breaking",
   annotation: "annotation",
   unclassified: "unclassified",
-  deprecated: "deprecated"
+  deprecated: "deprecated",
 } as const
 
 export const { breaking, nonBreaking, unclassified, annotation, deprecated } = ClassifierType

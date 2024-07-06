@@ -37,7 +37,9 @@ const openApiAnnotations = {
 export const openApi3AnnotateHook: AnnotateHook = (diff, ctx) => {
   let annotate = ctx.rules?.annotate
 
-  if (!annotate || diff.path[0] === "components") { return "" }
+  if (!annotate || diff.path[0] === "components") {
+    return ""
+  }
   if (isResponseSchema(diff.path)) {
     const schemaChange = createAnnotation(annotate(diff, ctx), jsonSchemaAnnotations)
     annotate = () => t("responseSchema", { schemaChange, responseCode: diff.path[4], contentType: diff.path[6] })
@@ -56,43 +58,45 @@ export const openApi3AnnotateHook: AnnotateHook = (diff, ctx) => {
 }
 
 export const pathMethodChangeAnnotation: ChangeAnnotationResolver = ({ action, path }) => {
-  return t(action, { text: t("method", { path: path[1], method: String(path[2]).toUpperCase() })})
+  return t(action, { text: t("method", { path: path[1], method: String(path[2]).toUpperCase() }) })
 }
 
 export const documentChangeAnnotation: ChangeAnnotationResolver = ({ action, path }) => {
-  return t(action, { text: t("document", { key: path.join(".") })})
+  return t(action, { text: t("document", { key: path.join(".") }) })
 }
 
 export const operationSecurityChangeAnnotation: ChangeAnnotationResolver = ({ action }) => {
-  return t(action, { text: t("security")})
+  return t(action, { text: t("security") })
 }
 
 export const requestBodyChangeAnnotation: ChangeAnnotationResolver = ({ path, action }) => {
-  const key = path[path.length-1]
+  const key = path[path.length - 1]
 
   if (key === "required" || key === "deprecated") {
     return t(action, { text: t("status", { key }), target: t("requestBody") })
-  } 
-  
+  }
+
   return t(action, { text: t("annotation", { key }), target: t("requestBody") })
 }
 
 export const responseChangeAnnotation: ChangeAnnotationResolver = ({ path, action }) => {
   const responseCode = path[4]
-  const key = path[path.length-1]
-  
+  const key = path[path.length - 1]
+
   if (responseCode === key) {
-    return t(action, { text: t("response", { responseCode })})
+    return t(action, { text: t("response", { responseCode }) })
   }
 
-  return t(action, { text: t("annotation", { key }), target: t("response", { responseCode })})
+  return t(action, { text: t("annotation", { key }), target: t("response", { responseCode }) })
 }
 
 export const contentChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
   const contentType = isResponseSchema(path) ? path[6] : path[5]
   const responseCode = isResponseSchema(path) ? path[4] : undefined
-  const target = isResponseSchema(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
-  const key = path[path.length-1]
+  const target = isResponseSchema(path)
+    ? t("response", { contentType, responseCode })
+    : t("requestBody", { contentType })
+  const key = path[path.length - 1]
 
   if (contentType && contentType !== key) {
     return t(action, { text: t("annotation", { key }), target })
@@ -104,7 +108,9 @@ export const contentChangeAnnotation: ChangeAnnotationResolver = ({ path, action
 export const encodingChangeAnnotation: ChangeAnnotationResolver = ({ path, action }, ctx) => {
   const contentType = isResponseSchema(path) ? path[6] : path[5]
   const responseCode = isResponseSchema(path) ? path[4] : undefined
-  const target = isResponseSchema(path) ? t("response", { contentType, responseCode }) : t("requestBody", { contentType })
+  const target = isResponseSchema(path)
+    ? t("response", { contentType, responseCode })
+    : t("requestBody", { contentType })
 
   const encodingPath = isResponseSchema(path) ? path.slice(8) : path.slice(7)
   const key = encodingPath.join(".")
@@ -118,20 +124,20 @@ export const operationChangeAnnotation: ChangeAnnotationResolver = ({ path, acti
   if (key === "deprecated") {
     if (ctx.after.value) {
       return t("add", { text: t("status", { key }) })
-    } 
+    }
     if (ctx.before.value) {
       return t("remove", { text: t("status", { key }) })
     }
     return
   }
-  
+
   if (key === "requestBody") {
     return t(action, { text: t(key) })
   }
 
   if (typeof key === "number") {
     const { value } = action === "add" ? ctx.after : ctx.before
-    return t(action, { text: t("annotation", { key: `${path[path.length-2]}: ${value}` }) })
+    return t(action, { text: t("annotation", { key: `${path[path.length - 2]}: ${value}` }) })
   }
 
   return t(action, { text: t("annotation", { key }) })
@@ -146,7 +152,7 @@ export const parameterChangeAnnotation: ChangeAnnotationResolver = ({ action }, 
 
   if (key === "required") {
     return t(action, { text: t("status", { key }), target: t("param", { ...param, requred: false }) })
-  } 
+  }
   if (key === "deprecated") {
     return t(action, { text: t("status", { key }), target: t("param", param) })
   }

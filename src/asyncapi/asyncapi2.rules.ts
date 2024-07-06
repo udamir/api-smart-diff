@@ -1,6 +1,11 @@
-import { 
-  reverseClassifyRuleTransformer, transformComapreRules, addNonBreaking, allBreaking, 
-  allNonBreaking, allUnclassified, allAnnotation
+import {
+  reverseClassifyRuleTransformer,
+  transformComapreRules,
+  addNonBreaking,
+  allBreaking,
+  allNonBreaking,
+  allUnclassified,
+  allAnnotation,
 } from "../core"
 import { combinaryCompareResolver, createFields, createRefsCompareResolver, jsonSchemaRules } from "../jsonSchema"
 import type { CompareRules } from "../types"
@@ -24,7 +29,7 @@ export const asyncApi2Rules = (): CompareRules => {
       "/*": { $: allUnclassified },
       "/query": () => subSchemaRules,
       "/headers": () => pubSchemaRules,
-    }
+    },
   }
 
   const commonRules: CompareRules = {
@@ -68,8 +73,8 @@ export const asyncApi2Rules = (): CompareRules => {
     "/examples": { $: allAnnotation },
     "/traits": messageTraitsRules,
     "/payload": () => ({
-      ...sub ? subSchemaRules : pubSchemaRules,
-      $: allBreaking
+      ...(sub ? subSchemaRules : pubSchemaRules),
+      $: allBreaking,
     }),
     ...commonRules,
   })
@@ -85,7 +90,7 @@ export const asyncApi2Rules = (): CompareRules => {
         "/*": {
           ...messageRules(sub),
           $: addNonBreaking,
-        }
+        },
       },
       ...messageRules(sub),
     },
@@ -159,7 +164,7 @@ export const asyncApi2Rules = (): CompareRules => {
         "/description": { $: allAnnotation },
         "/schema": () => ({
           ...pubSchemaRules,
-          $: allBreaking
+          $: allBreaking,
         }),
         "/location": { $: allBreaking },
       },
@@ -177,8 +182,8 @@ export const asyncApi2Rules = (): CompareRules => {
       $: addNonBreaking,
       "/*": channelRules,
     },
-    "/components": { 
-      "/*": { $: allAnnotation }
+    "/components": {
+      "/*": { $: allAnnotation },
     },
     "/tags": { $: allAnnotation },
     "/externalDocs": { $: allAnnotation },

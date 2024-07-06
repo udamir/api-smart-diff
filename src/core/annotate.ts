@@ -1,16 +1,15 @@
 import { isExist, isObject, objectKeys } from "../utils"
 import type { AnnotateTemplate } from "../types"
 
-export const annotationTemplate = (template: string, params?: AnnotateTemplate["params"]): AnnotateTemplate => ({ 
+export const annotationTemplate = (template: string, params?: AnnotateTemplate["params"]): AnnotateTemplate => ({
   template,
-  ...params ? { params } : {} 
+  ...(params ? { params } : {}),
 })
 
 export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Record<string, string> = {}): string => {
   const findTemplate = (key: string, params: AnnotateTemplate["params"] = {}) => {
-
     const keys = objectKeys(dict).filter((k) => k.startsWith(`${key}_`))
-    
+
     let result = key in dict ? dict[key] : undefined
     let matchCount = 1
 
@@ -22,7 +21,7 @@ export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Re
         matchCount = _params.length
       }
     }
-    
+
     return result
   }
 
@@ -31,14 +30,18 @@ export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Re
 
     for (const key of objectKeys(_params)) {
       const param = _params[key]
-      params[key] = isObject(param) ? createAnnotation(param as AnnotateTemplate, dict) : param as string
+      params[key] = isObject(param) ? createAnnotation(param as AnnotateTemplate, dict) : (param as string)
     }
 
     let template = findTemplate(name, params)
-    if (!template) { return "" }
-    
+    if (!template) {
+      return ""
+    }
+
     for (const match of [...template.matchAll(/{{(\w+)}}/g)].reverse()) {
-      if (!(match[1] in params)) { continue }
+      if (!(match[1] in params)) {
+        continue
+      }
 
       const index = match.index ?? 0
       template = template.substring(0, index) + String(params[match[1]]) + template.substring(index + match[0].length)
@@ -46,9 +49,11 @@ export const createAnnotation = (annotationTemplate?: AnnotateTemplate, dict: Re
     return template
   }
 
-  if (!annotationTemplate) { return "" }
+  if (!annotationTemplate) {
+    return ""
+  }
 
   const { template, params } = annotationTemplate
-  
+
   return applyTemplateParams(template, params)
 }

@@ -18,47 +18,50 @@ export const typeClassifier = (types: string[] | string, base: ClassifyRule): Cl
 }
 
 export const maxClassifier: ClassifyRule = [
-  breaking, 
-  nonBreaking, 
-  ({ before, after }) => breakingIf(!isNumber(before.value) || !isNumber(after.value) || before.value > after.value)
+  breaking,
+  nonBreaking,
+  ({ before, after }) => breakingIf(!isNumber(before.value) || !isNumber(after.value) || before.value > after.value),
 ]
 
 export const minClassifier: ClassifyRule = [
   breaking,
   nonBreaking,
-  ({ before, after }) => breakingIf(!isNumber(before.value) || !isNumber(after.value) || before.value < after.value)
+  ({ before, after }) => breakingIf(!isNumber(before.value) || !isNumber(after.value) || before.value < after.value),
 ]
 
-export const exclusiveClassifier: ClassifyRule = [
-  breakingIfAfterTrue, 
-  nonBreaking, 
-  breakingIfAfterTrue
-]
+export const exclusiveClassifier: ClassifyRule = [breakingIfAfterTrue, nonBreaking, breakingIfAfterTrue]
 
-export const booleanClassifier: ClassifyRule = [
-  breakingIfAfterTrue,
-  nonBreaking,
-  breakingIfAfterTrue
-]
+export const booleanClassifier: ClassifyRule = [breakingIfAfterTrue, nonBreaking, breakingIfAfterTrue]
 
 export const multipleOfClassifier: ClassifyRule = [
   breaking,
   nonBreaking,
-  ({ before, after }) => breakingIf(!!(!isNumber(before.value) || !isNumber(after.value) || before.value % after.value))
+  ({ before, after }) =>
+    breakingIf(!!(!isNumber(before.value) || !isNumber(after.value) || before.value % after.value)),
 ]
 
 export const requiredItemClassifyRule: ClassifyRule = [
-  ({ after }) => !isString(after.value) || isExist(getParentContext(after, "", "properties", after.value, "default")?.value) ? nonBreaking : breaking,
-  nonBreaking, 
-  ({ after }) => !isString(after.value) || isExist(getParentContext(after, "", "properties", after.value, "default")?.value) ? nonBreaking : breaking
+  ({ after }) =>
+    !isString(after.value) || isExist(getParentContext(after, "", "properties", after.value, "default")?.value)
+      ? nonBreaking
+      : breaking,
+  nonBreaking,
+  ({ after }) =>
+    !isString(after.value) || isExist(getParentContext(after, "", "properties", after.value, "default")?.value)
+      ? nonBreaking
+      : breaking,
 ]
 
 export const propertyClassifyRule: ClassifyRule = [
-  ({ after }) => !isExist(getKeyValue(after.value, "default")) && 
-    getArrayValue((getParentContext(after, "", "required")?.value))?.includes(after.key) ? breaking : nonBreaking,
+  ({ after }) =>
+    !isExist(getKeyValue(after.value, "default")) &&
+    getArrayValue(getParentContext(after, "", "required")?.value)?.includes(after.key)
+      ? breaking
+      : nonBreaking,
   nonBreaking,
   unclassified,
   nonBreaking,
-  ({ before }) => getArrayValue(getParentContext(before, "", "required")?.value)?.includes(before.key) ? breaking : nonBreaking, 
-  unclassified
+  ({ before }) =>
+    getArrayValue(getParentContext(before, "", "required")?.value)?.includes(before.key) ? breaking : nonBreaking,
+  unclassified,
 ]

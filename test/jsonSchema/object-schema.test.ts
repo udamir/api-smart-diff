@@ -1,9 +1,8 @@
 import { breaking, compareJsonSchema, nonBreaking } from "../../src"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("Compare object jsonSchema", () => {
-
   it("should compare object jsonSchema with required remove", () => {
     const before = {
       type: "object",
@@ -12,7 +11,7 @@ describe("Compare object jsonSchema", () => {
         name: { type: "string" },
       },
     }
-    
+
     const after = {
       // type: "object" - should be calculated
       properties: {
@@ -36,7 +35,7 @@ describe("Compare object jsonSchema", () => {
       },
     })
     expect(merged[metaKey]).toMatchObject({
-      required: { array: { 0: { action: "remove", type: nonBreaking }}}
+      required: { array: { 0: { action: "remove", type: nonBreaking } } },
     })
     expect(merged.properties[metaKey]).toMatchObject({
       id: { action: "add", type: nonBreaking },
@@ -54,9 +53,9 @@ describe("Compare object jsonSchema", () => {
       properties: {
         name: {
           type: "string",
-          default: ""
-        }
-      }
+          default: "",
+        },
+      },
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -73,15 +72,17 @@ describe("Compare object jsonSchema", () => {
       properties: {
         name: {
           type: "string",
-          default: ""
-        }
-      }
+          default: "",
+        },
+      },
     })
     expect(merged[metaKey]).toMatchObject({
-      required: { array: { 
-        1: { action: "remove", type: nonBreaking },
-        2: { action: "add", type: nonBreaking },
-      }}
+      required: {
+        array: {
+          1: { action: "remove", type: nonBreaking },
+          2: { action: "add", type: nonBreaking },
+        },
+      },
     })
     expect(merged.properties[metaKey]).toMatchObject({
       name: { action: "add", type: nonBreaking },
@@ -120,10 +121,12 @@ describe("Compare object jsonSchema", () => {
       },
     })
     expect(merged[metaKey]).toMatchObject({
-      required: { array: { 
-        0: { action: "add", type: breaking },
-        1: { action: "add", type: breaking },
-      }}
+      required: {
+        array: {
+          0: { action: "add", type: breaking },
+          1: { action: "add", type: breaking },
+        },
+      },
     })
     expect(merged.properties[metaKey]).toMatchObject({
       name: { action: "add", type: breaking },
@@ -145,8 +148,8 @@ describe("Compare object jsonSchema", () => {
       minProperties: 1,
       maxProperties: 3,
       propertyNames: {
-        enum: ["id", "name", "foo"]
-      }
+        enum: ["id", "name", "foo"],
+      },
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -167,8 +170,8 @@ describe("Compare object jsonSchema", () => {
       minProperties: 1,
       maxProperties: 3,
       propertyNames: {
-        enum: ["id", "name", "foo"]
-      }
+        enum: ["id", "name", "foo"],
+      },
     })
     expect(merged[metaKey]).toMatchObject({
       additionalProperties: { action: "add", type: nonBreaking },
@@ -184,7 +187,7 @@ describe("Compare object jsonSchema", () => {
 
   it("should compare object jsonSchema with additionalProperties change", () => {
     const before = {
-      additionalProperties: true
+      additionalProperties: true,
     }
 
     const after = {
@@ -204,7 +207,7 @@ describe("Compare object jsonSchema", () => {
 
     expect(merged).toMatchObject(after)
     expect(merged[metaKey]).toMatchObject({
-      additionalProperties: { action: "replace", replaced: true, type: nonBreaking }
+      additionalProperties: { action: "replace", replaced: true, type: nonBreaking },
     })
   })
 
@@ -234,7 +237,7 @@ describe("Compare object jsonSchema", () => {
     expect(merged).toMatchObject(after)
     expect(merged.additionalProperties[metaKey]).toMatchObject({
       maxLength: { action: "add", type: breaking },
-      type: { action: "replace", replaced: "number", type: breaking }
+      type: { action: "replace", replaced: "number", type: breaking },
     })
   })
 
@@ -243,7 +246,7 @@ describe("Compare object jsonSchema", () => {
       patternProperties: {
         "^[a-z0-9]+$": {
           type: "string",
-        }
+        },
       },
     }
     const after = {
@@ -269,10 +272,10 @@ describe("Compare object jsonSchema", () => {
 
     expect(merged).toMatchObject(after)
     expect(merged.patternProperties[metaKey]).toMatchObject({
-      "^[0-9]+$": { action: "add", type: breaking }
+      "^[0-9]+$": { action: "add", type: breaking },
     })
     expect(merged.patternProperties["^[a-z0-9]+$"][metaKey]).toMatchObject({
-      type: { action: "replace", replaced: "string", type: breaking }
+      type: { action: "replace", replaced: "string", type: breaking },
     })
   })
 })

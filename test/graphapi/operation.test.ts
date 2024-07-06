@@ -1,10 +1,9 @@
 import { compareGraphApi } from "../../src"
 import { graphapi } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("GraphQL operations", () => {
-
   it("should compare schemas with changes in arguments", () => {
     const before = graphapi`
       type Query {
@@ -34,7 +33,5 @@ describe("GraphQL operations", () => {
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
     })
-    
   })
-
 })

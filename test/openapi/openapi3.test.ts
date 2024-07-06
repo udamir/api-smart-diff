@@ -8,17 +8,19 @@ describe("Test openapi 3 diff", () => {
     const path = ["servers", 2]
     const value = {
       url: "http://localhost:3000",
-      description: "Local server1"
+      description: "Local server1",
     }
 
     const after = exampleResource.clone([addPatch(path, value)])
     const diff = exampleResource.diff(after)
     expect(diff.length).toEqual(1)
-    expect(diff).toMatchObject([{
-      path,
-      after: value,
-      type: annotation
-    }])
+    expect(diff).toMatchObject([
+      {
+        path,
+        after: value,
+        type: annotation,
+      },
+    ])
   })
 
   it("should add diff for rename change with non-breaking change", () => {
@@ -30,8 +32,14 @@ describe("Test openapi 3 diff", () => {
     const diff = exampleResource.diff(after)
     expect(diff.length).toEqual(2)
     expect(diff).toMatchObject([
-      { path: ["paths"], before: "/pet/{petId}/uploadImage", after: "/pet/{pet}/uploadImage", type: nonBreaking, action: DiffAction.rename },
-      { path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"], type: nonBreaking }
+      {
+        path: ["paths"],
+        before: "/pet/{petId}/uploadImage",
+        after: "/pet/{pet}/uploadImage",
+        type: nonBreaking,
+        action: DiffAction.rename,
+      },
+      { path: ["paths", "/pet/{petId}/uploadImage", "post", "parameters", 0, "name"], type: nonBreaking },
     ])
   })
 
@@ -42,7 +50,13 @@ describe("Test openapi 3 diff", () => {
     after.paths["/pet/{pet}/uploadImage"].post.parameters[0].name = "pet"
 
     const merged = exampleResource.merge(after)
-    expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}/uploadImage"]: { action: DiffAction.rename, replaced: "/pet/{petId}/uploadImage", type: nonBreaking } })
+    expect(merged.paths.$diff).toMatchObject({
+      "/pet/{pet}/uploadImage": {
+        action: DiffAction.rename,
+        replaced: "/pet/{petId}/uploadImage",
+        type: nonBreaking,
+      },
+    })
   })
 
   it("should classify required change after rename", () => {
@@ -53,25 +67,32 @@ describe("Test openapi 3 diff", () => {
     after.components.schemas.Pet.properties.id.default = 0
 
     const merged = exampleResource.merge(after)
-    expect(merged.paths.$diff).toMatchObject({ ["/pet/{pet}"]: { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking } })
-    expect(merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array).toMatchObject({
+    expect(merged.paths.$diff).toMatchObject({
+      "/pet/{pet}": { action: DiffAction.rename, replaced: "/pet/{petId}", type: nonBreaking },
+    })
+    expect(
+      merged.paths["/pet/{pet}"].get.responses[200].content["application/json"].schema.$diff.required.array,
+    ).toMatchObject({
       0: { action: DiffAction.remove, type: breaking },
-      2: { action: DiffAction.add, type: breaking }
+      2: { action: DiffAction.add, type: breaking },
     })
-    expect(merged.paths["/pet"].post.requestBody.content["application/json"].schema.$diff.required.array).toMatchObject({
-      0: { action: DiffAction.remove, type: nonBreaking },
-      2: { action: DiffAction.add, type: nonBreaking }
-    })
+    expect(merged.paths["/pet"].post.requestBody.content["application/json"].schema.$diff.required.array).toMatchObject(
+      {
+        0: { action: DiffAction.remove, type: nonBreaking },
+        2: { action: DiffAction.add, type: nonBreaking },
+      },
+    )
   })
 
   it("should add rename diff on media type rename", () => {
     const after = exampleResource.clone()
-    after.paths["/pet"].put.requestBody.content["application/*"] = after.paths["/pet"].put.requestBody.content["application/json"]
+    after.paths["/pet"].put.requestBody.content["application/*"] =
+      after.paths["/pet"].put.requestBody.content["application/json"]
     delete after.paths["/pet"].put.requestBody.content["application/json"]
 
     const merged = exampleResource.merge(after)
-    expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({ 
-      ["application/*"]: { action: DiffAction.rename, replaced: "application/json", type: nonBreaking }
+    expect(merged.paths["/pet"].put.requestBody.content.$diff).toMatchObject({
+      "application/*": { action: DiffAction.rename, replaced: "application/json", type: nonBreaking },
     })
   })
 
@@ -85,7 +106,7 @@ describe("Test openapi 3 diff", () => {
 
   it("should classify as non-breaking set operation security equal to default", () => {
     const after = exampleResource.clone()
-    after.paths["/user/createWithList"].post.security = [{ api_key: []}]
+    after.paths["/user/createWithList"].post.security = [{ api_key: [] }]
 
     const diffs = exampleResource.diff(after)
     expect(diffs).toMatchObject([{ type: nonBreaking }])
@@ -106,7 +127,7 @@ describe("Test openapi 3 diff", () => {
     const diffs = exampleResource.diff(after)
     expect(diffs).toMatchObject([{ type: breaking }])
   })
-  
+
   it("should classify as breaking set to default operation security if not equal to default", () => {
     const after = exampleResource.clone()
     after.paths["/user/{username}"].get.security = [{ petstore_auth: [] }]
@@ -119,7 +140,8 @@ describe("Test openapi 3 diff", () => {
     const after = exampleResource.clone()
     const { xml, ...rest } = after.components.schemas.Order
     after.components.schemas.Order = {
-      ...rest, allOf: [ { xml }]
+      ...rest,
+      allOf: [{ xml }],
     }
     const diffs = exampleResource.diff(after)
     expect(diffs.length).toEqual(0)
@@ -127,7 +149,9 @@ describe("Test openapi 3 diff", () => {
 
   it("should classify as non-breaking change of additionalProperties from any type to true in request", () => {
     const after = exampleResource.clone()
-    after.paths["/pet/{petId}"].post.requestBody.content["application/x-www-form-urlencoded"].schema.properties.customProperties.additionalProperties = true
+    after.paths["/pet/{petId}"].post.requestBody.content[
+      "application/x-www-form-urlencoded"
+    ].schema.properties.customProperties.additionalProperties = true
 
     const diffs = exampleResource.diff(after)
     expect(diffs).toMatchObject([{ type: nonBreaking }])
@@ -144,8 +168,8 @@ describe("Test openapi 3 diff", () => {
 
   it("should annotate response content type correctly on content schema change", () => {
     const after = exampleResource.clone()
-    after.components.schemas.Pet.description = "some description" 
-    
+    after.components.schemas.Pet.description = "some description"
+
     const diffs = exampleResource.diff(after)
     expect(diffs[0].description).not.toEqual(diffs[1].description)
   })

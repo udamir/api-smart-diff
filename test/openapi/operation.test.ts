@@ -1,7 +1,7 @@
 import { DiffAction, breaking, compareOpenApi, nonBreaking } from "../../src"
 import { yaml } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("Openapi 3 operation changes", () => {
   it("should comapre documents with different operations", () => {
@@ -23,17 +23,17 @@ describe("Openapi 3 operation changes", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    for(const diff of diffs) {
+    for (const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
     }
-    
-    expect(merged.paths["/pet"][metaKey]).toMatchObject({ 
+
+    expect(merged.paths["/pet"][metaKey]).toMatchObject({
       get: { action: DiffAction.remove, type: breaking },
       post: { action: DiffAction.remove, type: breaking },
     })
-    expect(merged.paths["/pet/{id}"][metaKey]).toMatchObject({ 
+    expect(merged.paths["/pet/{id}"][metaKey]).toMatchObject({
       get: { action: DiffAction.add, type: nonBreaking },
     })
   })
@@ -68,21 +68,21 @@ describe("Openapi 3 operation changes", () => {
 
     expect(diffs.length).toEqual(6)
 
-    for(const diff of diffs) {
+    for (const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
     }
 
-    expect(merged.paths["/pet"].get[metaKey]).toMatchObject({ 
-      deprecated: { action: 'add', type: 'deprecated' },
-      operationId: { action: 'add', type: 'annotation' },
-      tags: { array: { 0: { action: 'add', type: 'annotation' }}},
-      summary: {action: 'replace', type: 'annotation', replaced: 'Get list of pets'},
-      "x-codegen-request-body-name": { action: 'replace', type: 'annotation', replaced: 'body' },
+    expect(merged.paths["/pet"].get[metaKey]).toMatchObject({
+      deprecated: { action: "add", type: "deprecated" },
+      operationId: { action: "add", type: "annotation" },
+      tags: { array: { 0: { action: "add", type: "annotation" } } },
+      summary: { action: "replace", type: "annotation", replaced: "Get list of pets" },
+      "x-codegen-request-body-name": { action: "replace", type: "annotation", replaced: "body" },
     })
-    expect(merged.paths["/pet"].get.security[0][metaKey]).toMatchObject({ 
-      petstore_auth: { array: { 1: { action: 'add', type: 'non-breaking' }}},
+    expect(merged.paths["/pet"].get.security[0][metaKey]).toMatchObject({
+      petstore_auth: { array: { 1: { action: "add", type: "non-breaking" } } },
     })
   })
 })

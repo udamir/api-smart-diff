@@ -1,8 +1,14 @@
 import type { JsonPath } from "json-crawl"
 
-import type { 
-  DiffFactory, ComapreContext, CompareTransformResolver, Diff, NodeContext, DiffMeta, 
-  MergeMetaRecord, TransformResolver 
+import type {
+  DiffFactory,
+  ComapreContext,
+  CompareTransformResolver,
+  Diff,
+  NodeContext,
+  DiffMeta,
+  MergeMetaRecord,
+  TransformResolver,
 } from "../types"
 import { DiffAction, allUnclassified, unclassified } from "./constants"
 import { getKeyValue, joinPath, isFunc } from "../utils"
@@ -11,22 +17,22 @@ export const createDiff = (diff: Omit<Diff, "type">, ctx: ComapreContext): Diff 
   const rule = ctx.rules?.$ ?? {}
   const _diff: Diff = { ...diff, type: unclassified }
 
-  if (rule) { 
+  if (rule) {
     const classifier = Array.isArray(rule) ? rule : allUnclassified
 
     const index = diff.action === "rename" ? 2 : ["add", "remove", "replace"].indexOf(diff.action)
     const changeType = classifier[index]
 
     try {
-      _diff.type = isFunc(changeType) ? changeType(ctx) : changeType  
+      _diff.type = isFunc(changeType) ? changeType(ctx) : changeType
     } catch (error) {
       const message = error instanceof Error ? error.message : ""
       console.error(`Classification Rule error for node: ${ctx.before.path.join(".")}. ${message}`)
     }
   }
-  
+
   const description = ctx.options.annotateHook?.(_diff, ctx)
-  return { ..._diff, ...description ? { description } : {} }
+  return { ..._diff, ...(description ? { description } : {}) }
 }
 
 export const diffFactory: DiffFactory = {
@@ -40,7 +46,7 @@ export const convertDiffToMeta = (diff: Diff): DiffMeta => {
   return {
     action: diff.action,
     type: diff.type ?? unclassified,
-    ...diff.action === "replace" || diff.action === "rename" ? { replaced: diff.before } : {}
+    ...(diff.action === "replace" || diff.action === "rename" ? { replaced: diff.before } : {}),
   }
 }
 
@@ -58,7 +64,7 @@ export const createMergeMeta = (diffs: Diff[]): MergeMetaRecord => {
 
 export const getParentContext = (ctx: NodeContext, ...path: JsonPath): NodeContext | undefined => {
   const _path = joinPath(ctx.path.slice(0, -1), path)
-  
+
   if (!_path.length) {
     return { path: [], key: "", value: ctx.root, root: ctx.root }
   }
@@ -76,6 +82,8 @@ export const getParentContext = (ctx: NodeContext, ...path: JsonPath): NodeConte
   return { path: _path, key, value, parent: parentValue, root: ctx.root }
 }
 
-export const compareTransformationFactory = <T = unknown>(resolver: TransformResolver<T>): CompareTransformResolver<T> => {
+export const compareTransformationFactory = <T = unknown>(
+  resolver: TransformResolver<T>,
+): CompareTransformResolver<T> => {
   return (before, after) => [resolver(before, after), resolver(after, before)]
 }

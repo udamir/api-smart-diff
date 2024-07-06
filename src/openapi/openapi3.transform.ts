@@ -5,12 +5,16 @@ import { compareTransformationFactory } from "../core"
 import { getDefaultStyle } from "./openapi3.utils"
 
 export const transformPathItems = compareTransformationFactory((value) => {
-  if (!isObject(value)) { return value }
-  
-  const methods = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']
-  
+  if (!isObject(value)) {
+    return value
+  }
+
+  const methods = ["get", "put", "post", "delete", "options", "head", "patch", "trace"]
+
   const _value = objectKeys(value).reduce((res, key) => {
-    if (methods.includes(key)) { return res }
+    if (methods.includes(key)) {
+      return res
+    }
     res[key] = value[key]
     return res
   }, {} as any)
@@ -22,23 +26,25 @@ export const transformPathItems = compareTransformationFactory((value) => {
   const result: Record<string, any> = {}
 
   for (const method of methods) {
-    if (!isKey(value, method) || typeof value[method] !== 'object' || !value[method]) { continue }
-    const data = {...value[method] as any}
+    if (!isKey(value, method) || typeof value[method] !== "object" || !value[method]) {
+      continue
+    }
+    const data = { ...(value[method] as any) }
 
     const { parameters, servers, ...rest } = _value
 
     // copy path parameters to all methods
     if (parameters && Array.isArray(parameters)) {
-      if ('parameters' in data && Array.isArray(data.parameters)) {
+      if ("parameters" in data && Array.isArray(data.parameters)) {
         data.parameters = [...data.parameters, ...parameters]
       } else {
         data.parameters = parameters
       }
     }
-    
+
     // copy servers to all methods
     if (servers && Array.isArray(servers)) {
-      if ('servers' in data && Array.isArray(data.servers)) {
+      if ("servers" in data && Array.isArray(data.servers)) {
         data.servers = [...data.servers, ...servers]
       } else {
         data.servers = servers
@@ -47,51 +53,59 @@ export const transformPathItems = compareTransformationFactory((value) => {
 
     // copy summary/description and rest to all methods
     for (const key of objectKeys(rest)) {
-      if (isKey(data, key)) { continue }
+      if (isKey(data, key)) {
+        continue
+      }
       data[key] = rest[key]
     }
 
     result[method] = data
   }
-  
+
   return result
 })
 
 export const transformOperation = compareTransformationFactory((value, other) => {
-  if (!isObject(value) || !isObject(other)) { return value }
-  const { deprecated, ...result}: any = { ...value }
-  
+  if (!isObject(value) || !isObject(other)) {
+    return value
+  }
+  const { deprecated, ...result }: any = { ...value }
+
   // add empty tags array
-  if (!("tags" in value) && ("tags" in other)) {
+  if (!("tags" in value) && "tags" in other) {
     result.tags = []
   }
 
   // remvoe deprecated: false
   if (deprecated) {
     result.deprecated = deprecated
-  } 
-  
+  }
+
   return result
 })
 
 export const transformPaths: CompareTransformResolver = (before, after) => {
-  if (!isObject(before) || !isObject(after)) { return [before, after] }
-  
+  if (!isObject(before) || !isObject(after)) {
+    return [before, after]
+  }
+
   // add empty paths (diff should be in methods)
   const { added, removed } = pathMappingResolver(before, after, {} as ComapreContext)
   return [
     added.reduce((obj, key) => setKeyValue(obj, key, { [key]: {} }), { ...before }),
-    removed.reduce((obj, key) => setKeyValue(obj, key, { [key]: {} }), { ...after })
+    removed.reduce((obj, key) => setKeyValue(obj, key, { [key]: {} }), { ...after }),
   ]
 }
 
 export const transformParameterItem = compareTransformationFactory((value, other) => {
-  if (!isObject(value) || !isObject(other)) { return value }
-  
+  if (!isObject(value) || !isObject(other)) {
+    return value
+  }
+
   const { deprecated, required, ...result }: any = { ...value }
 
   // set default value for style
-  if (("in" in value) && !("style" in value) && ("style" in other)) {
+  if ("in" in value && !("style" in value) && "style" in other) {
     const style = getDefaultStyle(value.in)
     if (style) {
       result.style = style
@@ -99,7 +113,7 @@ export const transformParameterItem = compareTransformationFactory((value, other
   }
 
   // set default value for explode
-  if (("style" in result) && ("explode" in value) && ("explode" in other)) {
+  if ("style" in result && "explode" in value && "explode" in other) {
     if (result.style === "form") {
       result.explode = true
     }
@@ -108,16 +122,15 @@ export const transformParameterItem = compareTransformationFactory((value, other
   // remove deprecated: false
   if (deprecated) {
     result.deprecated = deprecated
-  } 
+  }
 
   // remove required: false
   if (required) {
     result.required = required
-  } 
-  
+  }
+
   return result
 })
-
 
 export const transformOpenApiSchema = compareTransformationFactory((value, other) => {
   if (!isObject(value) || !isObject(other)) {

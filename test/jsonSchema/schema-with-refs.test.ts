@@ -1,7 +1,7 @@
 import { compareJsonSchema } from "../../src"
 import { yaml } from "../helpers"
 
-const metaKey = Symbol('diff')
+const metaKey = Symbol("diff")
 
 describe("schema with references", () => {
   it("should merge jsonSchema with refs", () => {
@@ -43,7 +43,7 @@ describe("schema with references", () => {
           type: "number",
         },
         name: { $ref: "#/definitions/name" },
-      }
+      },
     })
     expect(merged.properties[metaKey]).toMatchObject({
       name: { action: "add" },
@@ -102,8 +102,8 @@ describe("schema with references", () => {
         name: {
           title: "name",
           type: "string",
-        }
-      }
+        },
+      },
     })
     expect(merged.properties.name[metaKey]).toMatchObject({
       title: { action: "add" },
@@ -141,12 +141,12 @@ describe("schema with references", () => {
         parent:
           $ref: '#'
     `
-    
+
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(1)
     expect(merged[metaKey]).toMatchObject({
-      required: { array: { 0: { action: "add" }}},
+      required: { array: { 0: { action: "add" } } },
     })
   })
 
@@ -212,7 +212,7 @@ describe("schema with broken reference", () => {
         id:
           $ref: '#/definitions/id'
     `
-    
+
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
