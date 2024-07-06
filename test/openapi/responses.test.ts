@@ -98,7 +98,7 @@ describe("Openapi response changes", () => {
       i !== 4 && expect(diff.type).not.toEqual("unclassified")
     })
 
-    expect(merged.paths["ß/pet/findByStatus"].get.responses[metaKey]).toMatchObject({
+    expect(merged.paths["/pet/findByStatus"].get.responses[metaKey]).toMatchObject({
       "404": { action: DiffAction.add, type: nonBreaking },
     })
 
