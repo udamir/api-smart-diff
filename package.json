@@ -45,6 +45,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.6",
+    "@biomejs/biome": "^1.8.3",
     "@types/js-yaml": "^4.0.9",
     "fast-json-patch": "^3.1.1",
     "gqlapi": "^0.5.1",

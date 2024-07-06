@@ -1,13 +1,13 @@
-import { applyOperation, Operation } from "fast-json-patch"
-import { buildFromSchema, GraphApiSchema } from "gqlapi"
+import { applyOperation, type Operation } from "fast-json-patch"
+import { buildFromSchema, type GraphApiSchema } from "gqlapi"
 import { buildSchema } from "graphql"
-import { JsonPath } from "json-crawl"
+import type { JsonPath } from "json-crawl"
 import YAML from "js-yaml"
-import path from "path"
-import fs from "fs"
+import path from "node:path"
+import fs from "node:fs"
 
 
-import { apiDiff, apiMerge, getKeyValue, buildPath, ComapreOptions, CompareRules } from "../../src"
+import { apiDiff, apiMerge, getKeyValue, buildPath, type ComapreOptions, type CompareRules } from "../../src"
 
 export const yaml = (strings: TemplateStringsArray): object => {
   return YAML.load(strings[0]) as object
@@ -24,13 +24,13 @@ export class ExampleResource {
   constructor(private filename: string, public rules?: CompareRules) {
     const resPath = path.join(__dirname, "../resources/", this.filename)
     const data = fs.readFileSync(resPath, "utf8")
-    if (new RegExp(".(yaml|YAML|yml|YML)$", "g").test(filename)) {
+    if (/.(yaml|YAML|yml|YML)$/g.test(filename)) {
       try {
         this.res = YAML.load(data)
       } catch (e) {
         console.log(e)
       }
-    } else if (new RegExp(".(graphql|gql)$", "g").test(filename)) {
+    } else if (/.(graphql|gql)$/g.test(filename)) {
       try {
         const schema = buildSchema(data, { noLocation: true })
         this.res = buildFromSchema(schema)

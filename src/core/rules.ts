@@ -9,7 +9,8 @@ export const transformComapreRules = (rules: CompareRules, tranformer: CompareRu
     if (key && (!isString(key) || !key.startsWith("/"))) { return } 
     if (typeof value === "function") {
       return { value: (...args: unknown[]) => transformComapreRules(value(...args), tranformer) }
-    } else if (!Array.isArray(value) && isObject(value)) {
+    } 
+    if (!Array.isArray(value) && isObject(value)) {
       return { value: tranformer(value as CompareRules) }
     }
   }) as CompareRules
@@ -28,12 +29,11 @@ export const reverseClassifyRuleTransformer: CompareRulesTransformer = (value) =
 const reverseDiffType = (diffType: DiffType | DiffTypeClassifier): DiffType | DiffTypeClassifier => {
   if (typeof diffType === "function") {
     return ((ctx: ComapreContext) => reverseDiffType(diffType(ctx))) as DiffTypeClassifier
-  } else {
-    switch (diffType) {
-      case breaking: return nonBreaking
-      case nonBreaking: return breaking
-      default: return diffType
-    }
+  }
+  switch (diffType) {
+    case breaking: return nonBreaking
+    case nonBreaking: return breaking
+    default: return diffType
   }
 }
 

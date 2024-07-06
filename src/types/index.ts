@@ -1,2 +1,2 @@
-export * from './rules'
-export * from './compare'
+export * from "./rules"
+export * from "./compare"

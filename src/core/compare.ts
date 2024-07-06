@@ -1,4 +1,4 @@
-import { getNodeRules, syncCrawl, SyncCrawlHook } from "json-crawl"
+import { getNodeRules, syncCrawl, type SyncCrawlHook } from "json-crawl"
 
 import type { 
   ComapreContext, CompareRule, ComapreOptions, CompareResult, MergeMetaRecord, 
@@ -66,7 +66,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
 
     // transform values before comparison
     const data: [unknown, unknown] = [value, aNode[akey]]
-    const [before, after] = !isArray(value) && transform ? transform.reduce((res, t) => t(...res), data) : data
+    const [before, after] = !isArray(value) && transform ? transform.reduce((res, t) => t(res[0], res[1]), data) : data
     // save transformed values to root nodes
     bNode[bkey] = before
     aNode[akey] = after
@@ -110,7 +110,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
       const nodeMeta = createMergeMeta(_nodeDiffs) ?? {}
       
       const exitHook = () => {
-        added.forEach((k) => {
+        for(const k of added) {
           const _key = isArray(merged) ? merged.length : k
           const diff = diffFactory.added([...bPath, _key], after[k], createChildContext(ctx, "", k)) 
           
@@ -118,7 +118,7 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
           merged[_key] = after[k]
 
           _diffs.push(diff)
-        })
+        }
 
         if (!Object.keys(nodeMeta).length) { return }
 

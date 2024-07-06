@@ -1,4 +1,4 @@
-import { CrawlRules, CrawlRulesFunc, JsonPath } from "json-crawl"
+import type { CrawlRules, CrawlRulesFunc, JsonPath } from "json-crawl"
 
 import type { Diff, DiffType, ComapreOptions, CompareResult } from "./compare"
 
@@ -34,7 +34,7 @@ export type ComapreContext = {
   options: ComapreOptions
 }
 
-export type CompareResolver = (ctx: ComapreContext) => CompareResult | void
+export type CompareResolver = (ctx: ComapreContext) => CompareResult | undefined
 
 export type TransformResolver<T = unknown> = (value: T, other: T) => T
 export type CompareTransformResolver<T = unknown> = (before: T, after: T) => [T, T]

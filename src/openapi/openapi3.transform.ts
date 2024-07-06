@@ -59,7 +59,7 @@ export const transformPathItems = compareTransformationFactory((value) => {
 
 export const transformOperation = compareTransformationFactory((value, other) => {
   if (!isObject(value) || !isObject(other)) { return value }
-  const result: any = { ...value }
+  const { deprecated, ...result}: any = { ...value }
   
   // add empty tags array
   if (!("tags" in value) && ("tags" in other)) {
@@ -67,8 +67,8 @@ export const transformOperation = compareTransformationFactory((value, other) =>
   }
 
   // remvoe deprecated: false
-  if ("deprecated" in result && !result.deprecated) {
-    delete result.deprecated
+  if (deprecated) {
+    result.deprecated = deprecated
   } 
   
   return result
@@ -88,7 +88,7 @@ export const transformPaths: CompareTransformResolver = (before, after) => {
 export const transformParameterItem = compareTransformationFactory((value, other) => {
   if (!isObject(value) || !isObject(other)) { return value }
   
-  const result: any = { ...value }
+  const { deprecated, required, ...result }: any = { ...value }
 
   // set default value for style
   if (("in" in value) && !("style" in value) && ("style" in other)) {
@@ -106,13 +106,13 @@ export const transformParameterItem = compareTransformationFactory((value, other
   }
 
   // remove deprecated: false
-  if ("deprecated" in result && !result.deprecated) {
-    delete result.deprecated
+  if (deprecated) {
+    result.deprecated = deprecated
   } 
 
   // remove required: false
-  if ("required" in result && !result.required) {
-    delete result.required
+  if (required) {
+    result.required = required
   } 
   
   return result

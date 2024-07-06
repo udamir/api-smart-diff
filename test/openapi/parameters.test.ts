@@ -116,11 +116,11 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(2)
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
       0: { action: DiffAction.remove, type: breaking },
@@ -168,11 +168,11 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({ parameters: { array: {
       1: { action: DiffAction.add, type: nonBreaking },
@@ -208,11 +208,11 @@ describe("Test openapi 3 parameters compare", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(merged.paths["/pet/findByStatus"].get.parameters[0][metaKey]).toMatchObject({ 
       description: { action: DiffAction.add, type: annotation },
@@ -277,11 +277,11 @@ describe("Test openapi 3 parameters compare", () => {
     `
 
     const { diffs } = compareOpenApi(before, after, { metaKey })
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(diffs.length).toEqual(1)
     expect(diffs).toMatchObject([{ type: breaking }])
@@ -310,11 +310,11 @@ describe("Test openapi 3 parameters compare", () => {
     `
 
     const { diffs } = compareOpenApi(before, after, { metaKey })
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(diffs.length).toEqual(1)
     expect(diffs).toMatchObject([{ type: nonBreaking }])

@@ -29,7 +29,7 @@ const graphApiAnnotations = {
 }
 
 export const graphApiAnnotateHook: AnnotateHook = (diff, ctx) => {
-  let annotate = ctx.rules?.annotate
+  const annotate = ctx.rules?.annotate
 
   if (!annotate || (diff.path[0] === "components" && diff.path[1] !== "directives")) { return "" }
   if (isArgSchema(diff.path)) {

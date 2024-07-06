@@ -8,9 +8,9 @@ export const pathMappingResolver: MappingResolver<string> = (before, after) => {
   const result: MapKeysResult<string> = { added: [], removed: [], mapped: {} }
 
   const beforeKeys = objectKeys(before)
-  const _beforeKeys = beforeKeys.map((key) => key.replace(new RegExp("\{.*?\}", "g"), "*"))
+  const _beforeKeys = beforeKeys.map((key) => key.replace(/\{.*?\}/g, "*"))
   const afterKeys = objectKeys(after)
-  const _afterKeys = afterKeys.map((key) => key.replace(new RegExp("\{.*?\}", "g"), "*"))
+  const _afterKeys = afterKeys.map((key) => key.replace(/\{.*?\}/g, "*"))
 
   const mappedIndex = new Set(afterKeys.keys())
 

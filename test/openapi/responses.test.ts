@@ -174,11 +174,11 @@ describe("Openapi response changes", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(merged.paths["/pet/findByStatus"].get.responses['200'].content["application/json"].schema[metaKey]).toMatchObject({ 
       required: { array: { 2: { action: DiffAction.add, type: nonBreaking }}},
@@ -234,11 +234,11 @@ describe("Openapi response changes", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(merged.paths["/pet/findByStatus"].get.responses['200'].content["application/json"].schema[metaKey]).toMatchObject({ 
       required: { array: { 1: { action: DiffAction.remove, type: breaking }}},

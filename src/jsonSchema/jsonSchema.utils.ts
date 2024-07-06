@@ -1,15 +1,15 @@
-import { isRefNode, parseRef, resolvePointer } from "allof-merge"
+import { type RefNode, isRefNode, parseRef, resolvePointer } from "allof-merge"
 import type { JsonPath } from "json-crawl"
 
 import { jsonSchemaTypes, jsonSchemaTypeProps, jsonSchemaValidators } from "./jsonSchema.consts"
 import type { AllOfNode, JsonSchemaNodeType } from "./jsonSchema.types"
 import { excludeKeys, isNumber, isObject } from "../utils"
 
-export function isAllOfNode(value: any): value is AllOfNode {
-  return value && value.allOf && Array.isArray(value.allOf)
+export function isAllOfNode(value: unknown): value is AllOfNode {
+  return isObject(value) && "allOf" in value && Array.isArray(value.allOf)
 }
 
-export const resolveRefNode = (data: any, node: any) => {
+export const resolveRefNode = (data: unknown, node: RefNode) => {
   const { $ref, ...rest } = node
   const _ref = parseRef($ref)
   return !_ref.filePath ? resolvePointer(data, _ref.pointer) : undefined
@@ -56,7 +56,7 @@ export function unwrapArrayOrNull(value: unknown): unknown[] | null {
 }
 
 export const buildPath = (path: JsonPath): string => {
-  return "/" + path.map((i) => String(i).replace(new RegExp("/", "g"), "~1")).join("/")
+  return `/${path.map((i) => String(i).replace(/\//g, "~1")).join("/")}`
 }
 
 export const isCycleRef = ($ref: string, path: string, refs: Record<string, string[]>) => {
@@ -141,10 +141,11 @@ export const createEmptyCombiner = (value: Record<string, unknown>, combiner: st
   }
 }
 
-export const getTarget = (path: JsonPath, prefix = ""): string | undefined => {
+export const getTarget = (path: JsonPath, _prefix = ""): string | undefined => {
+  let prefix = _prefix
   for (let i = 0; i < path.length; i++) {
     if (path[i] === "properties" && i < path.length - 1) {
-      prefix += prefix ? "." + String(path[++i]) : String(path[++i]) 
+      prefix += prefix ? `.${String(path[++i])}` : String(path[++i]) 
     } else if (path[i] === "additionalProperties") {
       prefix += "{.*}" 
     } else if (path[i] === "patternProperties" && i < path.length - 1) {

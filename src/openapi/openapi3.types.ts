@@ -1,4 +1,4 @@
-import { ComapreOptions } from "../types"
+import type { ComapreOptions } from "../types"
 
 export type OpenApi3RulesOptions = {
   version?: "3.0.x" | "3.1.x"

@@ -1,4 +1,4 @@
-import { MapKeysResult, MappingResolver } from "../types"
+import type { MapKeysResult, MappingResolver } from "../types"
 
 export const arrayMappingResolver: MappingResolver<number> = (before, after) => {
   const length = Math.abs(before.length - after.length)
@@ -25,7 +25,9 @@ export const objectMappingResolver: MappingResolver<string> = (before, after) =>
     }
   }
 
-  afterKeys.forEach((key) => result.added.push(key))
+  for(const key of afterKeys) {
+    result.added.push(key)
+  }
 
   return result
 }
@@ -45,7 +47,9 @@ export const caseInsensitiveKeyMappingResolver: MappingResolver<string> = (befor
     }
   }
 
-  afterKeys.forEach((key) => result.added.push(key))
-
+  for(const key of afterKeys) {
+    result.added.push(key)
+  }
+  
   return result
 }

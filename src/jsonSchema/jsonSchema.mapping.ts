@@ -4,8 +4,8 @@ import { objectMappingResolver } from "../core"
 export const jsonSchemaMappingResolver: MappingResolver<string> = (before, after, ctx) => {
   const { added, removed, mapped } = objectMappingResolver(before, after, ctx)
 
-  const beforeCombinaryIndex = removed.findIndex((item) => item == "oneOf" || item === "anyOf")
-  const afterCombinaryIndex = added.findIndex((item) => item == "oneOf" || item === "anyOf")
+  const beforeCombinaryIndex = removed.findIndex((item) => item === "oneOf" || item === "anyOf")
+  const afterCombinaryIndex = added.findIndex((item) => item === "oneOf" || item === "anyOf")
 
   if (beforeCombinaryIndex < 0 || afterCombinaryIndex < 0) {
     return { added, removed, mapped }
@@ -39,7 +39,7 @@ export const enumMappingResolver: MappingResolver<number> = (before, after) => {
   }
 
   let j = 0
-  unmappedAfter.forEach((i) => {
+  for(const i of unmappedAfter) {
     if (j < unmappedBefore.length) {
       // replaced items
       result.mapped[unmappedBefore[j++]] = i
@@ -47,7 +47,7 @@ export const enumMappingResolver: MappingResolver<number> = (before, after) => {
       // added items
       result.added.push(i)
     }
-  })
+  }
 
   // removed items
   for (let i = j; i < unmappedBefore.length; i++) {
@@ -76,10 +76,10 @@ export const requiredMappingResolver: MappingResolver<number> = (before, after) 
     }
   }
 
-  unmappedAfter.forEach((i) => {
+  for(const i of unmappedAfter) {
     // added items
     result.added.push(i)
-  })
+  }
 
   return result
 }

@@ -19,7 +19,7 @@ export const transformGraphApiComponents = compareTransformationFactory((value, 
 
 export const transformGraphSchema = compareTransformationFactory((value, other) => {
   if (typeof value !== 'object' || !value || typeof other !== 'object' || !other) { return value }
-  const result: any = { ...value }
+  const { nullable, ...result}: any = { ...value }
   
   for (const comp of graphSchemaCustomProps) {
     // add empty component
@@ -37,8 +37,8 @@ export const transformGraphSchema = compareTransformationFactory((value, other) 
     }
   }
 
-  if ("nullable" in value && !value.nullable) {
-    delete result.nullable
+  if (nullable) {
+    result.nullable = nullable
   }
   
   return result
@@ -50,7 +50,8 @@ export const transfromGraphSchemaDirective = compareTransformationFactory((value
   if ("meta" in value) {
     const { meta, ...rest } = value
     return { meta }
-  } else if ("meta" in other) {
+  } 
+  if ("meta" in other) {
     return { meta: {} }
   }
 

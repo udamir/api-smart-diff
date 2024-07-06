@@ -24,12 +24,12 @@ export const jsonSchemaAnnotations = {
   property: "property `{{key}}`",
   arratItem: "array item with index `{{key}}`",
   patternProperty: "property with key pattern `{{key}}`",
-  additionalProperties: `schema for additional properties`,
-  arrayItems: `schema for array items`,
-  additionalArrayItems: `schema for additional array items`,
-  oneOfItem: `oneOf schema`,
-  anyOfItem: `anyOf schema`,
-  allOfItem: `allOf schema`,
+  additionalProperties: "schema for additional properties",
+  arrayItems: "schema for array items",
+  additionalArrayItems: "schema for additional array items",
+  oneOfItem: "oneOf schema",
+  anyOfItem: "anyOf schema",
+  allOfItem: "allOf schema",
 } as const
 
 export const jsonSchemaAnnotationHook: AnnotateHook = (diff, ctx) => {
@@ -63,7 +63,8 @@ export const schemaStatusChange: ChangeAnnotationResolver = ({ path }, ctx) => {
 
   if (ctx.after.value) {
     return t("add", { text: t("status", { key }), target: getTarget(path) })
-  } else if (ctx.before.value) {
+  } 
+  if (ctx.before.value) {
     return t("remove", { text: t("status", { key }), target: getTarget(path) })
   }
 }

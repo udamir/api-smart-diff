@@ -23,12 +23,12 @@ describe("Openapi 3 operation changes", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(3)
-    diffs.forEach((diff) => {
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
-
+    }
+    
     expect(merged.paths["/pet"][metaKey]).toMatchObject({ 
       get: { action: DiffAction.remove, type: breaking },
       post: { action: DiffAction.remove, type: breaking },
@@ -67,11 +67,12 @@ describe("Openapi 3 operation changes", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(6)
-    diffs.forEach((diff) => {
+
+    for(const diff of diffs) {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
       expect(diff.type).not.toEqual("unclassified")
-    })
+    }
 
     expect(merged.paths["/pet"].get[metaKey]).toMatchObject({ 
       deprecated: { action: 'add', type: 'deprecated' },
