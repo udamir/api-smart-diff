@@ -64,13 +64,12 @@ export const createMergeMeta = (diffs: Diff[]): MergeMetaRecord => {
 
 export const getParentContext = (ctx: NodeContext, ...path: JsonPath): NodeContext | undefined => {
   const _path = joinPath(ctx.path.slice(0, -1), path)
+  const parentPath = [..._path]
+  const key = parentPath.pop()
 
-  if (!_path.length) {
+  if (!_path.length || key === undefined) {
     return { path: [], key: "", value: ctx.root, root: ctx.root }
   }
-
-  const parentPath = [..._path]
-  const key = parentPath.pop()!
 
   const parentValue = getKeyValue(ctx.root, ...parentPath) as Record<string | number, unknown>
   const value = parentValue[key]

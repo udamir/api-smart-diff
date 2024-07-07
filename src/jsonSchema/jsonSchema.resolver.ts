@@ -124,15 +124,20 @@ export const createRefsCompareResolver = (cache: JsonSchemaComapreCache = {}): C
     }
 
     // save refs to refs history
-    bRef && (bRefs[bRef] = [...(bRefs[bRef] ?? []), `#${bPath}`])
-    aRef && (aRefs[aRef] = [...(aRefs[aRef] ?? []), `#${aPath}`])
+    if (bRef) {
+      bRefs[bRef] = [...(bRefs[bRef] ?? []), `#${bPath}`]
+    }
+    if (aRef) {
+      aRefs[aRef] = [...(aRefs[aRef] ?? []), `#${aPath}`]
+    }
 
     // compare $refs
     if (bRef && aRef) {
       compareRefsId = getCompareId(bRef, aRef)
 
-      if (results.has(compareRefsId)) {
-        const { path, diffs, ...rest } = results.get(compareRefsId)!
+      const _result = results.get(compareRefsId)
+      if (results.has(compareRefsId) && _result) {
+        const { path, diffs, ...rest } = _result
         return {
           ...rest,
           diffs: diffs.map((diff) => {

@@ -63,7 +63,8 @@ const useMergeFactory = (options: ComapreOptions = {}): MergeFactoryResult => {
     const { transform, compare, mapping, skip } = rules
     const { keyMap, parentMeta, bNode, aNode, mNode } = state
 
-    const bkey = key ?? (isArray(bNode) ? +Object.keys(keyMap).pop()! : Object.keys(keyMap).pop())
+    const k = Object.keys(keyMap).pop()
+    const bkey = key ?? (isArray(bNode) && k ? +k : k)
     const akey = keyMap[bkey]
     const mkey = isArray(mNode) && isNumber(bkey) ? bkey : akey
 

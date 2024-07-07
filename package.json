@@ -18,7 +18,8 @@
   },
   "scripts": {
     "prebuild": "rimraf ./dist",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "check": "biome check"
   },
   "keywords": [
     "jsonschema",
