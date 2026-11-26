@@ -1,6 +1,6 @@
 # Components and $ref
 
-Reusable definitions — OpenAPI `components.*` (schemas, parameters, responses, request bodies, headers, security schemes, path items, media types, …), AsyncAPI components and 3.0 channel messages, GraphQL named types — are compared once, in the `components` scope, and classified by **how the API uses them**.
+Reusable definitions — OpenAPI `components.*` (schemas, parameters, responses, request bodies, headers, security schemes, path items, media types, …), AsyncAPI components and 3.0 channel messages, GraphQL named types, Protocol Buffers messages and enums — are compared once, in the `components` scope, and classified by **how the API uses them**.
 
 ## Classified by usage
 
@@ -11,6 +11,7 @@ A component has no direction of its own. With `options.components: "usage"` (the
 - a component that only the after document references is classified by that usage;
 - a component **nothing references** is `unclassified` (with a description);
 - GraphQL types that no root operation type reaches are classified as if they were reachable (output types with output semantics, input types with argument semantics, enums and scalars in both).
+- Protocol Buffers messages and enums take the direction of the rpcs that use them — a message used as an rpc request reads like an OpenAPI request, one used as a response like a response — followed through fields and map values; a message no rpc uses is classified as if it were used both ways (see [Direction](./protoapi#direction)).
 
 `options.components: "unclassified"` opts out: every diff inside `components.*` is unclassified, and only the usage locations are classified.
 

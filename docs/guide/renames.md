@@ -20,6 +20,7 @@ A keyed definition that was renamed — with every reference moved to the new ke
 
 - OpenAPI: components of every kind, security schemes, paths (a renamed path template parameter: `/pets/{id}` → `/pets/{petId}`, one non-breaking rename at `paths`), and a response code renamed to its range (`200` ↔ `2XX`).
 - AsyncAPI 3.0: channels and channel messages; AsyncAPI 2.x and 3.0: components (security schemes included).
+- Protocol Buffers (ProtoApi): fields and enum values are paired by number, so a field or enum value renamed with the same number is one rename; a renamed file with the same declarations is one change of its path, and a renamed package is one diff at the `package` statement. Renamed messages and enums are not detected. The rules on this page do not apply to ProtoApi; see [Pairing](./protoapi#pairing) and the classes per compatibility level in [Compatibility levels](./protoapi#compatibility-levels).
 
 ## When a pair is a rename
 

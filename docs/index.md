@@ -21,7 +21,7 @@ hero:
 
 features:
   - icon: 📚
-    title: Four specifications
+    title: Five specifications
     details: OpenAPI 3.0, 3.1 and 3.2, AsyncAPI 2.x and 3.0, JSON Schema draft-04 to 2020-12, GraphQL in its GraphApi 0.1.2 and 1.0 encodings, and gRPC / Protocol Buffers in its ProtoApi encoding at four compatibility levels — detected automatically.
     link: /guide/engines
     linkText: Specifications and engines

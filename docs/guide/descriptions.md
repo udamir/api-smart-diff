@@ -17,6 +17,8 @@ Every diff of the built-in engines carries a human-readable `description`:
 
 A description starts with the action — `[Added]`, `[Removed]`, `[Replaced]`, `[Renamed]` — names what changed (a parameter, property, validator, enum value, operation, …) and, where it helps, the values and the **nearest container**: the parameter, request body, response, header, media type, channel, message, component or GraphQL type the change is in. `diff.path` identifies the operation, so the operation is not repeated in every text.
 
+Protocol Buffers descriptions are written for the `.proto` source: they use protobuf terms (field, message, enum value, rpc, option) and `.proto` literals, never ProtoApi or JSON Schema keys, and name the element with its field number where it helps — ``[Replaced] maximum value of field `page_size` (1) in message `shop.v1.ListOrdersRequest` from `<= 100` to `<= 50` ``.
+
 Values are written in backticks:
 
 - strings as they are (`gamma`), quoted when they read like another JSON value (`"1"`, `"true"`, `""`);
