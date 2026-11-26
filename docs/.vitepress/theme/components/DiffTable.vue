@@ -4,6 +4,7 @@ import { computed, ref, watch } from "vue"
 import type { Diff } from "../../../../src"
 import { pointer, previewValue } from "../diff"
 import { type DiffLocation, locationColumns } from "../location"
+import type { SourceLine } from "../proto"
 import { type ResultRow, type SortKey, type SortState, sortHint, targetLabel } from "../results"
 
 // the rows of the result toolbar (filtered and sorted in DiffResults, see results.ts); the sortable headers emit `sort`
@@ -19,10 +20,27 @@ const props = withDefaults(
     sort?: SortState
     compact?: boolean
     reportable?: boolean
+    /** `.proto` input: the source lines of the diffs (by the engine index of the diff); a row with one can be selected */
+    sourceLines?: readonly (SourceLine | undefined)[]
+    /** engine index of the selected diff */
+    selected?: number
   }>(),
-  { compact: false, reportable: false, located: false },
+  { compact: false, reportable: false, located: false, sourceLines: undefined, selected: undefined },
 )
-const emit = defineEmits<{ report: [diff: Diff, location?: DiffLocation]; sort: [key: SortKey] }>()
+const emit = defineEmits<{
+  report: [diff: Diff, location?: DiffLocation]
+  sort: [key: SortKey]
+  select: [index: number]
+}>()
+
+const sourceOf = (index: number) => props.sourceLines?.[index]
+const lineLabel = (line: SourceLine) =>
+  `${line.side} ${line.file}:${line.from + 1}${line.to > line.from ? `–${line.to + 1}` : ""}`
+const select = (index: number) => {
+  if (sourceOf(index)) {
+    emit("select", index)
+  }
+}
 
 // OpenAPI: Method / Endpoint; AsyncAPI, GraphApi: their counterparts; otherwise one pointer column
 const columns = computed(() => (props.located ? locationColumns(props.engine) : undefined))
@@ -94,7 +112,13 @@ const arrow = (key: SortKey) => (props.sort?.key === key ? (props.sort.direction
           </tr>
         </thead>
         <tbody>
-          <tr v-for="{ diff, location, index } in visible" :key="index">
+          <tr
+            v-for="{ diff, location, index } in visible"
+            :key="index"
+            :class="{ locatable: !!sourceOf(index), selected: selected !== undefined && index === selected }"
+            :title="sourceOf(index) ? 'Click to highlight the source line' : undefined"
+            @click="select(index)"
+          >
             <td><span :class="['badge', diff.type]">{{ diff.type }}</span></td>
             <template v-if="columns">
               <td v-for="column in columns" :key="column.key" :class="column.key" :title="location?.text">
@@ -111,6 +135,7 @@ const arrow = (key: SortKey) => (props.sort?.key === key ? (props.sort.direction
             <td class="description">
               {{ diff.description }}
               <div v-if="compact && columns" class="path">{{ pointer(diff.path) }}</div>
+              <div v-if="compact && sourceOf(index)" class="source">{{ lineLabel(sourceOf(index)!) }}</div>
               <div v-if="!compact && (diff.before !== undefined || diff.after !== undefined)" class="values">
                 <span v-if="diff.before !== undefined" class="before">− {{ previewValue(diff.before) }}</span>
                 <span v-if="diff.after !== undefined" class="after">+ {{ previewValue(diff.after) }}</span>
@@ -121,6 +146,7 @@ const arrow = (key: SortKey) => (props.sort?.key === key ? (props.sort.direction
               <div v-if="diff.origin" class="origin" title="declaration path of the value (inside a $ref target)">
                 origin {{ pointer(diff.origin.before) }}
               </div>
+              <div v-if="sourceOf(index)" class="source">{{ lineLabel(sourceOf(index)!) }}</div>
             </td>
             <td v-if="reportable" class="report">
               <button
@@ -128,7 +154,7 @@ const arrow = (key: SortKey) => (props.sort?.key === key ? (props.sort.direction
                 class="report-row"
                 title="Report: this diff is wrong"
                 :aria-label="`Report: this diff is wrong (${diff.type} ${diff.action} ${pointer(diff.path)})`"
-                @click="emit('report', diff, location)"
+                @click.stop="emit('report', diff, location)"
               >
                 ⚑
               </button>
@@ -347,6 +373,25 @@ tr:hover .report-row,
 .origin {
   margin-top: 2px;
   color: var(--vp-c-text-3);
+}
+
+.source {
+  margin-top: 2px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  color: var(--vp-c-brand-1);
+}
+
+tr.locatable {
+  cursor: pointer;
+}
+
+tr.locatable:hover td {
+  background: var(--vp-c-default-soft) !important;
+}
+
+tr.selected td {
+  background: var(--vp-c-yellow-soft) !important;
 }
 
 .values {

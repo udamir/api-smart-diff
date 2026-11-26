@@ -3,12 +3,13 @@ import { compareJsonSchema } from "./jsonSchema"
 import { compareGraphApi } from "./graphapi"
 import { compareAsyncApi } from "./asyncapi"
 import { compareOpenApi } from "./openapi"
+import { compareProtoApi, PROTOAPI_VERSION_PATTERN } from "./protoapi"
 import { UnsupportedSpecError } from "./core"
 import { isObject } from "./utils"
 
 export interface DetectedSpec {
   engine: CompareEngineName
-  // specification version as written in the document (e.g. "3.1.0", "2.6.0", "0.1.2")
+  // specification version as written in the document (e.g. "3.1.0", "2.6.0", "0.1.2", "0.1")
   version?: string
 }
 
@@ -16,6 +17,7 @@ const engines: Record<CompareEngineName, CompareEngine> = {
   openapi: compareOpenApi,
   asyncapi: compareAsyncApi,
   graphapi: compareGraphApi,
+  protoapi: compareProtoApi,
   jsonschema: compareJsonSchema,
 }
 
@@ -24,7 +26,7 @@ const versionOf = (value: unknown): string | undefined =>
 
 /**
  * Detects the specification of a document. Objects without a specification marker are JSON Schemas; documents of a
- * recognized but unsupported specification (Swagger 2, OpenAPI 4+, AsyncAPI 1.x/4+, unknown GraphApi versions)
+ * recognized but unsupported specification (Swagger 2, OpenAPI 4+, AsyncAPI 1.x/4+, unknown GraphApi or ProtoApi versions)
  * throw `UnsupportedSpecError`.
  */
 export const detectSpec = (document: unknown): DetectedSpec => {
@@ -58,6 +60,17 @@ export const detectSpec = (document: unknown): DetectedSpec => {
       return { engine: "graphapi", version }
     }
     throw new UnsupportedSpecError(`Unsupported GraphApi version: ${String(document.graphapi)}`, version)
+  }
+
+  if ("protoapi" in document && document.protoapi) {
+    const version = versionOf(document.protoapi)
+    if (version !== undefined && PROTOAPI_VERSION_PATTERN.test(version)) {
+      return { engine: "protoapi", version }
+    }
+    throw new UnsupportedSpecError(
+      `Unsupported ProtoApi version: ${version ?? JSON.stringify(document.protoapi)}`,
+      version,
+    )
   }
 
   return { engine: "jsonschema" }

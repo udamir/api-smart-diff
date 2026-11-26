@@ -1,6 +1,8 @@
 import { spawnSync } from "node:child_process"
 
-import { type CompareResult, compareJsonSchema, compareOpenApi } from "../src"
+import { type CompareResult, compareJsonSchema, compareOpenApi, compareProtoApi } from "../src"
+import { buildProto } from "./helpers"
+import { onePercent, protoCorpus, type ProtoCorpusOptions } from "./helpers/proto-corpus"
 
 const wide = (n: number, firstType: string) => ({
   type: "object",
@@ -236,5 +238,76 @@ describe("Block F — performance characteristics", () => {
     const child = spawnSync(process.execPath, ["--import", "vite-plus/register", "-e", script], { encoding: "utf8" })
     expect(child.stderr).toBe("")
     expect(child.stdout.trim()).toBe("1")
+  })
+})
+
+// PROTOAPI_DESIGN §9.1: the synthetic corpus of the research proof of concept (test/helpers/proto-corpus.ts), built once
+// per size with protoapi outside the timed region; 1 % of the messages are edited so that the Q4 / Q5 transforms run
+// (numeric spelling, bound pair, lifted keywords and their folds, the field shape and the record merge)
+describe("Block F — ProtoApi performance characteristics", () => {
+  const docs = (messages: number, options: ProtoCorpusOptions = {}, mutate = onePercent(messages)) => ({
+    before: buildProto({ "a.proto": protoCorpus(messages, "bench.p", options) }).document,
+    after: buildProto({ "a.proto": protoCorpus(messages, "bench.p", { ...options, mutate }) }).document,
+  })
+  // the records of a mutated message (7 per message: retype with the bound, min length, max length, required,
+  // deprecated, added field, enum value) at every level, none unclassified, no engine error
+  const expectRecords = (result: CompareResult, mutated: number) => {
+    expect(result.errors ?? []).toEqual([])
+    expect(result.diffs.length).toBe(mutated * 7)
+    expect(result.diffs.filter((d) => d.type === "unclassified")).toEqual([])
+  }
+
+  let medium: { before: unknown; after: unknown }
+  let mediumTime = 0
+  beforeAll(() => {
+    medium = docs(1700)
+  }, 60_000)
+
+  it("F10 1,700 messages (1.4 MB of .proto) with 1 % of them edited compare within 1,500 ms", () => {
+    let result!: CompareResult
+    mediumTime = time(() => (result = compareProtoApi(medium.before, medium.after)), 3)
+    expectRecords(result, 17)
+    expect(mediumTime).toBeLessThan(1500)
+  })
+
+  // ISSUE-412, ISSUE-413 (fixed): the way to a difference handed to the walk ran through every target of a reference
+  // chain, and the usage scopes were walked from every changed component up the whole chain, so this corpus (every
+  // message references the previous one) compared in O(n²): 178 ms → 2 011 ms for 1,700 → 10,200 messages (× 11.3)
+  it("F11 10,200 messages (8.6 MB of .proto) compare within 9,000 ms, linear in the corpus size", () => {
+    const large = docs(10_200)
+    let result!: CompareResult
+    const largeTime = time(() => (result = compareProtoApi(large.before, large.after)), 2)
+    expectRecords(result, 102)
+    expect(largeTime).toBeLessThan(9000)
+    // 6 × the messages (and 6 × the edits): at most 1.5 × a linear growth
+    const base = mediumTime || time(() => compareProtoApi(medium.before, medium.after), 3)
+    expect(largeTime / base).toBeLessThan(6 * 1.5)
+  }, 120_000)
+
+  it("F12 500 rpcs on 50 messages compare within 500 ms (usage index, unchanged-subtree walk)", () => {
+    const methods = docs(50, { services: { services: 10, methods: 500 } }, new Set([3, 17]))
+    let result!: CompareResult
+    const elapsed = time(() => (result = compareProtoApi(methods.before, methods.after)), 3)
+    expectRecords(result, 2)
+    expect(elapsed).toBeLessThan(500)
+  })
+
+  it("F13 the WIRE level compares within 1.2 × the time of the FILE level", () => {
+    let file = Number.POSITIVE_INFINITY
+    let wire = Number.POSITIVE_INFINITY
+    let result!: CompareResult
+    // interleaved, so that a slower phase of the machine affects both levels
+    for (let i = 0; i < 3; i++) {
+      file = Math.min(
+        file,
+        time(() => compareProtoApi(medium.before, medium.after, { compatibility: "FILE" }), 1),
+      )
+      wire = Math.min(
+        wire,
+        time(() => (result = compareProtoApi(medium.before, medium.after, { compatibility: "WIRE" })), 1),
+      )
+    }
+    expectRecords(result, 17)
+    expect(wire / file).toBeLessThan(1.2)
   })
 })

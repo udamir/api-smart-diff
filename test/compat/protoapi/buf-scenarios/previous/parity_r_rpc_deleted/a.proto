@@ -1,0 +1,7 @@
+syntax = "proto3";
+package p;
+message R {}
+service S {
+  rpc A(R) returns (R);
+  rpc B(R) returns (R);
+}

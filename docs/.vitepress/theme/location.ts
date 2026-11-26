@@ -2,7 +2,8 @@
  * The API location of a diff, for the result table and the issue report: for OpenAPI the HTTP method, the endpoint
  * (path template) and the request / response part (`GET /pets/{id} · response 200 application/json`); for AsyncAPI the
  * operation, the channel and the message; for GraphApi the operation kind, the field and arguments vs output; for
- * JSON Schema the JSON pointer only. A diff inside `components` names the component and lists its usages that the
+ * ProtoApi the rpc, the declaration (service, message, enum, extension or file) and the element in it (field, value,
+ * option, request / response); for JSON Schema the JSON pointer only. A diff inside `components` names the component and lists its usages that the
  * engine reports (the diffs whose `origin` is the component path). Derived from `diff.path` (and `origin`, `scope`)
  * against the merged document, which has the shape the diff paths refer to (path-level parameters moved into the
  * operations, `$ref`s resolved), and the before / after documents. Pure: no DOM, no engine call.
@@ -14,11 +15,11 @@ type Segment = string | number
 type Path = readonly Segment[]
 
 export interface DiffLocation {
-  /** OpenAPI: the HTTP method; AsyncAPI: the operation (`send onOrderCreated`, `subscribe`); GraphApi: query / mutation / subscription */
+  /** OpenAPI: the HTTP method; AsyncAPI: the operation (`send onOrderCreated`, `subscribe`); GraphApi: query / mutation / subscription; ProtoApi: the rpc */
   method: string
-  /** OpenAPI: the endpoint (path template) or the webhook; AsyncAPI: the channel; GraphApi: the field; a component; a top-level section */
+  /** OpenAPI: the endpoint (path template) or the webhook; AsyncAPI: the channel; GraphApi: the field; ProtoApi: the service, message, enum or file; a component; a top-level section */
   target: string
-  /** OpenAPI: request body / response / parameter; AsyncAPI: the message; GraphApi: argument / output */
+  /** OpenAPI: request body / response / parameter; AsyncAPI: the message; GraphApi: argument / output; ProtoApi: field / value / option / request / response */
   part: string
   /** the component the value is declared in (the diff has an `origin` in `components`) */
   via?: string
@@ -46,7 +47,8 @@ export interface LocationColumn {
  * Location columns of the result table for an engine (`undefined`: one "Location" column with the JSON pointer). OpenAPI
  * shows the method and the endpoint only (the request / response part stays in the one-line text: cell titles and the
  * issue report); AsyncAPI keeps the message and GraphApi the arguments / output column, which also names the member
- * of a component (`field name · output`, `value RED`) the diff is in.
+ * of a component (`field name · output`, `value RED`) the diff is in. ProtoApi shows the rpc, the declaration and the
+ * element of the declaration (`field note`, `value STATUS_REFUNDED`, `option go_package`, `response`).
  */
 export const locationColumns = (engine: string | undefined): LocationColumn[] | undefined => {
   switch (engine) {
@@ -66,6 +68,12 @@ export const locationColumns = (engine: string | undefined): LocationColumn[] | 
         { key: "method", label: "Operation" },
         { key: "target", label: "Field" },
         { key: "part", label: "Arguments / Output" },
+      ]
+    case "protoapi":
+      return [
+        { key: "method", label: "RPC" },
+        { key: "target", label: "Declaration" },
+        { key: "part", label: "Element" },
       ]
     default:
       return undefined
@@ -485,6 +493,68 @@ const graphApiLocation = (context: LocationContext, path: Path, diff: Diff): Dif
   return documentLocation(section, name)
 }
 
+// ---- ProtoApi ---------------------------------------------------------------------------------------------------
+
+const PROTOAPI_COMPONENTS: Record<string, string> = {
+  messages: "message",
+  enums: "enum",
+  extensions: "extension",
+}
+
+const PROTOAPI_MEMBERS: Record<string, string> = {
+  properties: "field",
+  oneofs: "oneof",
+  values: "value",
+  options: "option",
+  methods: "rpc",
+  bindings: "binding",
+}
+
+/**
+ * The element of a ProtoApi declaration (`rest` is the path below it): a field, a oneof, an enum value, an option, a
+ * reserved range or the keyword itself (`package`, `file`, `deprecation`). A rename is reported at the parent map
+ * (`properties`) with the new key appended by `diffLocation`: the element shows both names.
+ */
+const protoElement = (rest: Path, diff: Diff): string => {
+  const [key, child] = rest
+  if (key === undefined) {
+    return ""
+  }
+  const member = PROTOAPI_MEMBERS[String(key)]
+  if (!member || child === undefined) {
+    return String(key)
+  }
+  const renamed = diff.action === "rename" && rest.length === 2 && String(child) === String(diff.after)
+  return `${member} ${renamed ? `${String(diff.before)} → ${String(diff.after)}` : String(child)}`
+}
+
+const protoApiLocation = (_context: LocationContext, path: Path, diff: Diff): DiffLocation => {
+  const [section, name, ...rest] = path
+  if (section === "services" && name !== undefined) {
+    const [key, rpc, ...below] = rest
+    if (key === "methods" && rpc !== undefined) {
+      const renamed = diff.action === "rename" && below.length === 0 && String(rpc) === String(diff.after)
+      const method = renamed ? `${String(diff.before)} → ${String(diff.after)}` : String(rpc)
+      const target = `service ${name}`
+      const part = protoElement(below, diff)
+      return { method, target, part, text: join(`rpc ${method}`, target, part) }
+    }
+    return make("", `service ${name}`, protoElement(rest, diff))
+  }
+  if (section === "components" && name !== undefined) {
+    const kind = PROTOAPI_COMPONENTS[String(name)] ?? String(name)
+    const [component, ...below] = rest
+    if (component === undefined) {
+      return make("", `components ${name}`, "")
+    }
+    return make("", `${kind} ${component}`, protoElement(below, diff))
+  }
+  if (section === "files" && name !== undefined) {
+    return make("", `file ${name}`, protoElement(rest, diff))
+  }
+  return documentLocation(section, name)
+}
+
 // ---- entry points -----------------------------------------------------------------------------------------------
 
 /** The component an `origin` points into (`schema Pet`), for the usages of a component */
@@ -494,7 +564,13 @@ const originComponent = (engine: CompareEngineName, origin: Path): string | unde
     return undefined
   }
   const names =
-    engine === "asyncapi" ? ASYNCAPI_COMPONENTS : engine === "graphapi" ? GRAPHAPI_COMPONENTS : OPENAPI_COMPONENTS
+    engine === "asyncapi"
+      ? ASYNCAPI_COMPONENTS
+      : engine === "graphapi"
+        ? GRAPHAPI_COMPONENTS
+        : engine === "protoapi"
+          ? PROTOAPI_COMPONENTS
+          : OPENAPI_COMPONENTS
   return `${names[String(kind)] ?? String(kind)} ${name}`
 }
 
@@ -509,7 +585,13 @@ export const diffLocation = (diff: Diff, context: LocationContext): DiffLocation
   const renamed = diff.action === "rename" && (typeof diff.after === "string" || typeof diff.after === "number")
   const located = renamed ? [...path, diff.after as Segment] : path
   const locate =
-    context.engine === "openapi" ? openApiLocation : context.engine === "asyncapi" ? asyncApiLocation : graphApiLocation
+    context.engine === "openapi"
+      ? openApiLocation
+      : context.engine === "asyncapi"
+        ? asyncApiLocation
+        : context.engine === "protoapi"
+          ? protoApiLocation
+          : graphApiLocation
   let location = locate(context, located, diff)
   if (renamed && location.target.endsWith(String(diff.after))) {
     const target = `${location.target.slice(0, -String(diff.after).length)}${String(diff.before)} → ${String(diff.after)}`

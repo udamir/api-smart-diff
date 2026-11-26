@@ -1,0 +1,6 @@
+edition = "2023";
+package p;
+enum E {
+  E_UNSPECIFIED = 0;
+  A = 1;
+}

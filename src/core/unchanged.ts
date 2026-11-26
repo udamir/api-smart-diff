@@ -4,7 +4,7 @@ import { ownValue } from "../own"
 
 // root keys that select a specification profile: a subtree is interpreted the same way on both sides only when the
 // two documents agree on them (OpenAPI 3.0 and 3.1 read `exclusiveMaximum`, `nullable` or `example` differently)
-const PROFILE_KEYS = ["openapi", "asyncapi", "graphapi", "swagger", "$schema", "jsonSchemaDialect"]
+const PROFILE_KEYS = ["openapi", "asyncapi", "graphapi", "protoapi", "swagger", "$schema", "jsonSchemaDialect"]
 
 const UNCHANGED_KEY = "unchanged-subtrees"
 

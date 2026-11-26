@@ -1,6 +1,6 @@
 # What is api-smart-diff?
 
-`api-smart-diff` compares two versions of an API document and tells you what changed and what the change means for the clients of the API. It reads OpenAPI, AsyncAPI, JSON Schema and GraphQL (in its [GraphApi](https://github.com/udamir/graphapi) encoding), runs in Node.js and in the browser, and has two small runtime dependencies (`json-crawl` and `allof-merge`).
+`api-smart-diff` compares two versions of an API document and tells you what changed and what the change means for the clients of the API. It reads OpenAPI, AsyncAPI, JSON Schema, GraphQL (in its [GraphApi](https://github.com/udamir/graphapi) encoding) and gRPC / Protocol Buffers (in its [ProtoApi](./protoapi) encoding), runs in Node.js and in the browser, and has two small runtime dependencies (`json-crawl` and `allof-merge`).
 
 ```ts
 import { apiCompare } from "api-smart-diff"

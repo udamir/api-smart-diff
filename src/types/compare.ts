@@ -60,7 +60,7 @@ export type SourceContext = {
   }
 }
 
-export type CompareEngineName = "openapi" | "asyncapi" | "graphapi" | "jsonschema"
+export type CompareEngineName = "openapi" | "asyncapi" | "graphapi" | "protoapi" | "jsonschema"
 
 export type CompareOptions = {
   // custom rules for compare

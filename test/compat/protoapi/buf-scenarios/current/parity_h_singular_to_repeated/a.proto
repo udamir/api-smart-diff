@@ -1,0 +1,7 @@
+syntax = "proto3";
+package p;
+message M {
+  repeated string s = 1;
+  repeated M m = 2;
+  repeated int32 i = 3;
+}

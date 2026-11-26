@@ -3,21 +3,24 @@ import { withBase } from "vitepress"
 import { computed, onMounted, ref, shallowRef, watch } from "vue"
 
 import pkg from "../../../../package.json"
-import type { CompareEngineName, CompareOptions, Diff } from "../../../../src"
+import type { CompareEngineName, CompareOptions, Diff, ProtoApiCompatibility } from "../../../../src"
 import { errorLines } from "../analysis"
 import {
   type DemoOptions,
+  PROTO_LEVELS,
+  PROTO_LEVEL_HINTS,
   type TextFormat,
   convertText,
   decodeStateAsync,
   encodeStateCompressed,
   formatOf,
+  languageOf,
   serialize,
 } from "../diff"
 import { EXAMPLES } from "../examples"
 import { workerRunner, useLiveAnalysis } from "../live"
-import { PRESETS, SDL_PRESET } from "../presets"
-import { type ReportBase, type ReportDiff, documentLanguage, engineOfLabel, reportDiff } from "../report"
+import { PRESETS, PROTO_PRESET, SDL_PRESET } from "../presets"
+import { type ReportBase, type ReportDiff, documentLanguage, engineOfLabel, protoSnippet, reportDiff } from "../report"
 import type { DiffLocation } from "../location"
 import CodeEditor from "./CodeEditor.vue"
 import DiffResults from "./DiffResults.vue"
@@ -25,7 +28,8 @@ import ReportDialog from "./ReportDialog.vue"
 
 // the curated examples whose options can be expressed by the demo controls (no custom rules or external sources)
 const EXAMPLE_PRESETS = EXAMPLES.filter((example) => !example.options)
-const ALL_PRESETS = [...PRESETS, SDL_PRESET, ...EXAMPLE_PRESETS]
+const SHOWCASE_PRESETS = [...PRESETS, SDL_PRESET, PROTO_PRESET]
+const ALL_PRESETS = [...SHOWCASE_PRESETS, ...EXAMPLE_PRESETS]
 
 const preset = ref<string>(PRESETS[0].id)
 const before = ref("")
@@ -34,6 +38,7 @@ const format = ref<TextFormat>("yaml")
 const merged = ref<"original" | "normalized">("original")
 const components = ref<"usage" | "unclassified">("usage")
 const engine = ref<"auto" | CompareEngineName>("auto")
+const compatibility = ref<ProtoApiCompatibility>("FILE")
 const tab = ref<"diffs" | "merged" | "errors">("diffs")
 // the diffs tab as the table or as the raw `diffs` array in YAML
 const view = ref<"table" | "yaml">("table")
@@ -62,6 +67,9 @@ const options = computed<CompareOptions>(() => {
   if (engine.value !== "auto") {
     result.engine = engine.value
   }
+  if (compatibility.value !== "FILE") {
+    ;(result as DemoOptions).compatibility = compatibility.value
+  }
   return result
 })
 
@@ -80,6 +88,23 @@ const engineUsed = computed(() => live.analysis.value?.engine)
 const mergedText = computed(() => live.analysis.value?.mergedText ?? "")
 const sides = computed(() => live.latest.value?.sides)
 const anySdl = computed(() => !!(sides.value?.before.sdl || sides.value?.after.sdl))
+const anyProto = computed(() => !!(sides.value?.before.proto || sides.value?.after.proto))
+// the compatibility select applies to ProtoApi documents (built from `.proto` input or given as YAML / JSON)
+const protoApi = computed(
+  () =>
+    anyProto.value ||
+    engine.value === "protoapi" ||
+    /ProtoApi/.test(`${sides.value?.before.label} ${sides.value?.after.label}`),
+)
+const buildIssues = computed(() => live.latest.value?.buildIssues ?? [])
+
+// a selected diff of `.proto` input highlights its source line in the editor of its side
+const sourceLines = computed(() => live.analysis.value?.sourceLines)
+const selected = ref<number>()
+watch(sourceLines, () => (selected.value = undefined))
+const selectedLine = computed(() => (selected.value === undefined ? undefined : sourceLines.value?.[selected.value]))
+const highlightOf = (side: "before" | "after") =>
+  selectedLine.value?.side === side ? { from: selectedLine.value.from, to: selectedLine.value.to } : undefined
 const empty = computed(() => !before.value.trim() || !after.value.trim())
 
 const code = computed(() => {
@@ -144,16 +169,33 @@ const reportBase = computed<ReportBase>(() => {
   const label = sides.value?.before.label || sides.value?.after.label || "not detected"
   const forced = engine.value !== "auto" ? engine.value : undefined
   const detected = engineOfLabel(label)
+  const engineNote = [
+    ...(forced ? [`engine forced: ${forced}`] : detected ? [`engine ${detected}`] : []),
+    ...(protoApi.value ? [`compatibility ${compatibility.value}`] : []),
+  ]
   return {
     version: pkg.version,
     origin: "online demo",
-    spec: `${label}${forced ? ` (engine forced: ${forced})` : detected ? ` (engine ${detected})` : ""}`,
-    snippet: `import { apiCompare } from "api-smart-diff"\n\n// before, after: the documents below${anySdl.value ? " (GraphQL SDL converted with gqlapi: buildFromSchema(buildSchema(sdl)))" : ""}\n${code.value}`,
+    spec: `${label}${engineNote.length ? ` (${engineNote.join(", ")})` : ""}`,
+    snippet: anyProto.value
+      ? protoSnippet(
+          compatibility.value === "FILE" ? undefined : compatibility.value,
+          Object.entries(options.value)
+            .filter(([key]) => key !== "compatibility")
+            .map(([key, value]) => `${key}: ${JSON.stringify(value)}`),
+        )
+      : `import { apiCompare } from "api-smart-diff"\n\n// before, after: the documents below${anySdl.value ? " (GraphQL SDL converted with gqlapi: buildFromSchema(buildSchema(sdl)))" : ""}\n${code.value}`,
     diffs: diffs.value.map((diff, index) => reportDiff({ ...diff, location: locations.value?.[index]?.text })),
     failure: live.inputError.value ?? comparison.value?.failure,
     errors: errorLines(errors.value),
-    before: { text: before.value, language: documentLanguage(before.value, sides.value?.before.sdl) },
-    after: { text: after.value, language: documentLanguage(after.value, sides.value?.after.sdl) },
+    before: {
+      text: before.value,
+      language: documentLanguage(before.value, sides.value?.before.sdl, sides.value?.before.proto),
+    },
+    after: {
+      text: after.value,
+      language: documentLanguage(after.value, sides.value?.after.sdl, sides.value?.after.proto),
+    },
   }
 })
 
@@ -176,6 +218,7 @@ onMounted(async () => {
   engine.value = state.options?.engine ?? "auto"
   merged.value = state.options?.merged ?? "original"
   components.value = state.options?.components ?? "usage"
+  compatibility.value = state.options?.compatibility ?? "FILE"
 })
 </script>
 
@@ -187,7 +230,7 @@ onMounted(async () => {
         <select v-model="preset">
           <option v-if="!preset" value="" disabled>Shared input</option>
           <optgroup label="Showcase (one per specification)">
-            <option v-for="item in [...PRESETS, SDL_PRESET]" :key="item.id" :value="item.id">{{ item.title }}</option>
+            <option v-for="item in SHOWCASE_PRESETS" :key="item.id" :value="item.id">{{ item.title }}</option>
           </optgroup>
           <optgroup label="Curated examples">
             <option v-for="item in EXAMPLE_PRESETS" :key="item.id" :value="item.id">{{ item.title }}</option>
@@ -208,7 +251,19 @@ onMounted(async () => {
           <option value="openapi">openapi</option>
           <option value="asyncapi">asyncapi</option>
           <option value="graphapi">graphapi</option>
+          <option value="protoapi">protoapi</option>
           <option value="jsonschema">jsonschema</option>
+        </select>
+      </label>
+      <label
+        v-if="protoApi || compatibility !== 'FILE'"
+        title="options.compatibility (ProtoApi): the clients and the generated code a change is judged for"
+      >
+        compatibility
+        <select v-model="compatibility">
+          <option v-for="level in PROTO_LEVELS" :key="level" :value="level" :title="PROTO_LEVEL_HINTS[level]">
+            {{ level }}
+          </option>
         </select>
       </label>
       <label title="options.merged: original input values or the normalized comparison values">
@@ -236,7 +291,12 @@ onMounted(async () => {
             <button class="link" type="button" :disabled="!before" @click="before = ''">Clear</button>
           </span>
         </header>
-        <CodeEditor v-model="before" :language="formatOf(before)" label="Before document" />
+        <CodeEditor
+          v-model="before"
+          :language="languageOf(before)"
+          label="Before document"
+          :highlight="highlightOf('before')"
+        />
       </section>
       <section class="pane">
         <header>
@@ -247,7 +307,12 @@ onMounted(async () => {
             <button class="link" type="button" :disabled="!after" @click="after = ''">Clear</button>
           </span>
         </header>
-        <CodeEditor v-model="after" :language="formatOf(after)" label="After document" />
+        <CodeEditor
+          v-model="after"
+          :language="languageOf(after)"
+          label="After document"
+          :highlight="highlightOf('after')"
+        />
       </section>
     </div>
 
@@ -257,6 +322,18 @@ onMounted(async () => {
         GraphQL SDL is converted first with gqlapi: <code>buildFromSchema(buildSchema(sdl))</code> gives a GraphApi 1.0
         document.
       </p>
+      <p v-if="anyProto" class="note">
+        <code>.proto</code> sources are built first with protoapi:
+        <code>buildFromProto(files, &#123; imports: "user" &#125;)</code> gives a ProtoApi 0.1 document (a
+        <code>// file: &lt;path&gt;</code> line starts a file; without one the editor is <code>api.proto</code>). Click
+        a diff to highlight its source line.
+      </p>
+    </div>
+
+    <div v-if="buildIssues.length" class="build-issues" role="status" aria-label="protoapi build issues">
+      <div v-for="(issue, index) in buildIssues" :key="index" :class="issue.fatal ? 'fatal' : 'warning'">
+        {{ issue.fatal ? "error" : "warning" }} {{ issue.text }}
+      </div>
     </div>
 
     <section class="output">
@@ -328,10 +405,13 @@ onMounted(async () => {
           :diffs="diffs"
           :locations="locations"
           :engine="engineUsed"
+          :source-lines="sourceLines"
+          :selected="selected"
           label="Diffs as YAML"
           yaml-height="520px"
           reportable
           @report="report"
+          @select="(index) => (selected = selected === index ? undefined : index)"
         />
         <div v-if="tab === 'merged'" class="merged">
           <p class="merged-note">
@@ -472,6 +552,24 @@ onMounted(async () => {
 .note {
   margin: 6px 0 0;
   color: var(--vp-c-text-2);
+}
+
+.build-issues {
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  background: var(--vp-c-bg-soft);
+}
+
+.build-issues .fatal {
+  color: var(--vp-c-danger-1);
+}
+
+.build-issues .warning {
+  color: var(--vp-c-warning-1);
 }
 
 .output {

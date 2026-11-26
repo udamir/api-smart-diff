@@ -1,0 +1,5 @@
+edition = "2023";
+package p;
+message M {
+  string s = 1;
+}

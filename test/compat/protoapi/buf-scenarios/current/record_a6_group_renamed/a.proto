@@ -1,0 +1,7 @@
+syntax = "proto2";
+package p;
+message M {
+  optional group Entry = 1 {
+    optional string id = 2;
+  }
+}

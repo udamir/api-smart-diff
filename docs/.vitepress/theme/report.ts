@@ -4,6 +4,8 @@
  * portal state — as a prefilled "new issue" URL for the issue form `.github/ISSUE_TEMPLATE/bug_report.yml` (fields
  * prefilled by their `id`) and as Markdown to copy. Nothing is sent anywhere: the reader opens the URL and submits.
  */
+import protoapiPackage from "protoapi/package.json" with { type: "json" }
+
 import type { ActionType, DiffType } from "../../../src"
 import { DIFF_TYPES } from "./diff"
 
@@ -73,7 +75,7 @@ export interface ReportDiff {
 
 export interface ReportDocument {
   text: string
-  /** fence language: yaml, json or graphql */
+  /** fence language: yaml, json, graphql or proto */
   language: string
 }
 
@@ -302,9 +304,9 @@ export const buildReport = (input: ReportInput, maxLength = MAX_URL_LENGTH): Rep
   }
 }
 
-/** Fence language of an editor text */
-export const documentLanguage = (text: string, sdl = false): string =>
-  sdl ? "graphql" : /^\s*[{[]/.test(text) ? "json" : "yaml"
+/** Fence language of an editor text (`sdl`: GraphQL SDL, `proto`: `.proto` sources) */
+export const documentLanguage = (text: string, sdl = false, proto = false): string =>
+  proto ? "proto" : sdl ? "graphql" : /^\s*[{[]/.test(text) ? "json" : "yaml"
 
 /** What the demo or an example knows about the comparison; the dialog adds the reader's answers and the link */
 export type ReportBase = Omit<ReportInput, "kind" | "expectedType" | "note" | "diff" | "shareUrl" | "userAgent">
@@ -336,6 +338,24 @@ export const engineOfLabel = (label: string): string | undefined =>
       ? "asyncapi"
       : label.includes("GraphApi")
         ? "graphapi"
-        : label.includes("JSON Schema")
-          ? "jsonschema"
-          : undefined
+        : label.includes("ProtoApi")
+          ? "protoapi"
+          : label.includes("JSON Schema")
+            ? "jsonschema"
+            : undefined
+
+/**
+ * The reproduction of a comparison of `.proto` sources: the protoapi build of both sides (the version the portal
+ * bundles, `imports: "user"`) and the `apiCompare(...)` call with the compatibility level (absent: the default `FILE`)
+ */
+export const protoSnippet = (compatibility?: string, extraOptions: readonly string[] = []): string => {
+  const options = [...(compatibility ? [`compatibility: "${compatibility}"`] : []), ...extraOptions]
+  return `import { buildFromProto } from "protoapi" // ${protoapiPackage.version}
+import { apiCompare } from "api-smart-diff"
+
+// beforeFiles, afterFiles: the .proto sources below, { [import path]: text } (a "// file: <path>" line starts a file;
+// without one the editor is the file "api.proto")
+const before = buildFromProto(beforeFiles, { imports: "user" }).document
+const after = buildFromProto(afterFiles, { imports: "user" }).document
+apiCompare(before, after${options.length ? `, { ${options.join(", ")} }` : ""})`
+}

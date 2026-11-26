@@ -1,0 +1,4 @@
+syntax = "proto3";
+package p;
+message M { int32 e = 1; }
+enum E { E_UNSPECIFIED = 0; }

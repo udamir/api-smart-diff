@@ -1,12 +1,13 @@
 /**
  * Curated before / after pairs. The examples page renders each one with a live, editable comparison, the online demo
  * offers the presets, and `test/docs/examples.test.ts` runs every example through the engine and checks the listed
- * diffs, so the documentation cannot drift from the library.
+ * diffs, so the documentation cannot drift from the library. The Protocol Buffers examples are `.proto` sources, built
+ * with protoapi in the browser, and document their diffs at each compatibility level.
  */
 import { allBreaking, breaking, enumMappingResolver, nonBreaking } from "../../../src"
-import type { ActionType, CompareOptions, DiffType } from "../../../src"
+import type { ActionType, CompareOptions, DiffType, ProtoApiCompatibility } from "../../../src"
 
-export type ExampleSpec = "openapi" | "asyncapi" | "jsonschema" | "graphapi"
+export type ExampleSpec = "openapi" | "asyncapi" | "jsonschema" | "graphapi" | "protoapi"
 
 export interface ExpectedDiff {
   type: DiffType
@@ -30,8 +31,10 @@ export interface DiffExample {
   options?: CompareOptions
   /** the TypeScript that produces `options`, shown next to the example */
   optionsCode?: string
-  /** every diff the comparison returns, in any order */
+  /** every diff the comparison returns, in any order (for `.proto` examples: at the default level `FILE`) */
   expected: ExpectedDiff[]
+  /** `.proto` examples: every diff at each compatibility level (`options.compatibility`), selectable on the page */
+  levels?: Record<ProtoApiCompatibility, ExpectedDiff[]>
 }
 
 export const SPEC_LABELS: Record<ExampleSpec, string> = {
@@ -39,7 +42,15 @@ export const SPEC_LABELS: Record<ExampleSpec, string> = {
   asyncapi: "AsyncAPI",
   jsonschema: "JSON Schema",
   graphapi: "GraphApi",
+  protoapi: "ProtoApi",
 }
+
+/** A Protocol Buffers example: `.proto` sources, documented at every level; `expected` is the `FILE` result */
+const protoExample = (
+  example: Pick<DiffExample, "id" | "title" | "summary" | "before" | "after"> & {
+    levels: Record<ProtoApiCompatibility, ExpectedDiff[]>
+  },
+): DiffExample => ({ ...example, spec: "protoapi", group: "Protocol Buffers", expected: example.levels.FILE })
 
 const petsApi = (operation: string, components = ""): string => `openapi: 3.1.0
 info:
@@ -1444,6 +1455,953 @@ components:
     ],
   },
 
+  // ---------------------------------------------------------------------------------------------------------------
+  // Protocol Buffers (ProtoApi): `.proto` sources built with protoapi in the browser, compared at four levels
+  protoExample({
+    id: "proto-field-number",
+    title: "Field number changed",
+    summary:
+      "Fields are paired by number, because the number is what goes on the wire: renumbering `note` from 5 to 6 is field 5 removed without reserving its number (breaking at every level: a later field could reuse 5 with another meaning, and old clients would misread it) plus a new field 6 (non-breaking).",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  string note = 5;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  string note = 6;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    levels: {
+      FILE: [
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+      ],
+      PACKAGE: [
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+      ],
+      WIRE_JSON: [
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+      ],
+      WIRE: [
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+      ],
+    },
+  }),
+  protoExample({
+    id: "proto-field-removed",
+    title: "Field removed, with and without reserving its number",
+    summary:
+      "`coupon` is removed and its number and name are reserved: existing clients keep working and only code generated from the old file loses the field, so the removal is risky at `FILE` and `PACKAGE` and an annotation at `WIRE_JSON` and `WIRE`. `note` is removed without a reservation: breaking at every level, since a later field could reuse number 5. The new reservations are non-breaking (the reserved name is an annotation at `WIRE`, where names do not matter).",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  string coupon = 4;
+  string note = 5;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  reserved 4;
+  reserved "coupon";
+
+  string id = 1;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    levels: {
+      FILE: [
+        {
+          type: "risky",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/coupon",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/numbers/0",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/names/0",
+          scope: "components",
+        },
+      ],
+      PACKAGE: [
+        {
+          type: "risky",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/coupon",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/numbers/0",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/names/0",
+          scope: "components",
+        },
+      ],
+      WIRE_JSON: [
+        {
+          type: "annotation",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/coupon",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/numbers/0",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/names/0",
+          scope: "components",
+        },
+      ],
+      WIRE: [
+        {
+          type: "annotation",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/coupon",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "remove",
+          path: "/components/messages/shop.v1.Order/properties/note",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/numbers/0",
+          scope: "components",
+        },
+        {
+          type: "annotation",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/reserved/names/0",
+          scope: "components",
+        },
+      ],
+    },
+  }),
+  protoExample({
+    id: "proto-type-change",
+    title: "Field type changed: compatible on the wire or not",
+    summary:
+      "`int32` to `int64` keeps the varint encoding: binary clients still read the field (values above 2³¹ are truncated), so the change is risky at `WIRE` but breaking where ProtoJSON or generated code count (in ProtoJSON a 64-bit integer is a string). `int32` to `string` changes the wire type: breaking at every level.",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  int32 priority = 4;
+  int32 quantity = 6;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  int64 priority = 4;
+  string quantity = 6;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    levels: {
+      FILE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/priority/type",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/quantity/type",
+          scope: "components",
+        },
+      ],
+      PACKAGE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/priority/type",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/quantity/type",
+          scope: "components",
+        },
+      ],
+      WIRE_JSON: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/priority/type",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/quantity/type",
+          scope: "components",
+        },
+      ],
+      WIRE: [
+        {
+          type: "risky",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/priority/type",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.Order/properties/quantity/type",
+          scope: "components",
+        },
+      ],
+    },
+  }),
+  protoExample({
+    id: "proto-enum-value",
+    title: "Enum value added (risky in a response)",
+    summary:
+      "`Status` is returned in a response: a client that receives the new `STATUS_REFUNDED` may not handle it, so the addition is risky. `Channel` is sent in a request: the server accepts the old values and the new one, so the addition is non-breaking. The direction of a message comes from the rpcs that use it.",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_PENDING = 1;
+  STATUS_PAID = 2;
+}
+
+enum Channel {
+  CHANNEL_UNSPECIFIED = 0;
+  CHANNEL_WEB = 1;
+}
+
+message Order {
+  string id = 1;
+  Status status = 2;
+}
+
+message GetOrderRequest {
+  string id = 1;
+  Channel channel = 2;
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_PENDING = 1;
+  STATUS_PAID = 2;
+  STATUS_REFUNDED = 3;
+}
+
+enum Channel {
+  CHANNEL_UNSPECIFIED = 0;
+  CHANNEL_WEB = 1;
+  CHANNEL_MOBILE = 2;
+}
+
+message Order {
+  string id = 1;
+  Status status = 2;
+}
+
+message GetOrderRequest {
+  string id = 1;
+  Channel channel = 2;
+}
+`,
+    levels: {
+      FILE: [
+        {
+          type: "risky",
+          action: "add",
+          path: "/components/enums/shop.v1.Status/values/STATUS_REFUNDED",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/enums/shop.v1.Channel/values/CHANNEL_MOBILE",
+          scope: "components",
+        },
+      ],
+      PACKAGE: [
+        {
+          type: "risky",
+          action: "add",
+          path: "/components/enums/shop.v1.Status/values/STATUS_REFUNDED",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/enums/shop.v1.Channel/values/CHANNEL_MOBILE",
+          scope: "components",
+        },
+      ],
+      WIRE_JSON: [
+        {
+          type: "risky",
+          action: "add",
+          path: "/components/enums/shop.v1.Status/values/STATUS_REFUNDED",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/enums/shop.v1.Channel/values/CHANNEL_MOBILE",
+          scope: "components",
+        },
+      ],
+      WIRE: [
+        {
+          type: "risky",
+          action: "add",
+          path: "/components/enums/shop.v1.Status/values/STATUS_REFUNDED",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "add",
+          path: "/components/enums/shop.v1.Channel/values/CHANNEL_MOBILE",
+          scope: "components",
+        },
+      ],
+    },
+  }),
+  protoExample({
+    id: "proto-streaming",
+    title: "Streaming turned on for an rpc",
+    summary:
+      "Turning the response of `ListOrders` or the request of `CreateOrders` into a stream changes the call type: the generated stubs and the framing that existing clients expect no longer match, so both changes are breaking at every level.",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc ListOrders(ListOrdersRequest) returns (Order);
+  rpc CreateOrders(Order) returns (CreateOrdersResponse);
+}
+
+message Order {
+  string id = 1;
+}
+
+message ListOrdersRequest {
+  string customer_id = 1;
+}
+
+message CreateOrdersResponse {
+  int32 created = 1;
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc ListOrders(ListOrdersRequest) returns (stream Order);
+  rpc CreateOrders(stream Order) returns (CreateOrdersResponse);
+}
+
+message Order {
+  string id = 1;
+}
+
+message ListOrdersRequest {
+  string customer_id = 1;
+}
+
+message CreateOrdersResponse {
+  int32 created = 1;
+}
+`,
+    levels: {
+      FILE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/ListOrders/response",
+          scope: "response",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/CreateOrders/request",
+          scope: "request",
+        },
+      ],
+      PACKAGE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/ListOrders/response",
+          scope: "response",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/CreateOrders/request",
+          scope: "request",
+        },
+      ],
+      WIRE_JSON: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/ListOrders/response",
+          scope: "response",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/CreateOrders/request",
+          scope: "request",
+        },
+      ],
+      WIRE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/ListOrders/response",
+          scope: "response",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/services/shop.v1.OrderService/methods/CreateOrders/request",
+          scope: "request",
+        },
+      ],
+    },
+  }),
+  protoExample({
+    id: "proto-package-rename",
+    title: "Package renamed",
+    summary:
+      "A package rename changes the full name of every declaration (`shop.v1.Order` becomes `shop.v2.Order`) and the gRPC method paths, so it is breaking at every level. It is one diff at the `package` statement of the file, not one per declaration.",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v2;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    levels: {
+      FILE: [{ type: "breaking", action: "replace", path: "/files/api.proto/package", scope: "root" }],
+      PACKAGE: [{ type: "breaking", action: "replace", path: "/files/api.proto/package", scope: "root" }],
+      WIRE_JSON: [{ type: "breaking", action: "replace", path: "/files/api.proto/package", scope: "root" }],
+      WIRE: [{ type: "breaking", action: "replace", path: "/files/api.proto/package", scope: "root" }],
+    },
+  }),
+  protoExample({
+    id: "proto-field-rename",
+    title: "Field renamed, same number",
+    summary:
+      "The binary encoding carries only the number, so renaming `customer_id` to `buyer_id` is non-breaking at `WIRE`. ProtoJSON writes the field name (`customerId` becomes `buyerId`) and generated code uses it, so the rename is breaking at `WIRE_JSON`, `PACKAGE` and `FILE`. Switch the level to compare.",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  string customer_id = 2;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v1;
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  string buyer_id = 2;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+    levels: {
+      FILE: [
+        {
+          type: "breaking",
+          action: "rename",
+          path: "/components/messages/shop.v1.Order/properties",
+          scope: "components",
+        },
+      ],
+      PACKAGE: [
+        {
+          type: "breaking",
+          action: "rename",
+          path: "/components/messages/shop.v1.Order/properties",
+          scope: "components",
+        },
+      ],
+      WIRE_JSON: [
+        {
+          type: "breaking",
+          action: "rename",
+          path: "/components/messages/shop.v1.Order/properties",
+          scope: "components",
+        },
+      ],
+      WIRE: [
+        {
+          type: "non-breaking",
+          action: "rename",
+          path: "/components/messages/shop.v1.Order/properties",
+          scope: "components",
+        },
+      ],
+    },
+  }),
+  protoExample({
+    id: "proto-validation",
+    title: "Validation rules changed (buf.validate)",
+    summary:
+      "protovalidate rules are compared by meaning, like JSON Schema keywords, and classified by the direction of the message. Lowering the `page_size` maximum of a request from 100 to 50 rejects requests that were valid: breaking. Raising the length limit of `customer_id` in a request accepts more: non-breaking. Raising the item limit of a response field lets the server send more items than clients expect: breaking. Validation rules count at every level.",
+    before: `syntax = "proto3";
+
+package shop.v1;
+
+import "buf/validate/validate.proto";
+
+service OrderService {
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+}
+
+message ListOrdersRequest {
+  int32 page_size = 1 [(buf.validate.field).int32 = {gte: 1, lte: 100}];
+  string customer_id = 2 [(buf.validate.field).string.max_len = 64];
+}
+
+message ListOrdersResponse {
+  repeated string order_ids = 1 [(buf.validate.field).repeated.max_items = 100];
+}
+`,
+    after: `syntax = "proto3";
+
+package shop.v1;
+
+import "buf/validate/validate.proto";
+
+service OrderService {
+  rpc ListOrders(ListOrdersRequest) returns (ListOrdersResponse);
+}
+
+message ListOrdersRequest {
+  int32 page_size = 1 [(buf.validate.field).int32 = {gte: 1, lte: 50}];
+  string customer_id = 2 [(buf.validate.field).string.max_len = 128];
+}
+
+message ListOrdersResponse {
+  repeated string order_ids = 1 [(buf.validate.field).repeated.max_items = 200];
+}
+`,
+    levels: {
+      FILE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/page_size/maximum",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/customer_id/maxLength",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersResponse/properties/order_ids/maxItems",
+          scope: "components",
+        },
+      ],
+      PACKAGE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/page_size/maximum",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/customer_id/maxLength",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersResponse/properties/order_ids/maxItems",
+          scope: "components",
+        },
+      ],
+      WIRE_JSON: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/page_size/maximum",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/customer_id/maxLength",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersResponse/properties/order_ids/maxItems",
+          scope: "components",
+        },
+      ],
+      WIRE: [
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/page_size/maximum",
+          scope: "components",
+        },
+        {
+          type: "non-breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersRequest/properties/customer_id/maxLength",
+          scope: "components",
+        },
+        {
+          type: "breaking",
+          action: "replace",
+          path: "/components/messages/shop.v1.ListOrdersResponse/properties/order_ids/maxItems",
+          scope: "components",
+        },
+      ],
+    },
+  }),
+  protoExample({
+    id: "proto-compatibility-levels",
+    title: "The same changes at four compatibility levels",
+    summary:
+      "Each editor holds two files: a `// file: <path>` line starts a new file. A `json_name` added to `customer_id` changes its ProtoJSON name: breaking unless only binary clients count (`WIRE`). A new `go_package` only affects generated Go code: risky at `FILE` and `PACKAGE`, an annotation at `WIRE_JSON` and `WIRE`. Moving `Money` to another file of the same package changes the import path of generated code: risky at `FILE`, an annotation from `PACKAGE` on. Switch the level to see each verdict.",
+    before: `// file: shop/v1/orders.proto
+syntax = "proto3";
+
+package shop.v1;
+
+import "shop/v1/money.proto";
+
+option go_package = "example.com/shop/v1;shopv1";
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  string customer_id = 2;
+  Money total = 3;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+
+message Money {
+  string currency = 1;
+  int64 units = 2;
+}
+
+// file: shop/v1/money.proto
+syntax = "proto3";
+
+package shop.v1;
+`,
+    after: `// file: shop/v1/orders.proto
+syntax = "proto3";
+
+package shop.v1;
+
+import "shop/v1/money.proto";
+
+option go_package = "example.com/shop/api/v1;shopv1";
+
+service OrderService {
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+message Order {
+  string id = 1;
+  string customer_id = 2 [json_name = "customer"];
+  Money total = 3;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+
+// file: shop/v1/money.proto
+syntax = "proto3";
+
+package shop.v1;
+
+message Money {
+  string currency = 1;
+  int64 units = 2;
+}
+`,
+    levels: {
+      FILE: [
+        { type: "risky", action: "replace", path: "/files/shop~1v1~1orders.proto/options/go_package", scope: "root" },
+        {
+          type: "breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/customer_id/jsonName",
+          scope: "components",
+        },
+        { type: "risky", action: "replace", path: "/components/messages/shop.v1.Money/file", scope: "components" },
+      ],
+      PACKAGE: [
+        { type: "risky", action: "replace", path: "/files/shop~1v1~1orders.proto/options/go_package", scope: "root" },
+        {
+          type: "breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/customer_id/jsonName",
+          scope: "components",
+        },
+        { type: "annotation", action: "replace", path: "/components/messages/shop.v1.Money/file", scope: "components" },
+      ],
+      WIRE_JSON: [
+        {
+          type: "annotation",
+          action: "replace",
+          path: "/files/shop~1v1~1orders.proto/options/go_package",
+          scope: "root",
+        },
+        {
+          type: "breaking",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/customer_id/jsonName",
+          scope: "components",
+        },
+        { type: "annotation", action: "replace", path: "/components/messages/shop.v1.Money/file", scope: "components" },
+      ],
+      WIRE: [
+        {
+          type: "annotation",
+          action: "replace",
+          path: "/files/shop~1v1~1orders.proto/options/go_package",
+          scope: "root",
+        },
+        {
+          type: "annotation",
+          action: "add",
+          path: "/components/messages/shop.v1.Order/properties/customer_id/jsonName",
+          scope: "components",
+        },
+        { type: "annotation", action: "replace", path: "/components/messages/shop.v1.Money/file", scope: "components" },
+      ],
+    },
+  }),
   // ---------------------------------------------------------------------------------------------------------------
   // custom rules
   {

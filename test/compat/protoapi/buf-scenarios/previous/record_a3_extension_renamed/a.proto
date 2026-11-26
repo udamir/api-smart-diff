@@ -1,0 +1,8 @@
+syntax = "proto2";
+package p;
+message M {
+  extensions 100 to 200;
+}
+extend M {
+  optional string label = 100;
+}

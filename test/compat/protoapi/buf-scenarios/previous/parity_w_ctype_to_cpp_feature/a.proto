@@ -1,0 +1,3 @@
+edition = "2023";
+package p;
+message M { bytes b = 1 [ctype = CORD]; }

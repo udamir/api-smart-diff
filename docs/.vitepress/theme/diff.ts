@@ -6,11 +6,15 @@
 import { dump, load } from "js-yaml"
 
 import { UnsupportedSpecError, apiCompare, detectSpec } from "../../../src"
-import type { CompareError, CompareOptions, CompareResult, Diff, DiffType } from "../../../src"
+import type { CompareError, CompareOptions, CompareResult, Diff, DiffType, ProtoApiCompatibility } from "../../../src"
 
 export type TextFormat = "yaml" | "json"
-/** Editor languages (`text` for GraphQL SDL, which is not highlighted) */
-export type Language = TextFormat | "text"
+/** Editor languages (`text` for GraphQL SDL, which is not highlighted; `proto` for Protocol Buffers sources) */
+export type Language = TextFormat | "proto" | "text"
+
+/** The editor language of a text: `.proto` sources, JSON or YAML */
+export const languageOf = (text: string): Language =>
+  looksLikeProto(text) && !/^\s*[{[]/.test(text) ? "proto" : formatOf(text)
 
 /** Diff types from the most to the least severe (the order of the summary chips and of the colours) */
 export const DIFF_TYPES: DiffType[] = ["breaking", "risky", "non-breaking", "deprecated", "annotation", "unclassified"]
@@ -46,6 +50,70 @@ export const looksLikeSdl = (text: string): boolean =>
     text,
   )
 
+// ---- Protocol Buffers input ------------------------------------------------------------------------------------
+
+/** The compatibility levels of the ProtoApi engine (`options.compatibility`), from the strictest to the most lenient */
+export const PROTO_LEVELS: readonly ProtoApiCompatibility[] = ["FILE", "PACKAGE", "WIRE_JSON", "WIRE"]
+
+/** What each level protects (the level selectors show it as a hint) */
+export const PROTO_LEVEL_HINTS: Record<ProtoApiCompatibility, string> = {
+  FILE: "binary and ProtoJSON clients, and generated code per file (the default)",
+  PACKAGE:
+    "binary and ProtoJSON clients, and generated code per package (moving a declaration between files of a package is no change)",
+  WIRE_JSON: "binary and ProtoJSON clients, not generated code",
+  WIRE: "binary clients only",
+}
+
+/** File of an editor that holds `.proto` text without a `// file: <path>` line */
+export const DEFAULT_PROTO_FILE = "api.proto"
+
+/**
+ * Text that does not parse as a YAML / JSON document but reads like Protocol Buffers sources: a `syntax` or `edition`
+ * statement, a `package` statement or a `message` / `service` definition at the start of a line.
+ */
+export const looksLikeProto = (text: string): boolean =>
+  /^\s*(?:(?:syntax|edition)\s*=\s*["']|package\s+[\w.]+\s*;|(?:message|service)\s+\w+\s*\{)/m.test(text)
+
+export interface ProtoFileText {
+  /** import path of the file */
+  path: string
+  text: string
+  /** zero-based editor line of the first line of the file */
+  line: number
+}
+
+const FILE_MARKER = /^\/\/ file: (\S+)\s*$/
+
+/**
+ * The `.proto` files of an editor: one file (`api.proto`) or several, each introduced by a line `// file: <path>`
+ * (so one editor can hold a file and the files it imports). The marker lines are not part of the files.
+ */
+export const splitProtoFiles = (text: string): ProtoFileText[] => {
+  const lines = text.split("\n")
+  const files: ProtoFileText[] = []
+  let current: { path: string; line: number; lines: string[] } = { path: DEFAULT_PROTO_FILE, line: 0, lines: [] }
+  const flush = (marked: boolean) => {
+    const body = current.lines.join("\n")
+    // the text above the first marker is a file of its own only when it holds more than blank lines
+    if (marked || body.trim()) {
+      files.push({ path: current.path, text: body, line: current.line })
+    }
+  }
+  let marked = false
+  lines.forEach((line, index) => {
+    const marker = FILE_MARKER.exec(line)
+    if (marker) {
+      flush(marked)
+      marked = true
+      current = { path: marker[1], line: index + 1, lines: [] }
+    } else {
+      current.lines.push(line)
+    }
+  })
+  flush(marked)
+  return files
+}
+
 export const formatOf = (text: string): TextFormat => (/^\s*[{[]/.test(text) ? "json" : "yaml")
 
 export const serialize = (value: unknown, format: TextFormat): string =>
@@ -74,6 +142,8 @@ export const specLabel = (document: unknown): string => {
         return `AsyncAPI ${version}`
       case "graphapi":
         return `GraphApi ${version}`
+      case "protoapi":
+        return `ProtoApi ${version}`
       default: {
         const $schema =
           document && typeof document === "object" ? (document as Record<string, unknown>).$schema : undefined
@@ -238,7 +308,10 @@ export const diffsYaml = (diffs: readonly Diff[]): string => {
 // ---- shareable demo state ---------------------------------------------------------------------------------------
 
 /** The demo options a share link restores (the demo selects) */
-export type DemoOptions = Pick<CompareOptions, "engine" | "merged" | "components">
+export type DemoOptions = Pick<CompareOptions, "engine" | "merged" | "components"> & {
+  /** ProtoApi documents only */
+  compatibility?: ProtoApiCompatibility
+}
 
 export interface DemoState {
   before: string
@@ -260,9 +333,10 @@ const fromBase64 = (text: string): Uint8Array => {
 }
 
 const DEMO_OPTION_VALUES: { [K in keyof DemoOptions]-?: readonly string[] } = {
-  engine: ["openapi", "asyncapi", "graphapi", "jsonschema"],
+  engine: ["openapi", "asyncapi", "graphapi", "protoapi", "jsonschema"],
   merged: ["original", "normalized"],
   components: ["usage", "unclassified"],
+  compatibility: PROTO_LEVELS,
 }
 
 const readState = (json: string): DemoState | undefined => {

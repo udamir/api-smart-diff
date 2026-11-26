@@ -1,6 +1,7 @@
 /**
  * Showcase document pairs of the online demo, one per specification: each pair has breaking, risky and annotation
  * changes among others (`test/docs/examples.test.ts` checks it). The curated examples are offered as presets too.
+ * The input presets (GraphQL SDL, `.proto` sources) are converted before the comparison.
  */
 
 export interface DemoPreset {
@@ -680,4 +681,277 @@ components:
       repeatable: false
 `,
   },
+  {
+    id: "protoapi",
+    title: "ProtoApi 0.1 — orders service (document built by protoapi)",
+    before: `protoapi: '0.1'
+files:
+  shop/v1/shop.proto:
+    syntax: proto3
+    package: shop.v1
+services:
+  shop.v1.OrderService:
+    title: OrderService
+    file: shop/v1/shop.proto
+    description: Orders of the shop.
+    methods:
+      CreateOrder:
+        description: Creates an order.
+        request:
+          schema:
+            $ref: '#/components/messages/shop.v1.CreateOrderRequest'
+        response:
+          schema:
+            $ref: '#/components/messages/shop.v1.Order'
+      GetOrder:
+        description: Gets an order.
+        request:
+          schema:
+            $ref: '#/components/messages/shop.v1.GetOrderRequest'
+        response:
+          schema:
+            $ref: '#/components/messages/shop.v1.Order'
+      CancelOrder:
+        description: Cancels an order.
+        request:
+          schema:
+            $ref: '#/components/messages/shop.v1.GetOrderRequest'
+        response:
+          schema:
+            $ref: '#/components/messages/shop.v1.Order'
+components:
+  messages:
+    shop.v1.Order:
+      title: Order
+      file: shop/v1/shop.proto
+      description: An order.
+      type: object
+      properties:
+        id:
+          number: 1
+          type: string
+        customer_id:
+          number: 2
+          type: string
+        status:
+          number: 3
+          $ref: '#/components/enums/shop.v1.Status'
+        priority:
+          number: 4
+          type: int32
+        note:
+          number: 5
+          type: string
+    shop.v1.CreateOrderRequest:
+      title: CreateOrderRequest
+      file: shop/v1/shop.proto
+      type: object
+      properties:
+        customer_id:
+          number: 1
+          type: string
+        coupon:
+          number: 2
+          type: string
+    shop.v1.GetOrderRequest:
+      title: GetOrderRequest
+      file: shop/v1/shop.proto
+      type: object
+      properties:
+        id:
+          number: 1
+          type: string
+  enums:
+    shop.v1.Status:
+      title: Status
+      file: shop/v1/shop.proto
+      description: Lifecycle of an order.
+      type: string
+      values:
+        STATUS_UNSPECIFIED:
+          number: 0
+        STATUS_PENDING:
+          number: 1
+        STATUS_PAID:
+          number: 2
+`,
+    after: `protoapi: '0.1'
+files:
+  shop/v1/shop.proto:
+    syntax: proto3
+    package: shop.v1
+services:
+  shop.v1.OrderService:
+    title: OrderService
+    file: shop/v1/shop.proto
+    description: Orders of the shop.
+    methods:
+      CreateOrder:
+        description: Creates an order.
+        request:
+          schema:
+            $ref: '#/components/messages/shop.v1.CreateOrderRequest'
+        response:
+          schema:
+            $ref: '#/components/messages/shop.v1.Order'
+      GetOrder:
+        description: Returns one order by its id.
+        request:
+          schema:
+            $ref: '#/components/messages/shop.v1.GetOrderRequest'
+        response:
+          schema:
+            $ref: '#/components/messages/shop.v1.Order'
+components:
+  messages:
+    shop.v1.Order:
+      title: Order
+      file: shop/v1/shop.proto
+      description: An order.
+      type: object
+      properties:
+        id:
+          number: 1
+          type: string
+        buyer_id:
+          number: 2
+          type: string
+        status:
+          number: 3
+          $ref: '#/components/enums/shop.v1.Status'
+        priority:
+          number: 4
+          type: int64
+        note:
+          deprecation: {}
+          number: 5
+          type: string
+    shop.v1.CreateOrderRequest:
+      title: CreateOrderRequest
+      file: shop/v1/shop.proto
+      type: object
+      properties:
+        customer_id:
+          number: 1
+          type: string
+        coupon:
+          number: 2
+          type: string
+        channel:
+          number: 3
+          type: string
+    shop.v1.GetOrderRequest:
+      title: GetOrderRequest
+      file: shop/v1/shop.proto
+      type: object
+      properties:
+        id:
+          number: 1
+          type: string
+  enums:
+    shop.v1.Status:
+      title: Status
+      file: shop/v1/shop.proto
+      description: Lifecycle of an order.
+      type: string
+      values:
+        STATUS_UNSPECIFIED:
+          number: 0
+        STATUS_PENDING:
+          number: 1
+        STATUS_PAID:
+          number: 2
+        STATUS_REFUNDED:
+          number: 3
+`,
+  },
 ]
+
+/**
+ * Protocol Buffers sources, built with protoapi (`buildFromProto(files, { imports: "user" })`) before the comparison;
+ * the same API as the ProtoApi preset. The `// file:` line names the file (an editor may hold several).
+ */
+export const PROTO_PRESET: DemoPreset = {
+  id: "proto",
+  title: "Protocol Buffers — orders service (.proto, built with protoapi)",
+  before: `// file: shop/v1/shop.proto
+syntax = "proto3";
+
+package shop.v1;
+
+// Orders of the shop.
+service OrderService {
+  // Creates an order.
+  rpc CreateOrder(CreateOrderRequest) returns (Order);
+  // Gets an order.
+  rpc GetOrder(GetOrderRequest) returns (Order);
+  // Cancels an order.
+  rpc CancelOrder(GetOrderRequest) returns (Order);
+}
+
+// Lifecycle of an order.
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_PENDING = 1;
+  STATUS_PAID = 2;
+}
+
+// An order.
+message Order {
+  string id = 1;
+  string customer_id = 2;
+  Status status = 3;
+  int32 priority = 4;
+  string note = 5;
+}
+
+message CreateOrderRequest {
+  string customer_id = 1;
+  string coupon = 2;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+  after: `// file: shop/v1/shop.proto
+syntax = "proto3";
+
+package shop.v1;
+
+// Orders of the shop.
+service OrderService {
+  // Creates an order.
+  rpc CreateOrder(CreateOrderRequest) returns (Order);
+  // Returns one order by its id.
+  rpc GetOrder(GetOrderRequest) returns (Order);
+}
+
+// Lifecycle of an order.
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  STATUS_PENDING = 1;
+  STATUS_PAID = 2;
+  STATUS_REFUNDED = 3;
+}
+
+// An order.
+message Order {
+  string id = 1;
+  string buyer_id = 2;
+  Status status = 3;
+  int64 priority = 4;
+  string note = 5 [deprecated = true];
+}
+
+message CreateOrderRequest {
+  string customer_id = 1;
+  string coupon = 2;
+  string channel = 3;
+}
+
+message GetOrderRequest {
+  string id = 1;
+}
+`,
+}

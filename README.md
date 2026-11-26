@@ -8,7 +8,7 @@ Compare two versions of an API document and get every change as a list of diffs 
 
 ## Features
 
-- Diffs and a merged document with per-node change metadata, for OpenAPI, AsyncAPI, JSON Schema and GraphQL
+- Diffs and a merged document with per-node change metadata, for OpenAPI, AsyncAPI, JSON Schema, GraphQL and gRPC / Protocol Buffers
 - Six change classes, with request and response direction handled for you (a change that breaks a request may be harmless in a response)
 - Shared components classified by where they are used; `$ref`s resolved, including circular references
 - Renamed paths, components, channels and messages reported as renames, not as a removal plus an addition
@@ -24,6 +24,7 @@ Compare two versions of an API document and get every change as a list of diffs 
 | [AsyncAPI](https://www.asyncapi.com/docs/reference) | 2.x (2.0 – 2.6), 3.0 |
 | [JSON Schema](https://json-schema.org/) | draft-04, draft-06, draft-07, 2020-12 |
 | GraphQL via [GraphApi](https://github.com/udamir/graphapi) | GraphApi 0.1.2 and 1.0 (convert SDL with [gqlapi](https://github.com/udamir/graphapi)) |
+| gRPC / Protocol Buffers via [ProtoApi](https://github.com/udamir/protoapi) | ProtoApi 0.1 (build it from `.proto` sources with [protoapi](https://github.com/udamir/protoapi)) |
 
 `apiCompare` detects the specification from the documents. Swagger 2.0 is not supported (convert it to OpenAPI 3 first): unsupported documents throw `UnsupportedSpecError`. Details per specification: [Specifications and engines](https://udamir.github.io/api-smart-diff/guide/engines).
 
@@ -33,7 +34,7 @@ Compare two versions of an API document and get every change as a list of diffs 
 npm install api-smart-diff
 ```
 
-Requires Node.js 18 or later. The package ships an ES module, a CommonJS build and a self-contained browser build; see [Installation](https://udamir.github.io/api-smart-diff/guide/installation).
+Requires Node.js 18 or later. To compare `.proto` sources, also install `protoapi` (`npm install protoapi`), which builds the ProtoApi documents; api-smart-diff itself does not depend on it. The package ships an ES module, a CommonJS build and a self-contained browser build; see [Installation](https://udamir.github.io/api-smart-diff/guide/installation).
 
 ## Quick start
 
@@ -98,6 +99,28 @@ const { diffs } = apiCompare(toGraphApi("type Query { pet(id: ID!): String }"), 
 // breaking [Added] argument `owner` to field `Query.pet`
 ```
 
+gRPC / Protocol Buffers APIs are compared in their ProtoApi encoding; install `protoapi` to build it from `.proto` sources (both sides with the same protoapi version and options), and choose the clients a change is judged for with `compatibility` (`"FILE"` by default, `"PACKAGE"`, `"WIRE_JSON"` or `"WIRE"`):
+
+```ts
+import { buildFromProto } from "protoapi"
+import { apiCompare } from "api-smart-diff"
+
+const toProtoApi = (text: string) => buildFromProto({ "shop/v1/shop.proto": text }, { imports: "user" }).document
+
+const before = toProtoApi(`syntax = "proto3";
+package shop.v1;
+message Order { string id = 1; int32 priority = 2; }`)
+const after = toProtoApi(`syntax = "proto3";
+package shop.v1;
+message Order { string id = 1; int64 priority = 2; string note = 3; }`)
+
+const { diffs } = apiCompare(before, after)
+// breaking [Replaced] type of field `priority` (2) in message `shop.v1.Order` from `int32` to `int64`
+// non-breaking [Added] field `note` (3) to message `shop.v1.Order`
+```
+
+Check protoapi's build issues before comparing, and map a diff back to its `.proto` line with protoapi's `locateDiff`; see [Protocol Buffers](https://udamir.github.io/api-smart-diff/guide/protoapi).
+
 ## Result
 
 ```ts
@@ -124,7 +147,7 @@ The merged document keeps the original values of both inputs (removed nodes incl
 
 ## Options
 
-`apiCompare(before, after, options)` and the engines `compareOpenApi`, `compareAsyncApi`, `compareGraphApi` and `compareJsonSchema` accept:
+`apiCompare(before, after, options)` and the engines `compareOpenApi`, `compareAsyncApi`, `compareGraphApi`, `compareProtoApi` and `compareJsonSchema` accept:
 
 | Option | Default | Effect |
 | --- | --- | --- |
@@ -132,10 +155,12 @@ The merged document keeps the original values of both inputs (removed nodes incl
 | `arrayMeta` | `false` | store the metadata of array items on the array instead of on its parent |
 | `externalSources` | none | documents for external `$ref`s per side: `{ before: { [uri]: doc }, after: { [uri]: doc } }`; nothing is fetched |
 | `onError` | collect in `result.errors` | callback for classification, description, `$ref` and transform errors |
-| `engine` | detected | force `"openapi"`, `"asyncapi"`, `"graphapi"` or `"jsonschema"` |
+| `engine` | detected | force `"openapi"`, `"asyncapi"`, `"graphapi"`, `"protoapi"` or `"jsonschema"` |
 | `components` | `"usage"` | `"unclassified"` leaves changes inside `components` unclassified instead of classifying them by usage |
 | `merged` | `"original"` | `"normalized"` returns the normalized comparison values in `merged` (the 1.x content) |
 | `rules`, `extensions`, `annotateHook` | built-in | custom rule tree, rules for `x-*` keys, custom description hook |
+| `compatibility` | `"FILE"` | ProtoApi: the clients and the generated code a change is judged for, `"FILE"`, `"PACKAGE"`, `"WIRE_JSON"` or `"WIRE"` |
+| `files`, `optionRules` | `"compare"`, built-in | ProtoApi: `"ignore"` makes file paths annotations; custom rules for (custom) options |
 
 All options, with examples: [Options](https://udamir.github.io/api-smart-diff/guide/options), [Custom rules](https://udamir.github.io/api-smart-diff/guide/custom-rules), [Specification extensions](https://udamir.github.io/api-smart-diff/guide/extensions).
 
@@ -174,11 +199,7 @@ if (risky.length) console.warn(risky.map((diff) => diff.description).join("\n"))
 
 ## Limitations
 
-AsyncAPI 2.x cannot be compared with 3.0, nor GraphApi 0.1.2 with 1.0; external `$ref`s are resolved only from `externalSources`; AsyncAPI payloads in non-JSON-Schema formats (Avro, RAML, Protobuf) are compared as opaque values. See [Limitations](https://udamir.github.io/api-smart-diff/guide/limitations).
-
-## Roadmap
-
-- gRPC / Protocol Buffers support (planned)
+AsyncAPI 2.x cannot be compared with 3.0, nor GraphApi 0.1.2 with 1.0; external `$ref`s are resolved only from `externalSources`; AsyncAPI payloads in non-JSON-Schema formats (Avro, RAML, Protobuf) are compared as opaque values. Protocol Buffers: both documents must be built with the same protoapi version and options, renamed messages and enums are a removal plus an addition, and additions to responses assume ProtoJSON readers that ignore unknown fields. See [Limitations](https://udamir.github.io/api-smart-diff/guide/limitations).
 
 ## Contributing
 

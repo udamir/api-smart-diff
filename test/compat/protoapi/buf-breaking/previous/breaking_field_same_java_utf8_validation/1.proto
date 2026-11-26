@@ -1,0 +1,81 @@
+syntax = "proto2";
+package a;
+
+message A1 {
+  extensions 100 to 1000;
+  optional string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  optional uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  optional A1 other4 = 14;
+}
+
+message A2 {
+  optional string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  optional uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  optional A2 other4 = 14;
+}
+
+message A3 {
+  optional string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  optional uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  optional A3 other4 = 14;
+}
+
+message A4 {
+  optional string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  optional uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  optional A4 other4 = 14;
+}
+
+message A5 {
+  optional string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  optional uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  optional A5 other4 = 14;
+}
+
+message A6 {
+  optional string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  optional uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  optional A6 other4 = 14;
+
+  extensions 100 to 1000;
+
+  extend A1 {
+    optional string a1_s1 = 100;
+    repeated string a1_s2 = 101;
+  }
+}
+
+extend A6 {
+  optional string a6_s1 = 100;
+  repeated string a6_s2 = 101;
+}

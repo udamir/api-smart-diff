@@ -39,14 +39,14 @@ body:
     id: reproduction
     attributes:
       label: Reproduction
-      description: The detected specification and the `apiCompare(...)` call with its options.
+      description: The detected specification and the `apiCompare(...)` call with its options (for protobuf, also the protoapi build and the compatibility level).
     validations:
       required: true
   - type: textarea
     id: documents
     attributes:
       label: Documents
-      description: The before and the after document (YAML, JSON or GraphQL SDL). Attach files when they are large.
+      description: The before and the after document (YAML, JSON, GraphQL SDL or protobuf `.proto` sources). Attach files when they are large.
   - type: input
     id: version
     attributes:

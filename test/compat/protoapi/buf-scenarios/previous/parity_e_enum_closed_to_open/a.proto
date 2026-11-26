@@ -1,0 +1,7 @@
+edition = "2023";
+package p;
+enum E {
+  option features.enum_type = CLOSED;
+  E_UNSPECIFIED = 0;
+  A = 1;
+}

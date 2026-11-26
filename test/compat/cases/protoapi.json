@@ -1,0 +1,3026 @@
+[
+  {
+    "id": "PB-BUF-001",
+    "family": "protoapi",
+    "area": "buf corpus",
+    "file": "test/compat/protoapi/buf.test.ts",
+    "kind": "proto",
+    "title": "`int32` field → enum field",
+    "before": "message M { int32 e = 1; }",
+    "after": "message M { E e = 1; } enum E { E_UNSPECIFIED = 0; }",
+    "rationale": "binary encodes both as varints, ProtoJSON writes enum names: breaking where buf's groups say so (§5.3)",
+    "annotation": "names the field, `int32` and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario x int32_to_enum",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J; FIELD_WIRE_COMPATIBLE_TYPE W"
+      },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_int_enum" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-14" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/e/$ref",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-BUF-002",
+    "family": "protoapi",
+    "area": "buf corpus",
+    "file": "test/compat/protoapi/buf.test.ts",
+    "kind": "proto",
+    "title": "message field → enum field",
+    "before": "message M { N v = 1; } message N {} enum E { E_UNSPECIFIED = 0; }",
+    "after": "message M { E v = 1; } message N {} enum E { E_UNSPECIFIED = 0; }",
+    "rationale": "a length-delimited message and a varint are different wire types",
+    "annotation": "names the field and both types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_enum",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J; FIELD_WIRE_COMPATIBLE_TYPE W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-14" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/v/$ref",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-BUF-003",
+    "family": "protoapi",
+    "area": "buf corpus",
+    "file": "test/compat/protoapi/buf.test.ts",
+    "kind": "proto",
+    "title": "proto2 group renamed: one field rename (A6)",
+    "before": "optional group Item = 1 { optional string id = 2; }",
+    "after": "optional group Entry = 1 { optional string id = 2; }",
+    "rationale": "the field name, its JSON name and the group type name change together; the number stays (U2, A6)",
+    "annotation": "names both field names and the message",
+    "sources": [
+      {
+        "tool": "asd",
+        "ref": "test/compat/protoapi/buf-scenarios record_a6_group_renamed",
+        "verdict": "FIELD_SAME_NAME F P J; FIELD_SAME_JSON_NAME F P J; FIELD_SAME_TYPE F P; MESSAGE_NO_DELETE F"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-48" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties",
+        "action": "rename",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-001",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "enum deleted that no field references",
+    "before": "enum E { E_ZERO = 0; } message M { string s = 1; }",
+    "after": "message M { string s = 1; }",
+    "rationale": "nothing on the wire changes; code that names the type stops compiling (G1, PD-5)",
+    "annotation": "names the deleted enum and its file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_no_delete",
+        "verdict": "ENUM_NO_DELETE F; PACKAGE_ENUM_NO_DELETE P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 E-2" }
+    ],
+    "covers": ["buf:ENUM_NO_DELETE", "buf:PACKAGE_ENUM_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-002",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "enum value deleted, neither number nor name reserved",
+    "before": "enum E { E_ZERO = 0; A = 1; B = 2; }",
+    "after": "enum E { E_ZERO = 0; A = 1; }",
+    "rationale": "readers meet an unknown number, ProtoJSON writers send the name (PD-3 A)",
+    "annotation": "names the value, its number and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_value_no_delete",
+        "verdict": "ENUM_VALUE_NO_DELETE F P"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_value_no_delete_unless_name_reserved",
+        "verdict": "ENUM_VALUE_NO_DELETE_UNLESS_NAME_RESERVED J"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_value_no_delete_unless_number_reserved",
+        "verdict": "ENUM_VALUE_NO_DELETE_UNLESS_NUMBER_RESERVED J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 V-4" }
+    ],
+    "covers": [
+      "buf:ENUM_VALUE_NO_DELETE",
+      "buf:ENUM_VALUE_NO_DELETE_UNLESS_NAME_RESERVED",
+      "buf:ENUM_VALUE_NO_DELETE_UNLESS_NUMBER_RESERVED"
+    ],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/values/B",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-003",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "enum value deleted, its number reserved",
+    "before": "enum E { E_ZERO = 0; A = 1; B = 2; }",
+    "after": "enum E { reserved 2; E_ZERO = 0; A = 1; }",
+    "rationale": "binary clients are safe, ProtoJSON writers still send the name (PD-3 B)",
+    "annotation": "names the value and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_value_no_delete_unless_number_reserved"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 V-5" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/values/B",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      },
+      {
+        "at": "components/enums/p.E/reserved/numbers/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-004",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "enum value deleted, its name reserved",
+    "before": "enum E { E_ZERO = 0; A = 1; B = 2; }",
+    "after": "enum E { reserved \"B\"; E_ZERO = 0; A = 1; }",
+    "rationale": "binary clients need the number reserved (PD-28)",
+    "annotation": "names the value and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_value_no_delete_unless_name_reserved"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 V-6" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/values/B",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      },
+      {
+        "at": "components/enums/p.E/reserved/names/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-005",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "enum value deleted with its number and its name reserved",
+    "before": "enum E { E_ZERO = 0; A = 1; B = 2; }",
+    "after": "enum E { reserved 2; reserved \"B\"; E_ZERO = 0; A = 1; }",
+    "rationale": "no runtime client can break, only generated code loses the constant (PD-3 C, build-only)",
+    "annotation": "names the value and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_value_no_delete",
+        "verdict": "ENUM_VALUE_NO_DELETE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 V-7" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/values/B",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/enums/p.E/reserved/numbers/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      },
+      {
+        "at": "components/enums/p.E/reserved/names/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-006",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "enum value renamed",
+    "before": "enum E { E_UNSPECIFIED = 0; A = 1; }",
+    "after": "enum E { E_UNSPECIFIED = 0; B = 1; }",
+    "rationale": "ProtoJSON and generated code use the name, the wire only the number (U2)",
+    "annotation": "names both value names and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario v enum_value_renamed",
+        "verdict": "ENUM_VALUE_SAME_NAME F P J"
+      },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_value_same_name" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 V-8" }
+    ],
+    "covers": ["buf:ENUM_VALUE_SAME_NAME"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/values",
+        "action": "rename",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-007",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "alias name removed while its number stays",
+    "before": "enum E { option allow_alias = true; E_UNSPECIFIED = 0; A = 1; B = 1; }",
+    "after": "enum E { E_UNSPECIFIED = 0; A = 1; }",
+    "rationale": "the number is still known; ProtoJSON clients that send `B` fail (review §9.4, U2)",
+    "annotation": "names the removed alias and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario n alias_name_removed",
+        "verdict": "ENUM_VALUE_SAME_NAME F P J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 V-3" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/values/B",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "N" }
+      },
+      {
+        "at": "components/enums/p.E/options/allow_alias",
+        "action": "remove",
+        "type": { "FILE": "A", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-008",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "open enum made closed (edition 2023)",
+    "before": "enum E { E_UNSPECIFIED = 0; A = 1; }",
+    "after": "enum E { option features.enum_type = CLOSED; E_UNSPECIFIED = 0; A = 1; }",
+    "rationale": "unknown values are kept as unknown fields instead of the number: risky at every level (G4)",
+    "annotation": "names the enum and both enum types",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario d enum_open_to_closed", "verdict": "ENUM_SAME_TYPE F P" },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_same_type" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 E-4" }
+    ],
+    "covers": ["buf:ENUM_SAME_TYPE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/closed",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-009",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "closed enum made open (edition 2023)",
+    "before": "enum E { option features.enum_type = CLOSED; E_UNSPECIFIED = 0; A = 1; }",
+    "after": "enum E { E_UNSPECIFIED = 0; A = 1; }",
+    "rationale": "readers keep more values than before (§10 Q1)",
+    "annotation": "names the enum and both enum types",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario e enum_closed_to_open", "verdict": "ENUM_SAME_TYPE F P" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 E-5" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/closed",
+        "action": "remove",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-010",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "`json_format = LEGACY_BEST_EFFORT` set on an enum (edition 2023)",
+    "before": "enum E { E_UNSPECIFIED = 0; }",
+    "after": "enum E { option features.json_format = LEGACY_BEST_EFFORT; E_UNSPECIFIED = 0; }",
+    "rationale": "generated JSON mappings may change, ProtoJSON runtime parsing does not (C7, build-only)",
+    "annotation": "names the enum and both JSON formats",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_enum_same_json_format",
+        "verdict": "ENUM_SAME_JSON_FORMAT F P J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 E-9" }
+    ],
+    "covers": ["buf:ENUM_SAME_JSON_FORMAT"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/jsonFormat",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-011",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "reserved number range of an enum removed, not reused",
+    "before": "enum E { reserved 5 to 9; E_ZERO = 0; }",
+    "after": "enum E { E_ZERO = 0; }",
+    "rationale": "nothing breaks now, the numbers may be reused later with another meaning (PD-4)",
+    "annotation": "names the range and the enum",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_reserved_enum_no_delete",
+        "verdict": "RESERVED_ENUM_NO_DELETE F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 E-7" }
+    ],
+    "covers": ["buf:RESERVED_ENUM_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/enums/p.E/reserved/numbers/*",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-012",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "enum value added: non-breaking in a request, risky in a response",
+    "before": "enum E { E_ZERO = 0; A = 1; } (field of p.M)",
+    "after": "enum E { E_ZERO = 0; A = 1; B = 2; }",
+    "rationale": "servers accept the new value; clients switching over a returned value may meet it (PD-11, POLICY-05)",
+    "annotation": "names the added value and the enum",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 V-1" }],
+    "covers": [],
+    "variants": [
+      "FILE.request DCA",
+      "FILE.response DCA",
+      "PACKAGE.request DCA",
+      "PACKAGE.response DCA",
+      "WIRE_JSON.request DCA",
+      "WIRE_JSON.response DCA",
+      "WIRE.request DCA",
+      "WIRE.response DCA"
+    ],
+    "expected": [
+      {
+        "at": "components/enums/p.E/values/B",
+        "action": "add",
+        "type": {
+          "FILE.request": "N",
+          "FILE.response": "R",
+          "PACKAGE.request": "N",
+          "PACKAGE.response": "R",
+          "WIRE_JSON.request": "N",
+          "WIRE_JSON.response": "R",
+          "WIRE.request": "N",
+          "WIRE.response": "R"
+        }
+      }
+    ]
+  },
+  {
+    "id": "PB-ENUM-013",
+    "family": "protoapi",
+    "area": "enums",
+    "file": "test/compat/protoapi/enums.test.ts",
+    "kind": "proto",
+    "title": "first value of a proto2 enum changed: the implicit default of its fields changes",
+    "before": "message M { optional E e = 1; } enum E { A = 1; B = 2; }",
+    "after": "message M { optional E e = 1; } enum E { B = 2; A = 1; }",
+    "rationale": "readers of a message without `e` see `B` instead of `A` (C6)",
+    "annotation": "names the field and both implicit defaults",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario o enum_first_value_proto2",
+        "verdict": "FIELD_SAME_DEFAULT F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-32" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/e/default",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-001",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field deleted, neither its number nor its name reserved",
+    "before": "message M { string a = 1; string b = 2; }",
+    "after": "message M { string a = 1; }",
+    "rationale": "binary readers may meet the old number with another meaning later, ProtoJSON clients send the name (PD-3 A)",
+    "annotation": "names the field, its number and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_no_delete",
+        "verdict": "FIELD_NO_DELETE F P"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_no_delete_unless_name_reserved",
+        "verdict": "FIELD_NO_DELETE_UNLESS_NAME_RESERVED J"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_no_delete_unless_number_reserved",
+        "verdict": "FIELD_NO_DELETE_UNLESS_NUMBER_RESERVED J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-3" }
+    ],
+    "covers": [
+      "buf:FIELD_NO_DELETE",
+      "buf:FIELD_NO_DELETE_UNLESS_NAME_RESERVED",
+      "buf:FIELD_NO_DELETE_UNLESS_NUMBER_RESERVED"
+    ],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/b",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-002",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field deleted, its number reserved, its name not",
+    "before": "message M { string a = 1; string b = 2; }",
+    "after": "message M { reserved 2; string a = 1; }",
+    "rationale": "binary clients are safe (the number cannot be reused), ProtoJSON clients still send `b` (PD-3 B)",
+    "annotation": "names the field and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_no_delete_unless_number_reserved",
+        "verdict": "FIELD_NO_DELETE F P; …_UNLESS_NAME_RESERVED J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-4" }
+    ],
+    "covers": ["buf:FIELD_NO_DELETE_UNLESS_NAME_RESERVED"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/b",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      },
+      {
+        "at": "components/messages/p.M/reserved/numbers/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-003",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field deleted, its name reserved, its number not",
+    "before": "message M { string a = 1; string b = 2; }",
+    "after": "message M { reserved \"b\"; string a = 1; }",
+    "rationale": "binary clients need the number reserved (PD-28)",
+    "annotation": "names the field and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_no_delete_unless_name_reserved",
+        "verdict": "FIELD_NO_DELETE F P; …_UNLESS_NUMBER_RESERVED J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-5" }
+    ],
+    "covers": ["buf:FIELD_NO_DELETE_UNLESS_NUMBER_RESERVED"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/b",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      },
+      {
+        "at": "components/messages/p.M/reserved/names/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-004",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field deleted with its number and its name reserved",
+    "before": "message M { string a = 1; string b = 2; }",
+    "after": "message M { reserved 2; reserved \"b\"; string a = 1; }",
+    "rationale": "no runtime client can break, only generated code loses the accessor (PD-3 C, build-only)",
+    "annotation": "names the field and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_no_delete",
+        "verdict": "FIELD_NO_DELETE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-6" }
+    ],
+    "covers": ["buf:FIELD_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/b",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/messages/p.M/reserved/numbers/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      },
+      {
+        "at": "components/messages/p.M/reserved/names/*",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-005",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field added",
+    "before": "message M { string a = 1; }",
+    "after": "message M { string a = 1; string b = 2; }",
+    "rationale": "readers skip unknown fields, tolerant ProtoJSON readers ignore unknown names (TC-3)",
+    "annotation": "names the added field and the message",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-1" }],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/b",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-006",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field renamed, the JSON name changes with it",
+    "before": "message M { string old_name = 1; }",
+    "after": "message M { string new_name = 1; }",
+    "rationale": "ProtoJSON and generated code see another name, the wire does not (U2)",
+    "annotation": "names the old and the new field name and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_name",
+        "verdict": "FIELD_SAME_NAME F P J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-8" }
+    ],
+    "covers": ["buf:FIELD_SAME_NAME"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties",
+        "action": "rename",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-007",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field renamed with `json_name` keeping the old JSON name",
+    "before": "message M { string foo_bar = 1; }",
+    "after": "message M { string baz = 1 [json_name = \"fooBar\"]; }",
+    "rationale": "ProtoJSON keeps `fooBar`, only generated code changes: one rename record (U2, PD-10, S9)",
+    "annotation": "names both field names and the kept JSON name",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario b rename_keep_json", "verdict": "FIELD_SAME_NAME F P J" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-9" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties",
+        "action": "rename",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-008",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`json_name` changed",
+    "before": "message M { string foo = 1 [json_name = \"foo\"]; }",
+    "after": "message M { string foo = 1 [json_name = \"bar\"]; }",
+    "rationale": "ProtoJSON clients read and write another key; binary clients do not see JSON names (G2)",
+    "annotation": "names the field and both JSON names",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario a json_name_change",
+        "verdict": "FIELD_SAME_JSON_NAME F P J"
+      },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_json_name" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-30" }
+    ],
+    "covers": ["buf:FIELD_SAME_JSON_NAME"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/foo/**",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-009",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`int32` → `int64`: one WIRE group, two WIRE_JSON groups",
+    "before": "message M { int32 n = 1; }",
+    "after": "message M { int64 n = 1; }",
+    "rationale": "binary readers truncate large values only (WIRE risky), ProtoJSON writes 64-bit values as strings (§5.3)",
+    "annotation": "names the field and both types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_type",
+        "verdict": "FIELD_SAME_TYPE F P"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_wire_json_compatible_type",
+        "verdict": "FIELD_WIRE_JSON_COMPATIBLE_TYPE J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-12" }
+    ],
+    "covers": ["buf:FIELD_SAME_TYPE", "buf:FIELD_WIRE_JSON_COMPATIBLE_TYPE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/n/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-010",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`int32` → `uint32`: one WIRE_JSON group",
+    "before": "message M { int32 n = 1; }",
+    "after": "message M { uint32 n = 1; }",
+    "rationale": "same encoding everywhere, negative values change meaning: risky at every level (PD-6)",
+    "annotation": "names the field and both types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_wire_json_compatible_type",
+        "verdict": "FIELD_SAME_TYPE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-11" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/n/type",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-011",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`string` → `bytes`",
+    "before": "message M { string s = 1; }",
+    "after": "message M { bytes s = 1; }",
+    "rationale": "the same length-delimited encoding (WIRE risky), ProtoJSON writes bytes in base64 (§5.3)",
+    "annotation": "names the field and both types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_wire_compatible_type",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-13" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-012",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`int32` → `string`",
+    "before": "message M { int32 n = 1; }",
+    "after": "message M { string n = 1; }",
+    "rationale": "another wire type: every reader breaks",
+    "annotation": "names the field and both types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_wire_compatible_type",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J; FIELD_WIRE_COMPATIBLE_TYPE W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-14" }
+    ],
+    "covers": ["buf:FIELD_WIRE_COMPATIBLE_TYPE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/n/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-013",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "message field retargeted to another message",
+    "before": "message M { A ref = 1; }",
+    "after": "message M { B ref = 1; }",
+    "rationale": "two different messages whose bodies are not compared with each other; `Any` URLs change (TC-2)",
+    "annotation": "names the field and both message types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_message",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J; FIELD_WIRE_COMPATIBLE_TYPE W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-17" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/ref/$ref",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-014",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "singular `string` → `repeated string`",
+    "before": "message M { string s = 1; }",
+    "after": "message M { repeated string s = 1; }",
+    "rationale": "an old binary reader keeps the last element of a length-delimited list (WIRE risky, PD-7); ProtoJSON writes a list",
+    "annotation": "names the field and both shapes",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario h singular_to_repeated",
+        "verdict": "FIELD_SAME_CARDINALITY F P; FIELD_WIRE_JSON_COMPATIBLE_CARDINALITY J; FIELD_WIRE_COMPATIBLE_CARDINALITY W"
+      },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_cardinality" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-18" }
+    ],
+    "covers": ["buf:FIELD_SAME_CARDINALITY", "buf:FIELD_WIRE_JSON_COMPATIBLE_CARDINALITY"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-015",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "singular `int32` → packed `repeated int32`",
+    "before": "message M { int32 n = 1; }",
+    "after": "message M { repeated int32 n = 1; }",
+    "rationale": "a packed list is one length-delimited record an old varint reader cannot parse (PD-7)",
+    "annotation": "names the field and both shapes",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_wire_compatible_cardinality",
+        "verdict": "FIELD_WIRE_COMPATIBLE_CARDINALITY W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-18" }
+    ],
+    "covers": ["buf:FIELD_WIRE_COMPATIBLE_CARDINALITY"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/n/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-016",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`repeated` list → `map`",
+    "before": "message M { repeated string tags = 1; }",
+    "after": "message M { map<string, string> tags = 1; }",
+    "rationale": "a map is a repeated entry message on the wire (WIRE risky); ProtoJSON writes an object (PD-7)",
+    "annotation": "names the field and both shapes",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_wire_json_compatible_cardinality",
+        "verdict": "FIELD_SAME_CARDINALITY F P; FIELD_WIRE_JSON_COMPATIBLE_CARDINALITY J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-19" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/tags/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-017",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "proto3 `optional` added (implicit → explicit presence)",
+    "before": "message M { string s = 1; }",
+    "after": "message M { optional string s = 1; }",
+    "rationale": "the wire and ProtoJSON do not change, generated code gains a has-accessor (G0, build-only)",
+    "annotation": "names the field and the presence",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_cardinality",
+        "verdict": "FIELD_SAME_CARDINALITY F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-23" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/presence",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-018",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "proto2 `optional` → `required`",
+    "before": "message M { optional string s = 1; }",
+    "after": "message M { required string s = 1; }",
+    "rationale": "readers reject messages without the field, writers that omit it fail (Q5)",
+    "annotation": "names the field and the required label",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_same_required_fields",
+        "verdict": "MESSAGE_SAME_REQUIRED_FIELDS F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-24" }
+    ],
+    "covers": ["buf:MESSAGE_SAME_REQUIRED_FIELDS"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/presence",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-019",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "proto2 `required` field added",
+    "before": "message M { optional string a = 1; }",
+    "after": "message M { optional string a = 1; required string b = 2; }",
+    "rationale": "old writers never send `b`, new readers reject their messages (Q5)",
+    "annotation": "names the field as a required field",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_same_required_fields",
+        "verdict": "MESSAGE_SAME_REQUIRED_FIELDS F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-2" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/b",
+        "action": "add",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-020",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field moved into an existing oneof with other members",
+    "before": "message M { string a = 1; oneof o { string b = 2; } }",
+    "after": "message M { oneof o { string a = 1; string b = 2; } }",
+    "rationale": "setting `b` now clears `a`: data is lost at runtime (G3)",
+    "annotation": "names the field and the oneof",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_oneof",
+        "verdict": "FIELD_SAME_ONEOF F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-25" }
+    ],
+    "covers": ["buf:FIELD_SAME_ONEOF"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/a/oneof",
+        "action": "add",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-021",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "field moved into a new oneof that contains only it",
+    "before": "message M { string x = 1; }",
+    "after": "message M { oneof o { string x = 1; } }",
+    "rationale": "wire and ProtoJSON compatible, only the generated accessors change (TC-1)",
+    "annotation": "names the field and the oneof",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario z field_into_new_oneof",
+        "verdict": "FIELD_SAME_ONEOF F P J W; FIELD_SAME_CARDINALITY F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-26" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/x/oneof",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-022",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "proto2 default value changed",
+    "before": "message M { optional int32 n = 1 [default = 1]; }",
+    "after": "message M { optional int32 n = 1 [default = 2]; }",
+    "rationale": "readers of a message without the field see another value (C6)",
+    "annotation": "names the field and both default values as literals",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_default",
+        "verdict": "FIELD_SAME_DEFAULT F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-32" }
+    ],
+    "covers": ["buf:FIELD_SAME_DEFAULT"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/n/default",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-023",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "an explicit default equal to the implicit one added",
+    "before": "message M { optional int32 i = 1; optional string s = 2; }",
+    "after": "message M { optional int32 i = 1 [default = 0]; optional string s = 2 [default = \"\"]; }",
+    "rationale": "the effective default does not change (C6, buf is silent)",
+    "annotation": "names the field and the (implicit) default",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario k default_zero_added", "verdict": "none" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-33" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/*/default",
+        "type": { "FILE": "A", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-024",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`packed = false` set on a repeated scalar",
+    "before": "message M { repeated int32 i = 1; }",
+    "after": "message M { repeated int32 i = 1 [packed = false]; }",
+    "rationale": "parsers accept both encodings (C7, buf is silent)",
+    "annotation": "names the field and the encoding",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario y packed_off", "verdict": "none" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-35" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/i/packed",
+        "type": { "FILE": "A", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-025",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "UTF-8 validation turned off on a string field (edition 2023)",
+    "before": "message M { string s = 1; }",
+    "after": "message M { string s = 1 [features.utf8_validation = NONE]; }",
+    "rationale": "only what generated parsers accept for malformed strings changes (G0, build-only)",
+    "annotation": "names the field and the validation",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_utf8_validation",
+        "verdict": "FIELD_SAME_UTF8_VALIDATION F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-36" }
+    ],
+    "covers": ["buf:FIELD_SAME_UTF8_VALIDATION"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/utf8Validation",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FLD-026",
+    "family": "protoapi",
+    "area": "fields",
+    "file": "test/compat/protoapi/fields.test.ts",
+    "kind": "proto",
+    "title": "`features.message_encoding = DELIMITED` on a message field (group encoding)",
+    "before": "message M { N n = 1; } message N { string s = 1; }",
+    "after": "message M { N n = 1 [features.message_encoding = DELIMITED]; } message N { string s = 1; }",
+    "rationale": "a group is another wire type than a length-delimited message (F-22)",
+    "annotation": "names the field and the encoding",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_type",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J; FIELD_WIRE_COMPATIBLE_TYPE W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-22" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/n/delimited",
+        "action": "add",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FILE-001",
+    "family": "protoapi",
+    "area": "files",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "file deleted whose package has no other file",
+    "before": "a.proto (package p, message M); b.proto (package q, message N)",
+    "after": "a.proto",
+    "rationale": "a file move is build-only (FILE risky), its declarations are classified on their own rows (PD-9)",
+    "annotation": "names the deleted file; the message record names the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_no_delete",
+        "verdict": "FILE_NO_DELETE F"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_package_no_delete",
+        "verdict": "PACKAGE_NO_DELETE P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 P-2" }
+    ],
+    "covers": ["buf:FILE_NO_DELETE", "buf:PACKAGE_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/b.proto",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/messages/q.N",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FILE-002",
+    "family": "protoapi",
+    "area": "files",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "file added",
+    "before": "a.proto",
+    "after": "a.proto, b.proto (message N)",
+    "rationale": "a new file breaks no client; JSON and binary clients do not see files (PD-9)",
+    "annotation": "names the added file",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 P-1" }],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/b.proto",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/messages/p.N",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FILE-003",
+    "family": "protoapi",
+    "area": "files",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "file renamed with unchanged content: one record (A5)",
+    "before": "shop/pet.proto",
+    "after": "shop/pets.proto (same declarations)",
+    "rationale": "import paths change, nothing else: build-only in FILE, annotation elsewhere; no file or `file` records (A5)",
+    "annotation": "names both file paths",
+    "sources": [
+      {
+        "tool": "asd",
+        "ref": "test/compat/protoapi/buf-scenarios record_a5_file_renamed",
+        "verdict": "FILE_NO_DELETE F"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 P-20" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      { "at": "files", "action": "rename", "type": { "FILE": "R", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" } }
+    ]
+  },
+  {
+    "id": "PB-FILE-004",
+    "family": "protoapi",
+    "area": "files",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "package changed: one record at the file package (A2)",
+    "before": "package shop.v1; message Pet; service PetService",
+    "after": "package shop.v2; (same declarations)",
+    "rationale": "every fully qualified name changes: method paths, type URLs and JSON `@type` break (A2)",
+    "annotation": "names the file and both packages",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_package",
+        "verdict": "FILE_SAME_PACKAGE F P J W"
+      },
+      {
+        "tool": "asd",
+        "ref": "test/compat/protoapi/buf-scenarios record_a2_package_changed",
+        "verdict": "FILE_SAME_PACKAGE F P J W; PACKAGE_NO_DELETE P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 P-5" }
+    ],
+    "covers": ["buf:FILE_SAME_PACKAGE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/shop~1pet.proto/package",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-FILE-005",
+    "family": "protoapi",
+    "area": "files",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "syntax proto3 → proto2: one record per affected element (A4)",
+    "before": "syntax = \"proto3\"; message M { string s = 1; }",
+    "after": "syntax = \"proto2\"; message M { optional string s = 1; }",
+    "rationale": "the statement is build-only; its runtime effects (presence, UTF-8 validation, JSON format) are resolved keywords, one merged record per element (A4, U1)",
+    "annotation": "names the file and both syntax statements; each element record lists its effects",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario l proto3_to_proto2",
+        "verdict": "FILE_SAME_SYNTAX F P; FIELD_SAME_CARDINALITY F P; FIELD_SAME_UTF8_VALIDATION F P; MESSAGE_SAME_JSON_FORMAT F P J"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_syntax",
+        "verdict": "FILE_SAME_SYNTAX F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 P-4" }
+    ],
+    "covers": ["buf:FILE_SAME_SYNTAX"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/syntax",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/messages/p.M/jsonFormat",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/messages/p.M/properties/s/**",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-EXT-001",
+    "family": "protoapi",
+    "area": "extensions",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "extension deleted (proto2)",
+    "before": "extend M { optional string label = 100; }",
+    "after": "(no extension)",
+    "rationale": "readers keep the value as an unknown field; code that names the extension stops compiling (PD-5)",
+    "annotation": "names the extension, its number and the extended message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_extension_no_delete",
+        "verdict": "EXTENSION_NO_DELETE F"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_package_extension_no_delete",
+        "verdict": "PACKAGE_EXTENSION_NO_DELETE P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 X-2" }
+    ],
+    "covers": ["buf:EXTENSION_NO_DELETE", "buf:PACKAGE_EXTENSION_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/extensions/p.label",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-EXT-002",
+    "family": "protoapi",
+    "area": "extensions",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "extension renamed, same extendee and number: one record (A3)",
+    "before": "extend M { optional string label = 100; }",
+    "after": "extend M { optional string display_label = 100; }",
+    "rationale": "ProtoJSON writes `[full.name]` and text-format options name it; the wire keeps the number (PD-22)",
+    "annotation": "names both extension names and the extended message",
+    "sources": [
+      {
+        "tool": "asd",
+        "ref": "test/compat/protoapi/buf-scenarios record_a3_extension_renamed",
+        "verdict": "FIELD_SAME_NAME F P J; EXTENSION_NO_DELETE F"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 X-6" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/extensions",
+        "action": "rename",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-EXT-003",
+    "family": "protoapi",
+    "area": "extensions",
+    "file": "test/compat/protoapi/files-extensions.test.ts",
+    "kind": "proto",
+    "title": "extension type changed `int32` → `string`",
+    "before": "extend M { optional int32 n = 100; }",
+    "after": "extend M { optional string n = 100; }",
+    "rationale": "the field rows apply to extension bodies (X-5): another wire type breaks every reader",
+    "annotation": "names the extension and both types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_wire_compatible_type",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J; FIELD_WIRE_COMPATIBLE_TYPE W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 X-5" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/extensions/p.n/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-001",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "message deleted that no field references",
+    "before": "message M { string s = 1; } message N { string s = 1; }",
+    "after": "message M { string s = 1; }",
+    "rationale": "nothing on the wire changes; code that names the type stops compiling (G1, PD-5)",
+    "annotation": "names the deleted message and its file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario i unreferenced_message_deleted",
+        "verdict": "MESSAGE_NO_DELETE F; PACKAGE_MESSAGE_NO_DELETE P"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_no_delete",
+        "verdict": "MESSAGE_NO_DELETE F"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-2" }
+    ],
+    "covers": ["buf:MESSAGE_NO_DELETE", "buf:PACKAGE_MESSAGE_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.N",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-002",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "message added",
+    "before": "message M { string s = 1; }",
+    "after": "message M { string s = 1; } message N { string s = 1; }",
+    "rationale": "a new declaration breaks no client",
+    "annotation": "names the added message",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-1" }],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.N",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-003",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "message moved to another file of the package",
+    "before": "a.proto: message M, message N",
+    "after": "a.proto: message M; b.proto: message N",
+    "rationale": "import paths and per-file generated units change, the API does not (U1: build-only in FILE)",
+    "annotation": "names the message and both files",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_no_delete",
+        "verdict": "MESSAGE_NO_DELETE F"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 P-18" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.N/file",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      { "at": "files/b.proto", "action": "add", "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "A", "WIRE": "A" } }
+    ]
+  },
+  {
+    "id": "PB-MSG-004",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "oneof renamed, same members",
+    "before": "message M { oneof a { string x = 1; int32 y = 2; } }",
+    "after": "message M { oneof b { string x = 1; int32 y = 2; } }",
+    "rationale": "the wire and ProtoJSON keep the member fields, only generated accessors change (G3)",
+    "annotation": "names both oneof names and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario c oneof_rename",
+        "verdict": "FIELD_SAME_ONEOF F P J W; ONEOF_NO_DELETE F P"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_oneof_no_delete",
+        "verdict": "ONEOF_NO_DELETE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-7" }
+    ],
+    "covers": ["buf:ONEOF_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/oneofs",
+        "action": "rename",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-005",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "reserved number removed, not reused",
+    "before": "message M { reserved 5; string s = 1; }",
+    "after": "message M { string s = 1; }",
+    "rationale": "nothing breaks now, but the number may be reused later with another meaning (PD-4)",
+    "annotation": "names the number and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_reserved_message_no_delete",
+        "verdict": "RESERVED_MESSAGE_NO_DELETE F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-10" }
+    ],
+    "covers": ["buf:RESERVED_MESSAGE_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/reserved/numbers/*",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-006",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "reserved number removed and reused by a new field",
+    "before": "message M { reserved 5; string s = 1; }",
+    "after": "message M { string s = 1; int32 n = 5; }",
+    "rationale": "old data written with number 5 is read as the new field (PD-4)",
+    "annotation": "names the number and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_reserved_message_no_delete",
+        "verdict": "RESERVED_MESSAGE_NO_DELETE F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-9" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/reserved/numbers/*",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      },
+      {
+        "at": "components/messages/p.M/properties/n",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-007",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "reserved name removed, not reused",
+    "before": "message M { reserved \"old\"; string s = 1; }",
+    "after": "message M { string s = 1; }",
+    "rationale": "ProtoJSON clients may later meet the name with another meaning; binary clients never see names (PD-4, PD-29)",
+    "annotation": "names the reserved name and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_reserved_message_no_delete",
+        "verdict": "RESERVED_MESSAGE_NO_DELETE F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-13" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/reserved/names/*",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-008",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "extension range removed (proto2)",
+    "before": "message M { extensions 100 to 199; }",
+    "after": "message M { }",
+    "rationale": "extensions declared elsewhere stop compiling; the wire does not change (PD-15, build-only)",
+    "annotation": "names the range and the message",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_extension_message_no_delete",
+        "verdict": "EXTENSION_MESSAGE_NO_DELETE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-15" }
+    ],
+    "covers": ["buf:EXTENSION_MESSAGE_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/extensions/*",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-009",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "`json_format = LEGACY_BEST_EFFORT` set on a message (edition 2023)",
+    "before": "message M { string s = 1; }",
+    "after": "message M { option features.json_format = LEGACY_BEST_EFFORT; string s = 1; }",
+    "rationale": "generated JSON mappings may change, ProtoJSON runtime parsing does not (C7, build-only)",
+    "annotation": "names the message and both JSON formats",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_same_json_format",
+        "verdict": "MESSAGE_SAME_JSON_FORMAT F P J"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-21" }
+    ],
+    "covers": ["buf:MESSAGE_SAME_JSON_FORMAT"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/jsonFormat",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-010",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "`json_format = LEGACY_BEST_EFFORT` removed (back to ALLOW)",
+    "before": "message M { option features.json_format = LEGACY_BEST_EFFORT; string s = 1; }",
+    "after": "message M { string s = 1; }",
+    "rationale": "ALLOW only adds the JSON conflict checks the message already passes (C7)",
+    "annotation": "names the message and both JSON formats",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario t json_format_legacy_to_allow", "verdict": "none" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-22" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/jsonFormat",
+        "action": "remove",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-011",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "`no_standard_descriptor_accessor` set",
+    "before": "message M { string s = 1; }",
+    "after": "message M { option no_standard_descriptor_accessor = true; string s = 1; }",
+    "rationale": "generated code loses the descriptor accessor, the wire does not change (G0, build-only)",
+    "annotation": "names the message and the option",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_message_same_values",
+        "verdict": "MESSAGE_NO_REMOVE_STANDARD_DESCRIPTOR_ACCESSOR F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-24" }
+    ],
+    "covers": ["buf:MESSAGE_NO_REMOVE_STANDARD_DESCRIPTOR_ACCESSOR"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/options/no_standard_descriptor_accessor",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-012",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "`message_set_wire_format` removed (proto2)",
+    "before": "message M { option message_set_wire_format = true; extensions 4 to max; }",
+    "after": "message M { extensions 4 to max; }",
+    "rationale": "MessageSet is another wire encoding of the extensions (C7); buf has the rule in no category and rejects MessageSet",
+    "annotation": "names the message and the option",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario p message_set_wire_format",
+        "verdict": "MESSAGE_SAME_MESSAGE_SET_WIRE_FORMAT (opt-in)"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-23" }
+    ],
+    "covers": ["buf:MESSAGE_SAME_MESSAGE_SET_WIRE_FORMAT"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/options/message_set_wire_format",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-MSG-013",
+    "family": "protoapi",
+    "area": "messages",
+    "file": "test/compat/protoapi/messages.test.ts",
+    "kind": "proto",
+    "title": "message visibility `export` → `local` (edition 2024)",
+    "before": "export message M { string s = 1; }",
+    "after": "local message M { string s = 1; }",
+    "rationale": "other files can no longer import the type; nothing changes at runtime (G0, C6; buf is silent)",
+    "annotation": "names the message and both visibilities",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario j visibility_export_to_local", "verdict": "none" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 M-19" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/options/visibility",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-001",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `java_package` changed",
+    "before": "option java_package = \"foo\";",
+    "after": "option java_package = \"bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_JAVA_PACKAGE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_JAVA_PACKAGE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/java_package",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-002",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `java_outer_classname` changed",
+    "before": "option java_outer_classname = \"Foo\";",
+    "after": "option java_outer_classname = \"Bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_JAVA_OUTER_CLASSNAME F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_JAVA_OUTER_CLASSNAME"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/java_outer_classname",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-003",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `java_multiple_files` changed",
+    "before": "option java_multiple_files = true;",
+    "after": "option java_multiple_files = false;",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_JAVA_MULTIPLE_FILES F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_JAVA_MULTIPLE_FILES"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/java_multiple_files",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-004",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `java_generic_services` changed",
+    "before": "option java_generic_services = true;",
+    "after": "option java_generic_services = false;",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_JAVA_GENERIC_SERVICES F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_JAVA_GENERIC_SERVICES"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/java_generic_services",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-005",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `go_package` changed",
+    "before": "option go_package = \"example.com/foo\";",
+    "after": "option go_package = \"example.com/bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_GO_PACKAGE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_GO_PACKAGE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/go_package",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-006",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `cc_generic_services` changed",
+    "before": "option cc_generic_services = true;",
+    "after": "option cc_generic_services = false;",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_CC_GENERIC_SERVICES F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_CC_GENERIC_SERVICES"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/cc_generic_services",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-007",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `cc_enable_arenas` changed",
+    "before": "option cc_enable_arenas = false;",
+    "after": "option cc_enable_arenas = true;",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_CC_ENABLE_ARENAS F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_CC_ENABLE_ARENAS"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/cc_enable_arenas",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-008",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `py_generic_services` changed",
+    "before": "option py_generic_services = true;",
+    "after": "option py_generic_services = false;",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_PY_GENERIC_SERVICES F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_PY_GENERIC_SERVICES"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/py_generic_services",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-009",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `objc_class_prefix` changed",
+    "before": "option objc_class_prefix = \"FOO\";",
+    "after": "option objc_class_prefix = \"BAR\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_OBJC_CLASS_PREFIX F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_OBJC_CLASS_PREFIX"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/objc_class_prefix",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-010",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `csharp_namespace` changed",
+    "before": "option csharp_namespace = \"Foo\";",
+    "after": "option csharp_namespace = \"Bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_CSHARP_NAMESPACE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_CSHARP_NAMESPACE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/csharp_namespace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-011",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `swift_prefix` changed",
+    "before": "option swift_prefix = \"Foo\";",
+    "after": "option swift_prefix = \"Bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_SWIFT_PREFIX F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_SWIFT_PREFIX"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/swift_prefix",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-012",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `php_class_prefix` changed",
+    "before": "option php_class_prefix = \"Foo\";",
+    "after": "option php_class_prefix = \"Bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_PHP_CLASS_PREFIX F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_PHP_CLASS_PREFIX"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/php_class_prefix",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-013",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `php_namespace` changed",
+    "before": "option php_namespace = \"Foo\";",
+    "after": "option php_namespace = \"Bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_PHP_NAMESPACE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_PHP_NAMESPACE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/php_namespace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-014",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `php_metadata_namespace` changed",
+    "before": "option php_metadata_namespace = \"Foo\";",
+    "after": "option php_metadata_namespace = \"Bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_PHP_METADATA_NAMESPACE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_PHP_METADATA_NAMESPACE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/php_metadata_namespace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-015",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `ruby_package` changed",
+    "before": "option ruby_package = \"Foo\";",
+    "after": "option ruby_package = \"Bar\";",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_RUBY_PACKAGE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_RUBY_PACKAGE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/ruby_package",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-016",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "file option `optimize_for` changed",
+    "before": "option optimize_for = CODE_SIZE;",
+    "after": "option optimize_for = LITE_RUNTIME;",
+    "rationale": "a language option only changes generated code: one generic record, build-only (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_file_same_values",
+        "verdict": "FILE_SAME_OPTIMIZE_FOR F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FILE_SAME_OPTIMIZE_FOR"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/optimize_for",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-017",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "`java_string_check_utf8` changed: one record at the file, none at its fields (R-G)",
+    "before": "option java_string_check_utf8 = false; message M { string s = 1; }",
+    "after": "option java_string_check_utf8 = true; message M { string s = 1; }",
+    "rationale": "Java-only parsing behaviour; no effective value per field (R-G)",
+    "annotation": "names the option with both values and the file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_java_utf8_validation",
+        "verdict": "FIELD_SAME_JAVA_UTF8_VALIDATION F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-1" }
+    ],
+    "covers": ["buf:FIELD_SAME_JAVA_UTF8_VALIDATION"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/options/java_string_check_utf8",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-018",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "`ctype = CORD` set on a string field",
+    "before": "string s = 1;",
+    "after": "string s = 1 [ctype = CORD];",
+    "rationale": "a C++-only storage choice (R-G)",
+    "annotation": "names the option, its value and the field",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_cpp_string_type",
+        "verdict": "FIELD_SAME_CPP_STRING_TYPE F P"
+      },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_ctype" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-2" }
+    ],
+    "covers": ["buf:FIELD_SAME_CPP_STRING_TYPE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/options/ctype",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-019",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "`jstype = JS_STRING` set on an `int64` field",
+    "before": "int64 i = 1;",
+    "after": "int64 i = 1 [jstype = JS_STRING];",
+    "rationale": "a JavaScript-only representation choice (R-G)",
+    "annotation": "names the option, its value and the field",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario q jstype_added", "verdict": "FIELD_SAME_JSTYPE F P" },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_jstype" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-2" }
+    ],
+    "covers": ["buf:FIELD_SAME_JSTYPE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/i/options/jstype",
+        "action": "add",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-020",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "`ctype = CORD` replaced by `features.(pb.cpp).string_type = CORD`: two options, two records (R-G)",
+    "before": "bytes b = 1 [ctype = CORD];",
+    "after": "bytes b = 1 [features.(pb.cpp).string_type = CORD];",
+    "rationale": "no equivalence logic between language options (R-G); both are build-only",
+    "annotation": "names each option",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario w ctype_to_cpp_feature", "verdict": "none" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 L-3" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/b/options/**",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "files/a.proto/imports/*",
+        "action": "add",
+        "type": { "FILE": "A", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-OPT-021",
+    "family": "protoapi",
+    "area": "options",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "custom field option changed",
+    "before": "string s = 1 [(owner) = \"a\"];",
+    "after": "string s = 1 [(owner) = \"b\"];",
+    "rationale": "asd cannot know what a custom option means (C7)",
+    "annotation": "names the option in parentheses with both values",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-44" }],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/options/p.owner",
+        "action": "replace",
+        "type": { "FILE": "U", "PACKAGE": "U", "WIRE_JSON": "U", "WIRE": "U" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ANN-001",
+    "family": "protoapi",
+    "area": "annotations",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "field description changed",
+    "before": "// The id.\nstring s = 1;",
+    "after": "// The identifier.\nstring s = 1;",
+    "rationale": "documentation only (C1)",
+    "annotation": "names the field",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-45" }],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/description",
+        "action": "replace",
+        "type": { "FILE": "A", "PACKAGE": "A", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ANN-002",
+    "family": "protoapi",
+    "area": "annotations",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "field deprecated",
+    "before": "string s = 1;",
+    "after": "string s = 1 [deprecated = true];",
+    "rationale": "clients are warned, nothing breaks (PD-23)",
+    "annotation": "reads [Deprecated] and names the field",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-45" }],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/deprecation",
+        "action": "add",
+        "type": { "FILE": "D", "PACKAGE": "D", "WIRE_JSON": "D", "WIRE": "D" }
+      }
+    ]
+  },
+  {
+    "id": "PB-ANN-003",
+    "family": "protoapi",
+    "area": "annotations",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "kept field marked `REQUIRED` by `google.api.field_behavior`",
+    "before": "string s = 1;",
+    "after": "string s = 1 [(google.api.field_behavior) = REQUIRED];",
+    "rationale": "requests without the field are rejected by the server; responses only gain a promise (K-14, S1)",
+    "annotation": "names the field and the required constraint",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 K-14" }],
+    "covers": [],
+    "variants": [
+      "FILE.request DCA",
+      "FILE.response DCA",
+      "PACKAGE.request DCA",
+      "PACKAGE.response DCA",
+      "WIRE_JSON.request DCA",
+      "WIRE_JSON.response DCA",
+      "WIRE.request DCA",
+      "WIRE.response DCA"
+    ],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/required",
+        "action": "add",
+        "type": {
+          "FILE.request": "B",
+          "FILE.response": "N",
+          "PACKAGE.request": "B",
+          "PACKAGE.response": "N",
+          "WIRE_JSON.request": "B",
+          "WIRE_JSON.response": "N",
+          "WIRE.request": "B",
+          "WIRE.response": "N"
+        }
+      }
+    ]
+  },
+  {
+    "id": "PB-ANN-004",
+    "family": "protoapi",
+    "area": "annotations",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "maximum length added by protovalidate",
+    "before": "string s = 1;",
+    "after": "string s = 1 [(buf.validate.field).string.max_len = 10];",
+    "rationale": "longer requests are rejected; responses only gain a promise (K-5)",
+    "annotation": "names the field and the maximum length",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 K-5" }],
+    "covers": [],
+    "variants": [
+      "FILE.request DCA",
+      "FILE.response DCA",
+      "PACKAGE.request DCA",
+      "PACKAGE.response DCA",
+      "WIRE_JSON.request DCA",
+      "WIRE_JSON.response DCA",
+      "WIRE.request DCA",
+      "WIRE.response DCA"
+    ],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/maxLength",
+        "action": "add",
+        "type": {
+          "FILE.request": "B",
+          "FILE.response": "N",
+          "PACKAGE.request": "B",
+          "PACKAGE.response": "N",
+          "WIRE_JSON.request": "B",
+          "WIRE_JSON.response": "N",
+          "WIRE.request": "B",
+          "WIRE.response": "N"
+        }
+      }
+    ]
+  },
+  {
+    "id": "PB-EDGE-001",
+    "family": "protoapi",
+    "area": "edge cases",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "`string` → `bytes` with the same default literal: only the type record (ISSUE-400)",
+    "before": "optional string s = 1 [default = \"abc\"];",
+    "after": "optional bytes s = 1 [default = \"abc\"];",
+    "rationale": "the default is the same bytes, only its document spelling changes with the type (R-1)",
+    "annotation": "names the field and both types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_default",
+        "verdict": "FIELD_SAME_TYPE F P; FIELD_WIRE_JSON_COMPATIBLE_TYPE J (no FIELD_SAME_DEFAULT)"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-13" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/s/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-EDGE-002",
+    "family": "protoapi",
+    "area": "edge cases",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "`string` field made repeated while the file moves from proto2 to edition 2023 (ISSUE-402)",
+    "before": "syntax = \"proto2\"; message M { optional string s = 1; }",
+    "after": "edition = \"2023\"; message M { repeated string s = 1; }",
+    "rationale": "two causes at the field: the shape change and the UTF-8 validation the edition turns on (A4, R-1)",
+    "annotation": "names the field and each effect",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_cardinality",
+        "verdict": "FIELD_SAME_CARDINALITY F P; FIELD_SAME_UTF8_VALIDATION F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-18" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-36" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/syntax",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/messages/p.M/jsonFormat",
+        "action": "remove",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      },
+      {
+        "at": "components/messages/p.M/properties/s/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      },
+      {
+        "at": "components/messages/p.M/properties/s/items/utf8Validation",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      }
+    ]
+  },
+  {
+    "id": "PB-EDGE-003",
+    "family": "protoapi",
+    "area": "edge cases",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "proto2 `required` → edition 2023 `LEGACY_REQUIRED`: no field record",
+    "before": "syntax = \"proto2\"; message M { required int64 n = 1; }",
+    "after": "edition = \"2023\"; message M { int64 n = 1 [features.field_presence = LEGACY_REQUIRED]; }",
+    "rationale": "both spell wire-level requiredness (Q5); buf compares the descriptor label and reports a deleted required field",
+    "annotation": "the syntax record names both statements",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_label",
+        "verdict": "MESSAGE_SAME_REQUIRED_FIELDS F P J W (buf compares the label)"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-24" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "files/a.proto/syntax",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "A", "WIRE": "A" }
+      },
+      {
+        "at": "components/messages/p.M/jsonFormat",
+        "action": "remove",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-EDGE-004",
+    "family": "protoapi",
+    "area": "edge cases",
+    "file": "test/compat/protoapi/options-annotations.test.ts",
+    "kind": "proto",
+    "title": "map value type changed: one record at the map field",
+    "before": "map<string, int32> m = 1;",
+    "after": "map<string, int64> m = 1;",
+    "rationale": "ProtoApi has no map-entry message; buf reports the entry's value field, asd the map field (DG-01)",
+    "annotation": "names the field and both map types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_field_same_type",
+        "verdict": "FIELD_SAME_TYPE F P (on the map entry)"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 F-21" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "components/messages/p.M/properties/m/type",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-001",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "service deleted",
+    "before": "service S { … } service T { rpc A(R) returns (R); }",
+    "after": "service S { … }",
+    "rationale": "every call to the service fails with UNIMPLEMENTED (PD-1, stricter than buf in WIRE_JSON / WIRE)",
+    "annotation": "names the deleted service and its file",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario s service_deleted",
+        "verdict": "SERVICE_NO_DELETE F; PACKAGE_SERVICE_NO_DELETE P"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_service_no_delete",
+        "verdict": "SERVICE_NO_DELETE F"
+      },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_package_service_no_delete",
+        "verdict": "PACKAGE_SERVICE_NO_DELETE P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 S-2" }
+    ],
+    "covers": ["buf:SERVICE_NO_DELETE", "buf:PACKAGE_SERVICE_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.T",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-002",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "rpc deleted",
+    "before": "service S { rpc A(R) returns (R); rpc B(R) returns (R); }",
+    "after": "service S { rpc A(R) returns (R); }",
+    "rationale": "calls fail with UNIMPLEMENTED at every level (PD-1)",
+    "annotation": "names the rpc and the service",
+    "sources": [
+      { "tool": "buf", "ref": "protoapi buf-parity scenario r rpc_deleted", "verdict": "RPC_NO_DELETE F P" },
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_rpc_no_delete",
+        "verdict": "RPC_NO_DELETE F P"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-2" }
+    ],
+    "covers": ["buf:RPC_NO_DELETE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/List",
+        "action": "remove",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-003",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "rpc added",
+    "before": "service S { rpc Get(A) returns (B); }",
+    "after": "service S { rpc Get(A) returns (B); rpc List(A) returns (B); }",
+    "rationale": "a new method breaks no client",
+    "annotation": "names the rpc and the service",
+    "sources": [{ "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-1" }],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/List",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-004",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "request retargeted to another message",
+    "before": "rpc Get(A) returns (B)",
+    "after": "rpc Get(C) returns (B)",
+    "rationale": "two different messages whose bodies are not compared with each other; reflection names change (TC-2)",
+    "annotation": "names the rpc and both request types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_rpc_same_values",
+        "verdict": "RPC_SAME_REQUEST_TYPE F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-3" }
+    ],
+    "covers": ["buf:RPC_SAME_REQUEST_TYPE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/Get/request",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-005",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "response retargeted to another message",
+    "before": "rpc Get(A) returns (B)",
+    "after": "rpc Get(A) returns (C)",
+    "rationale": "two different messages whose bodies are not compared with each other (TC-2)",
+    "annotation": "names the rpc and both response types",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_rpc_same_values",
+        "verdict": "RPC_SAME_RESPONSE_TYPE F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-4" }
+    ],
+    "covers": ["buf:RPC_SAME_RESPONSE_TYPE"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/Get/response",
+        "action": "replace",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-006",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "client streaming added",
+    "before": "rpc Get(A) returns (B)",
+    "after": "rpc Get(stream A) returns (B)",
+    "rationale": "unary and streaming calls are different call types for every client (S5)",
+    "annotation": "names the rpc and both request sides",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_rpc_same_values",
+        "verdict": "RPC_SAME_CLIENT_STREAMING F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-5" }
+    ],
+    "covers": ["buf:RPC_SAME_CLIENT_STREAMING"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/Get/request",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-007",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "server streaming removed together with a response retarget: one record (S5)",
+    "before": "rpc Get(A) returns (stream B)",
+    "after": "rpc Get(A) returns (C)",
+    "rationale": "the call type changes for every client; the retarget is part of the same side record (S5)",
+    "annotation": "names the rpc and both response sides",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_rpc_same_values",
+        "verdict": "RPC_SAME_SERVER_STREAMING F P J W; RPC_SAME_RESPONSE_TYPE F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-6" }
+    ],
+    "covers": ["buf:RPC_SAME_SERVER_STREAMING"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/Get/response",
+        "action": "replace",
+        "type": { "FILE": "B", "PACKAGE": "B", "WIRE_JSON": "B", "WIRE": "B" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-008",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "idempotency level removed",
+    "before": "rpc Get(A) returns (B) { option idempotency_level = NO_SIDE_EFFECTS; }",
+    "after": "rpc Get(A) returns (B);",
+    "rationale": "clients and proxies stop retrying or caching the call; nothing fails (G5)",
+    "annotation": "names the rpc and the idempotency level",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario f idempotency_removed",
+        "verdict": "RPC_SAME_IDEMPOTENCY_LEVEL F P J W"
+      },
+      { "tool": "buf", "ref": "private/bufpkg/bufcheck/testdata/breaking/current/breaking_rpc_same_values" },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-8" }
+    ],
+    "covers": ["buf:RPC_SAME_IDEMPOTENCY_LEVEL"],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/Get/idempotency",
+        "action": "remove",
+        "type": { "FILE": "R", "PACKAGE": "R", "WIRE_JSON": "R", "WIRE": "R" }
+      }
+    ]
+  },
+  {
+    "id": "PB-SVC-009",
+    "family": "protoapi",
+    "area": "services",
+    "file": "test/compat/protoapi/services.test.ts",
+    "kind": "proto",
+    "title": "idempotency level added",
+    "before": "rpc Get(A) returns (B);",
+    "after": "rpc Get(A) returns (B) { option idempotency_level = IDEMPOTENT; }",
+    "rationale": "a stronger guarantee: clients may retry more (G5)",
+    "annotation": "names the rpc and the idempotency level",
+    "sources": [
+      {
+        "tool": "buf",
+        "ref": "protoapi buf-parity scenario g idempotency_added",
+        "verdict": "RPC_SAME_IDEMPOTENCY_LEVEL F P J W"
+      },
+      { "tool": "asd", "ref": "docs/PROTOAPI_DESIGN.md §6 R-7" }
+    ],
+    "covers": [],
+    "variants": ["FILE DCA", "PACKAGE DCA", "WIRE_JSON DCA", "WIRE DCA"],
+    "expected": [
+      {
+        "at": "services/p.S/methods/Get/idempotency",
+        "action": "add",
+        "type": { "FILE": "N", "PACKAGE": "N", "WIRE_JSON": "N", "WIRE": "N" }
+      }
+    ]
+  }
+]

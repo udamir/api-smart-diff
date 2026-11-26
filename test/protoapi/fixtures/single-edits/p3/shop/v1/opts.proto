@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package shop.v1;
+
+import "google/protobuf/descriptor.proto";
+
+message Meta {
+  string owner = 1;
+  int32 level = 2;
+  repeated string tags = 3;
+}
+
+extend google.protobuf.FieldOptions {
+  string audit = 50001;
+  repeated string labels = 50002;
+  Meta meta = 50003;
+}
+
+extend google.protobuf.MessageOptions {
+  bool entity = 50010;
+}
+
+extend google.protobuf.FileOptions {
+  string file_tag = 50020;
+}
+
+extend google.protobuf.ServiceOptions {
+  int32 service_tier = 50030;
+}

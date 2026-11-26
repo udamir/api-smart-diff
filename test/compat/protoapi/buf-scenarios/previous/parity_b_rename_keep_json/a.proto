@@ -1,0 +1,3 @@
+syntax = "proto3";
+package p;
+message M { string foo_bar = 1; }

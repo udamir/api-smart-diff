@@ -1,6 +1,6 @@
 /**
  * What the result toolbar does with the diffs of a comparison before the table and the YAML view show them: the type
- * filter, the text search and the sorting (by type or by the location target: endpoint, channel, field). Both views
+ * filter, the text search and the sorting (by type or by the location target: endpoint, channel, field, declaration). Both views
  * receive the same list, so the YAML view shows (and copies) exactly the diffs the table shows, in the same order.
  * Pure: no DOM, no engine call.
  */
@@ -16,7 +16,7 @@ export interface ResultRow {
   index: number
 }
 
-/** `type`: by severity; `target`: by the location target (endpoint, channel, field, pointer) */
+/** `type`: by severity; `target`: by the location target (endpoint, channel, field, declaration, pointer) */
 export type SortKey = "type" | "target"
 export type SortDirection = "asc" | "desc"
 
@@ -138,6 +138,8 @@ export const targetLabel = (engine: string | undefined): string => {
       return "Channel"
     case "graphapi":
       return "Field"
+    case "protoapi":
+      return "Declaration"
     default:
       return "Location"
   }
@@ -154,7 +156,7 @@ export const sortHint = (key: SortKey, engine: string | undefined, sort: SortSta
   const order =
     key === "type"
       ? "by severity (breaking, risky, non-breaking, deprecated, annotation, unclassified)"
-      : `by ${targetLabel(engine).toLowerCase()} (alphabetical${engine === "openapi" ? ", then method in HTTP order" : ", then operation"})`
+      : `by ${targetLabel(engine).toLowerCase()} (alphabetical${engine === "openapi" ? ", then method in HTTP order" : engine === "protoapi" ? ", then rpc" : ", then operation"})`
   const state =
     sort?.key !== key
       ? "click to sort"

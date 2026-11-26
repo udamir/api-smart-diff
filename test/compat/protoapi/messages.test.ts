@@ -1,0 +1,217 @@
+import { runCases, type CompatCase } from "../../helpers/compat"
+import { buf, cells, e23, e24, p2, p3, parity, proto, row } from "./cases"
+
+// PB-MSG: messages and oneofs (PROTOAPI_DESIGN §6.3), re-authored from buf's breaking corpus and the parity scenarios
+
+const message = "components/messages/p.M"
+
+const cases: CompatCase[] = [
+  proto({
+    id: "PB-MSG-001",
+    title: "message deleted that no field references",
+    before: "message M { string s = 1; } message N { string s = 1; }",
+    after: "message M { string s = 1; }",
+    rationale: "nothing on the wire changes; code that names the type stops compiling (G1, PD-5)",
+    annotation: "names the deleted message and its file",
+    sources: [
+      parity("i unreferenced_message_deleted", "MESSAGE_NO_DELETE F; PACKAGE_MESSAGE_NO_DELETE P"),
+      buf("breaking_message_no_delete", "MESSAGE_NO_DELETE F"),
+      row("M-2"),
+    ],
+    covers: ["buf:MESSAGE_NO_DELETE", "buf:PACKAGE_MESSAGE_NO_DELETE"],
+    proto: [p3("message M { string s = 1; }\nmessage N { string s = 1; }"), p3("message M { string s = 1; }")],
+    expect: [{ at: "components/messages/p.N", action: "remove", type: cells("R R R R"), mentions: ["`p.N`"] }],
+  }),
+  proto({
+    id: "PB-MSG-002",
+    title: "message added",
+    before: "message M { string s = 1; }",
+    after: "message M { string s = 1; } message N { string s = 1; }",
+    rationale: "a new declaration breaks no client",
+    annotation: "names the added message",
+    sources: [row("M-1")],
+    proto: [p3("message M { string s = 1; }"), p3("message M { string s = 1; }\nmessage N { string s = 1; }")],
+    expect: [{ at: "components/messages/p.N", action: "add", type: cells("N N N N"), mentions: ["`p.N`"] }],
+  }),
+  proto({
+    id: "PB-MSG-003",
+    title: "message moved to another file of the package",
+    before: "a.proto: message M, message N",
+    after: "a.proto: message M; b.proto: message N",
+    rationale: "import paths and per-file generated units change, the API does not (U1: build-only in FILE)",
+    annotation: "names the message and both files",
+    sources: [buf("breaking_message_no_delete", "MESSAGE_NO_DELETE F"), row("P-18")],
+    proto: [
+      { "a.proto": p3("message M { string s = 1; }\nmessage N { string s = 1; }") },
+      { "a.proto": p3("message M { string s = 1; }"), "b.proto": p3("message N { string s = 1; }") },
+    ],
+    expect: [
+      {
+        at: "components/messages/p.N/file",
+        action: "replace",
+        type: cells("R A A A"),
+        mentions: ["`a.proto`", "`b.proto`"],
+      },
+      { at: "files/b.proto", action: "add", type: cells("N N A A") },
+    ],
+  }),
+  proto({
+    id: "PB-MSG-004",
+    title: "oneof renamed, same members",
+    before: "message M { oneof a { string x = 1; int32 y = 2; } }",
+    after: "message M { oneof b { string x = 1; int32 y = 2; } }",
+    rationale: "the wire and ProtoJSON keep the member fields, only generated accessors change (G3)",
+    annotation: "names both oneof names and the message",
+    sources: [
+      parity("c oneof_rename", "FIELD_SAME_ONEOF F P J W; ONEOF_NO_DELETE F P"),
+      buf("breaking_oneof_no_delete", "ONEOF_NO_DELETE F P"),
+      row("M-7"),
+    ],
+    covers: ["buf:ONEOF_NO_DELETE"],
+    proto: [
+      p3("message M {\n  oneof a {\n    string x = 1;\n    int32 y = 2;\n  }\n}"),
+      p3("message M {\n  oneof b {\n    string x = 1;\n    int32 y = 2;\n  }\n}"),
+    ],
+    expect: [{ at: `${message}/oneofs`, action: "rename", type: cells("R R A A"), mentions: ["`a`", "`b`"] }],
+  }),
+  proto({
+    id: "PB-MSG-005",
+    title: "reserved number removed, not reused",
+    before: "message M { reserved 5; string s = 1; }",
+    after: "message M { string s = 1; }",
+    rationale: "nothing breaks now, but the number may be reused later with another meaning (PD-4)",
+    annotation: "names the number and the message",
+    sources: [buf("breaking_reserved_message_no_delete", "RESERVED_MESSAGE_NO_DELETE F P J W"), row("M-10")],
+    covers: ["buf:RESERVED_MESSAGE_NO_DELETE"],
+    proto: [p3("message M {\n  reserved 5;\n  string s = 1;\n}"), p3("message M { string s = 1; }")],
+    expect: [{ at: `${message}/reserved/numbers/*`, action: "remove", type: cells("R R R R"), mentions: ["`5`"] }],
+  }),
+  proto({
+    id: "PB-MSG-006",
+    title: "reserved number removed and reused by a new field",
+    before: "message M { reserved 5; string s = 1; }",
+    after: "message M { string s = 1; int32 n = 5; }",
+    rationale: "old data written with number 5 is read as the new field (PD-4)",
+    annotation: "names the number and the message",
+    sources: [buf("breaking_reserved_message_no_delete", "RESERVED_MESSAGE_NO_DELETE F P J W"), row("M-9")],
+    proto: [
+      p3("message M {\n  reserved 5;\n  string s = 1;\n}"),
+      p3("message M {\n  string s = 1;\n  int32 n = 5;\n}"),
+    ],
+    expect: [
+      { at: `${message}/reserved/numbers/*`, action: "remove", type: cells("B B B B"), mentions: ["`5`"] },
+      { at: `${message}/properties/n`, action: "add", type: cells("N N N N") },
+    ],
+  }),
+  proto({
+    id: "PB-MSG-007",
+    title: "reserved name removed, not reused",
+    before: 'message M { reserved "old"; string s = 1; }',
+    after: "message M { string s = 1; }",
+    rationale:
+      "ProtoJSON clients may later meet the name with another meaning; binary clients never see names (PD-4, PD-29)",
+    annotation: "names the reserved name and the message",
+    sources: [buf("breaking_reserved_message_no_delete", "RESERVED_MESSAGE_NO_DELETE F P J W"), row("M-13")],
+    proto: [p3('message M {\n  reserved "old";\n  string s = 1;\n}'), p3("message M { string s = 1; }")],
+    expect: [{ at: `${message}/reserved/names/*`, action: "remove", type: cells("R R R A"), mentions: ["`old`"] }],
+  }),
+  proto({
+    id: "PB-MSG-008",
+    title: "extension range removed (proto2)",
+    before: "message M { extensions 100 to 199; }",
+    after: "message M { }",
+    rationale: "extensions declared elsewhere stop compiling; the wire does not change (PD-15, build-only)",
+    annotation: "names the range and the message",
+    sources: [buf("breaking_extension_message_no_delete", "EXTENSION_MESSAGE_NO_DELETE F P"), row("M-15")],
+    covers: ["buf:EXTENSION_MESSAGE_NO_DELETE"],
+    proto: [p2("message M {\n  extensions 100 to 199;\n}"), p2("message M {\n}")],
+    expect: [{ at: `${message}/extensions/*`, action: "remove", type: cells("R R A A"), mentions: ["`100 to 199`"] }],
+  }),
+  proto({
+    id: "PB-MSG-009",
+    title: "`json_format = LEGACY_BEST_EFFORT` set on a message (edition 2023)",
+    before: "message M { string s = 1; }",
+    after: "message M { option features.json_format = LEGACY_BEST_EFFORT; string s = 1; }",
+    rationale: "generated JSON mappings may change, ProtoJSON runtime parsing does not (C7, build-only)",
+    annotation: "names the message and both JSON formats",
+    sources: [buf("breaking_message_same_json_format", "MESSAGE_SAME_JSON_FORMAT F P J"), row("M-21")],
+    covers: ["buf:MESSAGE_SAME_JSON_FORMAT"],
+    proto: [
+      e23("message M { string s = 1; }"),
+      e23("message M {\n  option features.json_format = LEGACY_BEST_EFFORT;\n  string s = 1;\n}"),
+    ],
+    expect: [{ at: `${message}/jsonFormat`, action: "add", type: cells("R R A A"), mentions: ["JSON format"] }],
+  }),
+  proto({
+    id: "PB-MSG-010",
+    title: "`json_format = LEGACY_BEST_EFFORT` removed (back to ALLOW)",
+    before: "message M { option features.json_format = LEGACY_BEST_EFFORT; string s = 1; }",
+    after: "message M { string s = 1; }",
+    rationale: "ALLOW only adds the JSON conflict checks the message already passes (C7)",
+    annotation: "names the message and both JSON formats",
+    sources: [parity("t json_format_legacy_to_allow", "none"), row("M-22")],
+    proto: [
+      e23("message M {\n  option features.json_format = LEGACY_BEST_EFFORT;\n  string s = 1;\n}"),
+      e23("message M { string s = 1; }"),
+    ],
+    expect: [{ at: `${message}/jsonFormat`, action: "remove", type: cells("N N N N"), mentions: ["JSON format"] }],
+  }),
+  proto({
+    id: "PB-MSG-011",
+    title: "`no_standard_descriptor_accessor` set",
+    before: "message M { string s = 1; }",
+    after: "message M { option no_standard_descriptor_accessor = true; string s = 1; }",
+    rationale: "generated code loses the descriptor accessor, the wire does not change (G0, build-only)",
+    annotation: "names the message and the option",
+    sources: [buf("breaking_message_same_values", "MESSAGE_NO_REMOVE_STANDARD_DESCRIPTOR_ACCESSOR F P"), row("M-24")],
+    covers: ["buf:MESSAGE_NO_REMOVE_STANDARD_DESCRIPTOR_ACCESSOR"],
+    proto: [
+      p3("message M { string s = 1; }"),
+      p3("message M {\n  option no_standard_descriptor_accessor = true;\n  string s = 1;\n}"),
+    ],
+    expect: [
+      {
+        at: `${message}/options/no_standard_descriptor_accessor`,
+        action: "add",
+        type: cells("R R A A"),
+        mentions: ["no_standard_descriptor_accessor"],
+      },
+    ],
+  }),
+  proto({
+    id: "PB-MSG-012",
+    title: "`message_set_wire_format` removed (proto2)",
+    before: "message M { option message_set_wire_format = true; extensions 4 to max; }",
+    after: "message M { extensions 4 to max; }",
+    rationale:
+      "MessageSet is another wire encoding of the extensions (C7); buf has the rule in no category and rejects MessageSet",
+    annotation: "names the message and the option",
+    sources: [parity("p message_set_wire_format", "MESSAGE_SAME_MESSAGE_SET_WIRE_FORMAT (opt-in)"), row("M-23")],
+    covers: ["buf:MESSAGE_SAME_MESSAGE_SET_WIRE_FORMAT"],
+    proto: [
+      p2("message M {\n  option message_set_wire_format = true;\n  extensions 4 to max;\n}"),
+      p2("message M {\n  extensions 4 to max;\n}"),
+    ],
+    expect: [
+      {
+        at: `${message}/options/message_set_wire_format`,
+        action: "remove",
+        type: cells("B B B B"),
+        mentions: ["message_set_wire_format"],
+      },
+    ],
+  }),
+  proto({
+    id: "PB-MSG-013",
+    title: "message visibility `export` → `local` (edition 2024)",
+    before: "export message M { string s = 1; }",
+    after: "local message M { string s = 1; }",
+    rationale: "other files can no longer import the type; nothing changes at runtime (G0, C6; buf is silent)",
+    annotation: "names the message and both visibilities",
+    sources: [parity("j visibility_export_to_local", "none"), row("M-19")],
+    proto: [e24("export message M { string s = 1; }"), e24("local message M { string s = 1; }")],
+    expect: [{ at: `${message}/options/visibility`, type: cells("R R A A"), mentions: ["`p.M`"] }],
+  }),
+]
+
+runCases("protoapi", "messages", cases, import.meta.filename)

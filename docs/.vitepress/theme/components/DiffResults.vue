@@ -4,6 +4,7 @@ import { computed, reactive, ref, watch } from "vue"
 import type { Diff, DiffType } from "../../../../src"
 import { DIFF_TYPE_HINTS, countByType } from "../diff"
 import type { DiffLocation } from "../location"
+import type { SourceLine } from "../proto"
 import {
   type SortKey,
   type SortState,
@@ -32,10 +33,14 @@ const props = withDefaults(
     /** accessible label of the YAML view */
     label: string
     yamlHeight?: string
+    /** `.proto` input: the source lines of the diffs (same order as `diffs`); a row with one can be selected */
+    sourceLines?: readonly (SourceLine | undefined)[]
+    /** index (in `diffs`) of the selected diff */
+    selected?: number
   }>(),
-  { compact: false, reportable: false, yamlHeight: "420px" },
+  { compact: false, reportable: false, yamlHeight: "420px", sourceLines: undefined, selected: undefined },
 )
-const emit = defineEmits<{ report: [diff: Diff, location?: DiffLocation] }>()
+const emit = defineEmits<{ report: [diff: Diff, location?: DiffLocation]; select: [index: number] }>()
 
 const view = defineModel<"table" | "yaml">("view", { default: "table" })
 
@@ -89,7 +94,9 @@ const onSort = (key: SortKey) => (sort.value = nextSort(sort.value, key))
         v-model="query"
         class="query"
         type="search"
-        placeholder="Filter: endpoint, method, path, text…"
+        :placeholder="
+          engine === 'protoapi' ? 'Filter: rpc, declaration, path, text…' : 'Filter: endpoint, method, path, text…'
+        "
         aria-label="Filter the diffs by location, path or description"
         title="Filters the table and the YAML view"
       />
@@ -124,7 +131,10 @@ const onSort = (key: SortKey) => (sort.value = nextSort(sort.value, key))
       :sort="sort"
       :compact="compact"
       :reportable="reportable"
+      :source-lines="sourceLines"
+      :selected="selected"
       @sort="onSort"
+      @select="(index) => emit('select', index)"
       @report="(diff, location) => emit('report', diff, location)"
     />
     <DiffsYaml

@@ -36,8 +36,10 @@ Please run the checks and the tests before submitting a pull request (`pnpm run 
 - `src/index.ts` — the public API: the only names the package exports (pinned by `test/core/public-api.test.ts`; a change there is a public API change and needs an update of the API reference).
 - `src/api.ts` — `apiCompare`, `detectSpec` and the engine selection.
 - `src/core/` — the generic compare engine (`compare.ts`), the session (`$ref` resolution, caches, errors), rule resolution, mapping, rename detection, the usage index and the description engine.
-- `src/<spec>/` — one folder per specification (`openapi`, `asyncapi`, `jsonSchema`, `graphapi`), each split into `*.rules.ts` (the rule tree), `*.classify.ts`, `*.mapping.ts`, `*.transform.ts`, `*.annotate.ts` and `*.compare.ts` (the engine wrapper).
+- `src/<spec>/` — one folder per specification (`openapi`, `asyncapi`, `jsonSchema`, `graphapi`, `protoapi`), each split into `*.rules.ts` (the rule tree), `*.classify.ts`, `*.mapping.ts`, `*.transform.ts`, `*.annotate.ts` and `*.compare.ts` (the engine wrapper).
 - `test/` — tests mirroring the source folders; `test/compat/` is a corpus of change scenarios harvested from other API diff tools, run per variant (placement, direction, encoding); `test/docs/` checks the examples of this site.
+
+The ProtoApi classification is also checked against `buf breaking` 1.75.0: its findings on buf's own test cases are checked in (`test/compat/coverage/protoapi-buf-oracle.json`), so the tests need no buf binary, and every accepted difference is listed with its reason in `test/compat/coverage/protoapi-buf-oracle-exceptions.json`. After a rule change run `pnpm exec vpx test/compat/protoapi/buf-oracle.ts` (`-v Field` lists the findings of the matching rules); to regenerate the findings for a new buf version, point `BUF` at a buf binary and run `pnpm exec vpx test/compat/protoapi/gen-buf-oracle.ts`. The `.proto` test inputs are built with the `protoapi` devDependency.
 
 ## Tests
 

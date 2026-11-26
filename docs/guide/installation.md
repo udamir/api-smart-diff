@@ -74,6 +74,25 @@ const toGraphApi = (sdl: string) => buildFromSchema(buildSchema(sdl)) // a Graph
 const { diffs } = apiCompare(toGraphApi(beforeSdl), toGraphApi(afterSdl))
 ```
 
+## Protocol Buffers
+
+gRPC / Protocol Buffers APIs are compared in their [ProtoApi](https://github.com/udamir/protoapi) encoding, so building documents from `.proto` sources needs `protoapi` (not a dependency of api-smart-diff). Build both sides with the same protoapi version and its default options:
+
+```sh
+npm install protoapi
+```
+
+```ts
+import { buildFromProto } from "protoapi"
+import { apiCompare } from "api-smart-diff"
+
+const toProtoApi = (files: Record<string, string>) => buildFromProto(files, { imports: "user" }).document
+
+const { diffs } = apiCompare(toProtoApi(beforeFiles), toProtoApi(afterFiles), { compatibility: "WIRE_JSON" })
+```
+
+See [Protocol Buffers](./protoapi) for the build issues to check, the compatibility levels and the source locations of diffs.
+
 ## External references
 
 Documents with external `$ref`s (to other files or URLs) are resolved from the `externalSources` option only — nothing is fetched. Either pass the referenced documents (see [Options](./options#externalsources)) or bundle the document into one file first, for example with [api-ref-bundler](https://github.com/udamir/api-ref-bundler).

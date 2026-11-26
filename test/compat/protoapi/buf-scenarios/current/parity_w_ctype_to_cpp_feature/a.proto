@@ -1,0 +1,4 @@
+edition = "2023";
+package p;
+import "google/protobuf/cpp_features.proto";
+message M { bytes b = 1 [features.(pb.cpp).string_type = CORD]; }

@@ -3,6 +3,8 @@
 // public API change that must be made on purpose and documented in docs/guide/api.md) and checks at type level that
 // every public type can be imported from the entry.
 
+import { buildFromProto } from "protoapi"
+
 import * as api from "../../src"
 import type {
   ActionType,
@@ -51,6 +53,10 @@ import type {
   OpenApi3SchemaRulesOptions,
   OpenApiCompareOptions,
   OpenApiVersion,
+  ProtoApiCompareOptions,
+  ProtoApiCompatibility,
+  ProtoApiDocument,
+  ProtoApiRulesOptions,
   RuleDiffType,
   ScopeContext,
   ScopedClassifyRule,
@@ -65,6 +71,7 @@ const PUBLIC_RUNTIME_EXPORTS = [
   "compareGraphApi",
   "compareJsonSchema",
   "compareOpenApi",
+  "compareProtoApi",
   "detectSpec",
   "UnsupportedSpecError",
   // constants
@@ -81,10 +88,12 @@ const PUBLIC_RUNTIME_EXPORTS = [
   "jsonSchemaRules",
   "openApiSchemaRules",
   "openapi3Rules",
+  "protoApiRules",
   "asyncApiAnnotateHook",
   "graphApiAnnotateHook",
   "jsonSchemaAnnotationHook",
   "openApi3AnnotateHook",
+  "protoApiAnnotateHook",
   // classifier shorthands
   "addNonBreaking",
   "allAnnotation",
@@ -142,6 +151,12 @@ describe("public API of the package entry", () => {
       "oppositeScopes",
       "getKeyValue",
       "isObject",
+      "createProtoApiAnnotateHook",
+      "describeProtoDiff",
+      "getProtoApiVersion",
+      "locateProtoApiContainer",
+      "mergeElementDiffs",
+      "protoApiMatrix",
     ]) {
       expect(name in api).toBe(false)
     }
@@ -196,13 +211,17 @@ describe("public API of the package entry", () => {
       OpenApi3SchemaRulesOptions,
       OpenApiCompareOptions,
       OpenApiVersion,
+      ProtoApiCompareOptions,
+      ProtoApiCompatibility,
+      ProtoApiDocument,
+      ProtoApiRulesOptions,
       RuleDiffType,
       ScopeContext,
       ScopedClassifyRule,
       ScopeResolver,
       SourceContext,
     ]
-    expectTypeOf<PublicTypes["length"]>().toEqualTypeOf<51>()
+    expectTypeOf<PublicTypes["length"]>().toEqualTypeOf<55>()
 
     // the types fit the values they describe
     const rule: CompareRule = { $: api.allBreaking, mapping: api.objectMappingResolver }
@@ -215,5 +234,16 @@ describe("public API of the package entry", () => {
     expect(engine({ a: 1 }, { a: 2 }, options).diffs).toHaveLength(1)
     expect(api.jsonSchemaRules({ version: draft })).toBeTypeOf("object")
     expect(api.openapi3Rules({ version })).toBeTypeOf("object")
+    const level: ProtoApiCompatibility = "WIRE"
+    const protoDocument: ProtoApiDocument = { protoapi: "0.1", services: {} }
+    // the document protoapi builds fits the type (its own types have no index signatures)
+    const built: ProtoApiDocument = buildFromProto({
+      "a.proto": 'syntax = "proto3"; package p; message M { int64 id = 1; }',
+    }).document
+    expect(api.compareProtoApi(built, built).diffs).toHaveLength(0)
+    const protoOptions: ProtoApiCompareOptions = { compatibility: level, files: "ignore" }
+    const protoRulesOptions: ProtoApiRulesOptions = { compatibility: level, optionRules: { "/acme.*": rule } }
+    expect(api.compareProtoApi(protoDocument, protoDocument, protoOptions).diffs).toHaveLength(0)
+    expect(api.protoApiRules(protoRulesOptions)).toBeTypeOf("object")
   })
 })

@@ -1,0 +1,8 @@
+syntax = "proto3";
+package p;
+message R {}
+service S {
+  rpc Get(R) returns (R) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+}

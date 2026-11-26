@@ -14,7 +14,7 @@ import { apiCompare } from "api-smart-diff"
 const { diffs, merged } = apiCompare(before, after)
 ```
 
-To skip the detection, call an engine directly — `compareOpenApi`, `compareAsyncApi`, `compareJsonSchema` or `compareGraphApi` — or force one with `options.engine`; see [Specifications and engines](./engines).
+To skip the detection, call an engine directly — `compareOpenApi`, `compareAsyncApi`, `compareJsonSchema`, `compareGraphApi` or `compareProtoApi` — or force one with `options.engine`; see [Specifications and engines](./engines).
 
 ## Reading YAML
 

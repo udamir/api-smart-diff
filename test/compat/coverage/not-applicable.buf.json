@@ -1,0 +1,6 @@
+{
+  "buf:FIELD_SAME_CTYPE": "buf v1 config only, deprecated: replaced by FIELD_SAME_CPP_STRING_TYPE in the v2 config the oracle runs (the v1 testdata module breaking_field_same_ctype reports FIELD_SAME_CPP_STRING_TYPE under v2)",
+  "buf:FIELD_SAME_LABEL": "buf v1 config only, deprecated: replaced by FIELD_SAME_CARDINALITY, FIELD_WIRE_JSON_COMPATIBLE_CARDINALITY and FIELD_WIRE_COMPATIBLE_CARDINALITY in the v2 config",
+  "buf:FILE_SAME_JAVA_STRING_CHECK_UTF8": "buf v1 config only, deprecated: replaced by FIELD_SAME_JAVA_UTF8_VALIDATION in the v2 config",
+  "buf:FILE_SAME_PHP_GENERIC_SERVICES": "buf v1 config only, deprecated: the `php_generic_services` file option was removed from descriptor.proto (protoc rejects it), so no document can change it"
+}

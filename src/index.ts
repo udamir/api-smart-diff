@@ -10,6 +10,7 @@ export { compareOpenApi } from "./openapi/openapi3.compare"
 export { compareAsyncApi } from "./asyncapi/asyncapi.compare"
 export { compareJsonSchema } from "./jsonSchema/jsonSchema.compare"
 export { compareGraphApi } from "./graphapi/graphapi.compare"
+export { compareProtoApi } from "./protoapi/protoapi.compare"
 export { UnsupportedSpecError } from "./core/errors"
 
 // --- constants ----------------------------------------------------------------------------------------------------
@@ -29,11 +30,13 @@ export { asyncApi2Rules } from "./asyncapi/asyncapi2.rules"
 export { asyncApi3Rules } from "./asyncapi/asyncapi3.rules"
 export { graphApiRules } from "./graphapi/graphapi.rules"
 export { graphApi10Rules } from "./graphapi/graphapi10.rules"
+export { protoApiRules } from "./protoapi/protoapi.rules"
 
 export { jsonSchemaAnnotationHook } from "./jsonSchema/jsonSchema.annotate"
 export { openApi3AnnotateHook } from "./openapi/openapi3.annotate"
 export { asyncApiAnnotateHook } from "./asyncapi/asyncapi.annotate"
 export { graphApiAnnotateHook } from "./graphapi/graphapi.annotate"
+export { protoApiAnnotateHook } from "./protoapi/protoapi.annotate"
 
 // --- custom rules: classifier shorthands --------------------------------------------------------------------------
 
@@ -108,6 +111,12 @@ export type {
   JsonSchemaRulesOptions,
 } from "./jsonSchema/jsonSchema.types"
 export type { GraphApiRulesOptions } from "./graphapi/graphapi.rules"
+export type {
+  ProtoApiCompareOptions,
+  ProtoApiCompatibility,
+  ProtoApiDocument,
+  ProtoApiRulesOptions,
+} from "./protoapi/protoapi.types"
 
 // --- types: custom rules ------------------------------------------------------------------------------------------
 

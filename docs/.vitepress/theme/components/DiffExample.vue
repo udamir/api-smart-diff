@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import { withBase } from "vitepress"
-import { computed, onMounted, ref, shallowRef } from "vue"
+import { computed, onMounted, ref, shallowRef, watch } from "vue"
 
 import pkg from "../../../../package.json"
-import type { Diff } from "../../../../src"
+import type { CompareOptions, Diff, ProtoApiCompatibility } from "../../../../src"
 import { data } from "../../../examples/examples.data"
 import { errorLines } from "../analysis"
-import { decodeStateAsync, encodeState, encodeStateCompressed, formatOf } from "../diff"
+import {
+  PROTO_LEVELS,
+  PROTO_LEVEL_HINTS,
+  decodeStateAsync,
+  encodeState,
+  encodeStateCompressed,
+  languageOf,
+} from "../diff"
 import { exampleById, exampleSlug } from "../examples"
 import { pageRunner, useLiveAnalysis } from "../live"
-import { type ReportBase, type ReportDiff, documentLanguage, engineOfLabel, reportDiff } from "../report"
+import { type ReportBase, type ReportDiff, documentLanguage, engineOfLabel, protoSnippet, reportDiff } from "../report"
 import type { DiffLocation } from "../location"
 import CodeEditor from "./CodeEditor.vue"
 import DiffResults from "./DiffResults.vue"
@@ -23,12 +30,15 @@ const extra = computed(() => data[props.id] ?? {})
 const before = ref(example.value.before)
 const after = ref(example.value.after)
 
+// `.proto` examples: the compatibility level the example is compared at (documented for each level)
+const level = ref<ProtoApiCompatibility>("FILE")
+const options = computed<CompareOptions | undefined>(() =>
+  example.value.levels ? ({ compatibility: level.value } as CompareOptions) : example.value.options,
+)
+
 // compared in the page after a pause in typing (the options of some examples hold functions, which a worker cannot
 // receive); an editor that does not parse keeps the last result, marked stale (see live.ts)
-const live = useLiveAnalysis(
-  () => ({ before: before.value, after: after.value, options: example.value.options }),
-  pageRunner(),
-)
+const live = useLiveAnalysis(() => ({ before: before.value, after: after.value, options: options.value }), pageRunner())
 
 const comparison = computed(() => live.analysis.value?.comparison)
 const diffs = computed(() => comparison.value?.result?.diffs ?? [])
@@ -38,6 +48,17 @@ const engine = computed(() => live.analysis.value?.engine)
 // the result as the table or as the raw `diffs` array in YAML
 const view = ref<"table" | "yaml">("table")
 const detected = computed(() => live.latest.value?.sides.before.label.replace(/ · (YAML|JSON)$/, "") ?? "")
+const isProto = computed(() => !!(live.latest.value?.sides.before.proto || live.latest.value?.sides.after.proto))
+const warnings = computed(() => (live.latest.value?.buildIssues ?? []).filter((issue) => !issue.fatal))
+
+// a selected diff of `.proto` input highlights its source line
+const sourceLines = computed(() => live.analysis.value?.sourceLines)
+const selected = ref<number>()
+const selectedLine = computed(() => (selected.value === undefined ? undefined : sourceLines.value?.[selected.value]))
+const highlightOf = (side: "before" | "after") =>
+  selectedLine.value?.side === side ? { from: selectedLine.value.from, to: selectedLine.value.to } : undefined
+// a new result (another level, an edit) clears the selection
+watch(sourceLines, () => (selected.value = undefined))
 
 const edited = computed(() => before.value !== example.value.before || after.value !== example.value.after)
 
@@ -54,7 +75,15 @@ const reset = () => {
 }
 
 const demoLink = computed(() =>
-  example.value.options ? "" : withBase(`/demo#${encodeState({ before: before.value, after: after.value })}`),
+  example.value.options
+    ? ""
+    : withBase(
+        `/demo#${encodeState({
+          before: before.value,
+          after: after.value,
+          ...(example.value.levels && level.value !== "FILE" ? { options: { compatibility: level.value } } : {}),
+        })}`,
+      ),
 )
 
 // ---- share link of the example (restores edited documents) and report issue
@@ -62,9 +91,16 @@ const shareLink = async (): Promise<string> => {
   const url = new URL(location.href)
   url.search = ""
   url.hash = exampleSlug(example.value.title)
-  if (edited.value) {
+  if (edited.value || level.value !== "FILE") {
     url.searchParams.set("example", example.value.id)
-    url.searchParams.set("state", await encodeStateCompressed({ before: before.value, after: after.value }))
+    url.searchParams.set(
+      "state",
+      await encodeStateCompressed({
+        before: before.value,
+        after: after.value,
+        ...(level.value !== "FILE" ? { options: { compatibility: level.value } } : {}),
+      }),
+    )
   }
   return url.toString()
 }
@@ -75,18 +111,21 @@ const reported = shallowRef<ReportDiff>()
 const reportBase = computed<ReportBase>(() => {
   const label = live.latest.value?.sides.before.label || "not detected"
   const engine = engineOfLabel(label)
+  const proto = isProto.value
   return {
     version: pkg.version,
     origin: `example "${example.value.title}" (${example.value.id})${edited.value ? ", edited" : ""}`,
-    spec: `${label}${engine ? ` (engine ${engine})` : ""}`,
-    snippet: `import { apiCompare } from "api-smart-diff"\n\n// before, after: the documents below\n${
-      example.value.optionsCode?.replace(/^import [^\n]*\n+/, "") ?? "apiCompare(before, after)"
-    }`,
+    spec: `${label}${engine ? ` (engine ${engine}${example.value.levels ? `, compatibility ${level.value}` : ""})` : ""}`,
+    snippet: proto
+      ? protoSnippet(level.value === "FILE" ? undefined : level.value)
+      : `import { apiCompare } from "api-smart-diff"\n\n// before, after: the documents below\n${
+          example.value.optionsCode?.replace(/^import [^\n]*\n+/, "") ?? "apiCompare(before, after)"
+        }`,
     diffs: diffs.value.map((diff, index) => reportDiff({ ...diff, location: locations.value?.[index]?.text })),
     failure: live.inputError.value ?? comparison.value?.failure,
     errors: errorLines(errors.value),
-    before: { text: before.value, language: documentLanguage(before.value) },
-    after: { text: after.value, language: documentLanguage(after.value) },
+    before: { text: before.value, language: documentLanguage(before.value, false, proto) },
+    after: { text: after.value, language: documentLanguage(after.value, false, proto) },
   }
 })
 
@@ -103,6 +142,9 @@ onMounted(async () => {
   if (restored) {
     before.value = restored.before
     after.value = restored.after
+    if (example.value.levels && restored.options?.compatibility) {
+      level.value = restored.options.compatibility
+    }
   }
 })
 </script>
@@ -115,7 +157,12 @@ onMounted(async () => {
           <span>Before</span>
           <small v-if="detected">{{ detected }}</small>
         </header>
-        <CodeEditor v-model="before" :language="formatOf(before)" :label="`${example.title}: before document`" />
+        <CodeEditor
+          v-model="before"
+          :language="languageOf(before)"
+          :label="`${example.title}: before document`"
+          :highlight="highlightOf('before')"
+        />
       </section>
       <section class="pane">
         <header>
@@ -133,8 +180,29 @@ onMounted(async () => {
             <a v-if="demoLink" class="link" :href="demoLink">Open in demo →</a>
           </span>
         </header>
-        <CodeEditor v-model="after" :language="formatOf(after)" :label="`${example.title}: after document`" />
+        <CodeEditor
+          v-model="after"
+          :language="languageOf(after)"
+          :label="`${example.title}: after document`"
+          :highlight="highlightOf('after')"
+        />
       </section>
+    </div>
+
+    <div v-if="example.levels" class="levels" role="group" aria-label="Compatibility level">
+      <span class="caption">Compatibility level</span>
+      <button
+        v-for="item in PROTO_LEVELS"
+        :key="item"
+        type="button"
+        :class="['level', { active: level === item }]"
+        :aria-pressed="level === item"
+        :title="PROTO_LEVEL_HINTS[item]"
+        @click="level = item"
+      >
+        {{ item }}
+      </button>
+      <code class="call">apiCompare(before, after, { compatibility: "{{ level }}" })</code>
     </div>
 
     <div v-if="extra.optionsHtml" class="options">
@@ -158,10 +226,14 @@ onMounted(async () => {
           :engine="engine"
           :label="`${example.title}: diffs as YAML`"
           :yaml-height="yamlHeight"
+          :source-lines="sourceLines"
+          :selected="selected"
           compact
           reportable
           @report="report"
+          @select="(index) => (selected = selected === index ? undefined : index)"
         />
+        <pre v-if="warnings.length" class="warning">{{ warnings.map((issue) => issue.text).join("\n") }}</pre>
         <pre v-if="errors.length" class="error" role="alert">{{ errorLines(errors).join("\n") }}</pre>
       </div>
     </div>
@@ -234,6 +306,52 @@ onMounted(async () => {
 
 .link:hover {
   text-decoration: underline;
+}
+
+.levels {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--vp-c-divider);
+  font-size: 13px;
+}
+
+.levels .caption {
+  margin-right: 4px;
+  color: var(--vp-c-text-2);
+}
+
+.level {
+  padding: 1px 10px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 999px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  color: var(--vp-c-text-2);
+  background: var(--vp-c-bg);
+}
+
+.level.active {
+  border-color: var(--vp-c-brand-1);
+  color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-soft);
+}
+
+.levels .call {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--vp-c-text-3);
+}
+
+.warning {
+  margin: 0;
+  padding: 8px 14px;
+  font-family: var(--vp-font-family-mono);
+  font-size: 12px;
+  white-space: pre-wrap;
+  color: var(--vp-c-warning-1);
 }
 
 .options {

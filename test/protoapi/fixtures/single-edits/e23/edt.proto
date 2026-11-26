@@ -1,0 +1,42 @@
+edition = "2023";
+
+package shop.edt;
+
+import "google/protobuf/cpp_features.proto";
+
+message Thing {
+  string name = 1 [features.field_presence = LEGACY_REQUIRED];
+  int32 count = 2 [features.field_presence = IMPLICIT];
+  string label = 3;
+  repeated int32 ids = 4 [features.repeated_field_encoding = EXPANDED];
+  Inner inner = 5 [features.message_encoding = DELIMITED];
+  string ct = 6 [ctype = CORD];
+  map<string, string> m = 7;
+  repeated string names = 8;
+  int32 n = 9;
+  Mode mode = 10;
+  oneof choice {
+    int32 c1 = 11;
+    string c2 = 12;
+  }
+  repeated int32 more = 13;
+  message Inner {
+    int32 v = 1;
+  }
+  extensions 100 to 199 [declaration = { number: 100, full_name: ".shop.edt.ext100", type: "int32" }];
+}
+
+enum Mode {
+  option features.enum_type = CLOSED;
+  MODE_A = 0;
+  MODE_B = 1;
+}
+
+enum Open {
+  OPEN_UNSPECIFIED = 0;
+  OPEN_X = 1;
+}
+
+extend Thing {
+  int32 ext100 = 100;
+}

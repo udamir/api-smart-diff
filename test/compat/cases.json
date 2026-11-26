@@ -49,6 +49,14 @@
       "classified": 829,
       "annotated": 829,
       "passing": 829
+    },
+    "protoapi": {
+      "cases": 101,
+      "variants": 416,
+      "detected": 416,
+      "classified": 416,
+      "annotated": 416,
+      "passing": 416
     }
   },
   "files": {
@@ -56,7 +64,8 @@
     "core": "cases/core.json",
     "graphql": "cases/graphql.json",
     "jsonschema": "cases/jsonschema.json",
-    "openapi": "cases/openapi.json"
+    "openapi": "cases/openapi.json",
+    "protoapi": "cases/protoapi.json"
   },
   "coverage": {
     "oasdiff": {
@@ -130,6 +139,12 @@
       "total": 754,
       "covered": 754,
       "notApplicable": 0
+    },
+    "buf": {
+      "file": "coverage/buf-breaking-rules.json",
+      "total": 69,
+      "covered": 65,
+      "notApplicable": 4
     }
   }
 }

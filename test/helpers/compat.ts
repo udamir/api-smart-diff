@@ -7,8 +7,18 @@
 import { buildFromSchema } from "gqlapi"
 import { buildFromSchema as buildLegacyFromSchema } from "gqlapi-legacy"
 import { buildSchema } from "graphql"
+import { type BuildIssueCode, buildFromProto } from "protoapi"
 
-import { apiCompare, type CompareOptions, type CompareResult, type Diff, type DiffType } from "../../src"
+import {
+  apiCompare,
+  type CompareOptions,
+  type CompareResult,
+  type Diff,
+  type DiffType,
+  type ProtoApiCompatibility,
+} from "../../src"
+import { recordsByElement } from "../../src/protoapi/protoapi.merge"
+import { protoWordingIssues } from "./proto-wording"
 
 export type Action = "add" | "remove" | "replace" | "rename"
 export type Direction = "request" | "response"
@@ -111,7 +121,27 @@ export interface GraphqlCase extends CaseBase {
   encodings?: ("0.1.2" | "1.0")[]
 }
 
-export type CompatCase = DocCase | SchemaCase | GraphqlCase
+/** `.proto` input of a ProtoApi case: one file (`a.proto`) or a map of import paths to file texts. */
+export type ProtoInput = string | Record<string, string>
+
+export interface ProtoCase extends CaseBase {
+  kind: "proto"
+  /** both sides as `.proto` text, built with protoapi's defaults (`imports: "user"`) */
+  proto: [ProtoInput, ProtoInput]
+  /** compatibility levels, one variant each (default: all four, PROTOAPI_DESIGN §5.1) */
+  compatibility?: ProtoApiCompatibility[]
+  /**
+   * the scope of a message (§4.4): the harness adds `harness.proto` with an rpc that takes the message as request or
+   * returns it as response; one variant per level and direction (`FILE.request`, `WIRE.response`)
+   */
+  use?: { message: string; directions: Direction[] }
+  /** build issue codes the case expects; any other `syntax`, `missing-import` or `unresolved-type` issue fails (C8) */
+  issues?: BuildIssueCode[]
+  /** R-1: at most one record per element (`recordsByElement`) */
+  single?: boolean
+}
+
+export type CompatCase = DocCase | SchemaCase | GraphqlCase | ProtoCase
 
 export interface Variant {
   caseId: string
@@ -129,6 +159,10 @@ export interface Variant {
   options?: CompareOptions
   issue?: string
   policy?: string
+  /** compatibility level of a ProtoApi variant (resolves level-keyed types, C2) */
+  level?: string
+  /** ProtoApi variant: the R-D lint runs on every description, and `single` asserts R-1 */
+  proto?: { single?: boolean; buildProblems: string[] }
 }
 
 export interface Evaluation {
@@ -291,14 +325,23 @@ export const placeSchema = (
 // ---------------------------------------------------------------------------------------------------------------
 // variants
 
-const tagFor = (tag: VariantTag | undefined, variant: string, direction?: Direction): string | undefined => {
+const tagFor = (
+  tag: VariantTag | undefined,
+  variant: string,
+  direction?: Direction,
+  level?: string,
+): string | undefined => {
   if (tag === undefined || typeof tag === "string") return tag
-  return tag[variant] ?? (direction ? tag[direction] : undefined) ?? tag["*"]
+  return tag[variant] ?? (level ? tag[level] : undefined) ?? (direction ? tag[direction] : undefined) ?? tag["*"]
 }
 
-const expectFor = (c: CaseBase, variant: string, direction?: Direction): ExpectedChange[] => {
+const expectFor = (c: CaseBase, variant: string, direction?: Direction, level?: string): ExpectedChange[] => {
   if (Array.isArray(c.expect)) return c.expect
-  const found = c.expect[variant] ?? (direction ? c.expect[direction] : undefined) ?? c.expect["*"]
+  const found =
+    c.expect[variant] ??
+    (level ? c.expect[level] : undefined) ??
+    (direction ? c.expect[direction] : undefined) ??
+    c.expect["*"]
   if (!found) throw new Error(`${c.id}: no expectation for variant ${variant}`)
   return found
 }
@@ -308,19 +351,84 @@ export const gqlDocs = (sdl: string, encoding: "0.1.2" | "1.0") =>
     ? buildFromSchema(buildSchema(sdl, { noLocation: true }))
     : buildLegacyFromSchema(buildSchema(sdl, { noLocation: true }))
 
+// ---- ProtoApi cases (PROTOAPI_DESIGN §9.2)
+
+const PROTO_LEVELS: ProtoApiCompatibility[] = ["FILE", "PACKAGE", "WIRE_JSON", "WIRE"]
+// build issues that make a document unfit for a comparison (C8)
+const FATAL_PROTO_ISSUES: BuildIssueCode[] = ["syntax", "missing-import", "unresolved-type"]
+
+/** The sources of one side of a ProtoApi case, with `harness.proto` using `use.message` in `direction`. */
+export const protoSources = (input: ProtoInput, use?: { message: string }, direction?: Direction) => {
+  const sources: Record<string, string> = typeof input === "string" ? { "a.proto": input } : { ...input }
+  if (use && direction) {
+    const imports = Object.keys(sources)
+      .map((file) => `import "${file}";`)
+      .join("\n")
+    const rpc =
+      direction === "request"
+        ? `rpc Call(${use.message}) returns (google.protobuf.Empty);`
+        : `rpc Call(google.protobuf.Empty) returns (${use.message});`
+    sources["harness.proto"] =
+      `syntax = "proto3";\npackage harness;\nimport "google/protobuf/empty.proto";\n${imports}\nservice Harness {\n  ${rpc}\n}\n`
+  }
+  return sources
+}
+
+/** Builds one side of a ProtoApi case; build issues the case does not expect are returned as problems (C8). */
+export const buildProtoSide = (sources: Record<string, string>, expected: BuildIssueCode[] = []) => {
+  const { document, issues } = buildFromProto(sources, { imports: "user" })
+  const problems = issues
+    .filter((issue) => FATAL_PROTO_ISSUES.includes(issue.code) && !expected.includes(issue.code))
+    .map((issue) => `build: ${issue.code}: ${issue.message}`)
+  return { document, problems }
+}
+
+type VariantBase = Pick<
+  Variant,
+  "caseId" | "name" | "id" | "family" | "area" | "direction" | "expect" | "options" | "issue" | "policy"
+>
+
+const protoVariants = (
+  c: ProtoCase,
+  base: (name: string, direction?: Direction, level?: string) => VariantBase,
+): Variant[] => {
+  const levels = c.compatibility ?? PROTO_LEVELS
+  const directions: (Direction | undefined)[] = c.use ? c.use.directions : [undefined]
+  return levels.flatMap((level) =>
+    directions.map((direction) => {
+      const name = direction ? `${level}.${direction}` : level
+      const before = buildProtoSide(protoSources(c.proto[0], c.use, direction), c.issues)
+      const after = buildProtoSide(protoSources(c.proto[1], c.use, direction), c.issues)
+      return {
+        ...base(name, direction, level),
+        level,
+        before: before.document,
+        after: after.document,
+        options: { ...c.compareOptions, compatibility: level } as CompareOptions,
+        prefix: [],
+        mentions: [],
+        proto: { single: c.single, buildProblems: [...before.problems, ...after.problems] },
+      }
+    }),
+  )
+}
+
 export const variantsOf = (c: CompatCase, family: string, area: string): Variant[] => {
-  const base = (name: string, direction?: Direction) => ({
+  const base = (name: string, direction?: Direction, level?: string): VariantBase => ({
     caseId: c.id,
     name,
     id: `${c.id}@${name}`,
     family,
     area: c.area ?? area,
     direction,
-    expect: expectFor(c, name, direction),
+    expect: expectFor(c, name, direction, level),
     options: c.compareOptions,
-    issue: tagFor(c.issue, name, direction),
-    policy: tagFor(c.policy, name, direction),
+    issue: tagFor(c.issue, name, direction, level),
+    policy: tagFor(c.policy, name, direction, level),
   })
+  if (c.kind === "proto") {
+    return protoVariants(c, base)
+  }
   if (c.kind === "doc") {
     const pairs: Record<string, [unknown, unknown]> = Array.isArray(c.docs) ? { doc: c.docs } : c.docs
     return Object.entries(pairs).map(([name, [before, after]]) => ({
@@ -383,9 +491,17 @@ const matches = (e: ExpectedChange, diff: Diff, prefix: (string | number)[]) => 
   return (!actions || actions.includes(diff.action as Action)) && patterns.some((p) => matchPath(p, diff.path, prefix))
 }
 
-export const expectedType = (e: ExpectedChange, v: Pick<Variant, "name" | "direction">): ExpectedType | undefined => {
+export const expectedType = (
+  e: ExpectedChange,
+  v: Pick<Variant, "name" | "direction" | "level">,
+): ExpectedType | undefined => {
   if (typeof e.type === "string") return e.type
-  return e.type[v.name] ?? (v.direction ? e.type[v.direction] : undefined) ?? e.type["*"]
+  return (
+    e.type[v.name] ??
+    (v.level ? e.type[v.level] : undefined) ??
+    (v.direction ? e.type[v.direction] : undefined) ??
+    e.type["*"]
+  )
 }
 
 // ---------------------------------------------------------------------------------------------------------------
@@ -416,6 +532,35 @@ export const namesItselfAsContainer = (description: string): boolean => {
   return false
 }
 
+// ProtoApi keywords whose absence is a state (R-D, §7.2): a key added or removed reads as the state it changes (W-34:
+// `closed` added is "[Replaced] enum type … from `open` to `closed`", `utf8Validation: false` added is "[Removed]
+// UTF-8 validation", explicit → required presence is "[Added] required label")
+const PROTOAPI_STATE_KEYS = new Set([
+  "closed",
+  "jsonFormat",
+  "utf8Validation",
+  "packed",
+  "presence",
+  "syntax",
+  "visibility",
+])
+
+// the labels ProtoApi descriptions take besides the action word: `[Deprecated]` for deprecation records (PD-23), the
+// state of a keyword whose absence has a meaning, an implicit default replaced (C6), a merged record of mixed effects
+// (A4, ISSUE-374)
+const protoApiLabel = (diff: Diff, tag: string): boolean => {
+  if (tag === "[Deprecated]") {
+    return diff.type === "deprecated"
+  }
+  const key = String(diff.path[diff.path.length - 1])
+  return (
+    // a merged record with mixed effects keeps the representative's action (PD-25)
+    /^\[Replaced\] (resolved features|field behavior) of /.test(diff.description ?? "") ||
+    (PROTOAPI_STATE_KEYS.has(key) && /^\[(Added|Removed|Replaced)\]$/.test(tag)) ||
+    (key === "default" && tag === "[Replaced]" && (diff.description ?? "").includes("(implicit)"))
+  )
+}
+
 /** Reasons why a description is weak (empty list = strong). */
 export const weakDescription = (diff: Diff): string[] => {
   const d = diff.description
@@ -427,7 +572,13 @@ export const weakDescription = (diff: Diff): string[] => {
   const tag = d.match(/^\[[A-Za-z]+\]/)?.[0]
   // a boolean flag switched on / off (`readOnly: true -> false`) may be described as added / removed
   const flag = diff.action === "replace" && (typeof diff.before === "boolean" || typeof diff.after === "boolean")
-  if (tag && actionTag[diff.action] && tag !== actionTag[diff.action] && !(flag && /^\[(Added|Removed)\]$/.test(tag))) {
+  if (
+    tag &&
+    actionTag[diff.action] &&
+    tag !== actionTag[diff.action] &&
+    !(flag && /^\[(Added|Removed)\]$/.test(tag)) &&
+    !protoApiLabel(diff, tag)
+  ) {
     reasons.push(`action tag ${tag} does not match action ${diff.action}`)
   }
   if (diff.type !== "annotation" && /\bannotation \(/.test(d))
@@ -451,7 +602,7 @@ export const formatDiffs = (diffs: Diff[]) =>
 export const compareVariant = (v: Pick<Variant, "before" | "after" | "options">): CompareResult =>
   apiCompare(v.before, v.after, { metaKey: Symbol("diff"), ...v.options })
 
-type Context = Pick<Variant, "name" | "direction" | "prefix" | "mentions" | "expect">
+type Context = Pick<Variant, "name" | "direction" | "prefix" | "mentions" | "expect" | "level" | "proto">
 
 /** Attribution of diffs to expected changes: detection, classification and annotation of a result. */
 export const checkDiffs = (v: Context, diffs: Diff[]): Evaluation => {
@@ -501,13 +652,31 @@ export const checkDiffs = (v: Context, diffs: Diff[]): Evaluation => {
       }
     }
   }
+  if (v.proto) {
+    // R-D (J16): every description of the family reads in protobuf terms with `.proto` literals
+    const wording = diffs.flatMap(protoWordingIssues)
+    if (wording.length) {
+      annotated = false
+      problems.push(...wording.map((issue) => `annotation: R-D ${issue}`))
+    }
+    // R-1: at most one record per element
+    if (v.proto.single) {
+      const several = [...recordsByElement(diffs)].filter(([, count]) => count > 1)
+      if (several.length) {
+        detected = false
+        problems.push(
+          `detection: R-1 several records at ${several.map(([element, n]) => `${element} (${n})`).join(", ")}`,
+        )
+      }
+    }
+  }
   return { detected, classified, annotated, problems, diffs }
 }
 
 /** Checks one variant against the three requirements without throwing. */
 export const evaluateVariant = (v: Variant): Evaluation => {
-  const problems: string[] = []
-  let identicalOk = true
+  const problems: string[] = [...(v.proto?.buildProblems ?? [])]
+  let identicalOk = !problems.length
   const snapBefore = snapshot(v.before)
   const snapAfter = snapshot(v.after)
   let result: CompareResult

@@ -95,6 +95,12 @@ const main = async () => {
       file: "compat-suites-cases.json",
       title: "Netcracker compatibility-suite case ids (`qubership-apihub-compatibility-suites`, DDL excluded)",
     },
+    {
+      key: "buf",
+      file: "buf-breaking-rules.json",
+      title:
+        "buf v1.75 breaking rules (`private/bufpkg/bufcheck`: the 65 rules of the v2 config and the four ids of the v1 config only)",
+    },
   ].filter((c) => fs.existsSync(path.join(coverageDir, c.file)))
   const notApplicable: Record<string, string> = {}
   for (const file of fs.readdirSync(coverageDir).filter((f) => f.startsWith("not-applicable"))) {
@@ -398,9 +404,18 @@ const main = async () => {
     areas.set(rec.area, [...(areas.get(rec.area) ?? []), rec])
     byFamily.set(rec.family, areas)
   }
+  // variant legend of a family whose variant names the general legend above does not cover
+  const familyNotes: Record<string, string> = {
+    protoapi:
+      "ProtoApi cases (`kind: proto`, PROTOAPI_DESIGN §9.2) run once per compatibility level: variants `FILE` / `PACKAGE` / `WIRE_JSON` / `WIRE`, and `<level>.request` / `<level>.response` for a message used only as an rpc request or response (`harness.proto`). Every description of the family passes the R-D wording lint, and cases marked single have at most one record per element (R-1). The buf v1.75 oracle (`test/compat/protoapi/buf-oracle.ts`, X-ORACLE-002) checks the engine against `buf breaking` on buf's own test corpus.",
+  }
   for (const [family, areas] of [...byFamily].sort()) {
     out.push(`## ${family}`)
     out.push("")
+    if (familyNotes[family]) {
+      out.push(familyNotes[family])
+      out.push("")
+    }
     for (const [area, recs] of [...areas].sort()) {
       out.push(`### ${family} / ${area}`)
       out.push("")

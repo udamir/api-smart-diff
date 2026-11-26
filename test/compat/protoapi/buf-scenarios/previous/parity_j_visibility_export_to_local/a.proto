@@ -1,0 +1,3 @@
+edition = "2024";
+package p;
+export message M { string s = 1; }

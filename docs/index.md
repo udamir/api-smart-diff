@@ -4,7 +4,7 @@ layout: home
 hero:
   name: api-smart-diff
   text: Know what your API change breaks
-  tagline: Compare two versions of an OpenAPI, AsyncAPI, JSON Schema or GraphQL (GraphApi) document and get every change, classified from the client's point of view and described in plain words — plus a merged document annotated with the changes.
+  tagline: Compare two versions of an OpenAPI, AsyncAPI, JSON Schema, GraphQL (GraphApi) or Protocol Buffers (ProtoApi) document and get every change, classified from the client's point of view and described in plain words — plus a merged document annotated with the changes.
   image:
     src: /logo.svg
     alt: api-smart-diff
@@ -22,7 +22,7 @@ hero:
 features:
   - icon: 📚
     title: Four specifications
-    details: OpenAPI 3.0, 3.1 and 3.2, AsyncAPI 2.x and 3.0, JSON Schema draft-04 to 2020-12, and GraphQL in its GraphApi 0.1.2 and 1.0 encodings — detected automatically.
+    details: OpenAPI 3.0, 3.1 and 3.2, AsyncAPI 2.x and 3.0, JSON Schema draft-04 to 2020-12, GraphQL in its GraphApi 0.1.2 and 1.0 encodings, and gRPC / Protocol Buffers in its ProtoApi encoding at four compatibility levels — detected automatically.
     link: /guide/engines
     linkText: Specifications and engines
   - icon: 🚦

@@ -1,0 +1,8 @@
+syntax = "proto3";
+package shop.v1;
+message Pet {
+  string id = 1;
+}
+service PetService {
+  rpc Get(Pet) returns (Pet);
+}

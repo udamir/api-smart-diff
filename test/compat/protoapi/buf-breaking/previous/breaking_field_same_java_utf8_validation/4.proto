@@ -1,0 +1,105 @@
+edition = "2023";
+package a;
+
+import "google/protobuf/java_features.proto";
+
+message D1 {
+  extensions 100 to 1000;
+  string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D1 other4 = 14;
+}
+
+message D2 {
+  string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D2 other4 = 14;
+}
+
+message D3 {
+  string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D3 other4 = 14;
+}
+
+message D4 {
+  string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D4 other4 = 14;
+}
+
+message D5 {
+  string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D5 other4 = 14;
+}
+
+message D6 {
+  string s1 = 1;
+  repeated string s2 = 2;
+  map<string, string> s3 = 3;
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D6 other4 = 14;
+
+  extensions 100 to 1000;
+
+  extend D1 {
+    string d1_s1 = 100 [features.(pb.java).utf8_validation=VERIFY];
+    repeated string d1_s2 = 101;
+  }
+}
+
+extend D6 {
+  string d6_s1 = 100 [features.(pb.java).utf8_validation=VERIFY];
+  repeated string d6_s2 = 101;
+}
+
+message D7 {
+  string s1 = 1 [features.(pb.java).utf8_validation=VERIFY];
+  repeated string s2 = 2 [features.(pb.java).utf8_validation=DEFAULT];
+  map<string, string> s3 = 3 [features.(pb.java).utf8_validation=VERIFY];
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D7 other4 = 14;
+}
+
+message D8 {
+  string s1 = 1 [features.(pb.java).utf8_validation=VERIFY];
+  repeated string s2 = 2 [features.(pb.java).utf8_validation=DEFAULT];
+  map<string, string> s3 = 3 [features.(pb.java).utf8_validation=VERIFY];
+
+  uint32 other1 = 11;
+  repeated double other2 = 12;
+  map<uint64, bytes> other3 = 13;
+  D8 other4 = 14;
+}

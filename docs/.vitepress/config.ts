@@ -11,6 +11,7 @@ const GUIDE = {
     { text: "Installation", link: "/guide/installation" },
     { text: "Usage", link: "/guide/usage" },
     { text: "Specifications and engines", link: "/guide/engines" },
+    { text: "Protocol Buffers (ProtoApi)", link: "/guide/protoapi" },
     { text: "Options", link: "/guide/options" },
     { text: "Result", link: "/guide/result" },
   ],
@@ -62,7 +63,7 @@ const TOOLS = {
 export default defineConfig({
   title: "api-smart-diff",
   description:
-    "Compare OpenAPI, AsyncAPI, JSON Schema and GraphQL (GraphApi) documents: diffs, a merged document with change metadata, breaking-change classification and human-readable descriptions.",
+    "Compare OpenAPI, AsyncAPI, JSON Schema, GraphQL (GraphApi) and Protocol Buffers (ProtoApi) documents: diffs, a merged document with change metadata, breaking-change classification and human-readable descriptions.",
   // served from https://udamir.github.io/api-smart-diff/
   base: "/api-smart-diff/",
   cleanUrls: true,
@@ -72,7 +73,8 @@ export default defineConfig({
     // the demo compares in a module worker (compare.worker.ts), which loads the GraphQL SDL converter on demand
     worker: { format: "es" },
     build: {
-      // the demo and the examples bundle the engine (and the demo loads graphql + gqlapi on demand for SDL input)
+      // the demo and the examples bundle the engine (and load graphql + gqlapi on demand for SDL input, protoapi for
+      // `.proto` input)
       chunkSizeWarningLimit: 1600,
     },
   },

@@ -8,6 +8,7 @@
 | [AsyncAPI](https://www.asyncapi.com/docs/reference) | 2.x (2.0 – 2.6), 3.0 | `compareAsyncApi` |
 | [JSON Schema](https://json-schema.org/) | draft-04, draft-06, draft-07, 2020-12 | `compareJsonSchema` |
 | GraphQL via [GraphApi](https://github.com/udamir/graphapi) | `graphapi: "0.1.2"` and `graphapi: "1.0"` | `compareGraphApi` |
+| gRPC / Protocol Buffers via [ProtoApi](https://github.com/udamir/protoapi) | `protoapi: "0.1"`, built from `.proto` sources with protoapi | `compareProtoApi` |
 | Swagger 2.0 | not supported | `UnsupportedSpecError` — convert to OpenAPI 3 first |
 
 ## Detection
@@ -19,6 +20,7 @@
 | `openapi: 3.x` (a string or a YAML number such as `3.1`) | `compareOpenApi` |
 | `asyncapi: 2.x` or `3.x` | `compareAsyncApi` |
 | `graphapi: 0.x` or `1.x` | `compareGraphApi` |
+| `protoapi: 0.x` | `compareProtoApi` |
 | none of them | `compareJsonSchema` |
 
 ```ts
@@ -28,11 +30,11 @@ detectSpec({ openapi: "3.1.0" }) // { engine: "openapi", version: "3.1.0" }
 detectSpec({ type: "object" }) // { engine: "jsonschema" }
 ```
 
-`options.engine` (`"openapi"`, `"asyncapi"`, `"graphapi"` or `"jsonschema"`) skips the detection, for example to compare a recognized document as a plain JSON value tree with the JSON Schema engine.
+`options.engine` (`"openapi"`, `"asyncapi"`, `"graphapi"`, `"protoapi"` or `"jsonschema"`) skips the detection, for example to compare a recognized document as a plain JSON value tree with the JSON Schema engine.
 
 ### Unsupported documents
 
-A recognized but unsupported document throws `UnsupportedSpecError` instead of being compared as plain JSON: Swagger 2, OpenAPI 4 or later, AsyncAPI 1.x or 4+, an unknown GraphApi version, two documents of different specifications, AsyncAPI 2.x against 3.0, and GraphApi 0.1.2 against 1.0. The error carries the versions it found:
+A recognized but unsupported document throws `UnsupportedSpecError` instead of being compared as plain JSON: Swagger 2, OpenAPI 4 or later, AsyncAPI 1.x or 4+, an unknown GraphApi or ProtoApi version, two documents of different specifications, AsyncAPI 2.x against 3.0, and GraphApi 0.1.2 against 1.0. The error carries the versions it found:
 
 ```ts
 import { apiCompare, UnsupportedSpecError } from "api-smart-diff"
@@ -94,6 +96,14 @@ compareGraphApi(before, after, options?: CompareOptions)
 GraphQL schemas are compared in their [GraphApi](https://udamir.github.io/graphapi/) encoding: convert SDL with [gqlapi](https://github.com/udamir/graphapi) — `buildFromSchema(buildSchema(sdl))`; gqlapi 0.6 and later write [GraphAPI 1.0](https://udamir.github.io/graphapi/spec/v1.0), gqlapi 0.5 and earlier write 0.1.2. The rule set (`graphApiRules`, `graphApi10Rules`) is selected by the `graphapi` field; both encodings give the same verdicts and descriptions, but a 0.1.2 document cannot be compared with a 1.0 document.
 
 Arguments and input types are classified like requests (`args` scope), output fields and object, interface and union types like responses (`output` scope). Named types are nominal components: a change inside a type is reported at `components/...`, not inside every operation that reaches it. Types that no root operation type reaches are classified as if they were reachable. Executable documents (queries sent by clients) are not compared.
+
+## gRPC / Protocol Buffers (ProtoApi 0.1)
+
+```ts
+compareProtoApi(before, after, options?: ProtoApiCompareOptions)
+```
+
+Protocol Buffers APIs are compared in their [ProtoApi](https://github.com/udamir/protoapi) encoding: build both sides from `.proto` sources with the separate package protoapi — `buildFromProto(files, { imports: "user" })`, the same protoapi version and options for both — and compare the documents. Four compatibility levels named after buf's breaking categories (`options.compatibility`: `FILE`, `PACKAGE`, `WIRE_JSON`, `WIRE`) decide which clients a change is judged for. rpc requests are classified like requests (`request` scope), responses like responses (`response`), messages and enums by the rpcs that use them (`components`). Fields and enum values are paired by number, files by the declarations they hold; validation rules (protovalidate, `google.api.field_behavior`) are compared as JSON Schema keywords; descriptions read in protobuf terms with `.proto` literals. Extra options: `compatibility`, `files`, `optionRules`. See [Protocol Buffers](./protoapi).
 
 ## Calling an engine directly
 

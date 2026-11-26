@@ -10,7 +10,7 @@ The package exports the names on this page, from `api-smart-diff` (and on the `A
 apiCompare(before: unknown, after: unknown, options?: CompareOptions): CompareResult
 ```
 
-Detects the specification of both documents, compares them with the matching engine and classifies and describes every change. Throws `UnsupportedSpecError` for Swagger 2, OpenAPI 4+, unknown AsyncAPI / GraphApi versions and two documents of different specifications; every other problem is reported in `result.errors` or through `options.onError`. See [Usage](./usage), [Options](./options) and [Result](./result).
+Detects the specification of both documents, compares them with the matching engine and classifies and describes every change. Throws `UnsupportedSpecError` for Swagger 2, OpenAPI 4+, unknown AsyncAPI / GraphApi / ProtoApi versions and two documents of different specifications; every other problem is reported in `result.errors` or through `options.onError`. See [Usage](./usage), [Options](./options) and [Result](./result).
 
 ### compareOpenApi, compareAsyncApi, compareJsonSchema, compareGraphApi
 
@@ -22,6 +22,14 @@ compareGraphApi(before: unknown, after: unknown, options?: CompareOptions, conte
 ```
 
 The engines behind `apiCompare` — `compareOpenApi`, `compareAsyncApi`, `compareJsonSchema` and `compareGraphApi`; call one directly to skip the detection. See [Specifications and engines](./engines).
+
+### compareProtoApi
+
+```ts
+compareProtoApi(before: unknown, after: unknown, options?: ProtoApiCompareOptions, context?: SourceContext): CompareResult
+```
+
+The engine for gRPC / Protocol Buffers APIs: `compareProtoApi` compares two ProtoApi documents (`protoapi: "0.1"`) that the separate package [protoapi](https://github.com/udamir/protoapi) builds from `.proto` sources (api-smart-diff does not depend on it: install it to build the documents). `ProtoApiCompareOptions` adds `compatibility` (`"FILE"` default, `"PACKAGE"`, `"WIRE_JSON"`, `"WIRE"`), `files` (`"compare"` default or `"ignore"`) and `optionRules`; `apiCompare` passes them through. See [Protocol Buffers](./protoapi).
 
 ### detectSpec
 
@@ -98,7 +106,7 @@ See [Result](./result).
 | Type | Purpose |
 | --- | --- |
 | `CompareOptions` | the options of `apiCompare`, `compare` and every engine, described field by field in [Options](./options) |
-| `CompareEngineName` | `"openapi" \| "asyncapi" \| "graphapi" \| "jsonschema"`: `options.engine` and `DetectedSpec.engine` |
+| `CompareEngineName` | `"openapi" \| "asyncapi" \| "graphapi" \| "protoapi" \| "jsonschema"`: `options.engine` and `DetectedSpec.engine` |
 | `DetectedSpec` | the result of `detectSpec` |
 | `SourceContext` | the optional last argument of the engines: the root documents and paths of a sub-node being compared |
 | `CompareEngine` | `(before, after, options?, context?) => CompareResult`, the signature of `compare` and of every engine |
@@ -111,6 +119,10 @@ See [Result](./result).
 | `AsyncApiRulesOptions` | the options of `asyncApi2Rules` and `asyncApi3Rules` |
 | `JsonSchemaRulesOptions` | the options of `jsonSchemaRules` |
 | `GraphApiRulesOptions` | the options of `graphApiRules` |
+| `ProtoApiCompareOptions` | `CompareOptions` plus `compatibility`, `files` and `optionRules` |
+| `ProtoApiCompatibility` | `"FILE" \| "PACKAGE" \| "WIRE_JSON" \| "WIRE"`: the [compatibility level](./protoapi#compatibility-levels) |
+| `ProtoApiRulesOptions` | the options of `protoApiRules`: `compatibility`, `files`, `optionRules` and `extensions` |
+| `ProtoApiDocument` | the keys of a ProtoApi document the engine reads (`protoapi`, `files`, `services`, `components`); protoapi's `buildFromProto(...).document` fits it |
 | `JsonSchemaCompareCache` | the legacy `cache` argument of `createRefsCompareResolver` and `jsonSchemaRules` (accepted and ignored) |
 
 ## Custom rules
@@ -135,9 +147,10 @@ asyncApi3Rules(options?: AsyncApiRulesOptions): CompareRules
 jsonSchemaRules(options?: JsonSchemaRulesOptions): CompareRules // { version?, notMergeAllOf?, extensions?, baseRules? }
 graphApiRules(options?: GraphApiRulesOptions): CompareRules // { notMergeAllOf? }
 graphApi10Rules(): CompareRules
+protoApiRules(options?: ProtoApiRulesOptions): CompareRules // { compatibility?, files?, optionRules?, extensions? }
 ```
 
-The rule trees of the built-in engines: OpenAPI 3.x (`openapi3Rules`, generated for `version`, default `"3.0"`), the OpenAPI schema object (`openApiSchemaRules`), AsyncAPI 2.x and 3.0 (`asyncApi2Rules`, `asyncApi3Rules`), JSON Schema (`jsonSchemaRules`, for a draft, default `"2020-12"`), GraphApi 0.1.2 (`graphApiRules`) and GraphApi 1.0 (`graphApi10Rules`). Spread one to change a node and keep the rest (see [Changing a built-in rule tree](./custom-rules#changing-a-built-in-rule-tree)).
+The rule trees of the built-in engines: OpenAPI 3.x (`openapi3Rules`, generated for `version`, default `"3.0"`), the OpenAPI schema object (`openApiSchemaRules`), AsyncAPI 2.x and 3.0 (`asyncApi2Rules`, `asyncApi3Rules`), JSON Schema (`jsonSchemaRules`, for a draft, default `"2020-12"`), GraphApi 0.1.2 (`graphApiRules`), GraphApi 1.0 (`graphApi10Rules`) and ProtoApi 0.1 (`protoApiRules`, for a compatibility level, default `"FILE"`). Spread one to change a node and keep the rest (see [Changing a built-in rule tree](./custom-rules#changing-a-built-in-rule-tree)).
 
 ### Annotate hooks
 
@@ -146,9 +159,10 @@ openApi3AnnotateHook: AnnotateHook
 asyncApiAnnotateHook: AnnotateHook
 jsonSchemaAnnotationHook: AnnotateHook
 graphApiAnnotateHook: AnnotateHook
+protoApiAnnotateHook: AnnotateHook
 ```
 
-The description hooks of the built-in engines (`openApi3AnnotateHook`, `asyncApiAnnotateHook`, `jsonSchemaAnnotationHook`, `graphApiAnnotateHook`); call one from a custom `annotateHook` to keep the built-in descriptions for the changes you do not describe yourself (see [Custom descriptions](./descriptions#custom-descriptions)).
+The description hooks of the built-in engines (`openApi3AnnotateHook`, `asyncApiAnnotateHook`, `jsonSchemaAnnotationHook`, `graphApiAnnotateHook`, `protoApiAnnotateHook`); call one from a custom `annotateHook` to keep the built-in descriptions for the changes you do not describe yourself (see [Custom descriptions](./descriptions#custom-descriptions)).
 
 ### Classifier shorthands
 

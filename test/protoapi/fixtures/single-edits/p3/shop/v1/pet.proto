@@ -1,0 +1,119 @@
+// Pet shop API.
+
+syntax = "proto3";
+
+package shop.v1;
+
+import "google/api/annotations.proto";
+import "google/api/field_behavior.proto";
+import "google/api/field_info.proto";
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import public "shop/v1/common.proto";
+import weak "shop/v1/weak.proto";
+import "shop/v1/opts.proto";
+
+option go_package = "example.com/shop/v1;shopv1";
+option java_multiple_files = true;
+option (shop.v1.file_tag) = "core";
+
+// The pet service.
+service PetService {
+  option (shop.v1.service_tier) = 2;
+  // Get a pet.
+  // Deprecated: use GetPetV2.
+  rpc GetPet(GetPetRequest) returns (Pet) {
+    option (google.api.http) = { get: "/v1/pets/{id}" additional_bindings { post: "/v1/pets:get" body: "*" } };
+  }
+  // List pets.
+  rpc ListPets(ListPetsRequest) returns (stream Pet) {
+    option idempotency_level = NO_SIDE_EFFECTS;
+  }
+  rpc Chat(stream ChatMessage) returns (stream ChatMessage);
+  rpc UpdatePet(UpdatePetRequest) returns (Pet) {
+    option (google.api.http) = { patch: "/v1/{pet.name=pets/*}" body: "pet" };
+    option idempotency_level = IDEMPOTENT;
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = { summary: "Update" };
+  }
+}
+
+message GetPetRequest {
+  // Required. The pet id.
+  int64 id = 1 [(buf.validate.field).int64.gt = 0];
+}
+
+message ListPetsRequest {
+  int32 page_size = 1 [(buf.validate.field).int32 = { gte: 0, lte: 100 }];
+  string page_token = 2;
+  string filter = 3 [(buf.validate.field).string.prefix = "pets/"];
+}
+
+message UpdatePetRequest {
+  Pet pet = 1 [(google.api.field_behavior) = REQUIRED];
+  repeated string update_mask = 2;
+}
+
+message ChatMessage {
+  string text = 1;
+}
+
+// A pet in the shop.
+message Pet {
+  option (shop.v1.entity) = true;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = { json_schema: { title: "PetSchema" } };
+  reserved 5, 7 to 9;
+  reserved "legacy_name";
+
+  // Unique id.
+  int64 id = 1;
+  // Owner e-mail address.
+  // @Required
+  string owner_email = 2 [(buf.validate.field).string = { email: true, max_len: 254 }, (google.api.field_behavior) = IMMUTABLE];
+  optional string nickname = 3; // trailing comment
+  repeated string tags = 4 [json_name = "petTags", (buf.validate.field).repeated = { min_items: 1, items: { string: { min_len: 1 } } }];
+  map<string, int32> attrs = 6;
+  oneof kind {
+    Dog dog = 10;
+    Cat cat = 11;
+  }
+  // Creation time.
+  google.protobuf.Timestamp created_at = 12 [(google.api.field_behavior) = OUTPUT_ONLY];
+  Status status = 13 [deprecated = true];
+  string uuid = 14 [(google.api.field_info).format = UUID4];
+  // Rating.
+  // @Min 1
+  // @Max 10
+  int32 rating = 15;
+  string code = 16 [(buf.validate.field).string.len = 4];
+  Status status2 = 17 [(buf.validate.field).enum = { in: [1, 2] }];
+  string audited = 18 [(shop.v1.audit) = "pii", (shop.v1.labels) = "a", (shop.v1.labels) = "b", (shop.v1.meta) = { owner: "team" level: 2 tags: "x" }];
+  double weight = 19 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = { minimum: 1, exclusive_minimum: true }];
+  // @Title Price title
+  Money price = 20;
+  map<string, string> labels = 21;
+  repeated int32 scores = 22;
+  bytes blob = 23;
+  int32 plain = 24;
+  string first_name = 25;
+  // @Title Dropped
+  int32 conf = 26 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = { title: "Kept" }];
+  oneof contact {
+    string phone = 30;
+    string email = 31;
+  }
+
+  message Dog {
+    string breed = 1;
+  }
+  message Cat {
+    bool indoor = 1;
+  }
+}
+
+enum Status {
+  STATUS_UNSPECIFIED = 0;
+  AVAILABLE = 1;
+  PENDING = 2;
+  SOLD = 3 [deprecated = true];
+}

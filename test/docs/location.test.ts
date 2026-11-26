@@ -1,6 +1,7 @@
 // The location columns of the portal's result table (docs/.vitepress/theme/location.ts): the API location of every
-// diff, derived from its path, origin and scope against the documents of a real comparison, for every specification;
-// and the raw YAML view of the diffs (diffsYaml in diff.ts).
+// diff, derived from its path, origin and scope against the documents of a real comparison, for every specification
+// (`.proto` sources built with protoapi as the page builds them); and the raw YAML view of the diffs (diffsYaml in
+// diff.ts).
 
 import { load } from "js-yaml"
 
@@ -9,12 +10,15 @@ import { analyzeTexts } from "../../docs/.vitepress/theme/analysis"
 import { diffsYaml, plainValue, pointer } from "../../docs/.vitepress/theme/diff"
 import { EXAMPLES } from "../../docs/.vitepress/theme/examples"
 import { type DiffLocation, diffLocation, locationColumns } from "../../docs/.vitepress/theme/location"
-import { PRESETS } from "../../docs/.vitepress/theme/presets"
+import { PRESETS, PROTO_PRESET } from "../../docs/.vitepress/theme/presets"
+import { buildProtoText, locateProtoDiff } from "../../docs/.vitepress/theme/proto"
 import { buildReport, reportDiff } from "../../docs/.vitepress/theme/report"
 
+const proto = { build: buildProtoText, locate: locateProtoDiff }
+
 /** compares two documents as the portal does and returns every diff pointer with its location */
-const locate = (before: string, after: string): Record<string, DiffLocation> => {
-  const analysis = analyzeTexts({ before, after })
+const locate = (before: string, after: string, options?: CompareOptions): Record<string, DiffLocation> => {
+  const analysis = analyzeTexts({ before, after, options }, undefined, proto)
   const diffs = analysis.comparison?.result?.diffs ?? []
   expect(analysis.locations).toHaveLength(diffs.length)
   return Object.fromEntries(
@@ -81,6 +85,7 @@ describe("docs portal / location", () => {
     expect(labels("openapi")).toEqual(["method:Method", "target:Endpoint"])
     expect(labels("asyncapi")).toEqual(["method:Operation", "target:Channel", "part:Message"])
     expect(labels("graphapi")).toEqual(["method:Operation", "target:Field", "part:Arguments / Output"])
+    expect(labels("protoapi")).toEqual(["method:RPC", "target:Declaration", "part:Element"])
     expect(locationColumns("jsonschema")).toBeUndefined()
     expect(locationColumns(undefined)).toBeUndefined()
   })
@@ -245,13 +250,57 @@ mutations:
     expect(diffLocation(root, { engine: "jsonschema" }).text).toBe("/")
   })
 
+  it("D-LOC-012 ProtoApi: rpc, declaration (service, message, enum, file) and element", () => {
+    const locations = locate(PROTO_PRESET.before, PROTO_PRESET.after)
+    expect(pick(locations["remove /services/shop.v1.OrderService/methods/CancelOrder"])).toEqual({
+      method: "CancelOrder",
+      target: "service shop.v1.OrderService",
+      part: "",
+    })
+    expect(locations["replace /services/shop.v1.OrderService/methods/GetOrder/description"].text).toBe(
+      "rpc GetOrder · service shop.v1.OrderService · description",
+    )
+    expect(pick(locations["replace /components/messages/shop.v1.Order/properties/priority/type"])).toEqual({
+      method: "",
+      target: "message shop.v1.Order",
+      part: "field priority",
+    })
+    // a field rename is reported at the `properties` map: the element names both fields
+    expect(pick(locations["rename /components/messages/shop.v1.Order/properties"])).toEqual({
+      method: "",
+      target: "message shop.v1.Order",
+      part: "field customer_id → buyer_id",
+    })
+    expect(pick(locations["add /components/enums/shop.v1.Status/values/STATUS_REFUNDED"])).toEqual({
+      method: "",
+      target: "enum shop.v1.Status",
+      part: "value STATUS_REFUNDED",
+    })
+    const levels = EXAMPLES.find((item) => item.id === "proto-compatibility-levels")!
+    const files = locate(levels.before, levels.after)
+    expect(pick(files["replace /files/shop~1v1~1orders.proto/options/go_package"])).toEqual({
+      method: "",
+      target: "file shop/v1/orders.proto",
+      part: "option go_package",
+    })
+    const streaming = EXAMPLES.find((item) => item.id === "proto-streaming")!
+    expect(
+      locate(streaming.before, streaming.after)["replace /services/shop.v1.OrderService/methods/ListOrders/response"]
+        .text,
+    ).toBe("rpc ListOrders · service shop.v1.OrderService · response")
+  })
+
   it("D-LOC-010 every example and preset gets a location for every diff, without documents too", () => {
-    for (const item of [...EXAMPLES, ...PRESETS]) {
-      const analysis = analyzeTexts({
-        before: item.before,
-        after: item.after,
-        options: "options" in item ? (item.options as CompareOptions) : undefined,
-      })
+    for (const item of [...EXAMPLES, ...PRESETS, PROTO_PRESET]) {
+      const analysis = analyzeTexts(
+        {
+          before: item.before,
+          after: item.after,
+          options: "options" in item ? (item.options as CompareOptions) : undefined,
+        },
+        undefined,
+        proto,
+      )
       const diffs = analysis.comparison!.result!.diffs
       expect(analysis.locations, item.id).toHaveLength(diffs.length)
       for (const location of analysis.locations!) {

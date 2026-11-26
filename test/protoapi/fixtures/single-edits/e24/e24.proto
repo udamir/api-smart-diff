@@ -1,0 +1,20 @@
+edition = "2024";
+
+package shop.e24;
+
+import option "google/protobuf/cpp_features.proto";
+
+export message Pub {
+  string s = 1 [features.(pb.cpp).string_type = CORD];
+  local message Hidden {
+    int32 h = 1;
+  }
+}
+
+local message Priv {
+  int32 x = 1;
+}
+
+enum E {
+  E_UNSPECIFIED = 0;
+}

@@ -20,7 +20,7 @@ type CompareOptions = {
   components?: "usage" | "unclassified"     // classification of components.* (default "usage")
   merged?: "original" | "normalized"        // content of `merged` (default "original")
   compareUnchanged?: boolean                // walk structurally equal subtrees too (default false)
-  engine?: "openapi" | "asyncapi" | "graphapi" | "jsonschema" // force an engine in apiCompare
+  engine?: "openapi" | "asyncapi" | "graphapi" | "protoapi" | "jsonschema" // force an engine in apiCompare
 }
 ```
 
@@ -37,8 +37,11 @@ type CompareOptions = {
 | [`annotateHook`](#annotatehook) | spec hook | custom descriptions |
 | [`metaKey`](#metakey) | `"$diff"` | key (string or `Symbol`) of the change metadata in `merged` |
 | [`arrayMeta`](#arraymeta) | `false` | store array item meta on the array instead of on its parent |
+| [`compatibility`](#compatibility-protoapi) | `"FILE"` | ProtoApi: the clients and the generated code a change is judged for |
+| [`files`](#files-protoapi) | `"compare"` | ProtoApi: `"ignore"` makes file paths and file-level statements annotations |
+| [`optionRules`](#optionrules-protoapi) | built-in option rules | ProtoApi: custom rules for option keys |
 
-Engine-specific options: `compareOpenApi`, `compareAsyncApi` and `compareJsonSchema` accept `notMergeAllOf: true` (compare `allOf` branches as written instead of merging them first); `compareJsonSchema` takes `version` (`"draft-04" | "draft-06" | "draft-07" | "2020-12"`, overriding the draft read from `$schema`).
+Engine-specific options: `compareProtoApi` (and `apiCompare` for ProtoApi documents) takes `compatibility`, `files` and `optionRules` (below); `compareOpenApi`, `compareAsyncApi` and `compareJsonSchema` accept `notMergeAllOf: true` (compare `allOf` branches as written instead of merging them first); `compareJsonSchema` takes `version` (`"draft-04" | "draft-06" | "draft-07" | "2020-12"`, overriding the draft read from `$schema`).
 
 ## engine
 
@@ -134,3 +137,30 @@ merged.paths["/pets"][metaKey] // meta of the children of /pets
 ## arrayMeta
 
 By default the meta of array items is stored on the array's parent as `{ [arrayKey]: { array: { [index]: meta } } }` (JSON-serializable). `arrayMeta: true` stores it on the array itself, as `array[metaKey] = { [index]: meta }` — convenient in code, but not visible in `JSON.stringify` output. See [Result § Merged document](./result#merged-document).
+
+## compatibility (ProtoApi)
+
+The [compatibility level](./protoapi#compatibility-levels) of a Protocol Buffers comparison, named after buf's breaking categories: `"FILE"` (default: binary and ProtoJSON clients, generated code per file), `"PACKAGE"` (generated code per package), `"WIRE_JSON"` (binary and ProtoJSON clients only) or `"WIRE"` (binary clients only). A diff's class never increases from `FILE` to `WIRE`; another value is a `TypeError`.
+
+```ts
+apiCompare(before, after, { compatibility: "WIRE_JSON" })
+```
+
+## files (ProtoApi)
+
+`"ignore"` makes file paths, file-level statements (`syntax`, imports, file options) and the declaring file of every element annotations, for `.proto` trees whose file paths carry no meaning (generated or flattened inputs); the package of a file keeps its class. Default `"compare"`.
+
+## optionRules (ProtoApi)
+
+Rules for the options of every element (file, service, rpc, message, field, enum, value, …), in the [custom rules](./custom-rules) syntax with the option name without parentheses as the key: `"/acme.audit"` for one option, `"/acme.*"` for every option of a prefix. They are merged over the built-in option rules: an exact key overrides a built-in option, a shorter prefix never shadows a longer built-in one. An option without a rule is compared as a value and left `unclassified`.
+
+```ts
+import { allAnnotation, allBreaking, compareProtoApi } from "api-smart-diff"
+
+compareProtoApi(before, after, {
+  optionRules: {
+    "/acme.*": { $: allBreaking },
+    "/acme.audit": { $: allAnnotation },
+  },
+})
+```

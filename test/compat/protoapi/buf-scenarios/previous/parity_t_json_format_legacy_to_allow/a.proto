@@ -1,0 +1,6 @@
+edition = "2023";
+package p;
+message M {
+  option features.json_format = LEGACY_BEST_EFFORT;
+  string s = 1;
+}

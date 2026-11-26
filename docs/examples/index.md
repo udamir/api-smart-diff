@@ -248,6 +248,146 @@ Documents written by gqlapi 0.5 and earlier (`graphapi: 0.1.2`) are compared wit
 </ClientOnly>
 
 
+## Protocol Buffers
+
+gRPC / Protocol Buffers APIs are compared in their [ProtoApi](/guide/protoapi) encoding. These examples are `.proto` sources: the page builds both sides with [protoapi](https://github.com/udamir/protoapi) in your browser (`buildFromProto(files, { imports: "user" })`, loaded only for these examples) and compares the documents. Each example can be compared at the four [compatibility levels](/guide/protoapi#compatibility-levels) — `FILE` (the default), `PACKAGE`, `WIRE_JSON` and `WIRE` — and documents its result at each of them (the table under the example). Click a diff to highlight its line in the sources. Fields are paired by number and enum values by number; the scope `components` means that a message is classified by the rpcs that use it.
+
+### Field number changed
+
+Fields are paired by number, because the number is what goes on the wire: renumbering `note` from 5 to 6 is field 5 removed without reserving its number (breaking at every level: a later field could reuse 5 with another meaning, and old clients would misread it) plus a new field 6 (non-breaking).
+
+<ClientOnly>
+  <DiffExample id="proto-field-number" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 1 breaking, 1 non-breaking |
+| `PACKAGE` | 1 breaking, 1 non-breaking |
+| `WIRE_JSON` | 1 breaking, 1 non-breaking |
+| `WIRE` | 1 breaking, 1 non-breaking |
+
+### Field removed, with and without reserving its number
+
+`coupon` is removed and its number and name are reserved: existing clients keep working and only code generated from the old file loses the field, so the removal is risky at `FILE` and `PACKAGE` and an annotation at `WIRE_JSON` and `WIRE`. `note` is removed without a reservation: breaking at every level, since a later field could reuse number 5. The new reservations are non-breaking (the reserved name is an annotation at `WIRE`, where names do not matter).
+
+<ClientOnly>
+  <DiffExample id="proto-field-removed" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 1 breaking, 1 risky, 2 non-breaking |
+| `PACKAGE` | 1 breaking, 1 risky, 2 non-breaking |
+| `WIRE_JSON` | 1 breaking, 2 non-breaking, 1 annotation |
+| `WIRE` | 1 breaking, 1 non-breaking, 2 annotation |
+
+### Field type changed: compatible on the wire or not
+
+`int32` to `int64` keeps the varint encoding: binary clients still read the field (values above 2³¹ are truncated), so the change is risky at `WIRE` but breaking where ProtoJSON or generated code count (in ProtoJSON a 64-bit integer is a string). `int32` to `string` changes the wire type: breaking at every level.
+
+<ClientOnly>
+  <DiffExample id="proto-type-change" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 2 breaking |
+| `PACKAGE` | 2 breaking |
+| `WIRE_JSON` | 2 breaking |
+| `WIRE` | 1 breaking, 1 risky |
+
+### Enum value added (risky in a response)
+
+`Status` is returned in a response: a client that receives the new `STATUS_REFUNDED` may not handle it, so the addition is risky. `Channel` is sent in a request: the server accepts the old values and the new one, so the addition is non-breaking. The direction of a message comes from the rpcs that use it.
+
+<ClientOnly>
+  <DiffExample id="proto-enum-value" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 1 risky, 1 non-breaking |
+| `PACKAGE` | 1 risky, 1 non-breaking |
+| `WIRE_JSON` | 1 risky, 1 non-breaking |
+| `WIRE` | 1 risky, 1 non-breaking |
+
+### Streaming turned on for an rpc
+
+Turning the response of `ListOrders` or the request of `CreateOrders` into a stream changes the call type: the generated stubs and the framing that existing clients expect no longer match, so both changes are breaking at every level.
+
+<ClientOnly>
+  <DiffExample id="proto-streaming" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 2 breaking |
+| `PACKAGE` | 2 breaking |
+| `WIRE_JSON` | 2 breaking |
+| `WIRE` | 2 breaking |
+
+### Package renamed
+
+A package rename changes the full name of every declaration (`shop.v1.Order` becomes `shop.v2.Order`) and the gRPC method paths, so it is breaking at every level. It is one diff at the `package` statement of the file, not one per declaration.
+
+<ClientOnly>
+  <DiffExample id="proto-package-rename" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 1 breaking |
+| `PACKAGE` | 1 breaking |
+| `WIRE_JSON` | 1 breaking |
+| `WIRE` | 1 breaking |
+
+### Field renamed, same number
+
+The binary encoding carries only the number, so renaming `customer_id` to `buyer_id` is non-breaking at `WIRE`. ProtoJSON writes the field name (`customerId` becomes `buyerId`) and generated code uses it, so the rename is breaking at `WIRE_JSON`, `PACKAGE` and `FILE`. Switch the level to compare.
+
+<ClientOnly>
+  <DiffExample id="proto-field-rename" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 1 breaking |
+| `PACKAGE` | 1 breaking |
+| `WIRE_JSON` | 1 breaking |
+| `WIRE` | 1 non-breaking |
+
+### Validation rules changed (buf.validate)
+
+protovalidate rules are compared by meaning, like JSON Schema keywords, and classified by the direction of the message. Lowering the `page_size` maximum of a request from 100 to 50 rejects requests that were valid: breaking. Raising the length limit of `customer_id` in a request accepts more: non-breaking. Raising the item limit of a response field lets the server send more items than clients expect: breaking. Validation rules count at every level.
+
+<ClientOnly>
+  <DiffExample id="proto-validation" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 2 breaking, 1 non-breaking |
+| `PACKAGE` | 2 breaking, 1 non-breaking |
+| `WIRE_JSON` | 2 breaking, 1 non-breaking |
+| `WIRE` | 2 breaking, 1 non-breaking |
+
+### The same changes at four compatibility levels
+
+Each editor holds two files: a `// file: <path>` line starts a new file. A `json_name` added to `customer_id` changes its ProtoJSON name: breaking unless only binary clients count (`WIRE`). A new `go_package` only affects generated Go code: risky at `FILE` and `PACKAGE`, an annotation at `WIRE_JSON` and `WIRE`. Moving `Money` to another file of the same package changes the import path of generated code: risky at `FILE`, an annotation from `PACKAGE` on. Switch the level to see each verdict.
+
+<ClientOnly>
+  <DiffExample id="proto-compatibility-levels" />
+</ClientOnly>
+
+| Level | Documented result |
+| --- | --- |
+| `FILE` | 1 breaking, 2 risky |
+| `PACKAGE` | 1 breaking, 1 risky, 1 annotation |
+| `WIRE_JSON` | 1 breaking, 2 annotation |
+| `WIRE` | 3 annotation |
+
+
 ## Custom rules
 
 The built-in rule sets can be extended through the options; the options of these examples are shown under the editors.

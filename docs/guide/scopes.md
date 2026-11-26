@@ -16,7 +16,8 @@ Every verdict is given from the **consumer's** (client's) point of view.
 | AsyncAPI 2.x `subscribe`, 3.0 `send` (messages the application produces) | `subscribe` / `send` (inverted) | like a response | a required payload property removed is breaking |
 | GraphQL arguments and input types | `args` | like a request | a non-null argument without a default added is breaking, one with a default is risky |
 | GraphQL output fields, object, interface and union types | `output` (inverted) | like a response | a field removed is breaking, a union member or enum value added is risky |
-| `components.*`, GraphQL named types | `components` | by usage | see [Components and $ref](./components) |
+| ProtoApi rpc request and response sides | `request` / `response` (inverted) | like an OpenAPI request / response | streaming turned on for a request or a response is breaking; see [Protocol Buffers](./protoapi#direction) |
+| `components.*`, GraphQL named types, ProtoApi messages and enums | `components` | by usage | see [Components and $ref](./components) |
 | everything else (info, servers, tags, a standalone JSON Schema) | `root` | like a request | a standalone schema is the contract of the values a client sends |
 
 A few details:

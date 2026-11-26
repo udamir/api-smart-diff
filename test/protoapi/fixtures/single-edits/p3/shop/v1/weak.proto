@@ -1,0 +1,7 @@
+syntax = "proto3";
+
+package shop.v1;
+
+message WeakThing {
+  string w = 1;
+}

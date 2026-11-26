@@ -8,6 +8,7 @@ import { load } from "js-yaml"
 import { effectScope, nextTick, ref } from "vue"
 
 import { type Analysis, analyzeTexts, needsSdl, portableAnalysis } from "../../docs/.vitepress/theme/analysis"
+import type { CompareOptions } from "../../src"
 import {
   decodeState,
   decodeStateAsync,
@@ -15,7 +16,7 @@ import {
   encodeStateCompressed,
   pointer,
 } from "../../docs/.vitepress/theme/diff"
-import { EXAMPLES } from "../../docs/.vitepress/theme/examples"
+import { EXAMPLES, exampleById } from "../../docs/.vitepress/theme/examples"
 import { type LiveRunner, useLiveAnalysis, workerRunner } from "../../docs/.vitepress/theme/live"
 import {
   FIELD_IDS,
@@ -28,9 +29,12 @@ import {
   buildReport,
   issueUrlLength,
   engineOfLabel,
+  documentLanguage,
   fenced,
+  protoSnippet,
   reportDiff,
 } from "../../docs/.vitepress/theme/report"
+import { buildProtoText, locateProtoDiff } from "../../docs/.vitepress/theme/proto"
 import pkg from "../../package.json"
 
 const root = path.join(import.meta.dirname, "..", "..")
@@ -236,6 +240,41 @@ describe("docs portal / report issue", () => {
 })
 
 describe("docs portal / share links", () => {
+  it("D-RP-008 a report about `.proto` input holds the sources, the protoapi build and the compatibility level", () => {
+    const example = exampleById("proto-field-rename")
+    const options = { compatibility: "WIRE_JSON" } as CompareOptions
+    const analysis = analyzeTexts({ before: example.before, after: example.after, options }, undefined, {
+      build: buildProtoText,
+      locate: locateProtoDiff,
+    })
+    const diffs = analysis.comparison!.result!.diffs.map(reportDiff)
+    const report = buildReport(
+      input({
+        spec: `${analysis.sides.before.label} (engine ${engineOfLabel(analysis.sides.before.label)}, compatibility WIRE_JSON)`,
+        snippet: protoSnippet("WIRE_JSON"),
+        diff: diffs[0],
+        diffs,
+        before: { text: example.before, language: documentLanguage(example.before, false, true) },
+        after: { text: example.after, language: documentLanguage(example.after, false, true) },
+      }),
+    )
+    const fields = params(report.url)
+    expect(report.omitted.documents).toBe(false)
+    expect(fields.get("documents")).toContain('```proto\nsyntax = "proto3";')
+    expect(fields.get("documents")).toContain("string buyer_id = 2;")
+    expect(fields.get("reproduction")).toContain(
+      "Specification: .proto → ProtoApi 0.1 (engine protoapi, compatibility WIRE_JSON)",
+    )
+    expect(fields.get("reproduction")).toContain('buildFromProto(beforeFiles, { imports: "user" })')
+    expect(fields.get("reproduction")).toContain('apiCompare(before, after, { compatibility: "WIRE_JSON" })')
+    expect(fields.get("diffs")).toContain(
+      "- **breaking** rename `/components/messages/shop.v1.Order/properties` (components)",
+    )
+    expect(report.markdown).toContain("```proto\n")
+    // the default level writes no option
+    expect(protoSnippet()).toMatch(/apiCompare\(before, after\)$/)
+  })
+
   it("D-SH-001 a compressed share link restores the documents and the demo options", async () => {
     const state = {
       before: petstore("string", "# ünïcödé ✓\n"),

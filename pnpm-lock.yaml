@@ -31,6 +31,9 @@ importers:
       '@codemirror/language':
         specifier: ^6.13.1
         version: 6.13.1
+      '@codemirror/legacy-modes':
+        specifier: ^6.5.5
+        version: 6.5.5
       '@codemirror/state':
         specifier: ^6.7.6
         version: 6.7.6
@@ -67,6 +70,9 @@ importers:
       js-yaml:
         specifier: ^4.1.0
         version: 4.1.0
+      protoapi:
+        specifier: ^0.1.0
+        version: 0.1.0
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
@@ -128,6 +134,9 @@ packages:
 
   '@codemirror/language@6.13.1':
     resolution: {integrity: sha512-zfvU2r3TyylQLMj/te+5CnQ0rSqZi8B1oTCBbQkagcLW4Xc6imab6qN+pEJhsuNOLaJqiRyBXp9UhWA1DhVvDw==}
+
+  '@codemirror/legacy-modes@6.5.5':
+    resolution: {integrity: sha512-9ltT214oMb3Y1w5eAZMSigzrjzZnMI2Wa3Feq73rU/i4C56MkwrpfswfQYOr28C5pXr6dWwspNTMyeHXlzWMxg==}
 
   '@codemirror/lint@6.9.8':
     resolution: {integrity: sha512-qNvtcE73xUto/D1RvtgSRI4A1Hg8ekxlvtZpjHpdpisLBnhyu82EUEJMEgaxkjuQCA8vqnrylENWKOsEDCOHcw==}
@@ -1398,6 +1407,15 @@ packages:
   property-information@7.2.0:
     resolution: {integrity: sha512-IAtzIB6sUiWaJYrX9smp3V46pBGbBeLFRGdh25kg1334VcBlD8HzhPeNIWQH9zhGmo2itIe25EHt9dQP7G5hmg==}
 
+  protoapi@0.1.0:
+    resolution: {integrity: sha512-UndhvmATBTSjXG+R3BZgArOLXdnoTJZB59fMrVu/YVvzeB7YJoUtYJp1IddKqoE3jkDjZxeipWb45TdfI4+6fw==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@bufbuild/protobuf': ^2.8.0
+    peerDependenciesMeta:
+      '@bufbuild/protobuf':
+        optional: true
+
   react-is@17.0.2:
     resolution: {integrity: sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==}
 
@@ -1674,6 +1692,10 @@ snapshots:
       '@lezer/highlight': 1.2.5
       '@lezer/lr': 1.4.12
       style-mod: 4.1.5
+
+  '@codemirror/legacy-modes@6.5.5':
+    dependencies:
+      '@codemirror/streamparser': 6.0.0
 
   '@codemirror/lint@6.9.8':
     dependencies:
@@ -2639,6 +2661,8 @@ snapshots:
       react-is: 17.0.2
 
   property-information@7.2.0: {}
+
+  protoapi@0.1.0: {}
 
   react-is@17.0.2: {}
 
