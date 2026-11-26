@@ -1,0 +1,55 @@
+{
+  "type": "object",
+  "properties": {
+    "hello": {
+      "$ref": "#/definitions/baz/definitions/World"
+    },
+    "new": {
+      "$ref": "#/definitions/baz/definitions/New",
+      "title": "bar"
+    },
+    "world": {
+      "$ref": "#/definitions/World"
+    }
+  },
+  "definitions": {
+    "World": {
+      "type": "number"
+    },
+    "baz": {
+      "type": "object",
+      "title": "baz",
+      "properties": {
+        "hello": {
+          "$ref": "#/definitions/baz/definitions/World"
+        },
+        "new": {
+          "$ref": "#/definitions/baz/definitions/New"
+        }
+      },
+      "definitions": {
+        "World": {
+          "type": "string"
+        },
+        "New": {
+          "$ref": "#/definitions/foo",
+          "description": "sibling description"
+        }
+      }
+    },
+    "foo": {
+      "type": "object",
+      "properties": {
+        "hello": {
+          "type": "string"
+        },
+        "new": {
+          "$ref": "#/definitions/baz/definitions/New"
+        },
+        "baz": {
+          "$ref": "#/definitions/baz"
+        }
+      }
+    }
+  }
+}

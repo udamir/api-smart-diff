@@ -1,0 +1,171 @@
+{
+  "about": "Harvested commit (or npm version) of every source of the compatibility corpus, phase H (2026-11-15). A later re-harvest diffs each repository from `commit` to its new HEAD and adds the new rule ids / change types / tests to the checklists of this directory. Fixtures are re-authored, never copied; no document was sent to a hosted service.",
+  "sources": [
+    {
+      "tool": "oasdiff",
+      "repository": "https://github.com/oasdiff/oasdiff",
+      "commit": "dc46c21c59bb08fe7f28b61c51d87327790c5e1a",
+      "date": "2026-11-14",
+      "version": "v1.38.0",
+      "status": "harvested",
+      "used": "checker/rules.go rule ids (checklist oasdiff-rules.json), checker/*_test.go, diff tests, testdata pairs; lifecycle / sunset rules as annotation cases (POLICY-07)"
+    },
+    {
+      "tool": "libopenapi",
+      "repository": "https://github.com/pb33f/libopenapi",
+      "commit": "88615e441e4d23fe4f215c8f7cf8adf2477503e1",
+      "date": "2026-11-11",
+      "version": "v0.42.5",
+      "status": "harvested",
+      "used": "what-changed/model tests; what-changed/model/breaking_rules.go default rules (checklist libopenapi-breaking-rules.json)"
+    },
+    {
+      "tool": "openapi-changes",
+      "repository": "https://github.com/pb33f/openapi-changes",
+      "commit": "44bd36927a9b944bb5cbb6d18c4091b5ddad970c",
+      "date": "2026-11-13",
+      "version": "v0.4.3",
+      "status": "harvested",
+      "used": "sample-specs fixtures, cmd tests (OpenAPI and the AsyncAPI rules it takes from libasyncapi)"
+    },
+    {
+      "tool": "openapi-diff",
+      "name": "OpenAPITools openapi-diff",
+      "repository": "https://github.com/OpenAPITools/openapi-diff",
+      "commit": "594183e02e7d2d9fa4dc9a097e49cbda62ee4c48",
+      "date": "2026-11-14",
+      "version": "2.1.8-SNAPSHOT",
+      "status": "harvested",
+      "used": "core/src/test and resources; BackwardIncompatibleProp change kinds (checklist openapitools-change-kinds.json)"
+    },
+    {
+      "tool": "atlassian-openapi-diff",
+      "repository": "https://bitbucket.org/atlassian/openapi-diff",
+      "commit": null,
+      "version": "npm openapi-diff@0.24.1",
+      "status": "harvested from the npm tarball",
+      "reason": "the Bitbucket repository is unreachable: git clone --depth 1 hangs until the 120 s timeout and the Bitbucket API answers 404 for atlassian/openapi-diff (no GitHub mirror exists); the tarball ships dist and docs only, so cases are derived from the DiffResultCode x action kinds of dist/api-types.d.ts, the result-type finder of dist/openapi-diff and docs/OPENAPI3.md (checklist atlassian-openapi-diff-change-kinds.json)"
+    },
+    {
+      "tool": "json-schema-diff",
+      "name": "Atlassian json-schema-diff",
+      "repository": "https://bitbucket.org/atlassian/json-schema-diff",
+      "commit": null,
+      "version": "npm json-schema-diff@1.0.0",
+      "status": "harvested from the npm tarball",
+      "reason": "the Bitbucket repository is unreachable (clone timeout, API 404); the tarball ships the full test suite (test/unit/json-schema-diff/*.spec.ts), which is the checklist json-schema-diff-tests.json"
+    },
+    {
+      "tool": "asyncapi-diff",
+      "repository": "https://github.com/asyncapi/diff",
+      "commit": "bbff009565a674ab230f88395aaea883e21662f5",
+      "date": "2026-11-15",
+      "version": "0.5.0 (repository), npm @asyncapi/diff@0.6.1",
+      "status": "harvested",
+      "used": "src/standards/v2.ts and v3.ts standard classification (checklist asyncapi-diff-standard.json) and fixtures; @asyncapi/cli diff uses the same standard"
+    },
+    {
+      "tool": "libasyncapi",
+      "repository": "https://github.com/pb33f/libasyncapi",
+      "commit": "176cafe33957c5eb99c6d83037b637b666149871",
+      "date": "2026-11-01",
+      "version": "v0.0.7",
+      "status": "harvested",
+      "used": "what-changed tests; what-changed/model/breaking_rules.go default rules (checklist libasyncapi-breaking-rules.json)"
+    },
+    {
+      "tool": "graphql-inspector",
+      "repository": "https://github.com/graphql-hive/graphql-inspector",
+      "commit": "502aa589fa70fefbd3ff3ff0f09489cad3e4fee5",
+      "date": "2026-11-13",
+      "version": "@graphql-inspector/core 8.0.3",
+      "status": "harvested",
+      "used": "packages/core/__tests__/diff, ChangeTypes of packages/core/src/diff/changes/change.ts (checklist graphql-inspector-change-types.json)"
+    },
+    {
+      "tool": "graphql-js",
+      "repository": "https://github.com/graphql/graphql-js",
+      "commit": "52f67c02ffb6aeb72a0e67f4be150665aa229f43",
+      "date": "2026-11-10",
+      "version": "17.1.0 (main)",
+      "status": "harvested",
+      "used": "src/utilities/__tests__/findBreakingChanges-test.ts, findSchemaChanges-test.ts; BreakingChangeType / DangerousChangeType / SafeChangeType (checklist graphql-js-change-types.json)"
+    },
+    {
+      "tool": "graphql-schema-diff",
+      "repository": "https://github.com/fabsrc/graphql-schema-diff",
+      "commit": "7e4d620e0190469678431a0c8f297c78a520b60d",
+      "date": "2024-08-27",
+      "version": "3.0.0",
+      "status": "harvested",
+      "used": "src/__tests__/diff.test.ts (MIT; it wraps graphql-js findBreakingChanges / findDangerousChanges)"
+    },
+    {
+      "tool": "fork",
+      "name": "Netcracker qubership-apihub-api-diff",
+      "repository": "https://github.com/Netcracker/qubership-apihub-api-diff",
+      "commit": "ce76b66795f88a32dfb688bb222dbc2ddabe1fa5",
+      "date": "2026-10-05",
+      "version": "4.0.1",
+      "status": "harvested",
+      "used": "every test of test/ cross-checked (checklist fork-tests.json; DDL excepted)"
+    },
+    {
+      "tool": "compat-suites",
+      "name": "Netcracker qubership-apihub-compatibility-suites",
+      "repository": "https://github.com/Netcracker/qubership-apihub-compatibility-suites",
+      "commit": "9e5afb286a9ad65036da98f119e04898a43c4fe5",
+      "date": "2026-10-05",
+      "status": "harvested",
+      "used": "openapi, graphql, asyncapi and schemas suites with the fork's expected verdicts (DDL skipped)"
+    },
+    {
+      "tool": "optic",
+      "repository": "https://github.com/opticdev/optic",
+      "commit": "a7bf21ebc3ff1fa19d167efb5cac44c5e9a2a456",
+      "date": "2025-08-10",
+      "version": "1.0.9 (archived)",
+      "status": "harvested",
+      "used": "projects/standard-rulesets/src/breaking-changes/**/__tests__ (MIT; checklist optic-breaking-changes-tests.json)"
+    },
+    {
+      "tool": "swagger-diff",
+      "repository": "https://github.com/civisanalytics/swagger-diff",
+      "commit": "bf58f3ad3cb6d9e6ae88f94c9268102eb353f74f",
+      "date": "2023-03-23",
+      "status": "not applicable",
+      "reason": "compares Swagger 2.0 documents only (its spec fixtures are Swagger 2.0); ASD rejects Swagger 2 with UnsupportedSpecError, and the Swagger 2 scenarios it checks (endpoints, parameters, response attributes) are covered by the OpenAPI 3 cases harvested from oasdiff and OpenAPITools"
+    },
+    {
+      "tool": "bump-diff",
+      "name": "Bump.sh bump diff",
+      "repository": "https://github.com/bump-sh/cli",
+      "commit": null,
+      "status": "not applicable",
+      "reason": "the CLI uploads both documents to the hosted Bump.sh API, which computes the diff with a closed-source engine; there are no public diff fixtures with expected verdicts, and no document may be sent to a hosted service"
+    },
+    {
+      "tool": "rover",
+      "name": "Apollo Rover schema checks",
+      "repository": "https://github.com/apollographql/rover",
+      "commit": null,
+      "status": "not applicable",
+      "reason": "`rover graph check` / `subgraph check` send the schema to GraphOS, where the check runs against recorded operation traffic (hosted, closed source); the CLI repository has no local schema-diff engine or diff fixtures"
+    },
+    {
+      "tool": "graphql-inspector DIRECTIVE_USAGE_FIELD_*",
+      "status": "not applicable",
+      "reason": "built only for field selections of executable operation documents; see not-applicable.graphql.json"
+    },
+    {
+      "tool": "asd",
+      "status": "internal",
+      "used": "the existing api-smart-diff tests (test/**) and DESIGN_PROPOSALS decisions"
+    },
+    {
+      "tool": "bench",
+      "status": "internal",
+      "used": "benchmark change sets P*, G*, A*, J*, Q*, R* of the main worktree (bench/fixtures)"
+    }
+  ]
+}

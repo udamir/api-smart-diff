@@ -1,66 +1,81 @@
 {
   "name": "api-smart-diff",
-  "version": "1.0.6",
+  "version": "2.0.0",
   "description": "Generate the diff between two API specifications (OpenAPI, AsyncAPI, GraphApi, JsonSchema)",
-  "module": "dist/index.mjs",
-  "main": "dist/index.cjs",
-  "browser": "dist/api-smart-diff.min.js",
-  "typings": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
-    }
-  },
-  "scripts": {
-    "prebuild": "rimraf ./dist",
-    "build": "rollup -c",
-    "check": "biome check"
-  },
   "keywords": [
-    "jsonschema",
-    "diff",
-    "merge",
-    "compare",
-    "openapi",
-    "swagger",
+    "api",
     "asyncapi",
-    "graphql",
+    "compare",
+    "diff",
     "graphapi",
-    "api"
+    "graphql",
+    "jsonschema",
+    "merge",
+    "openapi",
+    "swagger"
   ],
+  "homepage": "https://udamir.github.io/api-smart-diff/",
+  "license": "MIT",
+  "author": "Damir Yusipov",
   "repository": {
     "type": "git",
     "url": "https://github.com/udamir/api-smart-diff"
   },
-  "author": "Damir Yusipov",
-  "license": "MIT",
-  "devDependencies": {
-    "@rollup/plugin-babel": "^6.0.4",
-    "@rollup/plugin-commonjs": "^25.0.8",
-    "@rollup/plugin-json": "^6.1.0",
-    "@rollup/plugin-node-resolve": "^15.2.3",
-    "@rollup/plugin-terser": "^0.4.4",
-    "@rollup/plugin-typescript": "^11.1.6",
-    "@biomejs/biome": "^1.8.3",
-    "@types/js-yaml": "^4.0.9",
-    "fast-json-patch": "^3.1.1",
-    "gqlapi": "^0.5.1",
-    "graphql": "^16.9.0",
-    "js-yaml": "^4.1.0",
-    "rimraf": "^5.0.8",
-    "rollup": "^2.79.1",
-    "rollup-plugin-filesize": "^9.1.2",
-    "rollup-plugin-progress": "^1.1.2",
-    "ts-loader": "^8.4.0",
-    "typescript": "^5.5.3"
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "unpkg": "./dist/api-smart-diff.min.js",
+  "jsdelivr": "./dist/api-smart-diff.min.js",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "dev": "vp pack --watch",
+    "test": "vp test run",
+    "test:watch": "vp test",
+    "test:coverage": "vp test run --coverage --project unit",
+    "check": "vp check",
+    "typecheck": "tsc --noEmit",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "prepublishOnly": "pnpm run check && pnpm run test && pnpm run build"
   },
   "dependencies": {
-    "allof-merge": "^0.6.6",
-    "json-crawl": "^0.5.3"
-  }
+    "allof-merge": "^1.0.1",
+    "json-crawl": "^1.2.0"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.11.1",
+    "@codemirror/lang-json": "^6.0.2",
+    "@codemirror/lang-yaml": "^6.1.3",
+    "@codemirror/language": "^6.13.1",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/theme-one-dark": "^6.1.3",
+    "@codemirror/view": "^6.43.15",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^26.6.6",
+    "@vitest/coverage-v8": "5.1.0",
+    "codemirror": "^6.0.2",
+    "fast-json-patch": "^3.1.1",
+    "gqlapi": "^0.6.0",
+    "gqlapi-legacy": "file:vendor/gqlapi-0.6.0-pre.20261116.tgz",
+    "graphql": "^16.9.0",
+    "js-yaml": "^4.1.0",
+    "typescript": "^7.0.2",
+    "vite-plus": "^1.7.0",
+    "vitepress": "2.0.0-alpha.21",
+    "vue": "^3.5.46"
+  },
+  "packageManager": "pnpm@10.33.0"
 }

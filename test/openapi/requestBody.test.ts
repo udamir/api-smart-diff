@@ -1,4 +1,4 @@
-import { DiffAction, annotation, breaking, compareOpenApi, nonBreaking, unclassified } from "../../src"
+import { DiffAction, annotation, breaking, compareOpenApi, nonBreaking, risky, unclassified } from "../../src"
 import { yaml } from "../helpers"
 
 const metaKey = Symbol("diff")
@@ -78,14 +78,15 @@ describe("Openapi request body changes", () => {
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
     expect(diffs.length).toEqual(8)
-    diffs.forEach((diff, i) => {
+    diffs.forEach((diff) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
-      i !== 7 && expect(diff.type).not.toEqual("unclassified")
+      expect(diff.type).not.toEqual("unclassified")
     })
 
+    // vendor extensions are annotations (ISSUE-17, DESIGN_PROPOSALS §4.3)
     expect(merged.paths["/pet"].put.requestBody[metaKey]).toMatchObject({
-      "x-test": { action: DiffAction.add, type: unclassified },
+      "x-test": { action: DiffAction.add, type: annotation },
       description: { action: DiffAction.replace, type: annotation },
       required: { action: DiffAction.add, type: breaking },
     })
@@ -211,7 +212,9 @@ describe("Openapi request body changes", () => {
     })
   })
 
-  it("should be non-breaking change to remove not required property to requestBody", () => {
+  // POLICY-03 decided (c), decision §11.14 (ISSUE-130 fixed): clients still sending the property may have it silently
+  // dropped, so removing it is risky (was non-breaking)
+  it("should be risky change to remove not required property to requestBody", () => {
     const before = yaml`
       paths:
         "/pet":
@@ -252,11 +255,13 @@ describe("Openapi request body changes", () => {
     expect(diffs[0].description).not.toEqual("")
 
     expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({
-      name: { action: DiffAction.remove, type: nonBreaking },
+      name: { action: DiffAction.remove, type: risky },
     })
   })
 
-  it("should be non breaking change to remove required property to requestBody", () => {
+  // POLICY-03 decided (c), decision §11.14 (ISSUE-130 fixed): the property removal is risky, dropping its required
+  // status alone stays non-breaking
+  it("should be risky change to remove required property to requestBody", () => {
     const before = yaml`
       paths:
         "/pet":
@@ -304,7 +309,7 @@ describe("Openapi request body changes", () => {
     })
 
     expect(merged.paths["/pet"].put.requestBody.content["application/json"].schema.properties[metaKey]).toMatchObject({
-      name: { action: DiffAction.remove, type: nonBreaking },
+      name: { action: DiffAction.remove, type: risky },
     })
   })
 })

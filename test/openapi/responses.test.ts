@@ -102,8 +102,9 @@ describe("Openapi response changes", () => {
       "404": { action: DiffAction.add, type: nonBreaking },
     })
 
+    // vendor extensions are annotations (ISSUE-17, DESIGN_PROPOSALS §4.3)
     expect(merged.paths["/pet/findByStatus"].get.responses[200][metaKey]).toMatchObject({
-      "x-test": { action: DiffAction.add, type: unclassified },
+      "x-test": { action: DiffAction.add, type: annotation },
     })
 
     expect(merged.paths["/pet/findByStatus"].get.responses[200].content[metaKey]).toMatchObject({
@@ -123,8 +124,9 @@ describe("Openapi response changes", () => {
       format: { action: DiffAction.remove, type: breaking },
     })
 
+    // Pet is referenced from responses only, so its component diffs carry response semantics (§11.4)
     expect(merged.components.schemas.Pet.properties.id[metaKey]).toMatchObject({
-      format: { action: DiffAction.remove, type: nonBreaking },
+      format: { action: DiffAction.remove, type: breaking },
     })
   })
 

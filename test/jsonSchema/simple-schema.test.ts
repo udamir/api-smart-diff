@@ -9,7 +9,7 @@ describe("Compare simple jsonSchema", () => {
       type: "boolean",
       description: "Boolean schema",
       default: false,
-      maximum: 10, // should be unclassified
+      maximum: 10, // no effect on a boolean: an annotation (POLICY-10)
     }
 
     const after = {
@@ -26,7 +26,7 @@ describe("Compare simple jsonSchema", () => {
     diffs.forEach((diff, i) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
-      i !== 1 && expect(diff.type).not.toEqual("unclassified")
+      expect(diff.type).not.toEqual("unclassified")
     })
 
     expect(merged).toMatchObject({
@@ -43,7 +43,9 @@ describe("Compare simple jsonSchema", () => {
       title: { action: "replace", replaced: "Boolean", type: annotation },
       description: { action: "replace", replaced: "Boolean schema", type: annotation },
       default: { action: "remove", type: breaking },
-      maximum: { action: "remove", type: unclassified },
+      // POLICY-10 decided (a) (ISSUE-133 fixed): a validator of another type has no effect, an annotation (was
+      // unclassified)
+      maximum: { action: "remove", type: annotation },
     })
   })
 
@@ -54,7 +56,7 @@ describe("Compare simple jsonSchema", () => {
       format: "int64",
       maximum: 10,
       exclusiveMaximum: true, // should be converted to number
-      minLength: 3, // should be unclassified
+      minLength: 3, // no effect on a number: an annotation (POLICY-10)
     }
 
     const after = {
@@ -62,7 +64,7 @@ describe("Compare simple jsonSchema", () => {
       "x-prop": "Added custom tag",
       default: 0,
       exclusiveMaximum: 10,
-      pattern: "w+", // should be unclassified
+      pattern: "w+", // no effect on a number: an annotation (POLICY-10)
     }
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
@@ -85,10 +87,12 @@ describe("Compare simple jsonSchema", () => {
     expect(merged[metaKey]).toMatchObject({
       default: { action: "add", type: nonBreaking },
       title: { action: "remove", type: annotation },
-      "x-prop": { action: "add", type: unclassified },
+      // POLICY-06 decided (d), decision §11.15 (ISSUE-131 fixed): an `x-*` keyword is an annotation (was unclassified)
+      "x-prop": { action: "add", type: annotation },
       format: { action: "remove", type: nonBreaking },
-      minLength: { action: "remove", type: unclassified },
-      pattern: { action: "add", type: unclassified },
+      // POLICY-10 decided (a) (ISSUE-133 fixed): validators of another type are annotations (were unclassified)
+      minLength: { action: "remove", type: annotation },
+      pattern: { action: "add", type: annotation },
     })
   })
 
@@ -101,7 +105,7 @@ describe("Compare simple jsonSchema", () => {
     }
 
     const after = {
-      // type: "string" - should be calculated
+      // no `type`: removing it is reported (it was inferred from the validators before POLICY-21)
       description: "Added string description",
       default: "foo",
       enum: ["baz", "foo"],
@@ -111,7 +115,9 @@ describe("Compare simple jsonSchema", () => {
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(6)
+    // POLICY-21 decided (b), decision §11.19 (ISSUE-136 fixed): the type is no longer inferred from the validators: the
+    // removed `type` is the 7th diff
+    expect(diffs.length).toEqual(7)
 
     diffs.forEach((diff, i) => {
       expect(diff).toHaveProperty("description")
@@ -119,19 +125,20 @@ describe("Compare simple jsonSchema", () => {
       expect(diff.type).not.toEqual("unclassified")
     })
 
+    // merged arrays follow the after order (DESIGN_PROPOSALS §11.2) and hold the original values (§11.1)
     expect(merged).toMatchObject({
       title: "Title",
       type: "string",
       description: "Added string description",
       default: "foo",
-      enum: ["foo", "baz"],
+      enum: ["baz", "foo"],
       pattern: "w+",
       minLength: 1,
     })
 
     expect(merged[metaKey]).toMatchObject({
       default: { action: "add", type: nonBreaking },
-      enum: { array: { 1: { action: "add", type: nonBreaking } } },
+      enum: { array: { 0: { action: "add", type: nonBreaking } } },
       title: { action: "remove", type: annotation },
       description: { action: "add", type: annotation },
       pattern: { action: "add", type: breaking },

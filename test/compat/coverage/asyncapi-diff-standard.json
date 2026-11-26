@@ -1,0 +1,1610 @@
+[
+  {
+    "id": "v2:/asyncapi",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/id",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/defaultContentType",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/info",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/info/version",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/info/termsOfService",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/info/license",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/info/license/name",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/info/license/url",
+    "add": "breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/info/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/info/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/info/contact",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/info/contact/name",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/info/contact/url",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/info/contact/email",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/servers",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/url",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/servers/*/protocol",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/protocolVersion",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables/*/enum",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables/*/enum/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables/*/default",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables/*/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/servers/*/variables/*/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/servers/*/security",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/security/*",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/servers/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/subscribe",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/operationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/operationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/traits/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/headers",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/correlationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/correlationId/location",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/correlationId/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/schemaFormat",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/contentType",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/name",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/headers",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/correlationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/correlationId/location",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/correlationId/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/schemaFormat",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/contentType",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/name",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/traits/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/subscribe/message/payload",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/publish",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/operationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/operationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/traits/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/publish/message",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/headers",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/correlationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/correlationId/location",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/correlationId/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/schemaFormat",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/contentType",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/name",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/headers",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/correlationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/correlationId/location",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/correlationId/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/schemaFormat",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/contentType",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/name",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/traits/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/publish/message/payload",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/parameters",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/parameters/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/channels/*/parameters/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/channels/*/parameters/*/schema",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v2:/channels/*/parameters/*/location",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v2:/components",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v2:/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/asyncapi",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/id",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/info",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/version",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/info/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/termsOfService",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/info/contact",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/contact/name",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/contact/url",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/contact/email",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/license",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/license/name",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/license/url",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/info/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/host",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/protocol",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/protocolVersion",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/pathname",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables/*/enum",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables/*/enum/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables/*/default",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables/*/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/variables/*/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/security",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/security/*",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/servers/*/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/servers/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/defaultContentType",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/address",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/headers",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/payload",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/correlationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/contentType",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/name",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/headers",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/correlationId",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/correlationId/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/correlationId/location",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/contentType",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/name",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/examples",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/messages/*/traits/*/examples/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/servers",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/servers/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/parameters",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/channels/*/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/channels/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/operations",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/action",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/channel",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/security",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/security/*",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/operations/*/traits",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/title",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/summary",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/security",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/security/*",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/tags",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/tags/*",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/externalDocs",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/traits/*/bindings",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/operations/*/messages",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/messages/*",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/reply",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/reply/address",
+    "add": "breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/reply/address/description",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  },
+  {
+    "id": "v3:/operations/*/reply/address/location",
+    "add": "non-breaking",
+    "remove": "breaking",
+    "edit": "breaking"
+  },
+  {
+    "id": "v3:/operations/*/reply/channel",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/operations/*/reply/messages",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/operations/*/reply/messages/*",
+    "add": "unclassified",
+    "remove": "unclassified",
+    "edit": "unclassified"
+  },
+  {
+    "id": "v3:/components",
+    "add": "non-breaking",
+    "remove": "non-breaking",
+    "edit": "non-breaking"
+  }
+]

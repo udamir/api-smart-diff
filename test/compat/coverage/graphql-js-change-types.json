@@ -1,0 +1,176 @@
+[
+  {
+    "id": "TYPE_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "TYPE_CHANGED_KIND",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "TYPE_REMOVED_FROM_UNION",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "VALUE_REMOVED_FROM_ENUM",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "REQUIRED_INPUT_FIELD_ADDED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "IMPLEMENTED_INTERFACE_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "FIELD_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "FIELD_CHANGED_KIND",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "REQUIRED_ARG_ADDED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "ARG_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "ARG_CHANGED_KIND",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "DIRECTIVE_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "DIRECTIVE_ARG_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "REQUIRED_DIRECTIVE_ARG_ADDED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "DIRECTIVE_REPEATABLE_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "DIRECTIVE_LOCATION_REMOVED",
+    "kind": "breaking",
+    "source": "src/utilities/findSchemaChanges.ts BreakingChangeType"
+  },
+  {
+    "id": "VALUE_ADDED_TO_ENUM",
+    "kind": "dangerous",
+    "source": "src/utilities/findSchemaChanges.ts DangerousChangeType"
+  },
+  {
+    "id": "TYPE_ADDED_TO_UNION",
+    "kind": "dangerous",
+    "source": "src/utilities/findSchemaChanges.ts DangerousChangeType"
+  },
+  {
+    "id": "OPTIONAL_INPUT_FIELD_ADDED",
+    "kind": "dangerous",
+    "source": "src/utilities/findSchemaChanges.ts DangerousChangeType, SafeChangeType",
+    "alsoKind": "safe",
+    "note": "listed in both enums with the same value; findSchemaChanges only emits it with DangerousChangeType"
+  },
+  {
+    "id": "OPTIONAL_ARG_ADDED",
+    "kind": "dangerous",
+    "source": "src/utilities/findSchemaChanges.ts DangerousChangeType, SafeChangeType",
+    "alsoKind": "safe",
+    "note": "listed in both enums with the same value; findSchemaChanges only emits it with DangerousChangeType"
+  },
+  {
+    "id": "IMPLEMENTED_INTERFACE_ADDED",
+    "kind": "dangerous",
+    "source": "src/utilities/findSchemaChanges.ts DangerousChangeType"
+  },
+  {
+    "id": "ARG_DEFAULT_VALUE_CHANGE",
+    "kind": "dangerous",
+    "source": "src/utilities/findSchemaChanges.ts DangerousChangeType"
+  },
+  {
+    "id": "INPUT_FIELD_DEFAULT_VALUE_CHANGE",
+    "kind": "dangerous",
+    "source": "src/utilities/findSchemaChanges.ts DangerousChangeType"
+  },
+  {
+    "id": "DESCRIPTION_CHANGED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "TYPE_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "DIRECTIVE_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "FIELD_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "DIRECTIVE_REPEATABLE_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "DIRECTIVE_LOCATION_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "OPTIONAL_DIRECTIVE_ARG_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "FIELD_CHANGED_KIND_SAFE",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "ARG_CHANGED_KIND_SAFE",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "ARG_DEFAULT_VALUE_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  },
+  {
+    "id": "INPUT_FIELD_DEFAULT_VALUE_ADDED",
+    "kind": "safe",
+    "source": "src/utilities/findSchemaChanges.ts SafeChangeType"
+  }
+]

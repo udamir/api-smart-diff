@@ -1,0 +1,1427 @@
+[
+  {
+    "id": "OpenAPI",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-VER-001"]
+  },
+  {
+    "id": "JSONSchemaDialect",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-VER-009"]
+  },
+  {
+    "id": "Self",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-VER-010"]
+  },
+  {
+    "id": "Components",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "Info.Title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-002"]
+  },
+  {
+    "id": "Info.Summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-005"]
+  },
+  {
+    "id": "Info.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-002"]
+  },
+  {
+    "id": "Info.TermsOfService",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-002"]
+  },
+  {
+    "id": "Info.Version",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-001"]
+  },
+  {
+    "id": "Info.Contact",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-003"]
+  },
+  {
+    "id": "Info.License",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-004"]
+  },
+  {
+    "id": "Contact.URL",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "Contact.Name",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "Contact.Email",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-003"]
+  },
+  {
+    "id": "License.URL",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-004"]
+  },
+  {
+    "id": "License.Name",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-004"]
+  },
+  {
+    "id": "License.Identifier",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-004", "OAS-VER-006"]
+  },
+  {
+    "id": "Paths.Path",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-PATH-001", "OAS-PATH-003"]
+  },
+  {
+    "id": "PathItem.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-PATH-022"]
+  },
+  {
+    "id": "PathItem.Summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-PATH-021"]
+  },
+  {
+    "id": "PathItem.Get",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-003"]
+  },
+  {
+    "id": "PathItem.Put",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-PATH-009", "OAS-VER-002"]
+  },
+  {
+    "id": "PathItem.Post",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-002"]
+  },
+  {
+    "id": "PathItem.Delete",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-001"]
+  },
+  {
+    "id": "PathItem.Options",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-005"]
+  },
+  {
+    "id": "PathItem.Head",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-005"]
+  },
+  {
+    "id": "PathItem.Patch",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-018"]
+  },
+  {
+    "id": "PathItem.Trace",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-005"]
+  },
+  {
+    "id": "PathItem.Query",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-VER-011"]
+  },
+  {
+    "id": "PathItem.AdditionalOperations",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-VER-013"]
+  },
+  {
+    "id": "PathItem.Servers",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SRV-012"]
+  },
+  {
+    "id": "PathItem.Parameters",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-PARAM-019", "OAS-PARAM-020", "OAS-PARAM-021"]
+  },
+  {
+    "id": "Operation.Tags",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-OP-011", "OAS-OP-012"]
+  },
+  {
+    "id": "Operation.Summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-OP-009"]
+  },
+  {
+    "id": "Operation.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-OP-010"]
+  },
+  {
+    "id": "Operation.Deprecated",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-DEP-001", "OAS-DEP-002"]
+  },
+  {
+    "id": "Operation.OperationID",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-OP-006", "OAS-OP-007", "OAS-OP-008"]
+  },
+  {
+    "id": "Operation.ExternalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-OP-016"]
+  },
+  {
+    "id": "Operation.Responses",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-RS-028"]
+  },
+  {
+    "id": "Operation.Parameters",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-PARAM-001", "OAS-PARAM-008"]
+  },
+  {
+    "id": "Operation.Security",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-012", "OAS-SEC-013"]
+  },
+  {
+    "id": "Operation.RequestBody",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-RB-001", "OAS-RB-002", "OAS-RB-003", "OAS-RB-004"]
+  },
+  {
+    "id": "Operation.Callbacks",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-CB-001", "OAS-CB-002"]
+  },
+  {
+    "id": "Operation.Servers",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SRV-013", "OAS-SRV-014"]
+  },
+  {
+    "id": "Parameter.Name",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-PARAM-017", "OAS-PARAM-018"]
+  },
+  {
+    "id": "Parameter.In",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-PARAM-016"]
+  },
+  {
+    "id": "Parameter.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-PARAM-040"]
+  },
+  {
+    "id": "Parameter.Required",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["OAS-PARAM-011", "OAS-PARAM-013"]
+  },
+  {
+    "id": "Parameter.AllowEmptyValue",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-PARAM-033"]
+  },
+  {
+    "id": "Parameter.Style",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-PARAM-025", "OAS-PARAM-026"]
+  },
+  {
+    "id": "Parameter.AllowReserved",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-PARAM-032"]
+  },
+  {
+    "id": "Parameter.Explode",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-PARAM-029", "OAS-PARAM-031"]
+  },
+  {
+    "id": "Parameter.Deprecated",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-DEP-008", "OAS-DEP-009"]
+  },
+  {
+    "id": "Parameter.Example",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-PARAM-041"]
+  },
+  {
+    "id": "Parameter.Examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-PARAM-043"]
+  },
+  {
+    "id": "Parameter.Schema",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-PARAM-037"]
+  },
+  {
+    "id": "Parameter.Items",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "RequestBody.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-RB-008"]
+  },
+  {
+    "id": "RequestBody.Required",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-RB-005", "OAS-RB-006"]
+  },
+  {
+    "id": "Responses.Default",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-RS-006", "OAS-RS-007"]
+  },
+  {
+    "id": "Responses.Codes",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-RS-001", "OAS-RS-002", "OAS-RS-005"]
+  },
+  {
+    "id": "Response.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-RS-013"]
+  },
+  {
+    "id": "Response.Summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-RS-014"]
+  },
+  {
+    "id": "Response.Schema",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "Response.Examples",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "MediaType.Example",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-009"]
+  },
+  {
+    "id": "MediaType.Examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-001", "OAS-EX-002", "OAS-EX-003"]
+  },
+  {
+    "id": "MediaType.Schema",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-MT-005", "OAS-MT-006", "OAS-MT-007", "OAS-MT-008"]
+  },
+  {
+    "id": "MediaType.ItemSchema",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-MT-009", "OAS-MT-010", "OAS-MT-011", "OAS-MT-012"]
+  },
+  {
+    "id": "MediaType.ItemEncoding",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-ENC-017"]
+  },
+  {
+    "id": "Encoding.ContentType",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-ENC-004", "OAS-ENC-005", "OAS-ENC-006"]
+  },
+  {
+    "id": "Encoding.Style",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-ENC-007", "OAS-ENC-008"]
+  },
+  {
+    "id": "Encoding.Explode",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-ENC-009"]
+  },
+  {
+    "id": "Encoding.AllowReserved",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-ENC-010", "OAS-ENC-011"]
+  },
+  {
+    "id": "Header.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-HDR-013"]
+  },
+  {
+    "id": "Header.Style",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-HDR-009", "OAS-HDR-010"]
+  },
+  {
+    "id": "Header.AllowReserved",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-HDR-009", "OAS-HDR-010"]
+  },
+  {
+    "id": "Header.AllowEmptyValue",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-HDR-009", "OAS-HDR-010"]
+  },
+  {
+    "id": "Header.Explode",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-HDR-024"]
+  },
+  {
+    "id": "Header.Example",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-HDR-025"]
+  },
+  {
+    "id": "Header.Examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-HDR-025"]
+  },
+  {
+    "id": "Header.Deprecated",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-HDR-011", "OAS-HDR-012"]
+  },
+  {
+    "id": "Header.Required",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-HDR-007", "OAS-HDR-008"]
+  },
+  {
+    "id": "Header.Schema",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-HDR-023"]
+  },
+  {
+    "id": "Header.Items",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "Schemas",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-MT-005", "OAS-MT-008", "OAS-REF-011", "OAS-REF-012"]
+  },
+  {
+    "id": "Servers",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SRV-001", "OAS-SRV-002", "OAS-SRV-003"]
+  },
+  {
+    "id": "Schema.Ref",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-REF-001", "JS-REF-003", "JS-REF-005"]
+  },
+  {
+    "id": "Schema.Type",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-TYP-001", "JS-TYP-005", "JS-TYP-011", "JS-TYP-013"]
+  },
+  {
+    "id": "Schema.Title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-ANN-001", "JS-ANN-002", "JS-ANN-003"]
+  },
+  {
+    "id": "Schema.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-ANN-004", "JS-ANN-005", "JS-ANN-006"]
+  },
+  {
+    "id": "Schema.Format",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-TYP-033", "JS-TYP-035", "JS-TYP-037"]
+  },
+  {
+    "id": "Schema.Maximum",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-NUM-009", "JS-NUM-011", "JS-NUM-013", "JS-NUM-015"]
+  },
+  {
+    "id": "Schema.Minimum",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-NUM-001", "JS-NUM-003", "JS-NUM-005", "JS-NUM-007"]
+  },
+  {
+    "id": "Schema.ExclusiveMaximum",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-NUM-025", "JS-NUM-027", "JS-NUM-029", "JS-NUM-039"]
+  },
+  {
+    "id": "Schema.ExclusiveMinimum",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-NUM-017", "JS-NUM-019", "JS-NUM-021", "JS-NUM-037"]
+  },
+  {
+    "id": "Schema.MaxLength",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-STR-001", "JS-STR-003", "JS-STR-005", "JS-STR-007"]
+  },
+  {
+    "id": "Schema.MinLength",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-STR-009", "JS-STR-011", "JS-STR-013", "JS-STR-015"]
+  },
+  {
+    "id": "Schema.Pattern",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-STR-017", "JS-STR-019", "JS-STR-021"]
+  },
+  {
+    "id": "Schema.MaxItems",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-ARR-009", "JS-ARR-011", "JS-ARR-013", "JS-ARR-015"]
+  },
+  {
+    "id": "Schema.MinItems",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-ARR-001", "JS-ARR-003", "JS-ARR-005", "JS-ARR-007"]
+  },
+  {
+    "id": "Schema.MaxProperties",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-OBJ-045", "JS-OBJ-047", "JS-OBJ-049", "JS-OBJ-051"]
+  },
+  {
+    "id": "Schema.MinProperties",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-OBJ-037", "JS-OBJ-039", "JS-OBJ-041", "JS-OBJ-043"]
+  },
+  {
+    "id": "Schema.UniqueItems",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-ARR-019", "JS-ARR-021", "JS-ARR-023"]
+  },
+  {
+    "id": "Schema.MultipleOf",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-NUM-044", "JS-NUM-046", "JS-NUM-050", "JS-NUM-052"]
+  },
+  {
+    "id": "Schema.ContentEncoding",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-STR-031", "OAS-MT-029"]
+  },
+  {
+    "id": "Schema.ContentMediaType",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-STR-030", "OAS-MT-028"]
+  },
+  {
+    "id": "Schema.Default",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-ENUM-024", "JS-ENUM-026", "JS-ENUM-028"]
+  },
+  {
+    "id": "Schema.Const",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-ENUM-016", "JS-ENUM-018", "JS-ENUM-020"]
+  },
+  {
+    "id": "Schema.Nullable",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-OAS-001", "JS-OAS-003", "JS-OAS-005"]
+  },
+  {
+    "id": "Schema.ReadOnly",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-OAS-034", "JS-OAS-035", "JS-OAS-036"]
+  },
+  {
+    "id": "Schema.WriteOnly",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["JS-OAS-039", "JS-OAS-040", "JS-OAS-041"]
+  },
+  {
+    "id": "Schema.Deprecated",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-ANN-011", "JS-ANN-012"]
+  },
+  {
+    "id": "Schema.Example",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-OAS-032", "OAS-EX-017"]
+  },
+  {
+    "id": "Schema.Examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-ANN-007", "JS-ANN-008"]
+  },
+  {
+    "id": "Schema.Required",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-OBJ-002", "JS-OBJ-004", "JS-OBJ-006"]
+  },
+  {
+    "id": "Schema.Enum",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-ENUM-001", "JS-ENUM-003", "JS-ENUM-005", "JS-ENUM-007"]
+  },
+  {
+    "id": "Schema.Properties",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-OBJ-001", "JS-OBJ-010", "JS-OBJ-011"]
+  },
+  {
+    "id": "Schema.AdditionalProperties",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OBJ-015", "JS-OBJ-017", "JS-OBJ-019", "JS-OBJ-021", "JS-OBJ-023"]
+  },
+  {
+    "id": "Schema.AllOf",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-CMB-001", "JS-CMB-003", "JS-CMB-005", "JS-CMB-007"]
+  },
+  {
+    "id": "Schema.AnyOf",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-CMB-022", "JS-CMB-024"]
+  },
+  {
+    "id": "Schema.OneOf",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-CMB-017", "JS-CMB-019", "JS-CMB-029"]
+  },
+  {
+    "id": "Schema.PrefixItems",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-ARR-033", "JS-ARR-035", "JS-ARR-037", "JS-ARR-038", "JS-ARR-039"]
+  },
+  {
+    "id": "Schema.Items",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-ARR-026", "JS-ARR-028", "JS-ARR-030"]
+  },
+  {
+    "id": "Schema.Discriminator",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-OAS-011", "JS-OAS-013"]
+  },
+  {
+    "id": "Schema.ExternalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-OAS-033"]
+  },
+  {
+    "id": "Schema.Not",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-CMB-037", "JS-CMB-039", "JS-CMB-041"]
+  },
+  {
+    "id": "Schema.If",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-CMB-043", "JS-CMB-045", "JS-CMB-051", "JS-CMB-052"]
+  },
+  {
+    "id": "Schema.Then",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-CMB-043", "JS-CMB-045"]
+  },
+  {
+    "id": "Schema.Else",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-CMB-047", "JS-CMB-049"]
+  },
+  {
+    "id": "Schema.PropertyNames",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-OBJ-032", "JS-OBJ-034", "JS-OBJ-036"]
+  },
+  {
+    "id": "Schema.Contains",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-ARR-045", "JS-ARR-047", "JS-ARR-049"]
+  },
+  {
+    "id": "Schema.UnevaluatedItems",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-ARR-058", "JS-ARR-060", "JS-ARR-062"]
+  },
+  {
+    "id": "Schema.UnevaluatedProperties",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OBJ-066", "JS-OBJ-068", "JS-OBJ-070"]
+  },
+  {
+    "id": "Schema.DynamicAnchor",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "Schema.DynamicRef",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "Schema.Id",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-ANN-010"]
+  },
+  {
+    "id": "Schema.Comment",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["JS-ANN-009"]
+  },
+  {
+    "id": "Schema.ContentSchema",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-STR-025", "JS-STR-027", "JS-STR-029"]
+  },
+  {
+    "id": "Schema.Vocabulary",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "Schema.DependentRequired",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OBJ-055", "JS-OBJ-057", "JS-OBJ-059"]
+  },
+  {
+    "id": "Schema.XML",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["JS-OAS-023", "JS-OAS-025"]
+  },
+  {
+    "id": "Schema.SchemaDialect",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-DRF-013"]
+  },
+  {
+    "id": "Discriminator.PropertyName",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OAS-015", "JS-OAS-016"]
+  },
+  {
+    "id": "Discriminator.DefaultMapping",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "Discriminator.Mapping",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OAS-017", "JS-OAS-019", "JS-OAS-021"]
+  },
+  {
+    "id": "XML.Name",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OAS-023", "JS-OAS-024", "JS-OAS-026"]
+  },
+  {
+    "id": "XML.Namespace",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OAS-029"]
+  },
+  {
+    "id": "XML.Prefix",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OAS-029"]
+  },
+  {
+    "id": "XML.Attribute",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OAS-027", "JS-OAS-028"]
+  },
+  {
+    "id": "XML.NodeType",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "XML.Wrapped",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["JS-OAS-030"]
+  },
+  {
+    "id": "Server.Name",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SRV-016"]
+  },
+  {
+    "id": "Server.URL",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SRV-004", "OAS-SRV-015"]
+  },
+  {
+    "id": "Server.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-SRV-005"]
+  },
+  {
+    "id": "ServerVariable.Enum",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SRV-009", "OAS-SRV-010"]
+  },
+  {
+    "id": "ServerVariable.Default",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SRV-008"]
+  },
+  {
+    "id": "ServerVariable.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-SRV-011"]
+  },
+  {
+    "id": "Tags",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-TAG-001", "OAS-TAG-002", "OAS-TAG-006"]
+  },
+  {
+    "id": "Security",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-001", "OAS-SEC-002", "OAS-SEC-012", "OAS-SEC-013"]
+  },
+  {
+    "id": "Tag.Name",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-TAG-005"]
+  },
+  {
+    "id": "Tag.Summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-TAG-008"]
+  },
+  {
+    "id": "Tag.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-TAG-003"]
+  },
+  {
+    "id": "Tag.Parent",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-TAG-007"]
+  },
+  {
+    "id": "Tag.Kind",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-TAG-008"]
+  },
+  {
+    "id": "Tag.ExternalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-TAG-003"]
+  },
+  {
+    "id": "ExternalDocs.URL",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-INFO-006", "OAS-OP-016"]
+  },
+  {
+    "id": "ExternalDocs.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-OP-016"]
+  },
+  {
+    "id": "SecurityScheme.Type",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-028", "OAS-SEC-033"]
+  },
+  {
+    "id": "SecurityScheme.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-SEC-032"]
+  },
+  {
+    "id": "SecurityScheme.Name",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-029"]
+  },
+  {
+    "id": "SecurityScheme.In",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-029"]
+  },
+  {
+    "id": "SecurityScheme.Scheme",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-030", "OAS-SEC-031"]
+  },
+  {
+    "id": "SecurityScheme.BearerFormat",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-SEC-032"]
+  },
+  {
+    "id": "SecurityScheme.OpenIDConnectURL",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-SEC-034"]
+  },
+  {
+    "id": "SecurityScheme.OAuth2MetadataUrl",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-SEC-042"]
+  },
+  {
+    "id": "SecurityScheme.Flows",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "SecurityScheme.Scopes",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "SecurityScheme.Flow",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "SecurityScheme.AuthorizationURL",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "SecurityScheme.TokenURL",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "SecurityScheme.Deprecated",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-SEC-043"]
+  },
+  {
+    "id": "SecurityRequirement.Schemes",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-017", "OAS-SEC-018"]
+  },
+  {
+    "id": "SecurityRequirement.Scopes",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-007", "OAS-SEC-019"]
+  },
+  {
+    "id": "OAuthFlows.Implicit",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-038"]
+  },
+  {
+    "id": "OAuthFlows.Password",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-037"]
+  },
+  {
+    "id": "OAuthFlows.ClientCredentials",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-037"]
+  },
+  {
+    "id": "OAuthFlows.AuthorizationCode",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-038"]
+  },
+  {
+    "id": "OAuthFlows.Device",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-SEC-040"]
+  },
+  {
+    "id": "OAuthFlow.AuthorizationURL",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-035"]
+  },
+  {
+    "id": "OAuthFlow.TokenURL",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-035"]
+  },
+  {
+    "id": "OAuthFlow.RefreshURL",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-035", "OAS-SEC-036"]
+  },
+  {
+    "id": "OAuthFlow.Scopes",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-SEC-039"]
+  },
+  {
+    "id": "Callback.Expressions",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-CB-003", "OAS-CB-004"]
+  },
+  {
+    "id": "Link.OperationRef",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-LINK-004"]
+  },
+  {
+    "id": "Link.OperationID",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-LINK-004"]
+  },
+  {
+    "id": "Link.RequestBody",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-LINK-006"]
+  },
+  {
+    "id": "Link.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-LINK-006"]
+  },
+  {
+    "id": "Link.Server",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["OAS-LINK-007"]
+  },
+  {
+    "id": "Link.Parameters",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["OAS-LINK-005"]
+  },
+  {
+    "id": "Example.Summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-007"]
+  },
+  {
+    "id": "Example.Description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-008"]
+  },
+  {
+    "id": "Example.Value",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-004"]
+  },
+  {
+    "id": "Example.ExternalValue",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-006"]
+  },
+  {
+    "id": "Example.DataValue",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-015"]
+  },
+  {
+    "id": "Example.SerializedValue",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["OAS-EX-015"]
+  }
+]

@@ -5,5 +5,8 @@ dist
 .vuepress
 temp
 browser
-coverage
+/coverage
 .DS_store
+.claude
+docs/.vitepress/cache
+docs/.vitepress/dist

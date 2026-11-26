@@ -1,0 +1,384 @@
+[
+  {
+    "id": "method.add",
+    "entity": "method",
+    "action": "add",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-OP-002"]
+  },
+  {
+    "id": "method.remove",
+    "entity": "method",
+    "action": "remove",
+    "type": "breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-OP-001", "OAS-OP-005"]
+  },
+  {
+    "id": "path.add",
+    "entity": "path",
+    "action": "add",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-PATH-001", "OAS-PATH-002"]
+  },
+  {
+    "id": "path.remove",
+    "entity": "path",
+    "action": "remove",
+    "type": "breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-PATH-003", "OAS-PATH-011"]
+  },
+  {
+    "id": "request.body.scope.add",
+    "entity": "request.body.scope",
+    "action": "add",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["JS-STR-005", "JS-ENUM-005", "JS-OBJ-006"]
+  },
+  {
+    "id": "request.body.scope.remove",
+    "entity": "request.body.scope",
+    "action": "remove",
+    "type": "breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["JS-STR-007", "JS-OBJ-002"]
+  },
+  {
+    "id": "response.body.scope.add",
+    "entity": "response.body.scope",
+    "action": "add",
+    "type": "breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["JS-STR-005", "JS-ENUM-005"]
+  },
+  {
+    "id": "response.body.scope.remove",
+    "entity": "response.body.scope",
+    "action": "remove",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["JS-STR-007", "JS-ENUM-007"]
+  },
+  {
+    "id": "response.optional.header.add",
+    "entity": "response.optional.header",
+    "action": "add",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-HDR-001"]
+  },
+  {
+    "id": "response.optional.header.remove",
+    "entity": "response.optional.header",
+    "action": "remove",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-HDR-004"]
+  },
+  {
+    "id": "response.required.header.add",
+    "entity": "response.required.header",
+    "action": "add",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js"
+  },
+  {
+    "id": "response.required.header.remove",
+    "entity": "response.required.header",
+    "action": "remove",
+    "type": "breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-HDR-003"]
+  },
+  {
+    "id": "response.status-code.add",
+    "entity": "response.status-code",
+    "action": "add",
+    "type": "non-breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-RS-001", "OAS-RS-004"]
+  },
+  {
+    "id": "response.status-code.remove",
+    "entity": "response.status-code",
+    "action": "remove",
+    "type": "breaking",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-RS-002", "OAS-RS-005"]
+  },
+  {
+    "id": "unclassified.add",
+    "entity": "unclassified",
+    "action": "add",
+    "type": "unclassified",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-EXT-001"]
+  },
+  {
+    "id": "unclassified.remove",
+    "entity": "unclassified",
+    "action": "remove",
+    "type": "unclassified",
+    "source": "dist/openapi-diff/spec-differ/result-type-finder.js",
+    "cases": ["OAS-EXT-001"]
+  },
+  {
+    "id": "doc:OpenAPI.paths",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-PATH-001", "OAS-PATH-003"]
+  },
+  {
+    "id": "doc:OpenAPI.components",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-REF-005", "OAS-REF-001"]
+  },
+  {
+    "id": "doc:OpenAPI.^x-",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-EXT-001"]
+  },
+  {
+    "id": "doc:Components.schemas",
+    "supported": "partial (only for request and response bodies)",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-REF-001", "OAS-REF-005", "OAS-REF-022"]
+  },
+  {
+    "id": "doc:Components.responses",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-RS-019", "OAS-RS-021"]
+  },
+  {
+    "id": "doc:Components.requestBodies",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-RB-010", "OAS-RB-011"]
+  },
+  {
+    "id": "doc:Components.headers",
+    "supported": "partial (add / remove only)",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-HDR-026"]
+  },
+  {
+    "id": "doc:PathItem.$ref",
+    "supported": "partial, yes for internal non-circular references, no for external references, no for circular references",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-PATH-016", "OAS-PATH-018"]
+  },
+  {
+    "id": "doc:PathItem.get",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-OP-003"]
+  },
+  {
+    "id": "doc:PathItem.put",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-PATH-009"]
+  },
+  {
+    "id": "doc:PathItem.post",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-OP-002"]
+  },
+  {
+    "id": "doc:PathItem.delete",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-OP-001"]
+  },
+  {
+    "id": "doc:PathItem.options",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-OP-005"]
+  },
+  {
+    "id": "doc:PathItem.head",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-OP-005"]
+  },
+  {
+    "id": "doc:PathItem.patch",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-OP-018"]
+  },
+  {
+    "id": "doc:PathItem.trace",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-OP-005"]
+  },
+  {
+    "id": "doc:PathItem.servers",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-SRV-012"]
+  },
+  {
+    "id": "doc:Operation.requestBody",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-RB-001", "OAS-RB-003"]
+  },
+  {
+    "id": "doc:Operation.responses",
+    "supported": "partial (only for response status codes)",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-RS-001", "OAS-RS-002"]
+  },
+  {
+    "id": "doc:RequestBody.content",
+    "supported": "partial (yes for application/json, no for all other mime types)",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-MT-001", "OAS-MT-002"]
+  },
+  {
+    "id": "doc:MediaType.schema",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-MT-005", "OAS-MT-008"]
+  },
+  {
+    "id": "doc:Responses.{http status code}",
+    "supported": "partial (yes for specific status codes, no for ranges)",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-RS-001", "OAS-RS-009"]
+  },
+  {
+    "id": "doc:Responses.default",
+    "supported": "partial (tested against itself, not against other http status codes)",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-RS-006", "OAS-RS-007", "OAS-RS-018"]
+  },
+  {
+    "id": "doc:Response.headers",
+    "supported": "partial (add / remove only)",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-HDR-001", "OAS-HDR-003"]
+  },
+  {
+    "id": "doc:Header.required",
+    "supported": "yes",
+    "source": "docs/OPENAPI3.md",
+    "cases": ["OAS-HDR-007", "OAS-HDR-008"]
+  },
+  {
+    "id": "doc:swagger2:Swagger.paths",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Swagger.definitions",
+    "supported": "partial (only for request bodies)",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Swagger.parameters",
+    "supported": "partial (only for in: body parameters)",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Swagger.responses",
+    "supported": "partial (only for response bodies)",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Swagger.^x-",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.$ref",
+    "supported": "partial, yes for internal non-circular references, no for external references, no for circular references",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.get",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.put",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.post",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.delete",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.options",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.head",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:PathItem.patch",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Operation.parameters",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Parameter.name",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Parameter.in",
+    "supported": "partial ('body' values only)",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Parameter.schema",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Responses.{http status code}",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Responses.default",
+    "supported": "partial (tested against itself, not against other http status codes)",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Response.schema",
+    "supported": "yes",
+    "source": "docs/SWAGGER2.md"
+  },
+  {
+    "id": "doc:swagger2:Response.headers",
+    "supported": "partial (add / remove only)",
+    "source": "docs/SWAGGER2.md"
+  }
+]

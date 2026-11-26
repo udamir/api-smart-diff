@@ -1,4 +1,4 @@
-import { breaking, compareJsonSchema, nonBreaking } from "../../src"
+import { annotation, breaking, compareJsonSchema, nonBreaking, risky } from "../../src"
 
 const metaKey = Symbol("diff")
 
@@ -13,7 +13,7 @@ describe("Compare object jsonSchema", () => {
     }
 
     const after = {
-      // type: "object" - should be calculated
+      // no `type`: removing it is reported (it was inferred from the validators before POLICY-21)
       properties: {
         id: { type: "number" },
       },
@@ -21,7 +21,8 @@ describe("Compare object jsonSchema", () => {
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(3)
+    // POLICY-21 decided (b), decision §11.19 (ISSUE-136 fixed): the type is no longer inferred from the validators: the removed `type` is the 4th diff
+    expect(diffs.length).toEqual(4)
 
     diffs.forEach((diff) => expect(diff).toHaveProperty("description"))
     diffs.forEach((diff) => expect(diff.type).not.toEqual("unclassified"))
@@ -37,9 +38,10 @@ describe("Compare object jsonSchema", () => {
     expect(merged[metaKey]).toMatchObject({
       required: { array: { 0: { action: "remove", type: nonBreaking } } },
     })
+    // POLICY-03 decided (c), decision §11.14 (ISSUE-130 fixed): removing a property is risky (was non-breaking)
     expect(merged.properties[metaKey]).toMatchObject({
       id: { action: "add", type: nonBreaking },
-      name: { action: "remove", type: nonBreaking },
+      name: { action: "remove", type: risky },
     })
   })
 
@@ -67,8 +69,9 @@ describe("Compare object jsonSchema", () => {
       expect(diff.type).not.toEqual("unclassified")
     })
 
+    // after order with removed items appended (DESIGN_PROPOSALS §11.2)
     expect(merged).toMatchObject({
-      required: ["id", "foo", "name"],
+      required: ["name", "id", "foo"],
       properties: {
         name: {
           type: "string",
@@ -79,8 +82,8 @@ describe("Compare object jsonSchema", () => {
     expect(merged[metaKey]).toMatchObject({
       required: {
         array: {
-          1: { action: "remove", type: nonBreaking },
-          2: { action: "add", type: nonBreaking },
+          0: { action: "add", type: nonBreaking },
+          2: { action: "remove", type: nonBreaking },
         },
       },
     })
@@ -173,15 +176,18 @@ describe("Compare object jsonSchema", () => {
         enum: ["id", "name", "foo"],
       },
     })
+    // ISSUE-35: constraining additional properties to a schema rejects payloads that were valid before
     expect(merged[metaKey]).toMatchObject({
-      additionalProperties: { action: "add", type: nonBreaking },
+      additionalProperties: { action: "add", type: breaking },
       minProperties: { action: "add", type: breaking },
       maxProperties: { action: "add", type: breaking },
       propertyNames: { action: "add", type: breaking },
     })
+    // POLICY-42 decided (a): the removed declarations `{ type: string }` equal the explicit `additionalProperties`
+    // schema that governs the keys now, so the valid values do not change (was risky by POLICY-03)
     expect(merged.properties[metaKey]).toMatchObject({
-      name: { action: "remove", type: nonBreaking },
-      id: { action: "remove", type: nonBreaking },
+      name: { action: "remove", type: annotation },
+      id: { action: "remove", type: annotation },
     })
   })
 
@@ -206,8 +212,9 @@ describe("Compare object jsonSchema", () => {
     })
 
     expect(merged).toMatchObject(after)
+    // ISSUE-35: `true` -> schema is a restriction of the additional properties
     expect(merged[metaKey]).toMatchObject({
-      additionalProperties: { action: "replace", replaced: true, type: nonBreaking },
+      additionalProperties: { action: "replace", replaced: true, type: breaking },
     })
   })
 
@@ -263,7 +270,8 @@ describe("Compare object jsonSchema", () => {
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(2)
+    // POLICY-21 decided (b), decision §11.19 (ISSUE-136 fixed): the type is no longer inferred from the validators: the added `type` is the 3rd diff
+    expect(diffs.length).toEqual(3)
     diffs.forEach((diff) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
@@ -271,6 +279,7 @@ describe("Compare object jsonSchema", () => {
     })
 
     expect(merged).toMatchObject(after)
+    expect(merged[metaKey]).toMatchObject({ type: { action: "add", type: breaking } })
     expect(merged.patternProperties[metaKey]).toMatchObject({
       "^[0-9]+$": { action: "add", type: breaking },
     })

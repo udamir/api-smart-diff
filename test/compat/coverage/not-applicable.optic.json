@@ -1,0 +1,8 @@
+{
+  "optic:breaking-changes::fromOpticConfig > invalid configuration": "validation of Optic's own ruleset configuration (exclude_operations_with_extension must be a string or an array); no API documents are compared",
+  "optic:breaking-changes::fromOpticConfig > valid config": "Optic ruleset configuration is accepted; no API documents are compared",
+  "optic:breaking-changes::fromOpticConfig > valid config with array": "Optic ruleset configuration is accepted; no API documents are compared",
+  "optic:breaking-changes::fromOpticConfig > valid config with exclude_operations_with_extension as object": "Optic ruleset configuration is accepted; no API documents are compared",
+  "optic:breaking-changes::breaking change ruleset configuration > breaking changes applies a matches function for string extension": "Optic configuration exclude_operations_with_extension suppresses the finding for operations carrying x-legacy; ASD has no operation exclusion option, the removal itself is breaking (OAS-OP-001)",
+  "optic:breaking-changes::breaking change ruleset configuration > breaking changes applies a matches function for object extension value match": "Optic configuration exclude_operations_with_extension { x-stability-level: [draft] } suppresses the finding; ASD has no operation exclusion option, the removal itself is breaking (OAS-OP-001)"
+}

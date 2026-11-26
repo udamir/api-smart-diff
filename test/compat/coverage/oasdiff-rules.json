@@ -1,0 +1,4232 @@
+[
+  {
+    "id": "request-property-deprecated",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-deprecated-with-sunset",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-deprecated-sunset-missing",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle",
+    "cases": ["JS-ANN-011"]
+  },
+  {
+    "id": "request-property-deprecated-sunset-invalid",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-reactivated",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-sunset-date-too-small",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-sunset-deleted",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-sunset-date-changed-too-small",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-sunset-date-changed-earlier",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-deprecated",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-deprecated-with-sunset",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-deprecated-sunset-missing",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle",
+    "cases": ["JS-ANN-011"]
+  },
+  {
+    "id": "response-property-deprecated-sunset-invalid",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-reactivated",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-sunset-date-too-small",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-sunset-deleted",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-sunset-date-changed-too-small",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-sunset-date-changed-earlier",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "endpoint-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-component-removed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-component-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-component-oauth-url-changed",
+    "level": "WARN",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-type-changed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-api-key-name-changed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-api-key-in-changed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-http-scheme-changed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-bearer-format-changed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-openid-connect-url-changed",
+    "level": "WARN",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-oauth-token-url-changed",
+    "level": "WARN",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-oauth-refresh-url-changed",
+    "level": "WARN",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-component-oauth-scope-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-component-oauth-scope-removed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-component-oauth-scope-changed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Type"
+  },
+  {
+    "id": "api-security-removed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-scope-added",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-scope-removed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-global-security-removed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-global-security-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-global-security-scope-added",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-global-security-scope-removed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-anonymous-access-removed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-security-anonymous-access-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Security",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-version-changed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Info",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-stability-decreased",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-stability-increased",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-stability-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-property-stability-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-stability-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "response-property-stability-increased",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "endpoint-reactivated",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-deprecated-sunset-parse",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-deprecated-sunset-missing",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-invalid-stability-level",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-sunset-date-too-small",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "endpoint-deprecated",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "endpoint-deprecated-with-sunset",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-reactivated",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-deprecated-sunset-missing",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-sunset-date-too-small",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-deprecated",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-path-removed-without-deprecation",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-path-removed-with-deprecation",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-path-sunset-parse",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-path-removed-before-sunset",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-removed-without-deprecation",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-removed-with-deprecation",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-removed-before-sunset",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "sunset-deleted",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-sunset-date-changed-too-small",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "api-sunset-date-changed-earlier",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-sunset-deleted",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-sunset-date-changed-too-small",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-sunset-date-changed-earlier",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-body-added-required",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-added-optional",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-required-request-default-parameter-to-existing-path",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-optional-request-default-parameter-to-existing-path",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-required-request-parameter",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-optional-request-parameter",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-request-path-parameter",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-required-request-header-property",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-became-enum",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-media-type-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-media-type-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-media-type-schema-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-media-type-schema-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-media-type-schema-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-media-type-schema-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-media-type-item-schema-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-media-type-item-schema-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-media-type-item-schema-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-media-type-item-schema-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-media-type-item-schema-removed-untyped",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-became-optional",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-body-became-required",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-body-discriminator-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-discriminator-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-discriminator-property-name-changed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-discriminator-mapping-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-discriminator-mapping-deleted",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-discriminator-mapping-changed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-discriminator-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-discriminator-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-discriminator-property-name-changed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-discriminator-mapping-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-discriminator-mapping-deleted",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-discriminator-mapping-changed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-header-property-became-enum",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-header-property-became-required",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-parameter-became-enum",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-became-nullable",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-parameter-became-not-nullable",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-parameter-property-became-nullable",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-parameter-property-became-not-nullable",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-parameter-schema-became-false",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-schema-became-not-false",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-property-schema-became-false",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-property-schema-became-not-false",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-default-value-changed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-default-value-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-default-value-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-enum-value-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-enum-value-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-property-enum-value-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-property-enum-value-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-became-not-enum",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-property-became-not-enum",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-parameter-max-items-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-max-items-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-max-length-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-max-length-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-max-length-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-max-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-exclusive-max-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-max-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-max-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-exclusive-max-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-exclusive-max-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-items-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-items-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-items-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-length-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-length-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-exclusive-min-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-min-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-exclusive-min-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-exclusive-min-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-pattern-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-pattern-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-pattern-changed",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-pattern-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-parameter-removed",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-parameter-removed-with-deprecation",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-parameter-sunset-parse",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Lifecycle"
+  },
+  {
+    "id": "request-parameter-removed-before-sunset",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-parameter-became-required",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-parameter-became-optional",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-parameter-type-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-type-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-property-type-changed",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-property-type-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-property-type-specialized",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-x-extensible-enum-value-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-all-of-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-all-of-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-all-of-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-all-of-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-all-of-added-annotation-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-all-of-removed-annotation-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-all-of-added-annotation-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-all-of-removed-annotation-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-any-of-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-any-of-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-any-of-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-any-of-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-became-enum",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-became-not-nullable",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-body-became-nullable",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-property-became-not-nullable",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-property-became-nullable",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-body-schema-became-false",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-schema-became-not-false",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-schema-became-false",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-schema-became-not-false",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-default-value-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-default-value-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-default-value-changed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-default-value-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-default-value-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-default-value-changed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-const-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-const-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-const-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-const-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-const-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-const-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-enum-value-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-read-only-property-enum-value-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-enum-value-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-property-became-not-enum",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-max-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-read-only-property-max-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-exclusive-max-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-exclusive-max-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-exclusive-max-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-read-only-property-exclusive-max-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-exclusive-max-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-length-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-length-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-length-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-length-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-length-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-read-only-property-max-length-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-length-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-exclusive-max-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-exclusive-max-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-read-only-property-min-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-exclusive-min-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-exclusive-min-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-exclusive-min-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-read-only-property-exclusive-min-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-exclusive-min-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-items-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-items-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-items-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-items-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-length-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-length-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-length-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-length-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-exclusive-min-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-exclusive-min-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-one-of-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-one-of-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-one-of-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-one-of-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-pattern-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-pattern-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-pattern-changed",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-pattern-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-became-required",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-property-became-required-with-default",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-property-became-optional",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "request-body-type-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-type-compatible",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-type-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-type-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-type-compatible",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-type-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-removed",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-property-removed-with-deprecation",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-property-removed-before-sunset",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-required-request-property",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-required-request-property-with-default",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "new-optional-request-property",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-wrapped-in-one-of",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-wrapped-in-one-of-original-preserved",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-optional-property-became-not-write-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-optional-property-became-write-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-optional-property-became-read-only",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-optional-property-became-not-read-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-required-property-became-not-write-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-required-property-became-write-only",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-required-property-became-read-only",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-required-property-became-not-read-only",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-required-property-became-not-read-only-in-openapi-31",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "request-property-x-extensible-enum-value-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-body-discriminator-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-discriminator-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-discriminator-property-name-changed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-discriminator-mapping-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-discriminator-mapping-deleted",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-discriminator-mapping-changed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-discriminator-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-discriminator-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-discriminator-property-name-changed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-discriminator-mapping-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-discriminator-mapping-deleted",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-discriminator-mapping-changed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-header-became-optional",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "required-response-header-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Existence"
+  },
+  {
+    "id": "optional-response-header-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-header-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-header-type-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Type"
+  },
+  {
+    "id": "response-header-type-generalized",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Type"
+  },
+  {
+    "id": "response-header-type-specialized",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Type"
+  },
+  {
+    "id": "response-header-type-compatible",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Type"
+  },
+  {
+    "id": "response-header-became-nullable",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-header-became-not-nullable",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-header-schema-became-false",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Type"
+  },
+  {
+    "id": "response-header-schema-became-not-false",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Headers",
+    "kind": "Type"
+  },
+  {
+    "id": "response-media-type-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-media-type-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-media-type-name-changed",
+    "level": "WARN",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-media-type-parameter-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-media-type-parameter-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-media-type-parameter-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-media-type-name-generalized",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-media-type-name-specialized",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-optional-property-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-optional-write-only-property-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-optional-property-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-optional-write-only-property-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-optional-property-became-not-write-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-optional-property-became-write-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-optional-property-became-read-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-optional-property-became-not-read-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-property-pattern-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-pattern-changed",
+    "level": "WARN",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-pattern-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-all-of-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-all-of-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-all-of-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-all-of-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-all-of-added-annotation-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-all-of-removed-annotation-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-all-of-added-annotation-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-all-of-removed-annotation-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-any-of-added",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-any-of-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-any-of-added",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-any-of-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-became-nullable",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-body-became-nullable",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-property-became-not-nullable",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-body-became-not-nullable",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-body-schema-became-false",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-schema-became-not-false",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-schema-became-false",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-schema-became-not-false",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-became-optional",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-write-only-property-became-optional",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-property-became-required",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-write-only-property-became-required",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Requiredness"
+  },
+  {
+    "id": "response-body-default-value-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-body-default-value-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-body-default-value-changed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-default-value-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-default-value-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-default-value-changed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-body-const-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-body-const-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-body-const-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-const-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-const-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-const-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-enum-value-added",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-write-only-property-enum-value-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-became-enum",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-property-became-not-enum",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-body-max-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-max-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-exclusive-max-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-exclusive-max-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-max-length-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-max-length-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-max-length-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-max-length-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-min-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-min-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-exclusive-min-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-exclusive-min-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-min-items-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-min-items-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-min-items-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-min-items-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-min-length-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-min-length-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-one-of-added",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-one-of-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-one-of-added",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-one-of-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-type-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-type-generalized",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-type-specialized",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-type-compatible",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-type-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-type-generalized",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-type-specialized",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-type-compatible",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-required-property-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-required-property-removed-with-deprecation",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-required-property-removed-before-sunset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-required-write-only-property-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-required-property-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-required-write-only-property-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-wrapped-in-one-of",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-wrapped-in-one-of-original-preserved",
+    "level": "WARN",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-required-property-became-not-write-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-required-property-became-write-only",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-required-property-became-read-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-required-property-became-not-read-only",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Mutability"
+  },
+  {
+    "id": "response-success-status-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-success-status-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-non-success-status-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-non-success-status-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-operation-id-removed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-operation-id-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Paths",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-tag-removed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Tags",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-tag-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Tags",
+    "kind": "Existence"
+  },
+  {
+    "id": "webhook-added",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Components",
+    "kind": "Existence"
+  },
+  {
+    "id": "webhook-removed",
+    "level": "ERR",
+    "direction": "None",
+    "area": "Components",
+    "kind": "Existence"
+  },
+  {
+    "id": "api-schema-removed",
+    "level": "INFO",
+    "direction": "None",
+    "area": "Components",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-property-enum-value-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-mediatype-enum-value-removed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-mediatype-enum-value-added",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-mediatype-became-enum",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "response-mediatype-became-not-enum",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-enum-value-removed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-enum-value-added",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-became-not-enum",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Values"
+  },
+  {
+    "id": "request-body-list-of-types-widened",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-list-of-types-narrowed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-list-of-types-widened",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-list-of-types-narrowed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-list-of-types-widened",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-list-of-types-narrowed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-list-of-types-widened",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-list-of-types-narrowed",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-list-of-types-widened",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-list-of-types-narrowed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-property-list-of-types-widened",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-parameter-property-list-of-types-narrowed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Parameters",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-prefix-items-added",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-prefix-items-removed",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-prefix-items-added",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-prefix-items-removed",
+    "level": "WARN",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-prefix-items-added",
+    "level": "WARN",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-prefix-items-removed",
+    "level": "WARN",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-prefix-items-added",
+    "level": "WARN",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-prefix-items-removed",
+    "level": "WARN",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-if-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-if-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-then-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-then-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-else-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-else-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-if-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-if-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-then-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-then-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-else-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-else-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-if-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-if-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-then-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-then-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-else-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-else-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-if-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-if-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-then-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-then-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-else-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-else-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-contains-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-contains-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-min-contains-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-contains-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-contains-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-contains-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-contains-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-contains-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-min-contains-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-contains-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-contains-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-contains-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-contains-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-contains-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-min-contains-increased",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-min-contains-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-max-contains-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-max-contains-decreased",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-contains-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-contains-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-min-contains-increased",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-min-contains-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-max-contains-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-max-contains-decreased",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-dependent-required-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-dependent-required-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-dependent-required-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-dependent-required-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-dependent-required-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-dependent-required-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-dependent-required-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-dependent-required-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-dependent-required-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-dependent-required-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-dependent-required-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-dependent-required-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-dependent-schema-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-dependent-schema-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-dependent-schema-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-dependent-schema-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-dependent-schema-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-dependent-schema-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-dependent-schema-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-dependent-schema-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-pattern-property-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-pattern-property-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-pattern-property-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-pattern-property-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-pattern-property-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-pattern-property-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-pattern-property-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-pattern-property-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-property-names-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-property-names-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-property-names-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-property-names-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-property-names-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-property-names-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-property-names-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-property-names-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-unevaluated-items-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-unevaluated-items-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-unevaluated-properties-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-unevaluated-properties-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-unevaluated-items-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-unevaluated-items-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-unevaluated-properties-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-property-unevaluated-properties-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-unevaluated-items-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-unevaluated-items-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-unevaluated-properties-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-body-unevaluated-properties-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-unevaluated-items-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-unevaluated-items-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-unevaluated-properties-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "response-property-unevaluated-properties-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Structure"
+  },
+  {
+    "id": "request-body-content-schema-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-content-schema-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-body-content-media-type-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-content-encoding-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "RequestBody",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-content-schema-added",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-property-content-schema-removed",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "request-property-content-media-type-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-property-content-encoding-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-content-schema-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-content-schema-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-body-content-media-type-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-body-content-encoding-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Responses",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-content-schema-added",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-property-content-schema-removed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Existence"
+  },
+  {
+    "id": "response-property-content-media-type-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "response-property-content-encoding-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Type"
+  },
+  {
+    "id": "request-body-max-items-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-items-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-items-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-read-only-property-max-items-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-items-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-items-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-items-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-max-items-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-max-items-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-properties-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-properties-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-properties-decreased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-read-only-property-max-properties-decreased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-properties-increased",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-max-properties-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-max-properties-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-max-properties-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-max-properties-increased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-min-properties-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-min-properties-increased",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-min-properties-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-min-properties-decreased",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-unique-items-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-unique-items-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-unique-items-unset",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-unique-items-unset",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-unique-items-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-unique-items-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-multiple-of-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-multiple-of-set",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-multiple-of-unset",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-multiple-of-unset",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-multiple-of-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-multiple-of-changed",
+    "level": "ERR",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-body-multiple-of-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "request-property-multiple-of-generalized",
+    "level": "INFO",
+    "direction": "Request",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-multiple-of-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-multiple-of-unset",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-multiple-of-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-multiple-of-changed",
+    "level": "ERR",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-body-multiple-of-specialized",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  },
+  {
+    "id": "response-property-multiple-of-specialized",
+    "level": "INFO",
+    "direction": "Response",
+    "area": "Schema",
+    "kind": "Constraints"
+  }
+]

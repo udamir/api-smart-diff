@@ -1,4 +1,4 @@
-import { createAnnotation, annotationTemplate as t } from "../src"
+import { createAnnotation, annotationTemplate as t } from "../src/core"
 
 describe("", () => {
   const dict = {

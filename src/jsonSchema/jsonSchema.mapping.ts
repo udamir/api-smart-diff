@@ -1,7 +1,7 @@
 import type { MapKeysResult, MappingResolver } from "../types"
-import { objectMappingResolver } from "../core"
+import { deepEqual, identityOnEqualKeys, objectMappingResolver } from "../core"
 
-export const jsonSchemaMappingResolver: MappingResolver<string> = (before, after, ctx) => {
+export const jsonSchemaMappingResolver: MappingResolver<string> = identityOnEqualKeys((before, after, ctx) => {
   const { added, removed, mapped } = objectMappingResolver(before, after, ctx)
 
   const beforeCombinaryIndex = removed.findIndex((item) => item === "oneOf" || item === "anyOf")
@@ -16,6 +16,20 @@ export const jsonSchemaMappingResolver: MappingResolver<string> = (before, after
   mapped[bkey] = akey
 
   return { added, removed, mapped }
+})
+
+// the index of an equal value among the items not mapped yet: objects and arrays by deep equality, so that enum values
+// with another key order are the same value (ISSUE-97)
+const indexOfValue = (items: unknown[], value: unknown, unmapped: Set<number>): number => {
+  if (typeof value !== "object" || value === null) {
+    return items.indexOf(value)
+  }
+  for (let j = 0; j < items.length; j++) {
+    if (unmapped.has(j) && deepEqual(items[j], value)) {
+      return j
+    }
+  }
+  return -1
 }
 
 export const enumMappingResolver: MappingResolver<number> = (before, after) => {
@@ -26,7 +40,7 @@ export const enumMappingResolver: MappingResolver<number> = (before, after) => {
   const unmappedBefore: number[] = []
 
   for (let i = 0; i < before.length; i++) {
-    const _afterIndex = afterItems.indexOf(before[i])
+    const _afterIndex = indexOfValue(afterItems, before[i], unmappedAfter)
 
     if (_afterIndex < 0) {
       unmappedBefore.push(i)
@@ -60,7 +74,8 @@ export const requiredMappingResolver: MappingResolver<number> = (before, after) 
   const result: MapKeysResult<number> = { added: [], removed: [], mapped: {} }
 
   const afterItems = [...after]
-  const unmappedAfter = new Set(after.keys())
+  // after indexes mapped so far (an array instead of a set of the unmapped ones: no iterator, ISSUE-330)
+  const mappedAfter: boolean[] = []
 
   for (let i = 0; i < before.length; i++) {
     const _afterIndex = afterItems.indexOf(before[i])
@@ -70,13 +85,15 @@ export const requiredMappingResolver: MappingResolver<number> = (before, after) 
     } else {
       // mapped items
       result.mapped[i] = _afterIndex
-      unmappedAfter.delete(_afterIndex)
+      mappedAfter[_afterIndex] = true
     }
   }
 
-  for (const i of unmappedAfter) {
-    // added items
-    result.added.push(i)
+  for (let i = 0; i < afterItems.length; i++) {
+    if (!mappedAfter[i]) {
+      // added items
+      result.added.push(i)
+    }
   }
 
   return result

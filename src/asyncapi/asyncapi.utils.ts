@@ -12,5 +12,5 @@ export const getAsyncApiVersion = (before: unknown, after: unknown) => {
     return `${bMajorVersion}.x`
   }
 
-  return ""
+  return `${bMajorVersion}.x/${aMajorVersion}.x`
 }

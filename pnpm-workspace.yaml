@@ -1,0 +1,4 @@
+# Vite+ ships its own Vite core and Vitest; make every package resolve to them.
+overrides:
+  vite: npm:@voidzero-dev/vite-plus-core@8.3.8000
+  vitest: 5.1.0

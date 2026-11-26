@@ -66,7 +66,8 @@ describe("Openapi 3 operation changes", () => {
     `
     const { diffs, merged } = compareOpenApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(6)
+    // the summary moved from the operation to the path item: one removal and one path-level addition (ISSUE-32)
+    expect(diffs.length).toEqual(7)
 
     for (const diff of diffs) {
       expect(diff).toHaveProperty("description")
@@ -78,11 +79,13 @@ describe("Openapi 3 operation changes", () => {
       deprecated: { action: "add", type: "deprecated" },
       operationId: { action: "add", type: "annotation" },
       tags: { array: { 0: { action: "add", type: "annotation" } } },
-      summary: { action: "replace", type: "annotation", replaced: "Get list of pets" },
+      // the operation summary was removed (the new summary lives on the path item, ISSUE-32)
+      summary: { action: "remove", type: "annotation" },
       "x-codegen-request-body-name": { action: "replace", type: "annotation", replaced: "body" },
     })
+    // requiring an additional scope is breaking (ISSUE-45); the added scope sits at its after index (§11.2)
     expect(merged.paths["/pet"].get.security[0][metaKey]).toMatchObject({
-      petstore_auth: { array: { 1: { action: "add", type: "non-breaking" } } },
+      petstore_auth: { array: { 0: { action: "add", type: "breaking" } } },
     })
   })
 })

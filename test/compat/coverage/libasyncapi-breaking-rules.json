@@ -1,0 +1,1775 @@
+[
+  {
+    "id": "multiFormatSchema",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-MSG-018", "AA-MSG-019", "AA-MSG-023"]
+  },
+  {
+    "id": "asyncapi",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-DOC-014"]
+  },
+  {
+    "id": "id",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-DOC-013"]
+  },
+  {
+    "id": "defaultContentType",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-DOC-015", "AA-DOC-016", "AA-DOC-017"]
+  },
+  {
+    "id": "servers",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-SRV-001", "AA-SRV-002", "AA-AAD-007"]
+  },
+  {
+    "id": "channels",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CH-001", "AA-CH-002", "AA-AAD-014"]
+  },
+  {
+    "id": "operations",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-OP-019", "AA-OP-020", "AA-AAD-015"]
+  },
+  {
+    "id": "info.title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-001"]
+  },
+  {
+    "id": "info.version",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-002"]
+  },
+  {
+    "id": "info.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-003"]
+  },
+  {
+    "id": "info.termsOfService",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-004"]
+  },
+  {
+    "id": "info.contact",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-003", "AA-AAD-004"]
+  },
+  {
+    "id": "info.license",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-001", "AA-AAD-002"]
+  },
+  {
+    "id": "info.tags",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-007", "AA-AAD-006"]
+  },
+  {
+    "id": "info.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-008"]
+  },
+  {
+    "id": "contact.name",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-005"]
+  },
+  {
+    "id": "contact.url",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-005"]
+  },
+  {
+    "id": "contact.email",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-005"]
+  },
+  {
+    "id": "license.name",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-006"]
+  },
+  {
+    "id": "license.identifier",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "license.url",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-DOC-006"]
+  },
+  {
+    "id": "server.host",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-SRV-004", "AA-SRV-017"]
+  },
+  {
+    "id": "server.protocol",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-SRV-006"]
+  },
+  {
+    "id": "server.protocolVersion",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["AA-SRV-007"]
+  },
+  {
+    "id": "server.pathname",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-SRV-005"]
+  },
+  {
+    "id": "server.title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-SRV-009"]
+  },
+  {
+    "id": "server.summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-SRV-009"]
+  },
+  {
+    "id": "server.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-SRV-008"]
+  },
+  {
+    "id": "server.variables",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-AAD-008", "AA-AAD-009"]
+  },
+  {
+    "id": "server.security",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-SRV-015", "AA-SRV-016", "AA-AAD-012"]
+  },
+  {
+    "id": "server.tags",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-SRV-010", "AA-AAD-013"]
+  },
+  {
+    "id": "server.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-SRV-010"]
+  },
+  {
+    "id": "server.bindings",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-006"]
+  },
+  {
+    "id": "serverVariable.enum",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-SRV-011", "AA-SRV-012", "AA-AAD-010"]
+  },
+  {
+    "id": "serverVariable.default",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-SRV-013"]
+  },
+  {
+    "id": "serverVariable.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-SRV-014"]
+  },
+  {
+    "id": "serverVariable.examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-SRV-014", "AA-AAD-011"]
+  },
+  {
+    "id": "channel.address",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-CH-005", "AA-CH-006", "AA-CH-007"]
+  },
+  {
+    "id": "channel.title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CH-011"]
+  },
+  {
+    "id": "channel.summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CH-011"]
+  },
+  {
+    "id": "channel.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CH-009", "AA-CH-010"]
+  },
+  {
+    "id": "channel.messages",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CH-034", "AA-MSG-033", "AA-AAD-016"]
+  },
+  {
+    "id": "channel.parameters",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CH-031", "AA-CH-032"]
+  },
+  {
+    "id": "channel.servers",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-SRV-018", "AA-SRV-019"]
+  },
+  {
+    "id": "channel.tags",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CH-012", "AA-AAD-017"]
+  },
+  {
+    "id": "channel.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CH-012"]
+  },
+  {
+    "id": "channel.bindings",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-001", "AA-BND-002"]
+  },
+  {
+    "id": "parameter.enum",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CH-023", "AA-CH-024", "AA-CH-025"]
+  },
+  {
+    "id": "parameter.default",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["AA-CH-026", "AA-CH-027", "AA-CH-028"]
+  },
+  {
+    "id": "parameter.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CH-029"]
+  },
+  {
+    "id": "parameter.examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CH-029"]
+  },
+  {
+    "id": "parameter.location",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-CH-030"]
+  },
+  {
+    "id": "operation.action",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-OP-023"]
+  },
+  {
+    "id": "operation.channel",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-OP-024"]
+  },
+  {
+    "id": "operation.title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-OP-006"]
+  },
+  {
+    "id": "operation.summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-OP-006"]
+  },
+  {
+    "id": "operation.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-OP-006"]
+  },
+  {
+    "id": "operation.security",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-OP-009", "AA-OP-010", "AA-OP-012"]
+  },
+  {
+    "id": "operation.tags",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-OP-007", "AA-AAD-025"]
+  },
+  {
+    "id": "operation.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-OP-008"]
+  },
+  {
+    "id": "operation.bindings",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-003", "AA-BND-004"]
+  },
+  {
+    "id": "operation.traits",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-011", "AA-BND-012", "AA-BND-013"]
+  },
+  {
+    "id": "operation.messages",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-OP-025", "AA-OP-026", "AA-OP-027", "AA-OP-028"]
+  },
+  {
+    "id": "operation.reply",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-OP-030", "AA-OP-031"]
+  },
+  {
+    "id": "operationTrait.title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-027"]
+  },
+  {
+    "id": "operationTrait.summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-027"]
+  },
+  {
+    "id": "operationTrait.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-027"]
+  },
+  {
+    "id": "operationTrait.security",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-AAD-033"]
+  },
+  {
+    "id": "operationTrait.tags",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-029"]
+  },
+  {
+    "id": "operationTrait.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-027"]
+  },
+  {
+    "id": "operationTrait.bindings",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-014"]
+  },
+  {
+    "id": "operationReply.address",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-OP-033", "AA-AAD-018"]
+  },
+  {
+    "id": "operationReply.channel",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-OP-032"]
+  },
+  {
+    "id": "operationReply.messages",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-OP-034", "AA-OP-035", "AA-OP-036", "AA-OP-037", "AA-AAD-019"]
+  },
+  {
+    "id": "operationReplyAddress.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-OP-033"]
+  },
+  {
+    "id": "operationReplyAddress.location",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-OP-033", "AA-CMP-015"]
+  },
+  {
+    "id": "message.headers",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-MSG-028", "AA-MSG-029"]
+  },
+  {
+    "id": "message.payload",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-MSG-026", "AA-MSG-027"]
+  },
+  {
+    "id": "message.correlationId",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-MSG-008", "AA-MSG-009", "AA-MSG-010"]
+  },
+  {
+    "id": "message.contentType",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-MSG-004", "AA-MSG-005", "AA-MSG-006"]
+  },
+  {
+    "id": "message.name",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-MSG-001"]
+  },
+  {
+    "id": "message.title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-MSG-002"]
+  },
+  {
+    "id": "message.summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-MSG-003"]
+  },
+  {
+    "id": "message.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-MSG-003"]
+  },
+  {
+    "id": "message.tags",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-MSG-013", "AA-AAD-020"]
+  },
+  {
+    "id": "message.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-MSG-014"]
+  },
+  {
+    "id": "message.bindings",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-005"]
+  },
+  {
+    "id": "message.examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-MSG-011", "AA-AAD-021"]
+  },
+  {
+    "id": "message.traits",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-015", "AA-BND-016"]
+  },
+  {
+    "id": "messageTrait.headers",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-018", "AA-AAD-040"]
+  },
+  {
+    "id": "messageTrait.correlationId",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-BND-019", "AA-AAD-038"]
+  },
+  {
+    "id": "messageTrait.contentType",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-BND-017"]
+  },
+  {
+    "id": "messageTrait.name",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-AAD-034"]
+  },
+  {
+    "id": "messageTrait.title",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-034"]
+  },
+  {
+    "id": "messageTrait.summary",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-034"]
+  },
+  {
+    "id": "messageTrait.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-034"]
+  },
+  {
+    "id": "messageTrait.tags",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-035", "AA-AAD-036"]
+  },
+  {
+    "id": "messageTrait.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-035"]
+  },
+  {
+    "id": "messageTrait.bindings",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-AAD-037"]
+  },
+  {
+    "id": "messageTrait.examples",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-AAD-035", "AA-AAD-036"]
+  },
+  {
+    "id": "messageExample.headers",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "messageExample.payload",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "messageExample.name",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "messageExample.summary",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "correlationId.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-MSG-010"]
+  },
+  {
+    "id": "correlationId.location",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-MSG-010", "AA-CMP-012"]
+  },
+  {
+    "id": "components.schemas",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-001", "AA-CMP-002"]
+  },
+  {
+    "id": "components.servers",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-SRV-017"]
+  },
+  {
+    "id": "components.channels",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-014"]
+  },
+  {
+    "id": "components.operations",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "components.messages",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-003"]
+  },
+  {
+    "id": "components.securitySchemes",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-016", "AA-CMP-017", "AA-CMP-018", "AA-CMP-019"]
+  },
+  {
+    "id": "components.serverVariables",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "components.parameters",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CH-018", "AA-CH-033"]
+  },
+  {
+    "id": "components.correlationIds",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-012"]
+  },
+  {
+    "id": "components.replies",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "components.replyAddresses",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-015"]
+  },
+  {
+    "id": "components.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "components.tags",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "components.operationTraits",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-013"]
+  },
+  {
+    "id": "components.messageTraits",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-011"]
+  },
+  {
+    "id": "components.serverBindings",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "components.channelBindings",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-007"]
+  },
+  {
+    "id": "components.operationBindings",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "components.messageBindings",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "securityScheme.type",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-CMP-016"]
+  },
+  {
+    "id": "securityScheme.description",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-CMP-017"]
+  },
+  {
+    "id": "securityScheme.name",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "securityScheme.in",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "securityScheme.scheme",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "securityScheme.bearerFormat",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "securityScheme.flows",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "securityScheme.openIdConnectUrl",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "securityScheme.scopes",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "oauthFlows.implicit",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "oauthFlows.password",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "oauthFlows.clientCredentials",
+    "added": false,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-CMP-018", "AA-CMP-019"]
+  },
+  {
+    "id": "oauthFlows.authorizationCode",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "oauthFlow.authorizationUrl",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "oauthFlow.tokenUrl",
+    "added": true,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-CMP-019"]
+  },
+  {
+    "id": "oauthFlow.refreshUrl",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "oauthFlow.availableScopes",
+    "added": false,
+    "modified": true,
+    "removed": true,
+    "cases": ["AA-CMP-018"]
+  },
+  {
+    "id": "tag.name",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "tag.description",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "tag.externalDocs",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "externalDocs.url",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "externalDocs.description",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "serverBindings.http",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "serverBindings.kafka",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "serverBindings.mqtt",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "serverBindings.sqs",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "channelBindings.http",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "channelBindings.ws",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "channelBindings.kafka",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "channelBindings.amqp",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "channelBindings.sqs",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "operationBindings.http",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "operationBindings.kafka",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "operationBindings.amqp",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "operationBindings.mqtt",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "operationBindings.sqs",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "messageBindings.http",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "messageBindings.kafka",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "messageBindings.amqp",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "messageBindings.mqtt",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "messageBindings.sqs",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "httpOperationBinding.method",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "httpOperationBinding.query",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "httpOperationBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "httpMessageBinding.headers",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-009"]
+  },
+  {
+    "id": "httpMessageBinding.statusCode",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "httpMessageBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "kafkaServerBinding.schemaRegistryUrl",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "kafkaServerBinding.schemaRegistryVendor",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaServerBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "kafkaChannelBinding.topic",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "kafkaChannelBinding.partitions",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["AA-BND-002"]
+  },
+  {
+    "id": "kafkaChannelBinding.replicas",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "kafkaChannelBinding.topicConfiguration",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "kafkaChannelBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.cleanup.policy",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.retention.ms",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.retention.bytes",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.delete.retention.ms",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.max.message.bytes",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "kafkaTopicConfiguration.confluent.key.schema.validation",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.confluent.key.subject.name.strategy",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.confluent.value.schema.validation",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaTopicConfiguration.confluent.value.subject.name.strategy",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "kafkaOperationBinding.groupId",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "kafkaOperationBinding.clientId",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "kafkaOperationBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "kafkaMessageBinding.key",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-010"]
+  },
+  {
+    "id": "kafkaMessageBinding.schemaIdLocation",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "kafkaMessageBinding.schemaIdPayloadEncoding",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "kafkaMessageBinding.schemaLookupStrategy",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "kafkaMessageBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false,
+    "cases": ["AA-BND-005"]
+  },
+  {
+    "id": "wsChannelBinding.method",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "wsChannelBinding.query",
+    "added": true,
+    "modified": false,
+    "removed": true,
+    "cases": ["AA-BND-008"]
+  },
+  {
+    "id": "wsChannelBinding.headers",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "wsChannelBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "amqpChannelBinding.is",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpChannelBinding.exchange",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "amqpChannelBinding.queue",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "amqpChannelBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "amqpExchange.name",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpExchange.type",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpExchange.durable",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpExchange.autoDelete",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpExchange.vhost",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpQueue.name",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpQueue.durable",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpQueue.exclusive",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpQueue.autoDelete",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpQueue.vhost",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpOperationBinding.expiration",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "amqpOperationBinding.userId",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpOperationBinding.cc",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpOperationBinding.priority",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "amqpOperationBinding.deliveryMode",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpOperationBinding.mandatory",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpOperationBinding.bcc",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpOperationBinding.timestamp",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "amqpOperationBinding.ack",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpOperationBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "amqpMessageBinding.contentEncoding",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "amqpMessageBinding.messageType",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "amqpMessageBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "mqttServerBinding.clientId",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttServerBinding.cleanSession",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttServerBinding.lastWill",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttServerBinding.keepAlive",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "mqttServerBinding.sessionExpiryInterval",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "mqttServerBinding.maximumPacketSize",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttServerBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "mqttLastWill.topic",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttLastWill.qos",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "mqttLastWill.message",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "mqttLastWill.retain",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "mqttOperationBinding.qos",
+    "added": false,
+    "modified": true,
+    "removed": false,
+    "cases": ["AA-BND-003"]
+  },
+  {
+    "id": "mqttOperationBinding.retain",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "mqttOperationBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "mqttMessageBinding.payloadFormatIndicator",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttMessageBinding.correlationData",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "mqttMessageBinding.contentType",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttMessageBinding.responseTopic",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "mqttMessageBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "sqsChannelBinding.queue",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "sqsChannelBinding.deadLetterQueue",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "sqsChannelBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "sqsOperationBinding.queues",
+    "added": true,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "sqsOperationBinding.bindingVersion",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "sqsQueue.name",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsQueue.arn",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsQueue.fifoQueue",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsQueue.deduplicationScope",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "sqsQueue.fifoThroughputLimit",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "sqsQueue.deliveryDelay",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "sqsQueue.visibilityTimeout",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "sqsQueue.receiveMessageWaitTime",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "sqsQueue.messageRetentionPeriod",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "sqsQueue.redrivePolicy",
+    "added": false,
+    "modified": false,
+    "removed": true
+  },
+  {
+    "id": "sqsQueue.policy",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsQueue.tags",
+    "added": false,
+    "modified": false,
+    "removed": false
+  },
+  {
+    "id": "sqsIdentifier.name",
+    "added": true,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsIdentifier.arn",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsIdentifier.fifoQueue",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsRedrivePolicy.deadLetterQueue",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsRedrivePolicy.maxReceiveCount",
+    "added": false,
+    "modified": true,
+    "removed": false
+  },
+  {
+    "id": "sqsPolicy.statements",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsPolicyStatement.effect",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsPolicyStatement.principal",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsPolicyStatement.action",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsPolicyStatement.resource",
+    "added": false,
+    "modified": true,
+    "removed": true
+  },
+  {
+    "id": "sqsPolicyStatement.condition",
+    "added": false,
+    "modified": true,
+    "removed": true
+  }
+]

@@ -1,0 +1,10 @@
+{
+  "lo:Parameter.Items": "Swagger 2.0 only (`items` of a non-body parameter); ASD rejects Swagger 2 documents, OpenAPI 3 parameters carry a Schema Object (row Parameter.Schema)",
+  "lo:Header.Items": "Swagger 2.0 only (`items` of a response header); ASD rejects Swagger 2 documents, OpenAPI 3 headers carry a Schema Object (row Header.Schema)",
+  "lo:Response.Schema": "Swagger 2.0 only (response `schema`; OpenAPI 3 uses `content.*.schema`, row MediaType.Schema); ASD rejects Swagger 2 documents",
+  "lo:Response.Examples": "Swagger 2.0 only (response `examples` keyed by MIME type; OpenAPI 3 uses `content.*.examples`, row MediaType.Examples); ASD rejects Swagger 2 documents",
+  "lo:SecurityScheme.Scopes": "Swagger 2.0 only (oauth2 `scopes` on the scheme; OpenAPI 3 scopes live in the flows, row OAuthFlow.Scopes); ASD rejects Swagger 2 documents",
+  "lo:SecurityScheme.Flow": "Swagger 2.0 only (oauth2 `flow` string; OpenAPI 3 uses `flows`, rows OAuthFlows.*); ASD rejects Swagger 2 documents",
+  "lo:SecurityScheme.AuthorizationURL": "Swagger 2.0 only (oauth2 `authorizationUrl` on the scheme; OpenAPI 3 row OAuthFlow.AuthorizationURL); ASD rejects Swagger 2 documents",
+  "lo:SecurityScheme.TokenURL": "Swagger 2.0 only (oauth2 `tokenUrl` on the scheme; OpenAPI 3 row OAuthFlow.TokenURL); ASD rejects Swagger 2 documents"
+}

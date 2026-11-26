@@ -1,0 +1,135 @@
+{
+  "generated": "vpx test/compat/report.ts --write",
+  "format": "cases/<family>.json: one record per case; expected[].type maps variant -> B/N/R/D/A/U; variants[] = '<name> <D|-><C|-><A|-> [ISSUE-NN|POLICY-NN]' (2.0.0 detection / classification / annotation)",
+  "families": {
+    "asyncapi": {
+      "cases": 331,
+      "variants": 728,
+      "detected": 728,
+      "classified": 728,
+      "annotated": 728,
+      "passing": 728
+    },
+    "asyncapi-payload": {
+      "cases": 449,
+      "variants": 1786,
+      "detected": 1786,
+      "classified": 1786,
+      "annotated": 1786,
+      "passing": 1786
+    },
+    "core": {
+      "cases": 11,
+      "variants": 12,
+      "detected": 12,
+      "classified": 12,
+      "annotated": 12,
+      "passing": 12
+    },
+    "graphql": {
+      "cases": 349,
+      "variants": 698,
+      "detected": 698,
+      "classified": 698,
+      "annotated": 698,
+      "passing": 698
+    },
+    "jsonschema": {
+      "cases": 555,
+      "variants": 1159,
+      "detected": 1159,
+      "classified": 1159,
+      "annotated": 1159,
+      "passing": 1159
+    },
+    "openapi": {
+      "cases": 525,
+      "variants": 829,
+      "detected": 829,
+      "classified": 829,
+      "annotated": 829,
+      "passing": 829
+    }
+  },
+  "files": {
+    "asyncapi": "cases/asyncapi.json",
+    "core": "cases/core.json",
+    "graphql": "cases/graphql.json",
+    "jsonschema": "cases/jsonschema.json",
+    "openapi": "cases/openapi.json"
+  },
+  "coverage": {
+    "oasdiff": {
+      "file": "coverage/oasdiff-rules.json",
+      "total": 604,
+      "covered": 604,
+      "notApplicable": 0
+    },
+    "gi": {
+      "file": "coverage/graphql-inspector-change-types.json",
+      "total": 80,
+      "covered": 78,
+      "notApplicable": 2
+    },
+    "gjs": {
+      "file": "coverage/graphql-js-change-types.json",
+      "total": 34,
+      "covered": 34,
+      "notApplicable": 0
+    },
+    "aad": {
+      "file": "coverage/asyncapi-diff-standard.json",
+      "total": 268,
+      "covered": 265,
+      "notApplicable": 3
+    },
+    "laa": {
+      "file": "coverage/libasyncapi-breaking-rules.json",
+      "total": 275,
+      "covered": 274,
+      "notApplicable": 1
+    },
+    "lo": {
+      "file": "coverage/libopenapi-breaking-rules.json",
+      "total": 206,
+      "covered": 198,
+      "notApplicable": 8
+    },
+    "oatd": {
+      "file": "coverage/openapitools-change-kinds.json",
+      "total": 47,
+      "covered": 47,
+      "notApplicable": 0
+    },
+    "aod": {
+      "file": "coverage/atlassian-openapi-diff-change-kinds.json",
+      "total": 62,
+      "covered": 41,
+      "notApplicable": 21
+    },
+    "jsd": {
+      "file": "coverage/json-schema-diff-tests.json",
+      "total": 187,
+      "covered": 160,
+      "notApplicable": 27
+    },
+    "optic": {
+      "file": "coverage/optic-breaking-changes-tests.json",
+      "total": 56,
+      "covered": 50,
+      "notApplicable": 6
+    },
+    "fork": {
+      "file": "coverage/fork-tests.json",
+      "total": 2492,
+      "covered": 2169,
+      "notApplicable": 323
+    },
+    "suites": {
+      "file": "coverage/compat-suites-cases.json",
+      "total": 754,
+      "covered": 754,
+      "notApplicable": 0
+    }
+  }
+}

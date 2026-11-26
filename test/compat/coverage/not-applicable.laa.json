@@ -1,0 +1,3 @@
+{
+  "laa:license.identifier": "the AsyncAPI License Object (2.6 and 3.0) has only `name` and `url`; libasyncapi reuses libopenapi's `base.License`, whose `identifier` is an OpenAPI 3.1 field, so no valid AsyncAPI document can change it"
+}

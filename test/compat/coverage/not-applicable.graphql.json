@@ -1,0 +1,4 @@
+{
+  "gi:DIRECTIVE_USAGE_FIELD_ADDED": "graphql-inspector only builds this change for Kind.FIELD (a field selection in an executable operation document) or from serialized meta (directiveUsageFieldAddedFromMeta); a schema-to-schema diff never emits it. ASD compares schemas, not operations; the schema-side change (a directive applied to a field definition, DIRECTIVE_USAGE_FIELD_DEFINITION_ADDED) is covered by GQL-DIR-033A and GQL-DEP-001.",
+  "gi:DIRECTIVE_USAGE_FIELD_REMOVED": "graphql-inspector only builds this change for Kind.FIELD (a field selection in an executable operation document) or from serialized meta (directiveUsageFieldRemovedFromMeta); a schema-to-schema diff never emits it. ASD compares schemas, not operations; the schema-side change (DIRECTIVE_USAGE_FIELD_DEFINITION_REMOVED) is covered by GQL-DIR-033B and GQL-DEP-003."
+}

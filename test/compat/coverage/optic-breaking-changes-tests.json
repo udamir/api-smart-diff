@@ -1,0 +1,307 @@
+[
+  {
+    "id": "breaking-changes::fromOpticConfig > invalid configuration",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "config error"
+  },
+  {
+    "id": "breaking-changes::fromOpticConfig > valid config",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "config accepted"
+  },
+  {
+    "id": "breaking-changes::fromOpticConfig > valid config with array",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "config accepted"
+  },
+  {
+    "id": "breaking-changes::fromOpticConfig > valid config with exclude_operations_with_extension as object",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "config accepted"
+  },
+  {
+    "id": "breaking-changes::fromOpticConfig > does not throw breaking change if semvar has updated",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "passed (skip_when_major_version_changes)"
+  },
+  {
+    "id": "breaking-changes::fromOpticConfig > does throws breaking change if semvar flag false",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > valid changes",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "passed"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > operation removal",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > required request property added",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-OBJ-002"]
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > request property optional to required",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-OBJ-004"]
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > request property type change",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-TYP-004"]
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > root request body type change",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > response property removed",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed (optional response property removed; ASD non-breaking)",
+    "cases": ["JS-OBJ-010"]
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > response property required to optional",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed (ASD risky)",
+    "cases": ["JS-OBJ-006"]
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > response property type change",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-TYP-004"]
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > root response body type change",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-TYP-003"]
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > valid request union type transition",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "passed"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > valid response union type transition",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "passed (ASD breaking: a number branch is added to the response)"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > valid union type refactor",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "passed"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > invalid union type transition",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed (ASD risky)"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > invalid union type enum transition in request",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "breaking-changes::breaking changes ruleset > invalid union type enum transition in response",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed (ASD risky)"
+  },
+  {
+    "id": "breaking-changes::breaking change ruleset configuration > breaking changes applies a matches function for string extension",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "excluded by configuration"
+  },
+  {
+    "id": "breaking-changes::breaking change ruleset configuration > breaking changes applies a matches function for object extension value match",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "excluded by configuration"
+  },
+  {
+    "id": "breaking-changes::breaking change ruleset configuration > breaking changes applies a matches function for object extension value mismatch",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "breaking-changes::breaking change ruleset configuration > breaking changes applies a matches function for object extension value missing",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "enum-breaking-changes::breaking changes ruleset - parameter enum change > enum added to %p parameter",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/enum-breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-ENUM-001"]
+  },
+  {
+    "id": "enum-breaking-changes::breaking changes ruleset - parameter enum change > %p parameter enum narrowing",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/enum-breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-ENUM-007"]
+  },
+  {
+    "id": "enum-breaking-changes::breaking changes ruleset - parameter enum change > enum converted to const %p parameter",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/enum-breaking-changes.test.ts",
+    "verdict": "passed",
+    "cases": ["JS-ENUM-022"]
+  },
+  {
+    "id": "enum-breaking-changes::breaking changes ruleset - parameter enum change > const changes picked up as breaking %p parameter",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/enum-breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-ENUM-020"]
+  },
+  {
+    "id": "enum-breaking-changes::breaking changes ruleset - parameter enum change > enums in request bodies",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/enum-breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-ENUM-008"]
+  },
+  {
+    "id": "enum-breaking-changes::breaking changes ruleset - parameter enum change > enums in response bodies",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/enum-breaking-changes.test.ts",
+    "verdict": "failed (ASD risky)",
+    "cases": ["JS-ENUM-006"]
+  },
+  {
+    "id": "parameter-requirement-breaking-changes::breaking changes ruleset - parameter requirement change > required %p parameter added",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/parameter-requirement-breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "parameter-requirement-breaking-changes::breaking changes ruleset - parameter requirement change > %p parameter optional to required",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/parameter-requirement-breaking-changes.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "parameter-type-breaking-changes::breaking changes ruleset - parameter type change > %p parameter type change",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/parameter-type-breaking-changes.test.ts",
+    "verdict": "failed",
+    "cases": ["JS-TYP-001"]
+  },
+  {
+    "id": "response-status-code-removal::breaking changes ruleset - response status code removal > status code removal",
+    "file": "projects/standard-rulesets/src/breaking-changes/__tests__/response-status-code-removal.test.ts",
+    "verdict": "failed"
+  },
+  {
+    "id": "type-change::computeEffectiveTypeChange > identical sets",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/type-change.test.ts",
+    "verdict": "no type change",
+    "cases": ["JS-TYP-017", "JS-TYP-022"]
+  },
+  {
+    "id": "type-change::computeEffectiveTypeChange > non-identical sets",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/type-change.test.ts",
+    "verdict": "expanded / narrowed",
+    "cases": ["JS-TYP-001", "JS-TYP-003", "JS-TYP-018", "JS-TYP-020"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type to type > type is changed",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "request and response breaking",
+    "cases": ["JS-TYP-004"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type to type > type is made optional",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "required added: request breaking; removed: response breaking",
+    "cases": ["JS-OBJ-004", "JS-OBJ-006"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type to type > type is removed and required",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "required property added: request breaking; removed: response breaking",
+    "cases": ["JS-OBJ-002", "JS-OBJ-011"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type to type > type is removed but is not required",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "passed both ways (ASD: optional request property removed is risky)",
+    "cases": ["JS-OBJ-001", "JS-OBJ-010"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type to type > enums",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "value removed: request breaking; added: response breaking (ASD risky)",
+    "cases": ["JS-ENUM-006", "JS-ENUM-008"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type array to type array > type primitives",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "type removed: response breaking; added: request breaking (inverse of ASD)",
+    "cases": ["JS-TYP-019", "JS-TYP-021"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type array to type array > valid overlap with object and arrays",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "no transition"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type array to type array > invalid overlap with object and arrays",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "required added / item type added: request breaking; reverse: response breaking"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > oneOf to oneOf > type primitives",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "branch removed: response breaking; added: request breaking (inverse of ASD)",
+    "cases": ["JS-CMB-018", "JS-CMB-020"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > oneOf to oneOf > valid overlap with objects and arrays",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "no transition"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > oneOf to oneOf > invalid overlap with objects and arrays",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "required added / item branch added: request breaking; reverse: response breaking"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type array to oneOf > type primitives",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "equivalent rewrite passed; narrowing: response breaking (inverse of ASD)"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type array to oneOf > valid overlap with objects and arrays",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "no transition"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type array to oneOf > invalid overlap with objects and arrays",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "required added: request breaking; reverse: response breaking"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type to type array",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "type added: request breaking; removed: response breaking (inverse of ASD)",
+    "cases": ["JS-TYP-019"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > transitions > type to oneOf",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "branch added: request breaking; removed: response breaking (inverse of ASD)",
+    "cases": ["JS-TYP-047"]
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > oneOf to type array at root schema",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "required added: request breaking; reverse: response breaking"
+  },
+  {
+    "id": "unions::computeUnionTransition > %s > nested oneOf and type arrays",
+    "file": "projects/standard-rulesets/src/breaking-changes/helpers/__tests__/unions.test.ts",
+    "verdict": "required added: request breaking; reverse: response breaking"
+  }
+]

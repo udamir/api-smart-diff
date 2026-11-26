@@ -1,0 +1,242 @@
+[
+  {
+    "type": "FIELD_ARGUMENT_DESCRIPTION_CHANGED"
+  },
+  {
+    "type": "FIELD_ARGUMENT_DEFAULT_CHANGED"
+  },
+  {
+    "type": "FIELD_ARGUMENT_TYPE_CHANGED"
+  },
+  {
+    "type": "DIRECTIVE_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_DESCRIPTION_CHANGED"
+  },
+  {
+    "type": "DIRECTIVE_LOCATION_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_LOCATION_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_ARGUMENT_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_ARGUMENT_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_ARGUMENT_DESCRIPTION_CHANGED"
+  },
+  {
+    "type": "DIRECTIVE_ARGUMENT_DEFAULT_VALUE_CHANGED"
+  },
+  {
+    "type": "DIRECTIVE_ARGUMENT_TYPE_CHANGED"
+  },
+  {
+    "type": "DIRECTIVE_REPEATABLE_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_REPEATABLE_REMOVED"
+  },
+  {
+    "type": "ENUM_VALUE_REMOVED"
+  },
+  {
+    "type": "ENUM_VALUE_ADDED"
+  },
+  {
+    "type": "ENUM_VALUE_DESCRIPTION_CHANGED"
+  },
+  {
+    "type": "ENUM_VALUE_DEPRECATION_REASON_CHANGED"
+  },
+  {
+    "type": "ENUM_VALUE_DEPRECATION_REASON_ADDED"
+  },
+  {
+    "type": "ENUM_VALUE_DEPRECATION_REASON_REMOVED"
+  },
+  {
+    "type": "FIELD_REMOVED"
+  },
+  {
+    "type": "FIELD_ADDED"
+  },
+  {
+    "type": "FIELD_DESCRIPTION_CHANGED"
+  },
+  {
+    "type": "FIELD_DESCRIPTION_ADDED"
+  },
+  {
+    "type": "FIELD_DESCRIPTION_REMOVED"
+  },
+  {
+    "type": "FIELD_DEPRECATION_ADDED"
+  },
+  {
+    "type": "FIELD_DEPRECATION_REMOVED"
+  },
+  {
+    "type": "FIELD_DEPRECATION_REASON_CHANGED"
+  },
+  {
+    "type": "FIELD_DEPRECATION_REASON_ADDED"
+  },
+  {
+    "type": "FIELD_DEPRECATION_REASON_REMOVED"
+  },
+  {
+    "type": "FIELD_TYPE_CHANGED"
+  },
+  {
+    "type": "FIELD_ARGUMENT_ADDED"
+  },
+  {
+    "type": "FIELD_ARGUMENT_REMOVED"
+  },
+  {
+    "type": "INPUT_FIELD_REMOVED"
+  },
+  {
+    "type": "INPUT_FIELD_ADDED"
+  },
+  {
+    "type": "INPUT_FIELD_DESCRIPTION_ADDED"
+  },
+  {
+    "type": "INPUT_FIELD_DESCRIPTION_REMOVED"
+  },
+  {
+    "type": "INPUT_FIELD_DESCRIPTION_CHANGED"
+  },
+  {
+    "type": "INPUT_FIELD_DEFAULT_VALUE_CHANGED"
+  },
+  {
+    "type": "INPUT_FIELD_TYPE_CHANGED"
+  },
+  {
+    "type": "OBJECT_TYPE_INTERFACE_ADDED"
+  },
+  {
+    "type": "OBJECT_TYPE_INTERFACE_REMOVED"
+  },
+  {
+    "type": "SCHEMA_QUERY_TYPE_CHANGED"
+  },
+  {
+    "type": "SCHEMA_MUTATION_TYPE_CHANGED"
+  },
+  {
+    "type": "SCHEMA_SUBSCRIPTION_TYPE_CHANGED"
+  },
+  {
+    "type": "TYPE_REMOVED"
+  },
+  {
+    "type": "TYPE_ADDED"
+  },
+  {
+    "type": "TYPE_KIND_CHANGED"
+  },
+  {
+    "type": "TYPE_DESCRIPTION_CHANGED"
+  },
+  {
+    "type": "TYPE_DESCRIPTION_REMOVED"
+  },
+  {
+    "type": "TYPE_DESCRIPTION_ADDED"
+  },
+  {
+    "type": "UNION_MEMBER_REMOVED"
+  },
+  {
+    "type": "UNION_MEMBER_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_UNION_MEMBER_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_UNION_MEMBER_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ENUM_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ENUM_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ENUM_VALUE_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ENUM_VALUE_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_INPUT_OBJECT_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_INPUT_OBJECT_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_FIELD_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_FIELD_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_SCALAR_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_SCALAR_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_OBJECT_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_OBJECT_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_INTERFACE_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_INTERFACE_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ARGUMENT_DEFINITION_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ARGUMENT_DEFINITION_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_SCHEMA_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_SCHEMA_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_FIELD_DEFINITION_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_FIELD_DEFINITION_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_INPUT_FIELD_DEFINITION_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_INPUT_FIELD_DEFINITION_REMOVED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ARGUMENT_ADDED"
+  },
+  {
+    "type": "DIRECTIVE_USAGE_ARGUMENT_REMOVED"
+  }
+]

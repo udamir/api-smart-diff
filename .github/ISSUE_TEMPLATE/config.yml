@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://udamir.github.io/api-smart-diff/
+    about: Guide, API reference, examples and the online demo.
+  - name: Online demo
+    url: https://udamir.github.io/api-smart-diff/demo
+    about: Compare two documents in the browser; its "Report issue" action fills the bug report for you.

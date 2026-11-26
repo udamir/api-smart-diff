@@ -1,0 +1,66 @@
+# Bug report form. The "Report issue" action of the documentation portal (demo and examples) opens it with the fields
+# prefilled through URL query parameters named by the field ids below (docs/.vitepress/theme/report.ts, FIELD_IDS):
+# keep the ids in sync with the portal.
+name: Bug report
+description: A diff is wrong, missing or unexpected, a description is wrong or unclear, or api-smart-diff fails.
+title: "[Bug]: "
+labels: ["bug", "portal-report"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting! The quickest way to a fix is a pair of documents that shows the problem. The [online demo](https://udamir.github.io/api-smart-diff/demo) has a **Report issue** action that fills this form for you.
+
+        The documents become public with the issue: remove anything private before you submit.
+  - type: input
+    id: problem
+    attributes:
+      label: Problem
+      description: "Wrong classification, Wrong or unclear description, Missing change, Extra change, Crash or error, or Other."
+      placeholder: Wrong classification
+    validations:
+      required: true
+  - type: input
+    id: expected
+    attributes:
+      label: Expected type
+      description: "For a wrong classification or a missing change: breaking, risky, non-breaking, deprecated, annotation or unclassified."
+  - type: textarea
+    id: details
+    attributes:
+      label: What is wrong
+      description: What you expected and why (a link to the specification helps).
+  - type: textarea
+    id: diffs
+    attributes:
+      label: Diffs
+      description: The reported diff and the diff list (type, action, path, scope, description).
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: The detected specification and the `apiCompare(...)` call with its options.
+    validations:
+      required: true
+  - type: textarea
+    id: documents
+    attributes:
+      label: Documents
+      description: The before and the after document (YAML, JSON or GraphQL SDL). Attach files when they are large.
+  - type: input
+    id: version
+    attributes:
+      label: api-smart-diff version
+      placeholder: 2.0.0
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Browser, or Node.js version and operating system.
+  - type: input
+    id: link
+    attributes:
+      label: Portal link
+      description: A demo or example link that restores the documents and the options.

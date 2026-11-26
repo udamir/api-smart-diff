@@ -1,18 +1,27 @@
 import { applyOperation, type Operation } from "fast-json-patch"
-import { buildFromSchema, type GraphApiSchema } from "gqlapi"
+import { buildFromSchema, type GraphApiSchema as GraphApi10Schema } from "gqlapi"
+import { buildFromSchema as buildLegacyFromSchema, type GraphApiSchema } from "gqlapi-legacy"
 import { buildSchema } from "graphql"
 import type { JsonPath } from "json-crawl"
 import YAML from "js-yaml"
 import path from "node:path"
 import fs from "node:fs"
 
-import { apiDiff, apiMerge, getKeyValue, buildPath, type ComapreOptions, type CompareRules } from "../../src"
+import { apiCompare, type CompareOptions, type CompareRules } from "../../src"
+import { getKeyValue } from "../../src/utils"
+import { buildPath } from "../../src/jsonSchema"
 
 export const yaml = (strings: TemplateStringsArray): object => {
   return YAML.load(strings[0]) as object
 }
 
+// GraphApi 0.1.2 documents come from the gqlapi pre-release that still writes them (gqlapi 0.6 writes only 1.0)
 export const graphapi = (strings: TemplateStringsArray): GraphApiSchema => {
+  return buildLegacyFromSchema(buildSchema(strings[0], { noLocation: true }))
+}
+
+/** GraphApi 1.0 document (gqlapi 0.6) from SDL */
+export const graphapi10 = (strings: TemplateStringsArray): GraphApi10Schema => {
   return buildFromSchema(buildSchema(strings[0], { noLocation: true }))
 }
 
@@ -24,7 +33,7 @@ export class ExampleResource {
     private filename: string,
     public rules?: CompareRules,
   ) {
-    const resPath = path.join(__dirname, "../resources/", this.filename)
+    const resPath = path.join(import.meta.dirname, "../resources/", this.filename)
     const data = fs.readFileSync(resPath, "utf8")
     if (/.(yaml|YAML|yml|YML)$/g.test(filename)) {
       try {
@@ -35,7 +44,7 @@ export class ExampleResource {
     } else if (/.(graphql|gql)$/g.test(filename)) {
       try {
         const schema = buildSchema(data, { noLocation: true })
-        this.res = buildFromSchema(schema)
+        this.res = buildLegacyFromSchema(schema)
       } catch (e) {
         console.log(e)
       }
@@ -51,11 +60,11 @@ export class ExampleResource {
   }
 
   public diff(after: any) {
-    return apiDiff(this.res, after, { rules: this.rules, externalSources: this.externalSources })
+    return apiCompare(this.res, after, { rules: this.rules, externalSources: this.externalSources }).diffs
   }
 
-  public merge(after: any, options?: ComapreOptions) {
-    return apiMerge(this.res, after, { ...options, rules: this.rules, externalSources: this.externalSources })
+  public merge(after: any, options?: CompareOptions) {
+    return apiCompare(this.res, after, { ...options, rules: this.rules, externalSources: this.externalSources }).merged
   }
 
   public getValue(path: JsonPath) {

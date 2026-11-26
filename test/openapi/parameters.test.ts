@@ -121,11 +121,12 @@ describe("Test openapi 3 parameters compare", () => {
       expect(diff.type).not.toEqual("unclassified")
     }
 
+    // after order: the added parameter sits at index 0, the removed one is appended (DESIGN_PROPOSALS §11.2)
     expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({
       parameters: {
         array: {
-          0: { action: DiffAction.remove, type: breaking },
-          1: { action: DiffAction.add, type: nonBreaking },
+          0: { action: DiffAction.add, type: nonBreaking },
+          1: { action: DiffAction.remove, type: breaking },
         },
       },
     })
@@ -177,12 +178,13 @@ describe("Test openapi 3 parameters compare", () => {
       expect(diff.type).not.toEqual("unclassified")
     }
 
+    // after order (DESIGN_PROPOSALS §11.2): the added parameters keep their after indexes
     expect(merged.paths["/pet/findByStatus"].get[metaKey]).toMatchObject({
       parameters: {
         array: {
-          1: { action: DiffAction.add, type: nonBreaking },
-          2: { action: DiffAction.add, type: breaking },
-          3: { action: DiffAction.add, type: nonBreaking },
+          0: { action: DiffAction.add, type: nonBreaking },
+          1: { action: DiffAction.add, type: breaking },
+          2: { action: DiffAction.add, type: nonBreaking },
         },
       },
     })

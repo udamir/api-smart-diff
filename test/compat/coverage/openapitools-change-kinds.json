@@ -1,0 +1,331 @@
+[
+  {
+    "id": "EXTENSION_CONTENT_TYPES_DECREASED",
+    "key": "incompatible.extension.content.types.decreased",
+    "enabledByDefault": false,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-EXT-005", "OAS-EXT-007"]
+  },
+  {
+    "id": "EXTENSION_CONTENT_TYPE_DELETED",
+    "key": "incompatible.extension.content.type.%s.deleted",
+    "enabledByDefault": false,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-EXT-001", "OAS-EXT-005"]
+  },
+  {
+    "id": "OPENAPI_ENDPOINTS_DECREASED",
+    "key": "incompatible.openapi.endpoints.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-OP-001", "OAS-PATH-003"]
+  },
+  {
+    "id": "OPERATION_ID_CHANGED",
+    "key": "incompatible.operation.id.changed",
+    "enabledByDefault": false,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-OP-008"]
+  },
+  {
+    "id": "REQUEST_BODY_REQUIRED_INCREASED",
+    "key": "incompatible.request.body.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-RB-005"]
+  },
+  {
+    "id": "REQUEST_CONTENT_DECREASED",
+    "key": "incompatible.request.content.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-MT-002"]
+  },
+  {
+    "id": "REQUEST_ENUM_DECREASED",
+    "key": "incompatible.request.enum.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-ENUM-007", "JS-ENUM-008"]
+  },
+  {
+    "id": "REQUEST_MAX_LENGTH_DECREASED",
+    "key": "incompatible.request.max.length.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-STR-007", "JS-STR-008"]
+  },
+  {
+    "id": "REQUEST_MIN_LENGTH_INCREASED",
+    "key": "incompatible.request.min.length.increased",
+    "enabledByDefault": false,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-STR-013", "JS-STR-014"]
+  },
+  {
+    "id": "REQUEST_NUMERIC_RANGE_DECREASED",
+    "key": "incompatible.request.numeric.range.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-NUM-005", "JS-NUM-015", "JS-DRF-001"]
+  },
+  {
+    "id": "REQUEST_ONEOF_DECREASED",
+    "key": "incompatible.request.oneof.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-CMB-019", "JS-CMB-020"]
+  },
+  {
+    "id": "REQUEST_PARAM_ALLOWEMPTY_DECREASED",
+    "key": "incompatible.request.param.allowempty.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-PARAM-033"]
+  },
+  {
+    "id": "REQUEST_PARAM_EXPLODE_CHANGED",
+    "key": "incompatible.request.param.explode.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-PARAM-029"]
+  },
+  {
+    "id": "REQUEST_PARAM_STYLE_CHANGED",
+    "key": "incompatible.request.param.style.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-PARAM-025", "OAS-PARAM-027"]
+  },
+  {
+    "id": "REQUEST_PARAMS_DECREASED",
+    "key": "incompatible.request.params.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-PARAM-008"]
+  },
+  {
+    "id": "REQUEST_PARAMS_REQUIRED_INCREASED",
+    "key": "incompatible.request.params.required.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-PARAM-002", "OAS-PARAM-011"]
+  },
+  {
+    "id": "REQUEST_READONLY_INCREASED",
+    "key": "incompatible.request.readonly.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OAS-034"]
+  },
+  {
+    "id": "REQUEST_READONLY_REQUIRED_DECREASED",
+    "key": "incompatible.request.readonly.required.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OAS-037", "OAS-RB-020"]
+  },
+  {
+    "id": "REQUEST_REQUIRED_INCREASED",
+    "key": "incompatible.request.required.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OBJ-002", "JS-OBJ-004"]
+  },
+  {
+    "id": "RESPONSE_CONTENT_DECREASED",
+    "key": "incompatible.response.content.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-MT-004", "OAS-RS-017"]
+  },
+  {
+    "id": "RESPONSE_ENUM_INCREASED",
+    "key": "incompatible.response.enum.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-ENUM-005", "JS-ENUM-006"]
+  },
+  {
+    "id": "RESPONSE_HEADER_EXPLODE_CHANGED",
+    "key": "incompatible.response.header.explode.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-HDR-024"]
+  },
+  {
+    "id": "RESPONSE_HEADER_REQUIRED_DECREASED",
+    "key": "incompatible.response.header.required.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-HDR-008"]
+  },
+  {
+    "id": "RESPONSE_HEADER_REQUIRED_INCREASED",
+    "key": "incompatible.response.header.required.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-HDR-007"]
+  },
+  {
+    "id": "RESPONSE_HEADERS_DECREASED",
+    "key": "incompatible.response.headers.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-HDR-003"]
+  },
+  {
+    "id": "RESPONSE_MAX_LENGTH_INCREASED",
+    "key": "incompatible.response.max.length.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-STR-005", "JS-STR-006"]
+  },
+  {
+    "id": "RESPONSE_MIN_LENGTH_INCREASED",
+    "key": "incompatible.response.min.length.increased",
+    "enabledByDefault": false,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-STR-013", "JS-STR-014"]
+  },
+  {
+    "id": "RESPONSE_NUMERIC_RANGE_INCREASED",
+    "key": "incompatible.response.numeric.range.increased",
+    "enabledByDefault": false,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-NUM-007", "JS-NUM-013"]
+  },
+  {
+    "id": "RESPONSE_ONEOF_INCREASED",
+    "key": "incompatible.response.oneof.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-CMB-017", "JS-CMB-018"]
+  },
+  {
+    "id": "RESPONSE_REQUIRED_DECREASED",
+    "key": "incompatible.response.required.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OBJ-006"]
+  },
+  {
+    "id": "RESPONSE_RESPONSES_DECREASED",
+    "key": "incompatible.response.responses.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-RS-002"]
+  },
+  {
+    "id": "RESPONSE_WRITEONLY_INCREASED",
+    "key": "incompatible.response.writeonly.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OAS-040", "OAS-RS-031"]
+  },
+  {
+    "id": "RESPONSE_WRITEONLY_REQUIRED_DECREASED",
+    "key": "incompatible.response.writeonly.required.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-RS-030"]
+  },
+  {
+    "id": "SECURITY_REQUIREMENT_SCHEMES_INCREASED",
+    "key": "incompatible.security.requirement.schemes.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-018"]
+  },
+  {
+    "id": "SECURITY_REQUIREMENTS_DECREASED",
+    "key": "incompatible.security.requirements.decreased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-004", "OAS-SEC-028"]
+  },
+  {
+    "id": "SECURITY_SCHEME_BEARER_FORMAT_CHANGED",
+    "key": "incompatible.security.scheme.bearer.format.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-032"]
+  },
+  {
+    "id": "SECURITY_SCHEME_OAUTH2_AUTH_URL_CHANGED",
+    "key": "incompatible.security.scheme.oauth2.auth.url.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-035"]
+  },
+  {
+    "id": "SECURITY_SCHEME_OAUTH2_REFRESH_URL_CHANGED",
+    "key": "incompatible.security.scheme.oauth2.refresh.url.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-035", "OAS-SEC-036"]
+  },
+  {
+    "id": "SECURITY_SCHEME_OAUTH2_TOKEN_URL_CHANGED",
+    "key": "incompatible.security.scheme.oauth2.token.url.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-035"]
+  },
+  {
+    "id": "SECURITY_SCHEME_OPENIDCONNECT_URL_CHANGED",
+    "key": "incompatible.security.scheme.openidconnect.url.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-034"]
+  },
+  {
+    "id": "SECURITY_SCHEME_SCHEME_CHANGED",
+    "key": "incompatible.security.scheme.scheme.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-030"]
+  },
+  {
+    "id": "SECURITY_SCHEME_SCOPES_INCREASED",
+    "key": "incompatible.security.scheme.scopes.increased",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["OAS-SEC-019"]
+  },
+  {
+    "id": "SCHEMA_DISCRIMINATOR_CHANGED",
+    "key": "incompatible.schema.discriminator.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OAS-015", "JS-OAS-016"]
+  },
+  {
+    "id": "SCHEMA_PATTERN_CHANGED",
+    "key": "incompatible.schema.pattern.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-STR-021", "JS-STR-022"]
+  },
+  {
+    "id": "SCHEMA_MIN_PROPERTIES_CHANGED",
+    "key": "incompatible.schema.min-properties.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OBJ-037", "JS-OBJ-041"]
+  },
+  {
+    "id": "SCHEMA_MAX_PROPERTIES_CHANGED",
+    "key": "incompatible.schema.max-properties.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-OBJ-045", "JS-OBJ-051"]
+  },
+  {
+    "id": "SCHEMA_TYPE_CHANGED",
+    "key": "incompatible.schema.type.changed",
+    "enabledByDefault": true,
+    "file": "core/src/main/java/org/openapitools/openapidiff/core/model/BackwardIncompatibleProp.java",
+    "cases": ["JS-TYP-001", "JS-TYP-003"]
+  }
+]

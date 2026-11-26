@@ -36,7 +36,8 @@ describe("GraphQL schema", () => {
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(6)
+    // ISSUE-53 (fixed): GraphApi 0.1.2 usages of a named type are nominal; the change is reported once, at the declaration (the count included the inlined usage site)
+    expect(diffs.length).toEqual(3)
     diffs.forEach((diff, i) => {
       if (i > 2) {
         return
@@ -98,6 +99,7 @@ describe("GraphQL schema", () => {
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(3)
+    // ISSUE-53 (fixed): GraphApi 0.1.2 usages of a named type are nominal; the change is reported once, at the declaration (the count included the inlined usage site)
+    expect(diffs.length).toEqual(2)
   })
 })

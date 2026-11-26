@@ -1,0 +1,23 @@
+{
+  "aod:doc:swagger2:Swagger.paths": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Swagger.definitions": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Swagger.parameters": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Swagger.responses": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Swagger.^x-": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.$ref": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.get": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.put": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.post": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.delete": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.options": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.head": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:PathItem.patch": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Operation.parameters": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Parameter.name": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Parameter.in": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Parameter.schema": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Responses.{http status code}": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Responses.default": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Response.schema": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)",
+  "aod:doc:swagger2:Response.headers": "Swagger 2.0 field: ASD compares OpenAPI 3.x documents only and rejects Swagger 2 (the OpenAPI 3 counterpart is a doc: row of this checklist)"
+}

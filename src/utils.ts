@@ -8,6 +8,10 @@ export const isObject = (value: unknown): value is Record<string, unknown> => {
   return typeof value === "object" && value !== null
 }
 
+export const isPlainObject = (value: unknown): value is Record<string, unknown> => {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
 export const isArray = (value: unknown): value is Array<unknown> => {
   return Array.isArray(value)
 }
@@ -25,7 +29,7 @@ export const isString = (value: unknown): value is string => {
 }
 
 export const isNumber = (value: unknown): value is number => {
-  return typeof value === "number" || (isString(value) && !Number.isNaN(+value))
+  return typeof value === "number" || (isString(value) && value.trim() !== "" && !Number.isNaN(+value))
 }
 
 export const isFunc = (value: unknown): value is Function => {
@@ -77,11 +81,26 @@ export const excludeKeys = <T extends {}>(value: T, keys: Array<keyof T>): Parti
   return excluded
 }
 
+/** `getKeyValue(obj, key)` for a single key, without the rest-parameter array (hot path of the compare walk). */
+export const getChildValue = (obj: unknown, key: string | number): unknown | undefined => {
+  if (Array.isArray(obj)) {
+    const index = typeof key === "number" ? key : isNumber(key) ? +key : Number.NaN
+    return Number.isInteger(index) && index >= 0 && index < obj.length ? obj[index] : undefined
+  }
+  // one keyed load (`key in obj` before it doubled the cost of every child lookup; an absent key reads `undefined`)
+  return typeof obj === "object" && obj !== null ? (obj as Record<string | number, unknown>)[key] : undefined
+}
+
 export const getKeyValue = (obj: unknown, ...path: JsonPath): unknown | undefined => {
   let value: unknown = obj
-  for (const key of path) {
-    if (Array.isArray(value) && typeof +key === "number" && value.length < +key) {
-      value = value[+key]
+  for (let i = 0; i < path.length; i++) {
+    const key = path[i]
+    if (Array.isArray(value)) {
+      const index = typeof key === "number" ? key : isNumber(key) ? +key : Number.NaN
+      if (!Number.isInteger(index) || index < 0 || index >= value.length) {
+        return
+      }
+      value = value[index]
     } else if (isObject(value) && key in value) {
       value = value[key]
     } else {
@@ -111,16 +130,24 @@ export const getArrayValue = (obj: unknown, ...path: JsonPath): Array<unknown> |
 
 export const getNumberValue = (obj: unknown, ...path: JsonPath): number | undefined => {
   const value = getKeyValue(obj, ...path)
-  return typeof value === "number" ? value : typeof value === "string" && +value ? +value : undefined
+  if (typeof value === "number") {
+    return value
+  }
+  return isString(value) && isNumber(value) ? +value : undefined
 }
 
 export const getBooleanValue = (obj: unknown, ...path: JsonPath): boolean | undefined => {
   const value = getKeyValue(obj, ...path)
-  return typeof value === "boolean"
-    ? value
-    : typeof value === "string" && (value === "true" || value === "false")
-      ? Boolean(value)
-      : undefined
+  if (typeof value === "boolean") {
+    return value
+  }
+  if (value === "true") {
+    return true
+  }
+  if (value === "false") {
+    return false
+  }
+  return
 }
 
 export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
@@ -135,4 +162,83 @@ export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
     }
   }
   return result
+}
+
+// a copy deeper than this is assumed to be a cyclic graph and redone with identity tracking
+const MAX_COPY_DEPTH = 512
+const TOO_DEEP = Symbol("too-deep")
+
+const copyTree = (value: object, depth: number): unknown => {
+  if (depth > MAX_COPY_DEPTH) {
+    throw TOO_DEEP
+  }
+  if (Array.isArray(value)) {
+    const result = new Array(value.length)
+    for (let i = 0; i < value.length; i++) {
+      const item = value[i]
+      result[i] = typeof item === "object" && item !== null ? copyTree(item, depth + 1) : item
+    }
+    return result
+  }
+  const result: Record<string | symbol, unknown> = {}
+  const keys = Object.keys(value)
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    const item = (value as Record<string, unknown>)[key]
+    result[key] = typeof item === "object" && item !== null ? copyTree(item, depth + 1) : item
+  }
+  // symbol keys carry merge meta and must survive the copy
+  const symbols = Object.getOwnPropertySymbols(value)
+  for (let i = 0; i < symbols.length; i++) {
+    const item = (value as Record<symbol, unknown>)[symbols[i]]
+    result[symbols[i]] = typeof item === "object" && item !== null ? copyTree(item, depth + 1) : item
+  }
+  return result
+}
+
+/**
+ * Deep copy of plain JSON data (objects, arrays, primitives, cyclic graphs); other values are returned as is. A tree
+ * is copied without identity tracking; a graph deeper than any real document (a cycle) is copied again with it, so
+ * cycles and shared nodes are preserved there.
+ */
+export const deepCopy = <T>(value: T, copies?: WeakMap<object, unknown>): T => {
+  if (!isObject(value)) {
+    return value
+  }
+  if (!copies) {
+    try {
+      return copyTree(value, 0) as T
+    } catch (error) {
+      if (error !== TOO_DEEP) {
+        throw error
+      }
+      return deepCopyGraph(value, new WeakMap())
+    }
+  }
+  return deepCopyGraph(value, copies)
+}
+
+const deepCopyGraph = <T>(value: T, copies: WeakMap<object, unknown>): T => {
+  if (!isObject(value)) {
+    return value
+  }
+  const existing = copies.get(value)
+  if (existing) {
+    return existing as T
+  }
+  if (Array.isArray(value)) {
+    const result: unknown[] = []
+    copies.set(value, result)
+    for (const item of value) {
+      result.push(deepCopyGraph(item, copies))
+    }
+    return result as T
+  }
+  const result: Record<string | symbol, unknown> = {}
+  copies.set(value, result)
+  // symbol keys carry merge meta and must survive the copy
+  for (const key of Reflect.ownKeys(value)) {
+    result[key] = deepCopyGraph((value as Record<string | symbol, unknown>)[key], copies)
+  }
+  return result as T
 }

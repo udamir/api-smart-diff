@@ -1,0 +1,37 @@
+{
+  "type": "object",
+  "properties": {
+    "hello": {
+      "type": "string"
+    },
+    "new": {
+      "$ref": "#/definitions/baz/definitions/New"
+    },
+    "baz": {
+      "$ref": "#/definitions/baz"
+    }
+  },
+  "definitions": {
+    "baz": {
+      "type": "object",
+      "title": "baz",
+      "properties": {
+        "hello": {
+          "$ref": "#/definitions/baz/definitions/World"
+        },
+        "new": {
+          "$ref": "#/definitions/baz/definitions/New"
+        }
+      },
+      "definitions": {
+        "World": {
+          "type": "string"
+        },
+        "New": {
+          "$ref": "#",
+          "description": "sibling description"
+        }
+      }
+    }
+  }
+}

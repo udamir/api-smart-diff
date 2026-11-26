@@ -1,0 +1,5 @@
+{
+  "aad:v2:/info": "`info` is REQUIRED in AsyncAPI 2.x: a valid document can neither add nor remove it, and its row is reached only for the whole object (every change inside it is classified by the `/info/*` rows, all covered)",
+  "aad:v3:/info": "`info` is REQUIRED in AsyncAPI 3.0: a valid document can neither add nor remove it, and its row is reached only for the whole object (every change inside it is classified by the `/info/*` rows, all covered)",
+  "aad:v2:/channels": "`channels` is REQUIRED in AsyncAPI 2.x: a valid document can neither add nor remove it, and its row is reached only for the whole object (channel changes are classified by `/channels/*` and below, all covered)"
+}

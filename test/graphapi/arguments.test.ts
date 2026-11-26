@@ -74,6 +74,7 @@ describe("GraphQL arguments", () => {
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(2)
+    // ISSUE-53 (fixed): GraphApi 0.1.2 usages of a named type are nominal; the change is reported once, at the declaration (the count included the inlined usage site)
+    expect(diffs.length).toEqual(1)
   })
 })

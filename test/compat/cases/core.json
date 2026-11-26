@@ -1,0 +1,239 @@
+[
+  {
+    "id": "X-VOL-001",
+    "family": "core",
+    "area": "volume",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "a change in a component reached through a DAG of nested $refs is reported once per component declaration",
+    "before": "GET /reports 200 -> S0 -> {left,right} -> S1 -> ... -> S4 { code: string }",
+    "after": "S4.code: integer",
+    "rationale": "the usage sites inside the response (left.left...code, one per payload location) are distinct locations a client reads, but under `components` the change belongs to the declaration S4 only; re-expanding it inside S0..S3 once per reference path is exponential (2^(n+1) - 1 component diffs for depth n) and is what inflates real documents (TBAPI order-management: 20 762 diffs for 362 structural differences)",
+    "annotation": "type change of `code` (with its payload path at usage sites; in schema component `S4` at the declaration)",
+    "sources": [
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.9 finding (4) diff volume, tbapi-order-management" },
+      { "tool": "fork", "ref": "one diff per declaration (beforeDeclarationPaths)", "verdict": "1 diff" },
+      {
+        "tool": "oasdiff",
+        "ref": "checker/check_response_property_type_changed.go response-property-type-changed",
+        "verdict": "1 per operation"
+      }
+    ],
+    "covers": ["oasdiff:response-property-type-changed"],
+    "variants": ["doc DCA"],
+    "expected": [
+      {
+        "at": "paths/~1reports/get/responses/200/content/application~1json/schema/**/code/type",
+        "type": { "doc": "B" }
+      },
+      { "at": "components/schemas/S4/properties/code/type", "type": { "doc": "B" } }
+    ]
+  },
+  {
+    "id": "X-VOL-002",
+    "family": "core",
+    "area": "volume",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "a vendor extension change inside a shared schema",
+    "before": "S4 { x-owner: team-a } reached through the same DAG",
+    "after": "S4 { x-owner: team-b }",
+    "rationale": "an `x-*` value is not part of the payload contract; reported once per usage site and `unclassified` it was 11 294 of 20 762 diffs on tbapi-order-management; POLICY-06 (d): annotation; POLICY-57 (decided after P3): an annotation-only change inside a component is reported at its declaration only, not at every usage site (non-annotation changes keep their per-usage diffs, X-VOL-001)",
+    "annotation": "names the extension key and the schema / payload location",
+    "sources": [
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.9 noise note (x-* inside schemas)" },
+      {
+        "tool": "fork",
+        "ref": "test/openapi.specificationExtensions.test.ts",
+        "verdict": "unclassified, once per declaration"
+      },
+      { "tool": "openapi-changes", "ref": "extension changes", "verdict": "non-breaking" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": [{ "at": "components/schemas/S2/x-owner", "type": { "doc": "A" } }]
+  },
+  {
+    "id": "X-VOL-003",
+    "family": "core",
+    "area": "volume",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "graphql",
+    "title": "an output field removed from one type of a cyclic type graph",
+    "before": "Query.root: T0; ring T0..T7, each type with 2 fields to the next types and `extra: Int`",
+    "after": "T7.extra removed",
+    "rationale": "one declaration changed; GraphApi 0.1.2 inlines object types at every usage, so the change is re-reported inside every type on every acyclic path to T7 (hundreds of diffs for 8 types, growing exponentially; the GitHub schema does not finish), while the 1.0 encoding reports it once",
+    "annotation": "names the type and the field (T7, extra)",
+    "sources": [
+      {
+        "tool": "bench",
+        "ref": "docs/BENCHMARK.md §4.5 / §7.2 GraphApi 0.1.2 does not scale (gql-github timeout, > 15 min, 3 GB)"
+      },
+      { "tool": "graphql-inspector", "ref": "FIELD_REMOVED", "verdict": "1 change" }
+    ],
+    "covers": [],
+    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "expected": [{ "at": "components/objects/T7/**/extra", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+  },
+  {
+    "id": "X-TBAPI-001",
+    "family": "core",
+    "area": "tbapi-patterns",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "inline property schema refactored into allOf [$ref, { deprecated, x-* }] with an equivalent target",
+    "before": "items.value: { type: number, description }",
+    "after": "items.value: { allOf: [ { $ref: Money } , { deprecated: true, x-policy: soft } ] }, Money = { type: number, description }",
+    "rationale": "the merged allOf is the same schema plus a deprecation, so the only contract change is the deprecation (the 4 consensus breaking operations 2.0.0 missed on the TBAPI release series are this pattern; oasdiff without --flatten-allof and openapi-changes over-report it)",
+    "annotation": "deprecation of `items[].value` (and the extension as an annotation)",
+    "sources": [
+      {
+        "tool": "bench",
+        "ref": "bench/results/tbapi-spotcheck.json category 'inline schema refactored into allOf' (two consecutive release pairs)"
+      },
+      { "tool": "oasdiff", "ref": "response-required-property-removed (default options)", "verdict": "ERR" },
+      { "tool": "openapi-changes", "ref": "extension added", "verdict": "breaking" },
+      { "tool": "fork", "ref": "allOf merged", "verdict": "deprecated" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": [
+      { "at": "paths/**/items/properties/value/deprecated", "action": "add", "type": { "doc": "D" } },
+      { "at": "paths/**/items/properties/value/x-policy", "action": "add", "type": { "doc": "A" } },
+      { "at": "components/schemas/Money", "action": "add", "type": { "doc": "N" } }
+    ]
+  },
+  {
+    "id": "X-IDENT-001",
+    "family": "core",
+    "area": "identical",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "repository fixture circular-bar.json compared with itself",
+    "before": "circular-bar.json",
+    "after": "the same document (deep copy)",
+    "rationale": "an unchanged document has no changes; every tool in the benchmark reports 0 diffs on identical inputs",
+    "annotation": "no diff, hence no description",
+    "sources": [
+      { "tool": "asd", "ref": "test/resources/circular-bar.json" },
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.6 identical documents" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": []
+  },
+  {
+    "id": "X-IDENT-002",
+    "family": "core",
+    "area": "identical",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "repository fixture circular-foo.json compared with itself",
+    "before": "circular-foo.json",
+    "after": "the same document (deep copy)",
+    "rationale": "an unchanged document has no changes; every tool in the benchmark reports 0 diffs on identical inputs",
+    "annotation": "no diff, hence no description",
+    "sources": [
+      { "tool": "asd", "ref": "test/resources/circular-foo.json" },
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.6 identical documents" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": []
+  },
+  {
+    "id": "X-IDENT-003",
+    "family": "core",
+    "area": "identical",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "repository fixture externalref.yaml compared with itself",
+    "before": "externalref.yaml",
+    "after": "the same document (deep copy)",
+    "rationale": "an unchanged document has no changes; every tool in the benchmark reports 0 diffs on identical inputs",
+    "annotation": "no diff, hence no description",
+    "sources": [
+      { "tool": "asd", "ref": "test/resources/externalref.yaml" },
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.6 identical documents" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": []
+  },
+  {
+    "id": "X-IDENT-004",
+    "family": "core",
+    "area": "identical",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "repository fixture jsonschema.yaml compared with itself",
+    "before": "jsonschema.yaml",
+    "after": "the same document (deep copy)",
+    "rationale": "an unchanged document has no changes; every tool in the benchmark reports 0 diffs on identical inputs",
+    "annotation": "no diff, hence no description",
+    "sources": [
+      { "tool": "asd", "ref": "test/resources/jsonschema.yaml" },
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.6 identical documents" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": []
+  },
+  {
+    "id": "X-IDENT-005",
+    "family": "core",
+    "area": "identical",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "repository fixture petstore.yaml compared with itself",
+    "before": "petstore.yaml",
+    "after": "the same document (deep copy)",
+    "rationale": "an unchanged document has no changes; every tool in the benchmark reports 0 diffs on identical inputs",
+    "annotation": "no diff, hence no description",
+    "sources": [
+      { "tool": "asd", "ref": "test/resources/petstore.yaml" },
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.6 identical documents" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": []
+  },
+  {
+    "id": "X-IDENT-006",
+    "family": "core",
+    "area": "identical",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "repository fixture schema-after.yaml compared with itself",
+    "before": "schema-after.yaml",
+    "after": "the same document (deep copy)",
+    "rationale": "an unchanged document has no changes; every tool in the benchmark reports 0 diffs on identical inputs",
+    "annotation": "no diff, hence no description",
+    "sources": [
+      { "tool": "asd", "ref": "test/resources/schema-after.yaml" },
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.6 identical documents" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": []
+  },
+  {
+    "id": "X-IDENT-007",
+    "family": "core",
+    "area": "identical",
+    "file": "test/compat/core/cross-cutting.test.ts",
+    "kind": "doc",
+    "title": "repository fixture schema-before.yaml compared with itself",
+    "before": "schema-before.yaml",
+    "after": "the same document (deep copy)",
+    "rationale": "an unchanged document has no changes; every tool in the benchmark reports 0 diffs on identical inputs",
+    "annotation": "no diff, hence no description",
+    "sources": [
+      { "tool": "asd", "ref": "test/resources/schema-before.yaml" },
+      { "tool": "bench", "ref": "docs/BENCHMARK.md §4.6 identical documents" }
+    ],
+    "covers": [],
+    "variants": ["doc DCA"],
+    "expected": []
+  }
+]

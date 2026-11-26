@@ -1,0 +1,1282 @@
+[
+  {
+    "id": "diff-schemas-allof::type to equivalent allOf that type",
+    "file": "test/unit/json-schema-diff/diff-schemas-allof.spec.ts",
+    "describe": "diff-schemas allOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-allof::multiple properties in single schema to equivalent allOf schemas of single properties",
+    "file": "test/unit/json-schema-diff/diff-schemas-allof.spec.ts",
+    "describe": "diff-schemas allOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-allof::allOf schemas of different types to equivalent false schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-allof.spec.ts",
+    "describe": "diff-schemas allOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-allof::allOf restricting top level types to equivalent schema with the type intersection",
+    "file": "test/unit/json-schema-diff/diff-schemas-allof.spec.ts",
+    "describe": "diff-schemas allOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-allof::nested allOf schemas to equivalent single type schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-allof.spec.ts",
+    "describe": "diff-schemas allOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::anyOf two \"true\" schemas to equivalent single \"true\" schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::anyOf two \"false\" schemas to equivalent single \"false\" schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::anyOf of \"false\" and \"true\" to equivalent anyOf \"true\" and \"false\"",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::anyOf of \"true\" and single-type to equivalent anyOf single-type and \"true\"",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::anyOf of \"false\" and single-type to equivalent anyOf single-type and \"false\"",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::union of all types",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-anyof::union of two disjoint sets using minItems and maxItems representing all arrays",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::all arrays vs union of two disjoint sets using minItems and maxItems representing all arrays",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::removing anyOf and replacing with items, resulting in a contradiction in the removed schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-anyof::any of not integers or integers to numbers",
+    "file": "test/unit/json-schema-diff/diff-schemas-anyof.spec.ts",
+    "describe": "diff-schemas anyOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-boolean-schemas::true schema to true schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-boolean-schemas.spec.ts",
+    "describe": "diff-schemas boolean schemas",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-boolean-schemas::false schema to true schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-boolean-schemas.spec.ts",
+    "describe": "diff-schemas boolean schemas",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-boolean-schemas::all but one type schema to true schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-boolean-schemas.spec.ts",
+    "describe": "diff-schemas boolean schemas",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-boolean-schemas::all types schema to true schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-boolean-schemas.spec.ts",
+    "describe": "diff-schemas boolean schemas",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-boolean-schemas::all types schema (not specifying integer) to true schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-boolean-schemas.spec.ts",
+    "describe": "diff-schemas boolean schemas",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-boolean-schemas::single type schema to false",
+    "file": "test/unit/json-schema-diff/diff-schemas-boolean-schemas.spec.ts",
+    "describe": "diff-schemas boolean schemas",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::all types but string is changed to equivalent not string",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > general",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-not::double negation: nothing accepted to not not string",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > general",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-not::from array with minItems constraint to array with the complement of that constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > arrays",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::from array with items constraint to array with the complement of that constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > arrays",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::from array with minItems constraint to complement of entire schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > arrays",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::two schemas containing different complemented partial arrays",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > arrays",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::array with items constraint changed to all types and a not constraint in arrays",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > arrays",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::DeMorgans with all and some arrays",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > arrays",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-not::DeMorgans with some and some arrays",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > arrays",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-not::from object with minProperties constraint to object with complement of that constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > objects",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::from object with additionalProperties to object with complement of that constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > objects",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::two schemas containing different complemented partial objects",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > objects",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::a schema containing a contradiction between additionalProperties involving not + anyOf",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > objects",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-not::from numbers with integer constraint to numbers with the complement of that constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > numbers",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-not::from numbers with integer to double negation of integer",
+    "file": "test/unit/json-schema-diff/diff-schemas-not.spec.ts",
+    "describe": "diff-schemas not > numbers",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-oneof::type to equivalent oneOf for that type",
+    "file": "test/unit/json-schema-diff/diff-schemas-oneof.spec.ts",
+    "describe": "diff-schemas oneOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-oneof::removing the oneOf keyword",
+    "file": "test/unit/json-schema-diff/diff-schemas-oneof.spec.ts",
+    "describe": "diff-schemas oneOf",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-oneof::adding a disjoint schema to oneOf",
+    "file": "test/unit/json-schema-diff/diff-schemas-oneof.spec.ts",
+    "describe": "diff-schemas oneOf",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-oneof::duplicate oneOf schemas creating a contradiction",
+    "file": "test/unit/json-schema-diff/diff-schemas-oneof.spec.ts",
+    "describe": "diff-schemas oneOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-oneof::oneOf containing partial array schemas that are equivalent to all arrays of numbers",
+    "file": "test/unit/json-schema-diff/diff-schemas-oneof.spec.ts",
+    "describe": "diff-schemas oneOf",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-oneof::oneOf containing partial array schemas that partially intersect",
+    "file": "test/unit/json-schema-diff/diff-schemas-oneof.spec.ts",
+    "describe": "diff-schemas oneOf",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-references::schema with string property reference to schema with inline number property",
+    "file": "test/unit/json-schema-diff/diff-schemas-references.spec.ts",
+    "describe": "diff-schemas references",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-references::schema with nested string reference to schema with nested number reference",
+    "file": "test/unit/json-schema-diff/diff-schemas-references.spec.ts",
+    "describe": "diff-schemas references",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array with items constraint has items constraint made more restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::numbers and array gets numbers constrained and items constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array with items constraint has items constraint changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::remove array with items constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::unconstrained array has items constraint added",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array with minItems constraint removed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > minItems",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::unconstrained array constrained with minItems",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > minItems",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array constrained with minItems has minItems constraint made more restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > minItems",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::empty array support in the result is represented as items=false",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > minItems",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array with maxItems constraint removed altogether",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > maxItems",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::unconstrained array constrained with maxItems",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > maxItems",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array constrained with maxItems has maxItems constraint made less restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > maxItems",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-array::array constrained with items and minItems has the items constraint made less restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items + minItems",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array constrained with contradicting minItems and items",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items + minItems",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-array::array constrained with contradicting minItems and items has minItems removed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items + minItems",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-array::different ways of representing arrays with no items",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items + maxItems",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-array::array with no items has items constraint relaxed and the maxItems constraint restricted",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items + maxItems",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-array::array range is expanded in both directions",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > minItems + maxItems",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-array::array range is expanded in both directions along with a simple object schema change",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > minItems + maxItems",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-array::array items, minItems and maxItems constraints are all made less restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-array.spec.ts",
+    "describe": "diff-schemas type array > items + minItems + maxItems",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::considers integer as a subset of number",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::from integer to number",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with maximum constraint to false",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::all numbers to number with maximum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with maximum constraint to more restrictive maximum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with minimum constraint to false",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::all numbers to number with minimum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with minimum constraint to more restrictive minimum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with exclusiveMaximum constraint to false",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMaximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::all numbers to number with exclusiveMaximum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMaximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with exclusiveMaximum constraint to more restrictive exclusiveMaximum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMaximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with exclusiveMinimum constraint to false",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMinimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::all numbers to number with exclusiveMinimum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMinimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::numbers with exclusiveMinimum constraint to more restrictive exclusiveMinimum constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMinimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::minimum equal than maximum not a contradiction since both are inclusive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum and maximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::minimum and exclusiveMaximum contradiction",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum and exclusiveMaximum",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::all numbers to numbers with minimum and exclusiveMaximum constraints",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum and exclusiveMaximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::simplified to minimum when minimum is greater than exclusiveMinimum",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum and exclusiveMinimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::simplified to exclusiveMinimum when exclusiveMinimum is greater than minimum",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum and exclusiveMinimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::simplified to just exclusiveMinimum when exclusiveMinimum and minimum are equal",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > minimum and exclusiveMinimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::maximum and exclusiveMinimum contradiction",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum and exclusiveMinimum",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::all numbers to numbers with maximum and exclusiveMinimum constraints",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum and exclusiveMinimum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::simplified to maximum when maximum is lower than exclusiveMaximum",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum and exclusiveMaximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::simplified to exclusiveMaximum when exclusiveMaximum is lower than maximum",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum and exclusiveMaximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::simplified to just exclusiveMaximum when exclusiveMaximum and maximum are equal",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > maximum and exclusiveMaximum",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::exclusiveMinimum greater than exclusiveMaximum contradiction",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMinimum and exclusiveMaximum",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::exclusiveMinimum equal than exclusiveMaximum contradiction",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > exclusiveMinimum and exclusiveMaximum",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::contradiction when no integer exists in minimum/maximum range",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::contradiction when no integer exists in exclusiveMinimum/exclusiveMaximum range",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-number::integer with decimal minimum simplified by applying ceil function",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::integer with decimal exclusiveMinimum simplified by applying floor function",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::integer with decimal maximum simplified by applying floor function",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::integer with decimal exclusiveMaximum simplified by applying ceil function",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::number with minimum and maximum constraints to integer",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-number::number with min/max constraint to integer with partially overlapping min/max constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-number.spec.ts",
+    "describe": "diff-schemas type number > integer and ranges",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::object additionalProperties constrained to accept nothing",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::additionalProperties constrained to one type gets relaxed with support for another type",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::object with no constraints gets a property constrained to some types",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::object property constrained to a type is changed to be constrained to a different type",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > properties",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::objects get a hard constraint on a property",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::object with required property constraint is relaxed to support all objects",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > required",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::(no description) required [first, last] -> [last]",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > required",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::objects gets a minProperties constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > minProperties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::objects with minProperties constraint gets minProperties made more restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > minProperties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::objects get constrained to have at least one property",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > minProperties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::objects gets a maxProperties constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > maxProperties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::objects with a maxProperties constraint gets maxProperties made more restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > maxProperties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::object with maxProperties=0 constraint gets constrained to accept nothing",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > maxProperties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::hard additionalProperties constraint replaced with equivalent maxProperties=0 constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + maxProperties",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::objects with contradicting additionalProperties and minProperties is considered false",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + minProperties",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::object with redundant relaxed property constraint gets additionalProperties constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::redundant property constraint matching additionalProperties constraint is removed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::object with additionalProperties constraint gets a more restrictive property constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::object with property constraint gets a fully restrictive additionalProperties constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::numbers and property-constrained object gets numbers constrained and additionalProperties constraint",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::objects with 2 property constraints get additionalProperties that accepts nothing",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::objects with 2 property constraints has additionalProperties constrained",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::object with required and maxProperties contradiction",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > maxProperties + required",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::object with minProperties and maxProperties contradiction",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > maxProperties + minProperties",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::comparing object contradictions at different layers",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > properties + required",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-object::adding a required property with a changed schema",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > properties + required",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-object::object containing a contradiction has all constraints relaxed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-object.spec.ts",
+    "describe": "diff-schemas type object > additionalProperties + properties + required",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string with minLength constraint removed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > minLength",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::default min string length is set during complement operation",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > minLength",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::string with minLength 0 is all strings",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > minLength",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string with minLength constraint has minLength made less restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > minLength",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string with maxLength constraint removed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::string with maxLength infinity is all strings",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string with maxLength constraint has maxLength made more restrictive",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::empty string not confused with no string",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string with maxLength and minLength contradict each other",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string with maxLength Infinity and minLength 0 are all strings",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string length range is expanded in both directions",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::string length range is restricted in both directions",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::string length range shifted so new range partially overlaps",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::string length range shifted so new range doesnt overlap",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::adding anyOf two string length ranges to existing range",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type-string::intersecting string min and max length in allOf are merged",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::non overlapping string length ranges in allOf are ignored",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type-string::adding oneOf string length ranges to existing range",
+    "file": "test/unit/json-schema-diff/diff-schemas-type-string.spec.ts",
+    "describe": "diff-schemas type string > maxLength and minLength",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::types are the same",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type::type as array vs single type that are the same",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type::type number is changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::type array is changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::type boolean is changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::type integer is changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::type null is changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::type object is changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::type string is changed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::type added and removed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": true,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::multiple types added and removed",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas-type::empty schemas",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": false
+  },
+  {
+    "id": "diff-schemas-type::empty schema vs list of types",
+    "file": "test/unit/json-schema-diff/diff-schemas-type.spec.ts",
+    "describe": "diff-schemas type",
+    "added": false,
+    "removed": true
+  },
+  {
+    "id": "diff-schemas::additionalProperties and items constraints get relaxed to support a new type",
+    "file": "test/unit/json-schema-diff/diff-schemas.spec.ts",
+    "describe": "diff-schemas > type array + type object",
+    "added": true,
+    "removed": false
+  },
+  {
+    "id": "api::should accept a source and destination schema as input",
+    "file": "test/e2e/api.spec.ts",
+    "describe": "api > input types",
+    "kind": "it"
+  },
+  {
+    "id": "api::should throw error when schemas cant be diffed",
+    "file": "test/e2e/api.spec.ts",
+    "describe": "api > output types",
+    "kind": "it"
+  },
+  {
+    "id": "api::should return an added result according to the defined public types",
+    "file": "test/e2e/api.spec.ts",
+    "describe": "api > output types",
+    "kind": "it"
+  },
+  {
+    "id": "api::should return a removed result according to the defined public types",
+    "file": "test/e2e/api.spec.ts",
+    "describe": "api > output types",
+    "kind": "it"
+  },
+  {
+    "id": "cli::should find a difference in type",
+    "file": "test/e2e/cli.spec.ts",
+    "describe": "json-schema-diff cli",
+    "kind": "it"
+  },
+  {
+    "id": "cli::should be successful when no differences are found",
+    "file": "test/e2e/cli.spec.ts",
+    "describe": "json-schema-diff cli",
+    "kind": "it"
+  },
+  {
+    "id": "cli::should return the error when a file cannot be found",
+    "file": "test/e2e/cli.spec.ts",
+    "describe": "json-schema-diff cli",
+    "kind": "it"
+  },
+  {
+    "id": "diff-schemas-references::should fail when schema contains circular references",
+    "file": "test/unit/json-schema-diff/diff-schemas-references.spec.ts",
+    "describe": "diff-schemas references",
+    "kind": "it"
+  },
+  {
+    "id": "diff-schemas-regression::should not raise errors for a schema with property names matching Object.prototype properties",
+    "file": "test/unit/json-schema-diff/diff-schemas-regression.spec.ts",
+    "describe": "regression",
+    "kind": "it"
+  },
+  {
+    "id": "diff-schemas::should return an error when the source schema is not valid",
+    "file": "test/unit/json-schema-diff/diff-schemas.spec.ts",
+    "describe": "diff-schemas > validation",
+    "kind": "it"
+  },
+  {
+    "id": "diff-schemas::should return an error when the destination schema is not valid",
+    "file": "test/unit/json-schema-diff/diff-schemas.spec.ts",
+    "describe": "diff-schemas > validation",
+    "kind": "it"
+  },
+  {
+    "id": "diff-schemas::should dereference schemas before validating",
+    "file": "test/unit/json-schema-diff/diff-schemas.spec.ts",
+    "describe": "diff-schemas > validation",
+    "kind": "it"
+  },
+  {
+    "id": "diff-schemas::should return no additions or removals found",
+    "file": "test/unit/json-schema-diff/diff-schemas.spec.ts",
+    "describe": "diff-schemas > additionsFound and removalsFound",
+    "kind": "it"
+  },
+  {
+    "id": "diff-schemas::should return additions and removals found",
+    "file": "test/unit/json-schema-diff/diff-schemas.spec.ts",
+    "describe": "diff-schemas > additionsFound and removalsFound",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should load the source schema file",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should load the destination schema file",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should report an error when loading the source schema file fails",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should report an error when loading the destination schema file fails",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should return the error when the source file is not in json format",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should return the error when the destination file is not in json format",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should report no differences when none are found",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should fail and report breaking changes when a removal is found",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "json-schema-diff::should not fail and report non-breaking changes when an addition is found",
+    "file": "test/unit/json-schema-diff.spec.ts",
+    "describe": "json-schema-diff > diffFiles",
+    "kind": "it"
+  },
+  {
+    "id": "performance::executes quickly on schemas with CPU intensive calculations by disabling the absorption law simplification",
+    "file": "test/e2e/performance.spec.ts",
+    "describe": "performance scenarios",
+    "kind": "it"
+  },
+  {
+    "id": "performance::executes quickly on schemas with memory intensive calculations by enabling the absorption law simplification",
+    "file": "test/e2e/performance.spec.ts",
+    "describe": "performance scenarios",
+    "kind": "it"
+  },
+  {
+    "id": "reporter::should report a success message when diff is successful with no differences",
+    "file": "test/unit/json-schema-diff/reporter.spec.ts",
+    "describe": "reporter",
+    "kind": "it"
+  },
+  {
+    "id": "reporter::should report errors",
+    "file": "test/unit/json-schema-diff/reporter.spec.ts",
+    "describe": "reporter",
+    "kind": "it"
+  },
+  {
+    "id": "reporter::should report breaking changes with result",
+    "file": "test/unit/json-schema-diff/reporter.spec.ts",
+    "describe": "reporter",
+    "kind": "it"
+  },
+  {
+    "id": "reporter::should report non-breaking changes with result when called",
+    "file": "test/unit/json-schema-diff/reporter.spec.ts",
+    "describe": "reporter",
+    "kind": "it"
+  }
+]

@@ -2,7 +2,7 @@ import { breaking, compareJsonSchema, nonBreaking } from "../../src"
 
 const metaKey = Symbol("diff")
 
-describe("Comapre array jsonSchema", () => {
+describe("Compare array jsonSchema", () => {
   it("should compare array jsonSchema with validations change", () => {
     const before = {
       items: {
@@ -20,7 +20,8 @@ describe("Comapre array jsonSchema", () => {
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(4)
+    // POLICY-21 decided (b), decision §11.19 (ISSUE-136 fixed): the type is no longer inferred from the validators: the added `type` is the 5th diff
+    expect(diffs.length).toEqual(5)
     diffs.forEach((diff) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
@@ -40,6 +41,7 @@ describe("Comapre array jsonSchema", () => {
       minItems: { action: "replace", replaced: 1, type: nonBreaking },
       maxItems: { action: "add", type: breaking },
       uniqueItems: { action: "add", type: breaking },
+      type: { action: "add", type: breaking },
     })
   })
 
@@ -176,7 +178,8 @@ describe("Comapre array jsonSchema", () => {
 
     const { diffs, merged } = compareJsonSchema(before, after, { metaKey })
 
-    expect(diffs.length).toEqual(2)
+    // POLICY-21 decided (b), decision §11.19 (ISSUE-136 fixed): the type is no longer inferred from the validators: the removed `type` is the 3rd diff
+    expect(diffs.length).toEqual(3)
     diffs.forEach((diff) => {
       expect(diff).toHaveProperty("description")
       expect(diff.description).not.toEqual("")
@@ -187,8 +190,9 @@ describe("Comapre array jsonSchema", () => {
     expect(merged.items[1][metaKey]).toMatchObject({
       type: { action: "replace", replaced: "boolean", type: breaking },
     })
+    // ISSUE-34: restricting the additional items (previously anything) to strings is breaking in request semantics
     expect(merged[metaKey]).toMatchObject({
-      additionalItems: { action: "add", type: nonBreaking },
+      additionalItems: { action: "add", type: breaking },
     })
   })
 })

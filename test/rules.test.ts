@@ -3,7 +3,7 @@ import {
   breaking,
   nonBreaking,
   reverseClassifyRuleTransformer,
-  transformComapreRules,
+  transformCompareRules,
   unclassified,
 } from "../src"
 
@@ -14,7 +14,7 @@ describe("Diff type classify transformer tests", () => {
         $: [nonBreaking, breaking, unclassified],
       },
     }
-    const reversed = transformComapreRules(rules, reverseClassifyRuleTransformer)
+    const reversed = transformCompareRules(rules, reverseClassifyRuleTransformer)
     expect(reversed).toMatchObject({
       "/*": { $: [breaking, nonBreaking, unclassified] },
     })
@@ -30,7 +30,7 @@ describe("Diff type classify transformer tests", () => {
       },
     }
 
-    const reversed = transformComapreRules(rules, reverseClassifyRuleTransformer)
+    const reversed = transformCompareRules(rules, reverseClassifyRuleTransformer)
 
     expect(reversed).toMatchObject({
       "/*": {
@@ -49,7 +49,7 @@ describe("Diff type classify transformer tests", () => {
       },
     }
 
-    const reversed: any = transformComapreRules(rules, reverseClassifyRuleTransformer)
+    const reversed: any = transformCompareRules(rules, reverseClassifyRuleTransformer)
 
     expect(reversed["/*"].$[2]({ before: { path: [] } })).toEqual(breaking)
     expect(reversed["/*"].$[2]({ before: { path: [1] } })).toEqual(nonBreaking)
@@ -65,7 +65,7 @@ describe("Diff type classify transformer tests", () => {
       },
     }
 
-    const reversed: any = transformComapreRules(rules, reverseClassifyRuleTransformer)
+    const reversed: any = transformCompareRules(rules, reverseClassifyRuleTransformer)
 
     expect(reversed["/*"]["/*"]()).toMatchObject({
       $: [nonBreaking, breaking, unclassified],
