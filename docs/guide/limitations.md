@@ -1,6 +1,6 @@
 # Limitations
 
-Known limits of api-smart-diff 2.1.0:
+Known limits of api-smart-diff 2.x:
 
 - **No cross-version comparison** for AsyncAPI 2.x ↔ 3.0 (`UnsupportedSpecError`). OpenAPI 3.0 ↔ 3.1 ↔ 3.2 is supported.
 - **External references** are resolved only from [`externalSources`](./options#externalsources), synchronously; nothing is fetched. Bundle multi-file documents with [api-ref-bundler](https://github.com/udamir/api-ref-bundler) or pass the referenced documents.

@@ -203,7 +203,31 @@ AsyncAPI 2.x cannot be compared with 3.0; GraphApi 0.1.2 documents (gqlapi 0.5 a
 
 ## Benchmark
 
-The [`benchmark/`](https://github.com/udamir/api-smart-diff/tree/master/benchmark) folder is a self-contained project that compares api-smart-diff with the published 1.0.6, the Netcracker api-diff fork and other diff tools (oasdiff, openapi-changes, openapi-diff, json-schema-diff, @asyncapi/diff, graphql-inspector, graphql-js, buf breaking) on OpenAPI, JSON Schema, AsyncAPI, GraphQL and Protocol Buffers inputs, measuring classification quality, speed and memory. Its [README](https://github.com/udamir/api-smart-diff/tree/master/benchmark#readme) explains how to run it, and the rendered reports are in [`benchmark/results/`](https://github.com/udamir/api-smart-diff/tree/master/benchmark/results).
+The [`benchmark/`](https://github.com/udamir/api-smart-diff/tree/master/benchmark) folder is a self-contained project that compares api-smart-diff with the published 1.0.6 and other diff tools (oasdiff, openapi-changes, openapi-diff, json-schema-diff, @asyncapi/diff, graphql-inspector, graphql-js, buf breaking) on OpenAPI, JSON Schema, AsyncAPI, GraphQL and Protocol Buffers inputs, measuring classification quality, speed and memory.
+
+Speed against the published 1.0.6 (minimum of the timed calls, documents parsed outside the timing; Node.js 26, Intel i9-9880H):
+
+| Input | 2.0 | 1.0.6 | Other tools |
+| --- | --- | --- | --- |
+| GitHub REST (7.6 MB) | 0.12 s | 10.0 s | oasdiff 3.48 s<br/>openapi-changes > 60 s<br/>openapi-diff > 60 s |
+| OpenAPI petstore | 2.7 ms | 34 ms | oasdiff 12.8 ms<br/>openapi-changes 25.4 ms<br/>openapi-diff 483 ms |
+| 10 000 properties | 17 ms | 0.71 s | oasdiff 1.03 s<br/>openapi-changes 1.89 s<br/>openapi-diff > 60 s |
+| 1 500 properties, response | 1.8 ms | 0.62 s | oasdiff 60 ms<br/>openapi-changes 105 ms<br/>openapi-diff > 60 s |
+| GitHub GraphQL (1.1 MB) | 55 ms | > 60 s | graphql-inspector 17 ms<br/>graphql-js 24 ms |
+| AsyncAPI events | 1.1 ms | 1.0 ms | @asyncapi/diff 0.53 ms |
+| Protobuf, 1 700 messages | 0.18 s | — | buf 3.63 s |
+| Protobuf, 10 200 messages | 1.20 s | — | buf 24.2 s |
+
+Classification quality on the scripted change sets (share of expected changes found, and share of found changes with the expected class):
+
+| Format | api-smart-diff 2.0 | Other tools |
+| --- | --- | --- |
+| OpenAPI and JSON Schema (110 changes) | 100 % found, 100 % classes | oasdiff 89 % / 100 %<br/>openapi-changes 100 % / 83 %<br/>openapi-diff 57 % / 77 % |
+| GraphQL (24 changes) | 100 % / 100 % | graphql-inspector 100 % / 100 %<br/>graphql-js 71 % / 88 % |
+| AsyncAPI 2.6 and 3.0 (24 changes) | 100 % / 100 % | @asyncapi/diff 100 % / 25 %<br/>openapi-changes (3.0 only) 100 % / 83 % |
+| Protocol Buffers (17 changes, `FILE` level) | 100 % / 100 % | buf breaking 75 % of the breaking-side changes / 89 % |
+
+The [benchmark README](https://github.com/udamir/api-smart-diff/tree/master/benchmark#readme) explains how to run it and where each number comes from; the full reports are in [`benchmark/results/`](https://github.com/udamir/api-smart-diff/tree/master/benchmark/results).
 
 ## Contributing
 

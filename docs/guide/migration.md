@@ -1,6 +1,6 @@
 # Migration from 1.x
 
-2.0.0 is a redesign of the compare engine behind the same entry points: `apiCompare`, `compareOpenApi`, `compareAsyncApi`, `compareGraphApi`, `compareJsonSchema` and `compare` keep their signatures, `CompareResult` is still `{ diffs, merged, rootMergeMeta }`, `Diff.path` is still the path in the before document, merged metadata still lives under `metaKey` (default `$diff`, arrays on the parent as `{ array }` unless `arrayMeta`), and custom `rules` / `annotateHook` and the `ClassifyRule` tuple vocabulary still work. The full list of changes is in the [changelog](/changelog). 2.1.0 no longer reads GraphApi 0.1.2, the only GraphApi encoding 1.x compares: convert GraphQL schemas with gqlapi 0.6 or later (see step 4).
+2.0.0 is a redesign of the compare engine behind the same entry points: `apiCompare`, `compareOpenApi`, `compareAsyncApi`, `compareGraphApi`, `compareJsonSchema` and `compare` keep their signatures, `CompareResult` is still `{ diffs, merged, rootMergeMeta }`, `Diff.path` is still the path in the before document, merged metadata still lives under `metaKey` (default `$diff`, arrays on the parent as `{ array }` unless `arrayMeta`), and custom `rules` / `annotateHook` and the `ClassifyRule` tuple vocabulary still work. The full list of changes is in the [changelog](/changelog). 2.x reads GraphQL only in the GraphApi 1.0 encoding, not the GraphApi 0.1.2 encoding 1.x compares: convert GraphQL schemas with gqlapi 0.6 or later (see step 4).
 
 ## Checklist
 
