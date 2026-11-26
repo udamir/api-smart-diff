@@ -39,7 +39,8 @@ const merged = ref<"original" | "normalized">("original")
 const components = ref<"usage" | "unclassified">("usage")
 const engine = ref<"auto" | CompareEngineName>("auto")
 const compatibility = ref<ProtoApiCompatibility>("FILE")
-const tab = ref<"diffs" | "merged" | "errors">("diffs")
+// result tabs; "help" shows the instructions passed in the `help` slot
+const tab = ref<"diffs" | "merged" | "errors" | "help">("diffs")
 // the diffs tab as the table or as the raw `diffs` array in YAML
 const view = ref<"table" | "yaml">("table")
 const flash = ref("")
@@ -365,6 +366,16 @@ onMounted(async () => {
         >
           Errors <small>{{ errors.length }}</small>
         </button>
+        <button
+          v-if="$slots.help"
+          role="tab"
+          type="button"
+          :aria-selected="tab === 'help'"
+          :class="{ active: tab === 'help' }"
+          @click="tab = 'help'"
+        >
+          How to use
+        </button>
         <span class="tab-actions">
           <span v-if="live.busy.value && !empty" class="status" role="status">updating…</span>
           <span v-else-if="live.stale.value" class="status stale-label">stale</span>
@@ -389,43 +400,48 @@ onMounted(async () => {
         </span>
       </div>
 
-      <div v-if="live.inputError.value && !empty" class="input-error" role="alert">
-        <pre>{{ live.inputError.value }}</pre>
-        <p v-if="live.stale.value">
-          The result below is the last valid one (stale) and updates when both documents parse.
-        </p>
+      <div v-if="tab === 'help'" class="help vp-doc">
+        <slot name="help" />
       </div>
-      <p v-if="empty" class="placeholder">Enter a before and an after document.</p>
-      <p v-else-if="!comparison && !live.inputError.value" class="placeholder">Comparing…</p>
-      <pre v-else-if="comparison?.failure" class="error" role="alert">{{ comparison.failure }}</pre>
-      <div v-else-if="comparison" :class="{ stale: live.stale.value }" :aria-busy="live.busy.value">
-        <DiffResults
-          v-show="tab === 'diffs'"
-          v-model:view="view"
-          :diffs="diffs"
-          :locations="locations"
-          :engine="engineUsed"
-          :source-lines="sourceLines"
-          :selected="selected"
-          label="Diffs as YAML"
-          yaml-height="520px"
-          reportable
-          @report="report"
-          @select="(index) => (selected = selected === index ? undefined : index)"
-        />
-        <div v-if="tab === 'merged'" class="merged">
-          <p class="merged-note">
-            The after document with the change metadata under <code>$diff</code> (see
-            <a :href="withBase('/guide/result#merged-document')">the merged document</a>).
+      <div v-show="tab !== 'help'">
+        <div v-if="live.inputError.value && !empty" class="input-error" role="alert">
+          <pre>{{ live.inputError.value }}</pre>
+          <p v-if="live.stale.value">
+            The result below is the last valid one (stale) and updates when both documents parse.
           </p>
-          <CodeEditor :model-value="mergedText" :language="format" readonly label="Merged document" />
         </div>
-        <div v-else-if="tab === 'errors'" class="errors">
-          <p v-if="!errors.length" class="placeholder">
-            No errors. Classifier, description, <code>$ref</code>, transform and mapping errors would be listed here
-            (<code>options.onError</code>).
-          </p>
-          <pre v-else class="error">{{ errorLines(errors).join("\n") }}</pre>
+        <p v-if="empty" class="placeholder">Enter a before and an after document.</p>
+        <p v-else-if="!comparison && !live.inputError.value" class="placeholder">Comparing…</p>
+        <pre v-else-if="comparison?.failure" class="error" role="alert">{{ comparison.failure }}</pre>
+        <div v-else-if="comparison" :class="{ stale: live.stale.value }" :aria-busy="live.busy.value">
+          <DiffResults
+            v-show="tab === 'diffs'"
+            v-model:view="view"
+            :diffs="diffs"
+            :locations="locations"
+            :engine="engineUsed"
+            :source-lines="sourceLines"
+            :selected="selected"
+            label="Diffs as YAML"
+            yaml-height="520px"
+            reportable
+            @report="report"
+            @select="(index) => (selected = selected === index ? undefined : index)"
+          />
+          <div v-if="tab === 'merged'" class="merged">
+            <p class="merged-note">
+              The after document with the change metadata under <code>$diff</code> (see
+              <a :href="withBase('/guide/result#merged-document')">the merged document</a>).
+            </p>
+            <CodeEditor :model-value="mergedText" :language="format" readonly label="Merged document" />
+          </div>
+          <div v-else-if="tab === 'errors'" class="errors">
+            <p v-if="!errors.length" class="placeholder">
+              No errors. Classifier, description, <code>$ref</code>, transform and mapping errors would be listed here
+              (<code>options.onError</code>).
+            </p>
+            <pre v-else class="error">{{ errorLines(errors).join("\n") }}</pre>
+          </div>
         </div>
       </div>
     </section>
@@ -586,6 +602,12 @@ onMounted(async () => {
   gap: 4px;
   padding: 8px;
   border-bottom: 1px solid var(--vp-c-divider);
+}
+
+/* the "How to use" tab: the page's instructions, at a readable line length */
+.help {
+  padding: 8px 16px 16px;
+  max-width: var(--asd-prose-width);
 }
 
 .tabs [role="tab"] {
