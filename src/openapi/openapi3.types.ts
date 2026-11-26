@@ -18,4 +18,5 @@ export type OpenApi3SchemaRulesOptions = OpenApi3RulesOptions & {
   response?: boolean
 }
 
-export type OpenApiCompareOptions = CompareOptions & Omit<OpenApi3RulesOptions, "version">
+// the version and the profile come from the documents (force rules with `rules: openapi3Rules({ version })`)
+export type OpenApiCompareOptions = CompareOptions & Omit<OpenApi3RulesOptions, "version" | "profile">

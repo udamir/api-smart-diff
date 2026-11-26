@@ -279,7 +279,7 @@ describe("docs portal / share links", () => {
     const state = {
       before: petstore("string", "# ünïcödé ✓\n"),
       after: petstore("integer"),
-      options: { engine: "openapi" as const, merged: "normalized" as const, components: "unclassified" as const },
+      options: { engine: "openapi" as const, components: "unclassified" as const },
     }
     const hash = await encodeStateCompressed(state)
     expect(hash.startsWith("z.")).toBe(true)
@@ -299,12 +299,13 @@ describe("docs portal / share links", () => {
     const hash = await encodeStateCompressed({
       before: "a: 1\n",
       after: "a: 2\n",
-      options: { engine: "evil" as never, merged: "normalized", components: undefined },
+      // (`merged` is an option of earlier portal builds)
+      options: { engine: "evil" as never, merged: "normalized", components: "unclassified" } as never,
     })
     expect(await decodeStateAsync(hash)).toEqual({
       before: "a: 1\n",
       after: "a: 2\n",
-      options: { merged: "normalized" },
+      options: { components: "unclassified" },
     })
     // no options: the link has none either
     expect(await decodeStateAsync(await encodeStateCompressed({ before: "a", after: "b", options: {} }))).toEqual({

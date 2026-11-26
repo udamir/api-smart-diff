@@ -52,7 +52,6 @@ const stateOf = (ctx: CompareContext): UnchangedState => {
     const bRoot = ctx.before.root
     const aRoot = ctx.after.root
     const enabled =
-      ctx.options.merged !== "normalized" &&
       ctx.options.compareUnchanged !== true &&
       isObject(bRoot) &&
       isObject(aRoot) &&
@@ -239,9 +238,8 @@ const equalContainers = (
 /**
  * Whether two containers are unchanged: structurally equal, every `$ref` in them pointing at the same reference whose
  * targets are unchanged too, and both documents read with the same specification profile. Such a subtree yields no
- * diff and its merged value is the original after value, so the walk (rules, transforms, mapping) is skipped
- * (ISSUE-58). Disabled for `merged: "normalized"` (the merged value is the transformed one there) and with
- * `compareUnchanged: true` (custom rules that report on equal values, POLICY-58).
+ * diff and its merged value is the after value as written, so the walk (rules, transforms, mapping) is skipped
+ * (ISSUE-58). Disabled with `compareUnchanged: true` (custom rules that report on equal values, POLICY-58).
  */
 export const isUnchangedSubtree = (ctx: CompareContext, before: unknown, after: unknown): boolean =>
   checkUnchangedSubtree(ctx, before, after) === true

@@ -157,7 +157,8 @@ const childContext = (
 }
 
 /**
- * Value written into the merged document for a node: the original input value unless `merged: "normalized"`.
+ * Value written into the merged document for a node: the compared (normalized) value; the original input value for
+ * rule trees marked with `keepOriginalMerged`.
  * Containers are written by reference and remembered as aliases; they are copied once, by the nearest changed
  * ancestor (or at the root), so an unchanged subtree costs one copy instead of one per level.
  */
@@ -657,6 +658,50 @@ const reportRenamed = (
   return count
 }
 
+// whether the keys of `merged` follow the order of the after container (they all are after keys)
+const inAfterOrder = (keys: string[], order: string[]): boolean => {
+  let j = 0
+  for (let i = 0; i < keys.length; i++) {
+    while (j < order.length && order[j] !== keys[i]) {
+      j++
+    }
+    if (j === order.length) {
+      return false
+    }
+    j++
+  }
+  return true
+}
+
+// re-inserts the keys of a merged object in the order of the after container (in place: the parent holds it)
+const orderLikeAfter = (merged: Record<string, unknown>, after: Record<string | number, unknown>): void => {
+  const keys = Object.keys(merged)
+  if (keys.length < 2) {
+    return
+  }
+  const order = Object.keys(after)
+  if (inAfterOrder(keys, order)) {
+    return
+  }
+  // (a Map: a document key may be `__proto__`)
+  const values = new Map<string, unknown>()
+  for (let i = 0; i < keys.length; i++) {
+    values.set(keys[i], merged[keys[i]])
+    delete merged[keys[i]]
+  }
+  for (let i = 0; i < order.length; i++) {
+    const key = order[i]
+    if (values.has(key)) {
+      setKey(merged, key, values.get(key))
+      values.delete(key)
+    }
+  }
+  // (none expected: every merged key is an after key)
+  for (const [key, value] of values) {
+    setKey(merged, key, value)
+  }
+}
+
 const finishContainer = (frame: ContainerFrame): void => {
   const { ctx, before, after, merged, nodeMeta, added, removedNodes, slot, sink, diffCountBefore } = frame
   const { session } = ctx
@@ -675,6 +720,11 @@ const finishContainer = (frame: ContainerFrame): void => {
       frame.metaCount++
       push(sink, diff, child)
     }
+  }
+
+  // an object lists its keys in the after order: mapped keys were written in before order, added keys after them
+  if (!isArr) {
+    orderLikeAfter(merged as Record<string, unknown>, after)
   }
 
   // removed values: appended after the last after index for arrays, kept under their key for objects

@@ -6,6 +6,16 @@ import type { CompareOptions, CompareError, CompareSession, CompareSide, RefTarg
 import { isObject } from "../utils"
 import { DIFF_META_KEY } from "./constants"
 
+// rule trees whose merged document holds the original input values instead of the compared ones: the ProtoApi rules,
+// whose transforms write engine-internal carrier keys (not protobuf spellings) that must not reach `merged`
+const originalMergedRules = new WeakSet<object>()
+
+/** Marks a rule tree whose merged document holds the original input values (internal, used by `protoApiRules`). */
+export const keepOriginalMerged = <T extends object>(rules: T): T => {
+  originalMergedRules.add(rules)
+  return rules
+}
+
 const pointerToPath = (pointer: string): (string | number)[] => {
   if (!pointer) {
     return []
@@ -154,7 +164,7 @@ export const createSession = (options: CompareOptions = {}): CompareSession => {
     caches: new Map(),
     metaKey: options.metaKey ?? DIFF_META_KEY,
     arrayMeta: !!options.arrayMeta,
-    normalized: options.merged === "normalized",
+    normalized: !(isObject(options.rules) && originalMergedRules.has(options.rules)),
     annotateHook: options.annotateHook,
     unclassifiedComponents: options.components === "unclassified",
   }

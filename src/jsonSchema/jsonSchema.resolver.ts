@@ -202,9 +202,11 @@ export const combinaryCompareResolver: CompareResolver = (ctx) => {
       _contexts.push(compared.contexts[i])
     })
 
-    // the branch result may be a cached `$ref` result lent to this usage (`refsCompareResolver`): copied before
-    // the lifted keys are dropped, never changed in place
-    if (isObject(compared.merged) && !isArray(compared.merged) && options.merged !== "normalized") {
+    // with original merged values (`keepOriginalMerged`) a lifted keyword stays at the combinator's parent only: it is
+    // dropped from the branch (the compared branches hold it, as the normalized merged document does). The branch
+    // result may be a cached `$ref` result lent to this usage (`refsCompareResolver`): copied before the lifted keys
+    // are dropped, never changed in place
+    if (isObject(compared.merged) && !isArray(compared.merged) && !session.normalized) {
       const keys = Object.keys(compared.merged)
       const meta = (compared.merged as Record<string | symbol, unknown>)[metaKey as string]
       const metaKeys = isObject(meta) ? Object.keys(meta) : []

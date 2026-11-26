@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.0.2
+
+### Fixes
+
+- `merged` no longer mixes normalized and original values. A changed node holds the values the engine compared, as in 1.x, so every diff path points at a node of `merged`; an unchanged subtree is the after value as written. In 2.0.1 a changed parameter showed `style` / `explode` that neither document has, a changed `allOf` appeared both merged and as written, and a changed path-level parameter appeared at the path and in every operation.
+- The `merged` option is removed: remove `merged: "original"` / `merged: "normalized"` from your options.
+- Merged objects list the after keys in the after order; 2.0.1 put added keys after the existing ones.
+- With `arrayMeta: true`, array metadata appears at every usage of a changed `$ref` target; 2.0.1 dropped it after the first usage.
+- `compareOpenApi` options no longer accept `profile`, which had no effect; pass `rules: openapi3Rules({ version })` to force a version.
+- A response or encoding header renamed by case only reads "[Renamed] header `X-Rate` to `x-rate` in Response 200", and a response code "[Renamed] Response `2xx` to `2XX`".
+
 ## 2.0.1
 
 ### Fixes

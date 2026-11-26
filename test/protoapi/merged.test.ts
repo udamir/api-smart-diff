@@ -108,11 +108,11 @@ describe("Block J13 — ProtoApi merged document and locations", () => {
     expect(Object.keys(meta).sort()).toEqual(["exclusiveMinimum", "minLength", "type"])
   })
 
-  it('J13.8 `merged: "normalized"` shows the shadow values (the shape carrier spelling)', () => {
-    const { merged } = compare(p3("message M { int32 n = 1; }"), p3("message M { int64 n = 1; }"), {
-      merged: "normalized",
-    })
-    expect(merged.components.messages["p.M"].properties.n.type).toBe("int64")
+  // 2.0.2: the `merged` option is removed; a ProtoApi merged document always holds the original after values
+  it("J13.8 a changed field shows the original after field, not the shape carrier", () => {
+    const { merged, docs } = compare(p3("message M { int32 n = 1; }"), p3("message M { int64 n = 1; }"))
+    const field = merged.components.messages["p.M"].properties.n
+    expect(JSON.parse(JSON.stringify(field))).toEqual((docs.after as Any).components.messages["p.M"].properties.n)
   })
 
   it("J13.9 locateDiff gives a location for every record of the J5 fixtures", () => {

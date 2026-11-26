@@ -164,6 +164,30 @@ export const joinPath = (base: JsonPath, ...items: JsonPath[]): JsonPath => {
   return result
 }
 
+// the keys of an array besides its items: merge meta (`arrayMeta: true` writes it on the array, under a string or a
+// symbol key) must survive the copy
+const copyArrayExtras = (value: unknown[], result: unknown[], copy: (item: object) => unknown): void => {
+  const symbols = Object.getOwnPropertySymbols(value)
+  for (let i = 0; i < symbols.length; i++) {
+    const item = (value as unknown as Record<symbol, unknown>)[symbols[i]]
+    ;(result as unknown as Record<symbol, unknown>)[symbols[i]] =
+      typeof item === "object" && item !== null ? copy(item) : item
+  }
+  // a dense array without other keys lists exactly its indexes
+  const keys = Object.keys(value)
+  if (keys.length === value.length) {
+    return
+  }
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i]
+    if (String(Number(key) >>> 0) === key && Number(key) < value.length) {
+      continue
+    }
+    const item = (value as unknown as Record<string, unknown>)[key]
+    ;(result as unknown as Record<string, unknown>)[key] = typeof item === "object" && item !== null ? copy(item) : item
+  }
+}
+
 // a copy deeper than this is assumed to be a cyclic graph and redone with identity tracking
 const MAX_COPY_DEPTH = 512
 const TOO_DEEP = Symbol("too-deep")
@@ -178,6 +202,7 @@ const copyTree = (value: object, depth: number): unknown => {
       const item = value[i]
       result[i] = typeof item === "object" && item !== null ? copyTree(item, depth + 1) : item
     }
+    copyArrayExtras(value, result, (item) => copyTree(item, depth + 1))
     return result
   }
   const result: Record<string | symbol, unknown> = {}
@@ -232,6 +257,7 @@ const deepCopyGraph = <T>(value: T, copies: WeakMap<object, unknown>): T => {
     for (const item of value) {
       result.push(deepCopyGraph(item, copies))
     }
+    copyArrayExtras(value, result, (item) => deepCopyGraph(item, copies))
     return result as T
   }
   const result: Record<string | symbol, unknown> = {}

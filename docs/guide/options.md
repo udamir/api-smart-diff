@@ -18,7 +18,6 @@ type CompareOptions = {
 
   onError?: (error: CompareError) => void   // receives errors; without it they are returned in `errors`
   components?: "usage" | "unclassified"     // classification of components.* (default "usage")
-  merged?: "original" | "normalized"        // content of `merged` (default "original")
   compareUnchanged?: boolean                // walk structurally equal subtrees too (default false)
   engine?: "openapi" | "asyncapi" | "graphapi" | "protoapi" | "jsonschema" // force an engine in apiCompare
 }
@@ -29,7 +28,6 @@ type CompareOptions = {
 | [`engine`](#engine) | detected | force an engine instead of `detectSpec` |
 | [`onError`](#onerror) | collect | receive every `CompareError`; without it errors are returned in `result.errors` |
 | [`externalSources`](#externalsources) | none | documents for external `$ref`s, keyed by URI, per side |
-| [`merged`](#merged) | `"original"` | `"normalized"` returns the normalized comparison values in `merged` |
 | [`components`](#components) | `"usage"` | `"unclassified"` leaves every diff inside `components.*` unclassified |
 | [`compareUnchanged`](#compareunchanged) | `false` | walk structurally equal subtrees too (for custom rules) |
 | [`extensions`](#extensions) | built-in `"/x-*"` rule | custom rules for `x-*` keys |
@@ -83,17 +81,13 @@ const { diffs } = apiCompare(before, after, {
 
 See the [external sources example](/examples/#external-ref-resolved-from-externalsources). For multi-file documents, bundling them first ([api-ref-bundler](https://github.com/udamir/api-ref-bundler)) is the alternative.
 
-## merged
-
-`merged: "original"` (the default) builds the merged document from the original input values: the after-side value for mapped and added nodes, the before-side value for removed nodes, deep-copied. `merged: "normalized"` returns the values the engine compared instead — path-level parameters moved into operations, defaults made explicit, `example` → `examples`, `const` → `enum`, merged `allOf`, … — which is the 1.x output. See [Result § Merged document](./result#merged-document).
-
 ## components
 
 `components: "usage"` (the default) classifies every change inside `components.*` by the places that reference the component: a schema used only in responses gets response semantics, one used in both directions takes the most severe class, and an unreferenced component is `unclassified`. `components: "unclassified"` opts out and leaves every component diff unclassified (the usage locations are still classified in their own scope). See [Components and $ref](./components).
 
 ## compareUnchanged
 
-A subtree that is structurally equal in both documents, whose `$ref`s point at unchanged targets, cannot produce a diff with the built-in rules, so the engine copies it into `merged` without walking it — no transform, `compare` resolver or mapping resolver runs inside it. A custom rule set whose resolvers report diffs on equal values (a lint-like rule that flags a missing `operationId` in every operation, for example) sets `compareUnchanged: true` to have such subtrees walked too. The result of the built-in rule sets is the same either way; the option only costs time. `merged: "normalized"` always walks every subtree.
+A subtree that is structurally equal in both documents, whose `$ref`s point at unchanged targets, cannot produce a diff with the built-in rules, so the engine copies it into `merged` without walking it — no transform, `compare` resolver or mapping resolver runs inside it. A custom rule set whose resolvers report diffs on equal values (a lint-like rule that flags a missing `operationId` in every operation, for example) sets `compareUnchanged: true` to have such subtrees walked too. The diffs of the built-in rule sets are the same either way, and the option costs time; walked subtrees are written to `merged` with their compared (normalized) values.
 
 ## extensions
 

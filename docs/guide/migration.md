@@ -13,7 +13,7 @@
 | every internal helper exported from the package (`getKeyValue`, `isObject`, `buildPath`, the per-specification classifiers, mapping resolvers, transforms and annotation helpers, `transfromGraphSchemaDirective`, …) | only the documented API is exported (see the [API reference](./api)); use `detectSpec(document).engine` instead of `discoverCompareEngine`, `NodeContext.up` instead of `getParentContext`, and spread a built-in rule node to reuse its resolvers |
 | annotation template keys `arratItem`, `difinition`, `possbile` | `arrayItem`, `definition`, `possible` |
 | five diff types | six: `risky` is new — add a branch to every exhaustive `switch`, `Record<DiffType, …>` map, colour map and filter (treat it as breaking for a strict gate, as non-breaking for a changelog) |
-| `merged` is the normalized tree, sharing objects with the inputs and the `$ref` cache | `merged` holds the original input values (after side for mapped and added nodes, before side for removed ones), deep-copied; an unchanged `$ref` stays a `$ref`; `merged: "normalized"` restores the 1.x content |
+| `merged` is the normalized tree, sharing objects with the inputs and the `$ref` cache | `merged` is deep-copied, never sharing objects with the inputs; a changed node holds the normalized values, as in 1.x; an unchanged subtree is the after value as written, and an unchanged `$ref` stays a `$ref` |
 | merged arrays in before order | merged arrays in after order with removed items appended (objects: after keys first, removed keys last); array meta keyed by the merged position |
 | unsupported documents diffed as plain JSON Schema | `UnsupportedSpecError` (Swagger 2, OpenAPI 4+, AsyncAPI 1.x / 4+, GraphApi versions other than 1.x, two different specifications); `options.engine` forces an engine |
 | GraphApi 0.1.2 documents (`graphapi: 0.1.2`, written by gqlapi 0.5 and earlier) | GraphApi 1.0 documents (`graphapi: "1.0"`, written by gqlapi 0.6 and later); a 0.1.2 document throws `UnsupportedSpecError` |
@@ -72,7 +72,7 @@ GraphApi 0.1.2 documents throw as well ("GraphApi 0.1.2 is not supported: conver
 
 ### 5. Check the merged document
 
-If your code relied on the normalized content of `merged` (path-level parameters inside operations, `examples` instead of `example`, merged `allOf`), pass `merged: "normalized"`. If it walked merged arrays by before index, note that they follow the after order now.
+Where something changed, `merged` holds the normalized content as in 1.x (path-level parameters inside operations, `examples` instead of `example`, merged `allOf`); an unchanged part is the after document as written, and an unchanged `$ref` is no longer expanded. If your code walked merged arrays by before index, note that they follow the after order now.
 
 ### 6. Update description matching
 

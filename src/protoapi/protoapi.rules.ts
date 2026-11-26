@@ -10,6 +10,7 @@ import {
   excludeExtensions,
   extensionChangeAnnotation,
   extensionRules,
+  keepOriginalMerged,
   mergeExtensionRules,
 } from "../core"
 import {
@@ -652,7 +653,8 @@ export const protoApiRules = (options: ProtoApiRulesOptions = {}): CompareRules 
     $: declarationRule(at("X-1"), at("X-2"), at("X-6"), at("U3")),
   }
 
-  return {
+  // the merged document holds the original after values: the transforms write carrier keys that are not protobuf
+  return keepOriginalMerged({
     // A2, A5, A6: package, file and group renames re-key the before shadow, in this order, before any element
     transform: [createFields(...protoApiRootFields), packageRenameTransform, fileRenameTransform, groupRenameTransform],
     impliedReferences: impliedExtendeeReferences,
@@ -674,5 +676,5 @@ export const protoApiRules = (options: ProtoApiRulesOptions = {}): CompareRules 
       "/**": { $: allUnclassified },
     },
     "/**": { $: allUnclassified },
-  }
+  })
 }

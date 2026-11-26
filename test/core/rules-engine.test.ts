@@ -126,8 +126,9 @@ describe("Block A5 — rules resolution and custom rule hooks", () => {
       expect(diffs).toMatchObject([{ path: ["a", "b"], type: breaking }])
     })
 
-    // DESIGN_PROPOSALS §11.1: `merged` holds the original input values; `merged: "normalized"` keeps the transformed ones
-    it("A5.8 transforms run before comparison and the merged document holds the original after value", () => {
+    // 2.0.2: `merged` holds the compared (transformed) value of a changed node (the `merged` option is removed); an
+    // unchanged subtree is written as the after value
+    it("A5.8 transforms run before comparison and the merged document holds the transformed after value", () => {
       const rules: CompareRules = {
         "/a": { transform: [(b, a) => [String(b).toLowerCase(), String(a).toLowerCase()]], $: allBreaking },
       }
@@ -137,10 +138,7 @@ describe("Block A5 — rules resolution and custom rule hooks", () => {
 
       const upper = compare({ a: "A" }, { a: "B" }, { rules })
       expect(upper.diffs).toMatchObject([{ before: "a", after: "b" }])
-      expect(upper.merged.a).toBe("B")
-
-      const normalized = compare({ a: "A" }, { a: "B" }, { rules, merged: "normalized" })
-      expect(normalized.merged.a).toBe("b")
+      expect(upper.merged.a).toBe("b")
     })
 
     it("A5.9 (characterization) transforms are skipped when the before value is an array", () => {

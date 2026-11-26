@@ -78,6 +78,7 @@ export interface CompareSession {
   // reading it in the walk keeps the walk's property caches from settling (ISSUE-191)
   metaKey: string | symbol
   arrayMeta: boolean
+  // merged nodes hold the compared (normalized) values; false for rule trees marked with `keepOriginalMerged`
   normalized: boolean
   annotateHook: AnnotateHook | undefined
   unclassifiedComponents: boolean

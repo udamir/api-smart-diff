@@ -308,7 +308,7 @@ export const diffsYaml = (diffs: readonly Diff[]): string => {
 // ---- shareable demo state ---------------------------------------------------------------------------------------
 
 /** The demo options a share link restores (the demo selects) */
-export type DemoOptions = Pick<CompareOptions, "engine" | "merged" | "components"> & {
+export type DemoOptions = Pick<CompareOptions, "engine" | "components"> & {
   /** ProtoApi documents only */
   compatibility?: ProtoApiCompatibility
 }
@@ -334,7 +334,6 @@ const fromBase64 = (text: string): Uint8Array => {
 
 const DEMO_OPTION_VALUES: { [K in keyof DemoOptions]-?: readonly string[] } = {
   engine: ["openapi", "asyncapi", "graphapi", "protoapi", "jsonschema"],
-  merged: ["original", "normalized"],
   components: ["usage", "unclassified"],
   compatibility: PROTO_LEVELS,
 }

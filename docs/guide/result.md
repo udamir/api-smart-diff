@@ -37,10 +37,9 @@ type Diff = {
 
 `merged` is one document that holds both versions: the after document, plus the nodes that were removed, with change metadata next to every changed node.
 
-- Values are the **original input values**: the after-side value for mapped and added nodes, the before-side value for removed nodes. They are deep-copied, so `merged` never aliases an input, and an unchanged document comes back unchanged.
-- A removed object key stays in place (after the after keys); a removed array item is appended after the last after item. Arrays follow the **after** order.
+- A node that changed, or holds a change, has the **values the engine compared**: the after-side value for mapped and added nodes, the before-side value for removed nodes, normalized as for the comparison (path-level parameters moved into the operations, defaults such as parameter `style` / `explode` made explicit, `example` read as `examples`, `const` as a one-value `enum`, `allOf` merged), so the path of every diff points at a node of `merged`. An unchanged subtree (equal in both documents) is the after value as written, and an unchanged document comes back unchanged. Values are deep-copied, so `merged` never aliases an input. ProtoApi documents keep the original after values everywhere.
+- Objects list their keys in the **after** order, removed keys last; a removed array item is appended after the last after item. Arrays follow the **after** order.
 - An unchanged `$ref` stays a `$ref`. A `$ref` whose target changed is inlined at the usage, because the metadata needs the resolved subtree.
-- `options.merged: "normalized"` returns the values the engine compared instead (path-level parameters moved into operations, explicit defaults, `examples`, `enum`, merged `allOf`, …).
 
 ### Metadata
 

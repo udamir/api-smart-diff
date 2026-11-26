@@ -135,7 +135,7 @@ An exact key overrides a built-in option rule; a shorter prefix never shadows a 
 | `files` | `"compare"` | `"ignore"` makes file paths, file-level statements and the declaring file of every element annotations, for inputs whose file paths carry no meaning (generated or flattened trees); the package of a file keeps its class |
 | `optionRules` | built-in option rules | rules for option keys, merged over the built-in rules of every element (above) |
 
-The common options (`onError`, `merged`, `components`, `metaKey`, `rules`, `annotateHook`, …) work as for the other specifications, see [Options](./options). `protoApiRules({ compatibility, files, optionRules })` builds the default rule tree for a level, which custom `rules` can extend.
+The common options (`onError`, `components`, `metaKey`, `rules`, `annotateHook`, …) work as for the other specifications, see [Options](./options); `merged` holds the original after values (the internal normalized values are not protobuf). `protoApiRules({ compatibility, files, optionRules })` builds the default rule tree for a level, which custom `rules` can extend.
 
 ## Tolerant readers
 

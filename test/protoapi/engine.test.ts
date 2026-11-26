@@ -263,11 +263,9 @@ describe("Block J1 — ProtoApi engine", () => {
     const { before, after } = protoDocs(richSources, changed)
     const snapshot = JSON.stringify([before, after])
     for (const compatibility of levels) {
-      for (const merged of ["original", "normalized"] as const) {
-        const result = protoCompare(before, after, { compatibility, merged })
-        expect(result.diffs.length).toBeGreaterThan(0)
-        protoCompare(after, before, { compatibility, merged })
-      }
+      const result = protoCompare(before, after, { compatibility })
+      expect(result.diffs.length).toBeGreaterThan(0)
+      protoCompare(after, before, { compatibility })
     }
     expect(JSON.stringify([before, after])).toBe(snapshot)
   })

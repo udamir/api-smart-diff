@@ -103,10 +103,11 @@ describe("schema with combinary", () => {
       expect(diff.type).not.toEqual("unclassified")
     })
 
-    // sibling keywords (type, required: [id]) stay at the schema level in merged; the branches hold their original
-    // content plus the compared `required` list in after order with the removed name appended (§11.1, §11.2)
-    expect(merged).toMatchObject({ type: "object", required: ["id"] })
+    // 2.0.2: merged holds the compared values: the sibling keywords (type, required: [id]) are lifted into the
+    // branches, and the `required` lists are in after order with the removed name appended (§11.2)
+    expect(Object.keys(merged)).toEqual(["oneOf"])
     expect(merged.oneOf[0]).toMatchObject({
+      type: "object",
       title: "Title",
       required: ["id", "foo"],
       properties: {
@@ -115,6 +116,7 @@ describe("schema with combinary", () => {
       },
     })
     expect(merged.oneOf[1]).toMatchObject({
+      type: "object",
       title: "Title2",
       required: ["name", "id"],
       properties: {

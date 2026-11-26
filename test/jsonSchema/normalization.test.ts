@@ -179,7 +179,8 @@ describe("Block B8 — boolean and unsatisfiable schemas (allof-merge 1.0)", () 
     expect(request.diffs).toMatchObject([
       { path: ["properties", "a"], action: "replace", after: false, type: breaking },
     ])
-    expect(request.merged.properties.a).toEqual(after.properties.a)
+    // 2.0.2: merged holds the compared value of a changed node, the merged allOf (here the contradiction `false`)
+    expect(request.merged.properties.a).toBe(false)
 
     const response = compareJsonSchema(before, after, { metaKey, rules: responseRules })
     expect(response.diffs).toMatchObject([{ path: ["properties", "a"], type: nonBreaking }])

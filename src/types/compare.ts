@@ -89,9 +89,6 @@ export type CompareOptions = {
   // classification of `components.*` diffs: derived from the scopes that reference the component (default) or unclassified
   components?: "usage" | "unclassified"
 
-  // merged document content: original values from the inputs (default) or the normalized comparison values
-  merged?: "original" | "normalized"
-
   // walk structurally equal subtrees too (default false: a subtree that is structurally equal, with unchanged `$ref`
   // targets, is written to `merged` without invoking any rule). Set it for custom rule sets whose `compare` resolvers,
   // transforms or mapping resolvers report diffs on equal values (POLICY-58). The built-in rule sets give the same

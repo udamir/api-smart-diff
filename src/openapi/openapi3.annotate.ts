@@ -132,6 +132,9 @@ const openApiAnnotations = {
   encodingPart: "encoding `{{part}}`",
   encodingIn: "encoding `{{part}}` in {{content}}",
   renamedKey: "`{{before}}` to `{{after}}`",
+  // a header renamed by case only (header names are case-insensitive)
+  renamedHeader: "header `{{before}}` to `{{after}}` in {{target}}",
+  renamedResponse: "Response `{{before}}` to `{{after}}`",
   // an entry renamed with every reference repointed (ISSUE-78, POLICY-101)
   renamedComponent: "{{kind}} component `{{before}}` to `{{after}}`",
   renamedScheme: "security scheme `{{before}}` to `{{after}}` in {{target}}",
@@ -739,10 +742,7 @@ export const responseChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) =>
   const key = path[path.length - 1]
 
   if (action === "rename") {
-    return t(action, {
-      text: t("response", { responseCode: diff.before }),
-      target: t("renamedKey", { before: diff.before, after: diff.after }),
-    })
+    return t(action, { text: t("renamedResponse", { before: diff.before, after: diff.after }) })
   }
   if (responseCode === undefined || String(key) === responseCode) {
     return t(action, { text: t("response", { responseCode: responseCode ?? key }) })
@@ -953,6 +953,15 @@ export const headerChangeAnnotation: ChangeAnnotationResolver = (diff, ctx) => {
   const location = locateOpenApiNode(ctx)
   const key = path[path.length - 1]
 
+  // a header renamed by case only: reported at its headers map
+  if (action === "rename") {
+    const { encodingPart, responseCode } = location
+    const target =
+      encodingPart !== undefined
+        ? t("encodingIn", { part: encodingPart, content: encodingContent(location) })
+        : t("response", { responseCode, responseFrom: renamedFromOf(location, "responses") })
+    return t(action, { text: t("renamedHeader", { before: diff.before, after: diff.after, target }) })
+  }
   if (key === location.headerName) {
     return t(action, { text: headerTarget(location) })
   }

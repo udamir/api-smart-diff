@@ -35,7 +35,6 @@ const preset = ref<string>(PRESETS[0].id)
 const before = ref("")
 const after = ref("")
 const format = ref<TextFormat>("yaml")
-const merged = ref<"original" | "normalized">("original")
 const components = ref<"usage" | "unclassified">("usage")
 const engine = ref<"auto" | CompareEngineName>("auto")
 const compatibility = ref<ProtoApiCompatibility>("FILE")
@@ -59,9 +58,6 @@ watch(preset, loadPreset)
 
 const options = computed<CompareOptions>(() => {
   const result: CompareOptions = {}
-  if (merged.value !== "original") {
-    result.merged = merged.value
-  }
   if (components.value !== "usage") {
     result.components = components.value
   }
@@ -217,7 +213,6 @@ onMounted(async () => {
   after.value = state.after
   format.value = formatOf(state.before)
   engine.value = state.options?.engine ?? "auto"
-  merged.value = state.options?.merged ?? "original"
   components.value = state.options?.components ?? "usage"
   compatibility.value = state.options?.compatibility ?? "FILE"
 })
@@ -265,13 +260,6 @@ onMounted(async () => {
           <option v-for="level in PROTO_LEVELS" :key="level" :value="level" :title="PROTO_LEVEL_HINTS[level]">
             {{ level }}
           </option>
-        </select>
-      </label>
-      <label title="options.merged: original input values or the normalized comparison values">
-        merged
-        <select v-model="merged">
-          <option value="original">original</option>
-          <option value="normalized">normalized</option>
         </select>
       </label>
       <label title="options.components: classify components.* by their usages, or leave them unclassified">
