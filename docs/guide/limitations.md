@@ -39,3 +39,5 @@ Protocol Buffers (new in 2.0.0), compared with `buf breaking` 1.75.0 on the same
 The time of a ProtoApi comparison is the same at every compatibility level.
 
 The heap added by a comparison is about the size of the input, and response rules cost the same as request rules.
+
+The measurements come from the benchmark project in the repository's [`benchmark/`](https://github.com/udamir/api-smart-diff/tree/master/benchmark) folder, which compares api-smart-diff with the published 1.0.6, the Netcracker api-diff fork and other diff tools (oasdiff, openapi-changes, openapi-diff, json-schema-diff, @asyncapi/diff, graphql-inspector, graphql-js, buf breaking) on classification quality, speed and memory. Its [README](https://github.com/udamir/api-smart-diff/tree/master/benchmark#readme) explains how to run it and which report each number comes from.

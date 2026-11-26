@@ -57,7 +57,15 @@ export default defineConfig({
     },
   },
   lint: {
-    ignorePatterns: ["dist/**", "coverage/**", "temp/**", "docs/.vitepress/cache/**", "docs/.vitepress/dist/**"],
+    // benchmark/ is an independent project with its own package.json, dependencies and tooling
+    ignorePatterns: [
+      "dist/**",
+      "coverage/**",
+      "temp/**",
+      "benchmark/**",
+      "docs/.vitepress/cache/**",
+      "docs/.vitepress/dist/**",
+    ],
     options: {
       typeAware: true,
       typeCheck: true,
@@ -68,6 +76,7 @@ export default defineConfig({
       "dist/**",
       "coverage/**",
       "temp/**",
+      "benchmark/**",
       "pnpm-lock.yaml",
       "docs/.vitepress/cache/**",
       "docs/.vitepress/dist/**",
