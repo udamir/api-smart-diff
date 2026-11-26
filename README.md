@@ -201,6 +201,10 @@ if (risky.length) console.warn(risky.map((diff) => diff.description).join("\n"))
 
 AsyncAPI 2.x cannot be compared with 3.0, nor GraphApi 0.1.2 with 1.0; external `$ref`s are resolved only from `externalSources`; AsyncAPI payloads in non-JSON-Schema formats (Avro, RAML, Protobuf) are compared as opaque values. Protocol Buffers: both documents must be built with the same protoapi version and options, renamed messages and enums are a removal plus an addition, and additions to responses assume ProtoJSON readers that ignore unknown fields. See [Limitations](https://udamir.github.io/api-smart-diff/guide/limitations).
 
+## Benchmark
+
+The [`benchmark/`](https://github.com/udamir/api-smart-diff/tree/master/benchmark) folder is a self-contained project that compares api-smart-diff with the published 1.0.6, the Netcracker api-diff fork and other diff tools (oasdiff, openapi-changes, openapi-diff, json-schema-diff, @asyncapi/diff, graphql-inspector, graphql-js, buf breaking) on OpenAPI, JSON Schema, AsyncAPI, GraphQL and Protocol Buffers inputs, measuring classification quality, speed and memory. Its [README](https://github.com/udamir/api-smart-diff/tree/master/benchmark#readme) explains how to run it, and the rendered reports are in [`benchmark/results/`](https://github.com/udamir/api-smart-diff/tree/master/benchmark/results).
+
 ## Contributing
 
 Issues and pull requests are welcome; see [Contributing](https://udamir.github.io/api-smart-diff/guide/contributing). Run `pnpm run check && pnpm test` before submitting a pull request, and include tests for your change. The project avoids new runtime dependencies.

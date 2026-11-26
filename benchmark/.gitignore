@@ -1,0 +1,11 @@
+# installed, fetched and generated (npm install, npm run fetch / build / fixtures)
+node_modules/
+bin/
+build/
+sources/
+fixtures/cache/
+fixtures/vendor/*
+!fixtures/vendor/sources.json
+# raw results and scratch runs; only the rendered reports results/*.md are committed
+results/*/
+.work/
