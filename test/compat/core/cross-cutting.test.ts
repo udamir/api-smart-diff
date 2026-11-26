@@ -157,7 +157,7 @@ const cases: CompatCase[] = [
     before: "Query.root: T0; ring T0..T7, each type with 2 fields to the next types and `extra: Int`",
     after: "T7.extra removed",
     rationale:
-      "one declaration changed; GraphApi 0.1.2 inlines object types at every usage, so the change is re-reported inside every type on every acyclic path to T7 (hundreds of diffs for 8 types, growing exponentially; the GitHub schema does not finish), while the 1.0 encoding reports it once",
+      "one declaration changed; a usage of a named type is nominal, so the change is reported once, at the declaration, not re-reported inside every type on every acyclic path to T7 (hundreds of diffs for 8 types, growing exponentially)",
     annotation: "names the type and the field (T7, extra)",
     sources: [
       {
@@ -167,14 +167,11 @@ const cases: CompatCase[] = [
       { tool: "graphql-inspector", ref: "FIELD_REMOVED", verdict: "1 change" },
     ],
     sdl: [ring(8, 2), ring(8, 2, 7)],
-    // plan P3 / ISSUE-53: GraphApi 0.1.2 usages are nominal like 1.0 `typeDef`s (the walk stops at a named type), so
-    // the change is reported once, at the declaration, in both encodings; the former 0.1.2 expectation also listed the
-    // inlined usage sites under `queries/root/**`
+    // plan P3 / ISSUE-53: the walk stops at a named type, so the change is reported once, at the declaration
     expect: [
       { at: "components/objects/T7/**/extra", action: "remove", type: breaking, mentions: ["T7", "extra"], count: 1 },
     ],
-    // ISSUE-53 (fixed): 1 diff instead of 88; the 0.1.2 description reads "annotation (extra)" without the type, ISSUE-127
-    // ISSUE-127 (fixed) (P8a)
+    // ISSUE-53 (fixed): 1 diff instead of 88; ISSUE-127 (fixed) (P8a)
   },
   {
     kind: "doc",

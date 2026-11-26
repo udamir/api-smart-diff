@@ -42,7 +42,7 @@ describe("GraphQL directives", () => {
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    // ISSUE-53 (fixed): GraphApi 0.1.2 usages of a named type are nominal; the change is reported once, at the declaration (the count included the inlined usage site)
+    // ISSUE-53 (fixed): usages of a named type are nominal; the change is reported once, at the declaration
     expect(diffs.length).toEqual(4)
     diffs.forEach((diff) => {
       if (diff.type !== "unclassified") {
@@ -83,7 +83,7 @@ describe("GraphQL directives", () => {
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    // ISSUE-53 (fixed): GraphApi 0.1.2 usages of a named type are nominal; the change is reported once, at the declaration (the count included the inlined usage site)
+    // ISSUE-53 (fixed): usages of a named type are nominal; the change is reported once, at the declaration
     expect(diffs.length).toEqual(2)
   })
 
@@ -120,7 +120,7 @@ describe("GraphQL directives", () => {
 
     const { diffs, merged } = compareGraphApi(before, after, { metaKey })
 
-    // ISSUE-53 (fixed): GraphApi 0.1.2 usages of a named type are nominal; the change is reported once, at the declaration (the count included the inlined usage site)
+    // ISSUE-53 (fixed): usages of a named type are nominal; the change is reported once, at the declaration
     expect(diffs.length).toEqual(6)
   })
 })

@@ -1399,61 +1399,6 @@ components:
       { type: "risky", action: "add", path: "/components/enums/Genre/values/POETRY", scope: "components" },
     ],
   },
-  {
-    id: "graphapi-012",
-    title: "GraphApi 0.1.2 documents",
-    spec: "graphapi",
-    group: "GraphQL (GraphApi)",
-    summary:
-      "Documents written by gqlapi 0.5 and earlier (`graphapi: 0.1.2`) are compared with their own rule set and get the same verdicts as 1.0 documents. A field type changed from `String` to `Int` is breaking.",
-    before: `graphapi: 0.1.2
-queries:
-  book:
-    args:
-      type: object
-      properties:
-        id:
-          type: string
-          format: ID
-      required: [id]
-    $ref: "#/components/objects/Book"
-components:
-  objects:
-    Book:
-      title: Book
-      type: object
-      properties:
-        title:
-          type: string
-        year:
-          type: string
-`,
-    after: `graphapi: 0.1.2
-queries:
-  book:
-    args:
-      type: object
-      properties:
-        id:
-          type: string
-          format: ID
-      required: [id]
-    $ref: "#/components/objects/Book"
-components:
-  objects:
-    Book:
-      title: Book
-      type: object
-      properties:
-        title:
-          type: string
-        year:
-          type: integer
-`,
-    expected: [
-      { type: "breaking", action: "replace", path: "/components/objects/Book/properties/year", scope: "components" },
-    ],
-  },
 
   // ---------------------------------------------------------------------------------------------------------------
   // Protocol Buffers (ProtoApi): `.proto` sources built with protoapi in the browser, compared at four levels

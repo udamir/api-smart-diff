@@ -28,8 +28,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_ADDED", "gjs:OPTIONAL_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-002",
@@ -55,8 +55,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_ADDED", "gjs:OPTIONAL_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-003",
@@ -77,8 +77,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js Q3" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-004",
@@ -103,8 +103,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_ADDED", "gjs:OPTIONAL_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ARG-005",
@@ -124,8 +124,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ARG-006",
@@ -146,8 +146,8 @@
       }
     ],
     "covers": ["gi:FIELD_ADDED", "gi:FIELD_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/posts", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/posts", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-007",
@@ -170,8 +170,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-008",
@@ -197,8 +197,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_REMOVED", "gjs:ARG_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-009",
@@ -229,8 +229,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-010",
@@ -266,8 +266,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-011",
@@ -293,8 +293,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-012",
@@ -314,8 +314,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-013",
@@ -335,8 +335,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-014",
@@ -360,8 +360,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-015",
@@ -385,8 +385,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-016",
@@ -410,8 +410,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-017",
@@ -435,8 +435,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-018",
@@ -461,21 +461,11 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      {
-        "at": "components/inputObjects/FilterA",
-        "action": "remove",
-        "optional": true,
-        "type": { "0.1.2": "B", "1.0": "B" }
-      },
-      {
-        "at": "components/inputObjects/FilterB",
-        "action": "add",
-        "optional": true,
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**"], "type": { "1.0": "B" } },
+      { "at": "components/inputObjects/FilterA", "action": "remove", "optional": true, "type": { "1.0": "B" } },
+      { "at": "components/inputObjects/FilterB", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -494,11 +484,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/argument.ts FIELD_ARGUMENT_TYPE_CHANGED" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/args/**/title", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/enums/Order", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/search/args/**"], "type": { "1.0": "B" } },
+      { "at": "components/enums/Order", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -516,16 +505,10 @@
       { "tool": "fork", "ref": "test/graphapi.diff.test.ts new types in arguments: built-in scalar -> object" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/args/**/title", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      {
-        "at": "components/inputObjects/SearchFilter",
-        "action": "add",
-        "optional": true,
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**"], "type": { "1.0": "B" } },
+      { "at": "components/inputObjects/SearchFilter", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -554,8 +537,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED", "gjs:ARG_DEFAULT_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ARG-022",
@@ -589,8 +572,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED", "gjs:ARG_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ARG-023",
@@ -619,8 +602,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED", "gjs:ARG_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ARG-024",
@@ -650,8 +633,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-025",
@@ -682,8 +665,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-026",
@@ -712,8 +695,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ARG-027",
@@ -737,8 +720,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED", "gjs:ARG_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ARG-028",
@@ -766,7 +749,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -784,7 +767,7 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/input.test.ts fields order changed" }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -805,10 +788,10 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_REMOVED", "gi:FIELD_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/args/**/term", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "queries/search/args/**/query", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search/args/**/term", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "queries/search/args/**/query", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -831,8 +814,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_ADDED", "gjs:REQUIRED_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/posts/**"], "action": "add", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["**/posts/**"], "action": "add", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-032",
@@ -847,8 +830,8 @@
     "annotation": "names the type, the field and the argument (User.posts first)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/object.test.ts arguments added" }],
     "covers": ["gi:FIELD_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/posts/**"], "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["**/posts/**"], "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ARG-033",
@@ -869,8 +852,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_REMOVED", "gjs:ARG_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/posts/**"], "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["**/posts/**"], "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-034",
@@ -887,8 +870,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/object.test.ts arguments type changed" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/posts/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["**/posts/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-035",
@@ -906,8 +889,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/argument.ts FIELD_ARGUMENT_TYPE_CHANGED" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/children/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["**/children/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-036",
@@ -922,8 +905,8 @@
     "annotation": "names the mutation and the argument (Mutation.createPost body)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_ARGUMENT_ADDED" }],
     "covers": ["gi:FIELD_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "mutations/createPost/args/**", "action": "add", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "mutations/createPost/args/**", "action": "add", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-037",
@@ -940,8 +923,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_ARGUMENT_REMOVED" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "subscriptions/onPost/args/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "subscriptions/onPost/args/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ARG-038",
@@ -959,8 +942,8 @@
       { "tool": "graphql-js", "ref": "src/utilities/findBreakingChanges.ts ARG_CHANGED_KIND", "verdict": "BREAKING" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DEP-001",
@@ -990,8 +973,8 @@
       }
     ],
     "covers": ["gi:FIELD_DEPRECATION_ADDED", "gi:DIRECTIVE_USAGE_FIELD_DEFINITION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age/**", "action": "add", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age/**", "action": "add", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-002",
@@ -1020,8 +1003,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js Q13" }
     ],
     "covers": ["gi:FIELD_DEPRECATION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age/**", "action": "add", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age/**", "action": "add", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-003",
@@ -1059,8 +1042,8 @@
       }
     ],
     "covers": ["gi:FIELD_DEPRECATION_REMOVED", "gi:DIRECTIVE_USAGE_FIELD_DEFINITION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age/**", "action": "remove", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age/**", "action": "remove", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-004",
@@ -1095,8 +1078,8 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts changing the deprecation reason is a deprecation" }
     ],
     "covers": ["gi:FIELD_DEPRECATION_REASON_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age/**", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age/**", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-005",
@@ -1127,8 +1110,8 @@
       }
     ],
     "covers": ["gi:FIELD_DEPRECATION_REASON_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age/**", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age/**", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-006",
@@ -1162,8 +1145,8 @@
       }
     ],
     "covers": ["gi:FIELD_DEPRECATION_REASON_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age/**", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age/**", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-007",
@@ -1183,8 +1166,8 @@
       }
     ],
     "covers": ["gi:FIELD_DEPRECATION_REASON_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age/**", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age/**", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-008",
@@ -1204,8 +1187,8 @@
       }
     ],
     "covers": ["gi:FIELD_DEPRECATION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/id/**", "action": "add", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/id/**", "action": "add", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-009",
@@ -1220,10 +1203,10 @@
     "annotation": "names the root field (Query.me) and says it is deprecated",
     "sources": [{ "tool": "asd", "ref": "test/graphapi/classification.test.ts adding @deprecated is a deprecation" }],
     "covers": ["gi:FIELD_DEPRECATION_ADDED", "gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/me/**", "action": "add", "type": { "0.1.2": "D", "1.0": "D" } },
-      { "at": "queries/viewer", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/me/**", "action": "add", "type": { "1.0": "D" } },
+      { "at": "queries/viewer", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -1257,8 +1240,8 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts deprecating an enum value is a deprecation" }
     ],
     "covers": ["gi:ENUM_VALUE_DEPRECATION_REASON_ADDED", "gi:DIRECTIVE_USAGE_ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/BLUE/**", "action": "add", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/BLUE/**", "action": "add", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-011",
@@ -1290,8 +1273,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_DEPRECATION_REASON_REMOVED", "gi:DIRECTIVE_USAGE_ENUM_VALUE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/BLUE/**", "action": "remove", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/BLUE/**", "action": "remove", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-012",
@@ -1331,8 +1314,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_DEPRECATION_REASON_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/BLUE/**", "type": { "0.1.2": "D", "1.0": "D" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/BLUE/**", "type": { "1.0": "D" } }]
   },
   {
     "id": "GQL-DEP-013",
@@ -1358,10 +1341,10 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ARGUMENT_DEFINITION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/args/**/limit/**", "action": "add", "type": { "0.1.2": "D", "1.0": "D" } },
-      { "at": "queries/search/args/**/first", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search/args/**/limit/**", "action": "add", "type": { "1.0": "D" } },
+      { "at": "queries/search/args/**/first", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -1383,12 +1366,12 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INPUT_FIELD_DEFINITION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**/tag/**", "components/inputObjects/SearchFilter/**/tag/**"],
         "action": "add",
-        "type": { "0.1.2": "D", "1.0": "D" }
+        "type": { "1.0": "D" }
       }
     ]
   },
@@ -1415,8 +1398,8 @@
       }
     ],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DEP-016",
@@ -1433,8 +1416,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/enum.test.ts removal of a deprecated field" }
     ],
     "covers": ["gi:ENUM_VALUE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DEP-017",
@@ -1451,12 +1434,12 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/input.test.ts removal of a deprecated field" }
     ],
     "covers": ["gi:INPUT_FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       }
     ]
   },
@@ -1480,8 +1463,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DSC-001",
@@ -1514,8 +1497,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_ADDED", "gjs:DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-002",
@@ -1540,8 +1523,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-003",
@@ -1566,8 +1549,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-004",
@@ -1600,8 +1583,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-005",
@@ -1634,8 +1617,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-006",
@@ -1668,8 +1651,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-007",
@@ -1686,8 +1669,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_DESCRIPTION_CHANGED" }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-008",
@@ -1708,8 +1691,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-009",
@@ -1730,8 +1713,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-010",
@@ -1752,8 +1735,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-011",
@@ -1770,8 +1753,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_DESCRIPTION_CHANGED" }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-012",
@@ -1788,8 +1771,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_DESCRIPTION_CHANGED" }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-013",
@@ -1830,8 +1813,8 @@
       }
     ],
     "covers": ["gi:FIELD_DESCRIPTION_ADDED", "gjs:DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-014",
@@ -1865,8 +1848,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js Q14" }
     ],
     "covers": ["gi:FIELD_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-015",
@@ -1899,8 +1882,8 @@
       }
     ],
     "covers": ["gi:FIELD_DESCRIPTION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-016",
@@ -1915,8 +1898,8 @@
     "annotation": "names the described element (Item.born) and says that its description changed",
     "sources": [{ "tool": "bench", "ref": "bench/fixtures/graphql.js R3 (re-authored on a reachable type)" }],
     "covers": ["gi:FIELD_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": ["replace", "remove"], "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": ["replace", "remove"], "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-017",
@@ -1987,8 +1970,8 @@
       }
     ],
     "covers": ["gi:FIELD_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-018",
@@ -2005,8 +1988,8 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts changing the description is an annotation" }
     ],
     "covers": ["gi:FIELD_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-019",
@@ -2031,8 +2014,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DESCRIPTION_CHANGED", "gjs:DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-020",
@@ -2058,8 +2041,8 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts changing an argument description is an annotation" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-021",
@@ -2080,8 +2063,8 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-022",
@@ -2114,8 +2097,8 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DESCRIPTION_ADDED", "gjs:DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-023",
@@ -2140,8 +2123,8 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-024",
@@ -2166,8 +2149,8 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DESCRIPTION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-025",
@@ -2200,8 +2183,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_DESCRIPTION_CHANGED", "gjs:DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-026",
@@ -2232,8 +2215,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-027",
@@ -2262,8 +2245,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-028",
@@ -2278,8 +2261,8 @@
     "annotation": "names the described element (schema) and says that its description changed",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts huge test" }],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-029",
@@ -2294,8 +2277,8 @@
     "annotation": "names the described element (schema) and says that its description changed",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts huge test" }],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-030",
@@ -2316,8 +2299,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-031",
@@ -2338,8 +2321,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "replace", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "replace", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-032",
@@ -2360,8 +2343,8 @@
       }
     ],
     "covers": ["gi:TYPE_DESCRIPTION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-033",
@@ -2382,8 +2365,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_DESCRIPTION_CHANGED", "gjs:DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-034",
@@ -2400,8 +2383,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/directive.test.ts arguments changed" }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DSC-035",
@@ -2416,7 +2399,7 @@
     "annotation": "no diff",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts same schema" }],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -2441,8 +2424,8 @@
       { "tool": "asd", "ref": "test/graphapi/graphapi10.test.ts G10.19" }
     ],
     "covers": ["gi:DIRECTIVE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-002",
@@ -2465,8 +2448,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-003",
@@ -2493,8 +2476,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ADDED", "gjs:DIRECTIVE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-004",
@@ -2525,8 +2508,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_REMOVED", "gjs:DIRECTIVE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-005",
@@ -2554,8 +2537,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_LOCATION_ADDED", "gjs:DIRECTIVE_LOCATION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-006",
@@ -2586,8 +2569,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_LOCATION_REMOVED", "gjs:DIRECTIVE_LOCATION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-007",
@@ -2609,8 +2592,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_LOCATION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-008",
@@ -2633,8 +2616,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_LOCATION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-009",
@@ -2654,7 +2637,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -2691,8 +2674,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_ADDED", "gjs:OPTIONAL_DIRECTIVE_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-011",
@@ -2715,8 +2698,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_ADDED", "gjs:REQUIRED_DIRECTIVE_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-012",
@@ -2739,8 +2722,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-013",
@@ -2761,8 +2744,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-014",
@@ -2786,8 +2769,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-015",
@@ -2811,8 +2794,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_TYPE_CHANGED", "gjs:ARG_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-016",
@@ -2851,8 +2834,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_DEFAULT_VALUE_CHANGED", "gjs:ARG_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-DIR-017",
@@ -2886,8 +2869,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_DEFAULT_VALUE_CHANGED", "gjs:ARG_DEFAULT_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-DIR-018",
@@ -2920,8 +2903,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_DEFAULT_VALUE_CHANGED", "gjs:ARG_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-DIR-019",
@@ -2942,8 +2925,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-020",
@@ -2968,8 +2951,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_DESCRIPTION_CHANGED", "gjs:DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-021",
@@ -2991,10 +2974,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_REPEATABLE_ADDED", "gjs:DIRECTIVE_REPEATABLE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": ["components/directives/limit", "components/directives/limit/**"], "type": { "0.1.2": "N", "1.0": "N" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["components/directives/limit", "components/directives/limit/**"], "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-022",
@@ -3033,10 +3014,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_REPEATABLE_REMOVED", "gjs:DIRECTIVE_REPEATABLE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": ["components/directives/limit", "components/directives/limit/**"], "type": { "0.1.2": "B", "1.0": "B" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["components/directives/limit", "components/directives/limit/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-023",
@@ -3064,8 +3043,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-DIR-024",
@@ -3102,8 +3081,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_REMOVED", "gjs:DIRECTIVE_ARG_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-DIR-025",
@@ -3168,8 +3147,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_DEFAULT_VALUE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key/**", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key/**", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-DIR-030A",
@@ -3190,8 +3169,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_SCHEMA_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-030B",
@@ -3212,8 +3191,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_SCHEMA_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-031A",
@@ -3240,8 +3219,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_SCALAR_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-031B",
@@ -3262,8 +3241,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_SCALAR_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-032A",
@@ -3294,8 +3273,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_OBJECT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-032B",
@@ -3316,8 +3295,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_OBJECT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-033A",
@@ -3344,8 +3323,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_FIELD_DEFINITION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-033B",
@@ -3366,8 +3345,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_FIELD_DEFINITION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-034A",
@@ -3394,8 +3373,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ARGUMENT_DEFINITION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-034B",
@@ -3416,8 +3395,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ARGUMENT_DEFINITION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-035A",
@@ -3444,8 +3423,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INTERFACE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-035B",
@@ -3466,8 +3445,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INTERFACE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-036A",
@@ -3494,8 +3473,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_UNION_MEMBER_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-036B",
@@ -3516,8 +3495,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_UNION_MEMBER_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-037A",
@@ -3544,8 +3523,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ENUM_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-037B",
@@ -3566,8 +3545,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ENUM_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-038A",
@@ -3594,8 +3573,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-038B",
@@ -3616,8 +3595,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ENUM_VALUE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-039A",
@@ -3644,8 +3623,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INPUT_OBJECT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-039B",
@@ -3666,8 +3645,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INPUT_OBJECT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-040A",
@@ -3694,8 +3673,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INPUT_FIELD_DEFINITION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-040B",
@@ -3716,8 +3695,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INPUT_FIELD_DEFINITION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-041",
@@ -3738,8 +3717,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ARGUMENT_ADDED", "gi:DIRECTIVE_USAGE_ARGUMENT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-042",
@@ -3760,8 +3739,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-043",
@@ -3782,8 +3761,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_OBJECT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-044",
@@ -3804,8 +3783,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_OBJECT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-DIR-045",
@@ -3830,8 +3809,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_SCHEMA_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-ENM-001",
@@ -3878,8 +3857,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_ADDED", "gjs:VALUE_ADDED_TO_ENUM"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ENM-002",
@@ -3919,8 +3898,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_ADDED", "gjs:VALUE_ADDED_TO_ENUM"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ENM-003",
@@ -3939,11 +3918,8 @@
       { "tool": "asd", "ref": "test/graphapi/graphapi10.test.ts G10.18" }
     ],
     "covers": ["gi:ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": "queries/profile/args/**", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ENM-004",
@@ -3995,8 +3971,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_REMOVED", "gjs:VALUE_REMOVED_FROM_ENUM"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ENM-005",
@@ -4034,8 +4010,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_REMOVED", "gjs:VALUE_REMOVED_FROM_ENUM"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ENM-006",
@@ -4053,16 +4029,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js Q9" }
     ],
     "covers": ["gi:ENUM_VALUE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      {
-        "at": ["queries/profile/properties/**", "components/objects/User/**"],
-        "action": "remove",
-        "optional": true,
-        "type": { "0.1.2": "N", "1.0": "N" }
-      },
-      { "at": "**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ENM-007",
@@ -4086,8 +4054,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ENM-008",
@@ -4111,8 +4079,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ENM-009",
@@ -4127,8 +4095,8 @@
     "annotation": "names the enum and the added value (Color.GREEN)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/enum.ts ENUM_VALUE_ADDED" }],
     "covers": ["gi:ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ENM-010",
@@ -4153,8 +4121,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-ENM-011",
@@ -4175,8 +4143,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ENM-012",
@@ -4196,7 +4164,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -4217,10 +4185,10 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_REMOVED", "gi:ENUM_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "**", "action": ["remove", "replace"], "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "**", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "**", "action": ["remove", "replace"], "type": { "1.0": "B" } },
+      { "at": "**", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -4236,14 +4204,14 @@
     "annotation": "names the added field (User.color) and the added enum (Color)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/enum.test.ts added" }],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/profile/**/color", "components/objects/User/**/color"],
         "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
+        "type": { "1.0": "N" }
       },
-      { "at": "components/enums/Color", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "components/enums/Color", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -4271,8 +4239,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js Q1" }
     ],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-002",
@@ -4296,8 +4264,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js Q2" }
     ],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-FLD-003",
@@ -4331,8 +4299,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/name/**", "**/required/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/name/**", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-FLD-004",
@@ -4365,8 +4333,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/name/**", "**/required/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/name/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-005",
@@ -4397,8 +4365,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js Q17" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/code/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/code/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-006",
@@ -4418,8 +4386,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/code/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/code/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-007",
@@ -4437,8 +4405,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_TYPE_CHANGED" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/code/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/code/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-008",
@@ -4458,8 +4426,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/score/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/score/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-009",
@@ -4482,8 +4450,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/home/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/home/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-010",
@@ -4512,8 +4480,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/tags/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/tags/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-011",
@@ -4537,8 +4505,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/tags/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/tags/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-012",
@@ -4562,8 +4530,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/tags/**", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/tags/**", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-FLD-013",
@@ -4588,8 +4556,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/tags/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/tags/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-014",
@@ -4610,8 +4578,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/continents/**", "**/required/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/continents/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-015",
@@ -4635,8 +4603,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/tags/**", "**/required/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/tags/**", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-FLD-016",
@@ -4660,8 +4628,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/tags/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/tags/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-017",
@@ -4701,11 +4669,10 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "**/role/title", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": "**/role/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/enums/Role", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "**/role/**", "type": { "1.0": "B" } },
+      { "at": "components/enums/Role", "action": "remove", "optional": true, "type": { "1.0": "B" } }
     ]
   },
   {
@@ -4727,11 +4694,10 @@
       { "tool": "fork", "ref": "test/graphapi.diff.test.ts new types in output: built-in scalar -> enum" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "**/role/title", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": "**/role/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/enums/Role", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "**/role/**", "type": { "1.0": "B" } },
+      { "at": "components/enums/Role", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -4752,8 +4718,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/item/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/item/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-020",
@@ -4791,14 +4757,10 @@
       }
     ],
     "covers": ["gi:FIELD_ADDED", "gjs:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/node/**", "components/interfaces/Node/**"],
-        "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
-      },
-      { "at": "components/objects/Item/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/node/**", "components/interfaces/Node/**"], "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Item/**", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -4841,14 +4803,10 @@
       }
     ],
     "covers": ["gi:FIELD_REMOVED", "gjs:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/node/**", "components/interfaces/Node/**"],
-        "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
-      },
-      { "at": "components/objects/Item/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": ["queries/node/**", "components/interfaces/Node/**"], "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/objects/Item/**", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -4890,10 +4848,10 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/node/**", "components/interfaces/Node/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Item/**", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": ["queries/node/**", "components/interfaces/Node/**"], "type": { "1.0": "B" } },
+      { "at": "components/objects/Item/**", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -4926,10 +4884,10 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/node/**", "components/interfaces/Node/**"], "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Item/**", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/node/**", "components/interfaces/Node/**"], "type": { "1.0": "N" } },
+      { "at": "components/objects/Item/**", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -4962,10 +4920,10 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/node/**", "components/interfaces/Node/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Item/**", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": ["queries/node/**", "components/interfaces/Node/**"], "type": { "1.0": "B" } },
+      { "at": "components/objects/Item/**", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -4985,7 +4943,7 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js gql-repo-pair field reorders (0.1.2 precision 89 %)" }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -5003,7 +4961,7 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js gql-repo-pair comment edits (0.1.2 precision 89 %)" }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -5028,8 +4986,8 @@
       }
     ],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/width", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/width", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-028",
@@ -5053,8 +5011,8 @@
       }
     ],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/width", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/width", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-FLD-029",
@@ -5078,8 +5036,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/width/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/width/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-030",
@@ -5103,8 +5061,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/width/**", "**/required/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/width/**", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-FLD-031",
@@ -5128,8 +5086,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/width/**", "**/required/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/width/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-032",
@@ -5144,8 +5102,8 @@
     "annotation": "names the type and the added field (Stat.responses)",
     "sources": [{ "tool": "bench", "ref": "bench/fixtures/graphql.js R6" }],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/responses", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/responses", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-FLD-033",
@@ -5160,8 +5118,8 @@
     "annotation": "names the type and the field (Tweet.id) and the nullability change",
     "sources": [{ "tool": "bench", "ref": "bench/fixtures/graphql.js R5" }],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["**/id/**", "**/required/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/id/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-034",
@@ -5176,10 +5134,10 @@
     "annotation": "names the type and both fields (User.age removed, User.years added)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts renamed query" }],
     "covers": ["gi:FIELD_REMOVED", "gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "**/age", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "**/years", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "**/age", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "**/years", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5195,8 +5153,8 @@
     "annotation": "names the type and the removed field (User.age)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/object.test.ts fields removed" }],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/age", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/age", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-036",
@@ -5214,11 +5172,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_TYPE_CHANGED" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": "**/home/title", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": "**/home/**", "type": { "0.1.2": "B", "1.0": "B" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/home/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-FLD-037",
@@ -5238,14 +5193,14 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/find/**", "type": { "0.1.2": "B", "1.0": "B" } },
+      { "at": "queries/find/**", "type": { "1.0": "B" } },
       {
         "at": ["components/unions/Media", "components/objects/Video"],
         "action": "add",
         "optional": true,
-        "type": { "0.1.2": "N", "1.0": "N" }
+        "type": { "1.0": "N" }
       }
     ]
   },
@@ -5268,8 +5223,8 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_SCHEMA_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-GID-002",
@@ -5289,10 +5244,10 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/foo", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Foo", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/foo", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Foo", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5313,10 +5268,10 @@
       }
     ],
     "covers": ["gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/foo", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Foo", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/foo", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/objects/Foo", "action": "remove", "optional": true, "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5337,10 +5292,10 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/foo", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/interfaces/Foo", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/foo", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/interfaces/Foo", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5361,10 +5316,10 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/b", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/enums/B", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/b", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/enums/B", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5385,10 +5340,10 @@
       }
     ],
     "covers": ["gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/b", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/enums/B", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/b", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/enums/B", "action": "remove", "optional": true, "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5409,10 +5364,8 @@
       }
     ],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": ["components/objects/Foo/**", "queries/foo/**"], "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["components/objects/Foo/**", "queries/foo/**"], "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-GID-008",
@@ -5432,12 +5385,12 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED", "gi:DIRECTIVE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/directives/special", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/unions/FooUnion", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Foo", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/directives/special", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/unions/FooUnion", "action": "add", "optional": true, "type": { "1.0": "N" } },
+      { "at": "components/objects/Foo", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5459,13 +5412,12 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_ADDED", "gi:FIELD_REMOVED", "gi:FIELD_ADDED", "gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["**/enum/*", "**/values/VIEWER"], "action": "add", "type": { "0.1.2": "R", "1.0": "R" } },
-      { "at": ["**/properties/email", "**/methods/email"], "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": ["**/properties/address", "**/methods/address"], "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": ["**/role/nonNull", "**/required/*"], "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "**/required/*", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "**/values/VIEWER", "action": "add", "type": { "1.0": "R" } },
+      { "at": "**/methods/email", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "**/methods/address", "action": "add", "type": { "1.0": "N" } },
+      { "at": "**/role/nonNull", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5486,10 +5438,10 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_ADDED", "gi:FIELD_DESCRIPTION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/foo/description", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": "queries/foo/args/**", "action": "add", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/foo/description", "action": "add", "type": { "1.0": "A" } },
+      { "at": "queries/foo/args/**", "action": "add", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5510,10 +5462,10 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gi:FIELD_DESCRIPTION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/foo/description", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": "queries/foo/**", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/foo/description", "action": "add", "type": { "1.0": "A" } },
+      { "at": "queries/foo/**", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5534,10 +5486,10 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED", "gi:INPUT_FIELD_DESCRIPTION_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "**/name/description", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } },
-      { "at": ["components/inputObjects/Filter/**", "queries/search/**"], "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "**/name/description", "action": "add", "type": { "1.0": "A" } },
+      { "at": ["components/inputObjects/Filter/**", "queries/search/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5559,11 +5511,11 @@
       }
     ],
     "covers": ["gi:OBJECT_TYPE_INTERFACE_ADDED", "gi:FIELD_REMOVED", "gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/bar", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "queries/id", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": ["**/interfaces", "**/interfaces/**", "**/implementedBy/**"], "type": { "0.1.2": "R", "1.0": "R" } }
+      { "at": "queries/bar", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "queries/id", "action": "add", "type": { "1.0": "N" } },
+      { "at": ["**/interfaces", "**/interfaces/**", "**/implementedBy/**"], "type": { "1.0": "R" } }
     ]
   },
   {
@@ -5584,19 +5536,10 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_LOCATION_ADDED", "gi:DIRECTIVE_LOCATION_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": "components/directives/special/locations/**",
-        "action": ["remove", "replace"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      },
-      {
-        "at": "components/directives/special/locations/**",
-        "action": "add",
-        "optional": true,
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": "components/directives/special/locations/**", "action": ["remove", "replace"], "type": { "1.0": "B" } },
+      { "at": "components/directives/special/locations/**", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5617,10 +5560,10 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_ARGUMENT_TYPE_CHANGED", "gi:DIRECTIVE_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["**/args/b", "**/args/properties/b"], "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/directives/special/args/**", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "**/args/b", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/directives/special/args/**", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5642,8 +5585,8 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/foo/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/foo/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-002",
@@ -5664,8 +5607,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/field1/args/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/field1/args/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-003",
@@ -5685,11 +5628,11 @@
       }
     ],
     "covers": ["gjs:TYPE_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/status/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/Status", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/enums/Status", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/status/**", "type": { "1.0": "B" } },
+      { "at": "components/scalars/Status", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/enums/Status", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5710,12 +5653,12 @@
       }
     ],
     "covers": ["gjs:TYPE_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/node/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/interfaces/Node", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/unions/Node", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Item/**", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/node/**", "type": { "1.0": "B" } },
+      { "at": "components/interfaces/Node", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/unions/Node", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Item/**", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5736,10 +5679,10 @@
       }
     ],
     "covers": ["gjs:TYPE_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "components/objects/Point", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/inputObjects/Point", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "components/objects/Point", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/inputObjects/Point", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5760,8 +5703,8 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["components/objects/User/**", "queries/profile/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["components/objects/User/**", "queries/profile/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-007",
@@ -5781,8 +5724,8 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["components/objects/User/**", "queries/profile/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["components/objects/User/**", "queries/profile/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-008",
@@ -5802,8 +5745,8 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["components/objects/User/**", "queries/profile/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["components/objects/User/**", "queries/profile/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-009",
@@ -5823,12 +5766,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5849,12 +5789,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5875,12 +5812,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "N" } }
     ]
   },
   {
@@ -5901,12 +5835,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5927,12 +5858,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5953,12 +5881,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -5979,12 +5904,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "N" } }
     ]
   },
   {
@@ -6005,12 +5927,9 @@
       }
     ],
     "covers": ["gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -6031,8 +5950,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-018",
@@ -6052,8 +5971,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-019",
@@ -6073,8 +5992,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-020",
@@ -6094,8 +6013,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-021",
@@ -6115,8 +6034,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-022",
@@ -6136,8 +6055,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-GJS-023",
@@ -6157,8 +6076,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-024",
@@ -6178,13 +6097,10 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/required/**", "queries/search/args/ids/nonNull"],
-        "type": { "0.1.2": "N", "1.0": "N" }
-      },
-      { "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/search/args/ids/nonNull", "type": { "1.0": "N" } },
+      { "at": ["queries/search/args/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -6205,8 +6121,8 @@
       }
     ],
     "covers": ["gjs:ARG_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/search/args/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/search/args/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-026",
@@ -6226,8 +6142,8 @@
       }
     ],
     "covers": ["gjs:IMPLEMENTED_INTERFACE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/resource/**", "components/interfaces/**"], "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/resource/**", "components/interfaces/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-GJS-027",
@@ -6248,8 +6164,8 @@
       }
     ],
     "covers": ["gjs:OPTIONAL_DIRECTIVE_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/limit/**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-GJS-028",
@@ -6269,8 +6185,8 @@
       }
     ],
     "covers": ["gjs:ARG_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/search/args/**", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/search/args/**", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-GJS-029",
@@ -6290,7 +6206,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -6319,8 +6235,8 @@
       }
     ],
     "covers": ["gjs:VALUE_ADDED_TO_ENUM"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/enums/TestEnum/**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/enums/TestEnum/**", "action": "add", "type": { "1.0": "R" } }]
   },
   {
     "id": "GQL-GJS-031",
@@ -6340,8 +6256,8 @@
       }
     ],
     "covers": ["gjs:REQUIRED_DIRECTIVE_ARG_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/directives/key/**", "action": "add", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/directives/key/**", "action": "add", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-INP-001",
@@ -6373,12 +6289,12 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_ADDED", "gjs:OPTIONAL_INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
+        "type": { "1.0": "N" }
       }
     ]
   },
@@ -6404,12 +6320,12 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_ADDED", "gjs:REQUIRED_INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "add",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       }
     ]
   },
@@ -6432,12 +6348,12 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_ADDED", "gjs:OPTIONAL_INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "add",
-        "type": { "0.1.2": "R", "1.0": "R" }
+        "type": { "1.0": "R" }
       }
     ]
   },
@@ -6454,12 +6370,12 @@
     "annotation": "names the input type and the added field (SearchFilter.limit)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/input.ts INPUT_FIELD_ADDED" }],
     "covers": ["gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "add",
-        "type": { "0.1.2": "R", "1.0": "R" }
+        "type": { "1.0": "R" }
       }
     ]
   },
@@ -6478,10 +6394,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/input.test.ts added to an added input" }
     ],
     "covers": ["gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/args/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/inputObjects/SearchFilter", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search/args/**", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/inputObjects/SearchFilter", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -6512,12 +6428,12 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_REMOVED", "gjs:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       }
     ]
   },
@@ -6537,12 +6453,12 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts removing a required input field is breaking" }
     ],
     "covers": ["gi:INPUT_FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       }
     ]
   },
@@ -6578,12 +6494,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -6617,12 +6530,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "N" } }
     ]
   },
   {
@@ -6652,12 +6562,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -6682,12 +6589,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -6712,12 +6616,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND_SAFE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "N" } }
     ]
   },
   {
@@ -6742,12 +6643,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -6774,12 +6672,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED", "gjs:INPUT_FIELD_DEFAULT_VALUE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "R" } }
     ]
   },
   {
@@ -6808,12 +6703,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED", "gjs:INPUT_FIELD_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "R" } }
     ]
   },
   {
@@ -6835,12 +6727,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED", "gjs:INPUT_FIELD_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "R" } }
     ]
   },
   {
@@ -6862,12 +6751,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -6889,12 +6775,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "N" } }
     ]
   },
   {
@@ -6919,12 +6802,9 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED", "gjs:INPUT_FIELD_DEFAULT_VALUE_CHANGE"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "R" } }
     ]
   },
   {
@@ -6945,7 +6825,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -6967,7 +6847,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -6983,12 +6863,12 @@
     "annotation": "names the input type and the added field (Range.to)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/input.ts INPUT_FIELD_ADDED" }],
     "covers": ["gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**", "components/inputObjects/Range/**"],
         "action": "add",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       }
     ]
   },
@@ -7008,12 +6888,12 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts consistency" }
     ],
     "covers": ["gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "mutations/saveSearch/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "add",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       }
     ]
   },
@@ -7030,12 +6910,12 @@
     "annotation": "names the input type and the added field (SearchFilter.limit)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/input.ts INPUT_FIELD_ADDED" }],
     "covers": ["gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
+        "type": { "1.0": "N" }
       }
     ]
   },
@@ -7057,17 +6937,17 @@
       }
     ],
     "covers": ["gi:INPUT_FIELD_REMOVED", "gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**/term", "components/inputObjects/SearchFilter/**/term"],
         "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       },
       {
         "at": ["queries/search/args/**/query", "components/inputObjects/SearchFilter/**/query"],
         "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
+        "type": { "1.0": "N" }
       }
     ]
   },
@@ -7094,12 +6974,12 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INPUT_OBJECT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "add",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       }
     ]
   },
@@ -7125,12 +7005,12 @@
       }
     ],
     "covers": ["gi:DIRECTIVE_USAGE_INPUT_OBJECT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
         "action": "remove",
-        "type": { "0.1.2": "N", "1.0": "N" }
+        "type": { "1.0": "N" }
       }
     ]
   },
@@ -7150,12 +7030,9 @@
       { "tool": "graphql-js", "ref": "src/utilities/findBreakingChanges.ts FIELD_CHANGED_KIND", "verdict": "BREAKING" }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"],
-        "type": { "0.1.2": "N", "1.0": "N" }
-      }
+      { "at": ["queries/search/args/**", "components/inputObjects/SearchFilter/**"], "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7178,8 +7055,8 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED", "gjs:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/objects/BenchNewType", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/BenchNewType", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-RCH-002",
@@ -7209,8 +7086,8 @@
       }
     ],
     "covers": ["gi:TYPE_REMOVED", "gjs:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/objects/Region", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/Region", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-003",
@@ -7225,8 +7102,8 @@
     "annotation": "names the type and the added field (Region.code)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_ADDED" }],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/objects/Region/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/Region/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-RCH-004",
@@ -7248,8 +7125,8 @@
       }
     ],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/objects/Region/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/Region/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-005",
@@ -7264,8 +7141,8 @@
     "annotation": "names the type and the field (Query2.continents)",
     "sources": [{ "tool": "bench", "ref": "bench/fixtures/graphql.js R1" }],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/objects/Query2/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/Query2/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-006",
@@ -7283,11 +7160,8 @@
       { "tool": "bench", "ref": "bench/fixtures/graphql.js R4" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": "components/objects/Country/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Query2/**", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/Country/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-007",
@@ -7302,8 +7176,8 @@
     "annotation": "names the type and the field (Country.states) and the description",
     "sources": [{ "tool": "bench", "ref": "bench/fixtures/graphql.js R3" }],
     "covers": ["gi:FIELD_DESCRIPTION_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/objects/Country/**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/Country/**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-RCH-008",
@@ -7318,10 +7192,8 @@
     "annotation": "names the input type and the added field (RegionFilter.code)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/input.ts INPUT_FIELD_ADDED" }],
     "covers": ["gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": "components/inputObjects/RegionFilter/**", "action": "add", "type": { "0.1.2": "B", "1.0": "B" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/inputObjects/RegionFilter/**", "action": "add", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-009",
@@ -7336,10 +7208,8 @@
     "annotation": "names the input type and the added field (RegionFilter.code)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/input.ts INPUT_FIELD_ADDED" }],
     "covers": ["gi:INPUT_FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": "components/inputObjects/RegionFilter/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/inputObjects/RegionFilter/**", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-RCH-010",
@@ -7360,8 +7230,8 @@
       }
     ],
     "covers": ["gi:ENUM_VALUE_REMOVED", "gjs:VALUE_REMOVED_FROM_ENUM"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/enums/Continent/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/enums/Continent/**", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-011",
@@ -7376,8 +7246,8 @@
     "annotation": "names the added scalar (JSON)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_ADDED" }],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/scalars/JSON", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/scalars/JSON", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-RCH-012",
@@ -7399,8 +7269,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_REMOVED" }
     ],
     "covers": ["gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/scalars/JSON", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/scalars/JSON", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-013",
@@ -7421,10 +7291,10 @@
       }
     ],
     "covers": ["gi:UNION_MEMBER_ADDED", "gjs:TYPE_ADDED_TO_UNION"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "components/unions/Place/**", "action": "add", "type": { "0.1.2": "R", "1.0": "R" } },
-      { "at": "components/objects/Town", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "components/unions/Place/**", "action": "add", "type": { "1.0": "R" } },
+      { "at": "components/objects/Town", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7440,11 +7310,8 @@
     "annotation": "names the removed root field (Query.region)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_REMOVED" }],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      { "at": "queries/region", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Region", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/region", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-RCH-015",
@@ -7459,10 +7326,10 @@
     "annotation": "names the added root field (Query.region)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_ADDED" }],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/region", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Region", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/region", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Region", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7484,14 +7351,10 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED", "gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/event/**/at", "components/objects/Event/**/at"],
-        "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
-      },
-      { "at": "components/scalars/DateTime", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/event/**/at", "components/objects/Event/**/at"], "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/scalars/DateTime", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7513,14 +7376,10 @@
       }
     ],
     "covers": ["gi:TYPE_REMOVED", "gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/event/**/at", "components/objects/Event/**/at"],
-        "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
-      },
-      { "at": "components/scalars/DateTime", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": ["queries/event/**/at", "components/objects/Event/**/at"], "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -7543,10 +7402,10 @@
       { "tool": "asd", "ref": "test/graphapi/graphapi10.test.ts G10.9" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/event/**/at/**", "components/objects/Event/**/at/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/event/**/at/**", "components/objects/Event/**/at/**"], "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7567,11 +7426,11 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/event/**/at/**", "components/objects/Event/**/at/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/event/**/at/**", "components/objects/Event/**/at/**"], "type": { "1.0": "B" } },
+      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7589,15 +7448,10 @@
       { "tool": "fork", "ref": "test/graphapi.diff.test.ts new types in output: custom scalar -> built-in scalar" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/event/**/at/**", "components/objects/Event/**/at/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      {
-        "at": "components/scalars/DateTime",
-        "action": "remove",
-        "optional": true,
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/event/**/at/**", "components/objects/Event/**/at/**"], "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "remove", "optional": true, "type": { "1.0": "B" } }
     ]
   },
   {
@@ -7615,10 +7469,10 @@
       { "tool": "fork", "ref": "test/graphapi.diff.test.ts new types in arguments: built-in scalar -> custom scalar" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/events/args/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/events/args/**", "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7636,15 +7490,10 @@
       { "tool": "fork", "ref": "test/graphapi.diff.test.ts new types in arguments: custom scalar -> built-in scalar" }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/events/args/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      {
-        "at": "components/scalars/DateTime",
-        "action": "remove",
-        "optional": true,
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": "queries/events/args/**", "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "remove", "optional": true, "type": { "1.0": "B" } }
     ]
   },
   {
@@ -7665,11 +7514,11 @@
       }
     ],
     "covers": ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/events/args/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/events/args/**", "type": { "1.0": "B" } },
+      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7690,14 +7539,11 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/event/**/days/**", "components/objects/Event/**/days/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      },
-      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/event/**/days/**", "components/objects/Event/**/days/**"], "type": { "1.0": "B" } },
+      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "1.0": "B" } },
+      { "at": "components/scalars/DateTime", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -7713,13 +7559,8 @@
     "annotation": "names the type and the field (Event.open) and the type change",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_TYPE_CHANGED" }],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [
-      {
-        "at": ["queries/event/**/open/**", "components/objects/Event/**/open/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
-    ]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/event/**/open/**", "components/objects/Event/**/open/**"], "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-SCL-011",
@@ -7741,8 +7582,8 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts changing @specifiedBy url is an annotation" }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "add", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "add", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-SCL-012",
@@ -7760,8 +7601,8 @@
       { "tool": "fork", "ref": "test/graphapi.diff.test.ts Directives test: specifiedBy directive test" }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-SCL-013",
@@ -7782,8 +7623,8 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**", "action": "remove", "type": { "0.1.2": "A", "1.0": "A" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**", "action": "remove", "type": { "1.0": "A" } }]
   },
   {
     "id": "GQL-SCL-014",
@@ -7800,13 +7641,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/input.ts INPUT_FIELD_TYPE_CHANGED" }
     ],
     "covers": ["gi:INPUT_FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/events/args/**", "components/inputObjects/EventFilter/**"],
-        "type": { "0.1.2": "B", "1.0": "B" }
-      },
-      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": ["queries/events/args/**", "components/inputObjects/EventFilter/**"], "type": { "1.0": "B" } },
+      { "at": "components/scalars/Date", "action": "remove", "optional": true, "type": { "1.0": "B" } }
     ]
   },
   {
@@ -7822,7 +7660,7 @@
     "annotation": "no diff",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts same schema" }],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -7845,8 +7683,8 @@
       }
     ],
     "covers": ["gi:FIELD_ADDED", "gjs:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/version", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/version", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ROOT-002",
@@ -7865,10 +7703,10 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts removing a query is breaking" }
     ],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/notificationsMeta", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Meta", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/notificationsMeta", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/objects/Meta", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -7884,8 +7722,8 @@
     "annotation": "names the root type and the added field (Mutation.deletePost)",
     "sources": [{ "tool": "bench", "ref": "bench/fixtures/graphql.js Q12" }],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "mutations/deletePost", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "mutations/deletePost", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ROOT-004",
@@ -7900,8 +7738,8 @@
     "annotation": "names the root type and the removed field (Mutation.deletePost)",
     "sources": [{ "tool": "asd", "ref": "test/graphapi/classification.test.ts removing a mutation is breaking" }],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "mutations/deletePost", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "mutations/deletePost", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ROOT-005",
@@ -7916,8 +7754,8 @@
     "annotation": "names the root type and the added field (Subscription.onComment)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_ADDED" }],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "subscriptions/onComment", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "subscriptions/onComment", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ROOT-006",
@@ -7932,8 +7770,8 @@
     "annotation": "names the root type and the removed field (Subscription.onComment)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_REMOVED" }],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "subscriptions/onComment", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "subscriptions/onComment", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ROOT-007",
@@ -7956,10 +7794,10 @@
       { "tool": "fork", "ref": "test/compatibility-suites/graphql/root-type-general.test.ts add-new-root-type" }
     ],
     "covers": ["gi:SCHEMA_MUTATION_TYPE_CHANGED", "gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["mutations", "mutations/createPost"], "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "mutationTypeName", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } }
+      { "at": ["mutations", "mutations/createPost"], "action": "add", "type": { "1.0": "N" } },
+      { "at": "mutationTypeName", "optional": true, "type": { "1.0": "A" } }
     ]
   },
   {
@@ -7979,10 +7817,10 @@
       { "tool": "fork", "ref": "test/compatibility-suites/graphql/root-type-general.test.ts delete-root-type" }
     ],
     "covers": ["gi:SCHEMA_MUTATION_TYPE_CHANGED", "gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["mutations", "mutations/createPost"], "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "mutationTypeName", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } }
+      { "at": ["mutations", "mutations/createPost"], "action": "remove", "type": { "1.0": "B" } },
+      { "at": "mutationTypeName", "optional": true, "type": { "1.0": "A" } }
     ]
   },
   {
@@ -8004,10 +7842,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts null old schema" }
     ],
     "covers": ["gi:SCHEMA_SUBSCRIPTION_TYPE_CHANGED", "gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["subscriptions", "subscriptions/onPost"], "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "subscriptionTypeName", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } }
+      { "at": ["subscriptions", "subscriptions/onPost"], "action": "add", "type": { "1.0": "N" } },
+      { "at": "subscriptionTypeName", "optional": true, "type": { "1.0": "A" } }
     ]
   },
   {
@@ -8029,10 +7867,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts null new schema" }
     ],
     "covers": ["gi:SCHEMA_SUBSCRIPTION_TYPE_CHANGED", "gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["subscriptions", "subscriptions/onPost"], "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "subscriptionTypeName", "optional": true, "type": { "0.1.2": "A", "1.0": "A" } }
+      { "at": ["subscriptions", "subscriptions/onPost"], "action": "remove", "type": { "1.0": "B" } },
+      { "at": "subscriptionTypeName", "optional": true, "type": { "1.0": "A" } }
     ]
   },
   {
@@ -8051,8 +7889,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts renamed query" }
     ],
     "covers": ["gi:SCHEMA_QUERY_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queryTypeName", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queryTypeName", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ROOT-012",
@@ -8069,8 +7907,8 @@
       { "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/schema.ts SCHEMA_MUTATION_TYPE_CHANGED" }
     ],
     "covers": ["gi:SCHEMA_MUTATION_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "mutationTypeName", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "mutationTypeName", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ROOT-013",
@@ -8085,7 +7923,7 @@
     "annotation": "no diff",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts same schema" }],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -8108,8 +7946,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/count/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/count/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ROOT-015",
@@ -8137,8 +7975,8 @@
       }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/count/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/count/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ROOT-016",
@@ -8163,8 +8001,8 @@
       { "tool": "asd", "ref": "test/graphapi/classification.test.ts making the return type non-null is non-breaking" }
     ],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/count/**", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/count/**", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ROOT-017",
@@ -8179,10 +8017,10 @@
     "annotation": "names the root type and both fields (Query.fieldA removed, fieldB added)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts renamed query" }],
     "covers": ["gi:FIELD_REMOVED", "gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/fieldA", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "queries/fieldB", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/fieldA", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "queries/fieldB", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8208,7 +8046,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -8229,8 +8067,8 @@
       }
     ],
     "covers": ["gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "queries/version", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "queries/version", "action": "add", "type": { "1.0": "N" } }]
   },
   {
     "id": "GQL-ROOT-020",
@@ -8245,8 +8083,8 @@
     "annotation": "names the type and the removed field (Post.slug)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_REMOVED" }],
     "covers": ["gi:FIELD_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "**/slug", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "**/slug", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-ROOT-021",
@@ -8261,8 +8099,8 @@
     "annotation": "names the mutation (Mutation.createPost) and the nullability change",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/field.ts FIELD_TYPE_CHANGED" }],
     "covers": ["gi:FIELD_TYPE_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "mutations/createPost/**", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "mutations/createPost/**", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-TYP-001",
@@ -8282,10 +8120,10 @@
       { "tool": "fork", "ref": "test/compatibility-suites/graphql/root-type-general.test.ts add-new-root-type" }
     ],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/photo", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Photo", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/photo", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Photo", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8305,10 +8143,10 @@
       { "tool": "fork", "ref": "test/compatibility-suites/graphql/root-type-general.test.ts delete-root-type" }
     ],
     "covers": ["gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/photo", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Photo", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/photo", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/objects/Photo", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -8327,14 +8165,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/object.test.ts added" }
     ],
     "covers": ["gi:TYPE_ADDED", "gi:FIELD_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/profile/**/home", "components/objects/User/**/home"],
-        "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
-      },
-      { "at": "components/objects/Address", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/profile/**/home", "components/objects/User/**/home"], "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Address", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8350,10 +8184,10 @@
     "annotation": "names the added root field (Query.node) and the added interface (Node)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_ADDED" }],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/node", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/interfaces/Node", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/node", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/interfaces/Node", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8369,10 +8203,10 @@
     "annotation": "names the removed root field (Query.node) and the removed interface (Node)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_REMOVED" }],
     "covers": ["gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/node", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/interfaces/Node", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/node", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/interfaces/Node", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -8388,10 +8222,10 @@
     "annotation": "names the added root field (Query.search) and the added union (SearchResult)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_ADDED" }],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/unions/SearchResult", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/unions/SearchResult", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8407,10 +8241,10 @@
     "annotation": "names the removed root field (Query.search) and the removed union (SearchResult)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_REMOVED" }],
     "covers": ["gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/unions/SearchResult", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/search", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/unions/SearchResult", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -8429,14 +8263,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/enum.test.ts added" }
     ],
     "covers": ["gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/profile/**/role", "components/objects/User/**/role"],
-        "action": "add",
-        "type": { "0.1.2": "N", "1.0": "N" }
-      },
-      { "at": "components/enums/Role", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/profile/**/role", "components/objects/User/**/role"], "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/enums/Role", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8452,14 +8282,14 @@
     "annotation": "names the removed field (User.role) and the removed enum (Role)",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_REMOVED" }],
     "covers": ["gi:TYPE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
       {
         "at": ["queries/profile/**/role", "components/objects/User/**/role"],
         "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
+        "type": { "1.0": "B" }
       },
-      { "at": "components/enums/Role", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "components/enums/Role", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -8482,10 +8312,10 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED", "gi:FIELD_ARGUMENT_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/**", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/inputObjects/SearchFilter", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search/**", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/inputObjects/SearchFilter", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8508,10 +8338,10 @@
       }
     ],
     "covers": ["gi:TYPE_REMOVED", "gi:FIELD_ARGUMENT_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/**", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/inputObjects/SearchFilter", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/search/**", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/inputObjects/SearchFilter", "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -8533,12 +8363,12 @@
       }
     ],
     "covers": ["gi:TYPE_KIND_CHANGED", "gjs:TYPE_CHANGED_KIND"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/item/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Media", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/interfaces/Media", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Book", "action": "add", "optional": true, "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/item/**", "type": { "1.0": "B" } },
+      { "at": "components/objects/Media", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/interfaces/Media", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Book", "action": "add", "optional": true, "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8554,11 +8384,11 @@
     "annotation": "names the type (Status) and the kind change",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_KIND_CHANGED" }],
     "covers": ["gi:TYPE_KIND_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["queries/profile/**", "components/objects/User/**"], "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/enums/Status", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/Status", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": ["queries/profile/**", "components/objects/User/**"], "type": { "1.0": "B" } },
+      { "at": "components/enums/Status", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/scalars/Status", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8574,11 +8404,11 @@
     "annotation": "names the type (Filter) and the kind change",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_KIND_CHANGED" }],
     "covers": ["gi:TYPE_KIND_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/inputObjects/Filter", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/scalars/Filter", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search/**", "type": { "1.0": "B" } },
+      { "at": "components/inputObjects/Filter", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/scalars/Filter", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8594,11 +8424,11 @@
     "annotation": "names the type (Result) and the kind change",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_KIND_CHANGED" }],
     "covers": ["gi:TYPE_KIND_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/result/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Result", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/unions/Result", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/result/**", "type": { "1.0": "B" } },
+      { "at": "components/objects/Result", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/unions/Result", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8614,12 +8444,12 @@
     "annotation": "names the type (Media) and the kind change",
     "sources": [{ "tool": "graphql-inspector", "ref": "packages/core/src/diff/changes/type.ts TYPE_KIND_CHANGED" }],
     "covers": ["gi:TYPE_KIND_CHANGED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/item/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/interfaces/Media", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Media", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": ["queries/book/**", "components/objects/Book/**"], "type": { "0.1.2": "B", "1.0": "B" } }
+      { "at": "queries/item/**", "type": { "1.0": "B" } },
+      { "at": "components/interfaces/Media", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/objects/Media", "action": "add", "type": { "1.0": "N" } },
+      { "at": ["queries/book/**", "components/objects/Book/**"], "type": { "1.0": "B" } }
     ]
   },
   {
@@ -8638,11 +8468,11 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/schema.test.ts huge test" }
     ],
     "covers": ["gi:TYPE_REMOVED", "gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/profile/**", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/User", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": "components/objects/Account", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/profile/**", "type": { "1.0": "B" } },
+      { "at": "components/objects/User", "action": "remove", "type": { "1.0": "B" } },
+      { "at": "components/objects/Account", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8668,7 +8498,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -8697,13 +8527,9 @@
       }
     ],
     "covers": ["gi:UNION_MEMBER_ADDED", "gjs:TYPE_ADDED_TO_UNION"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/**", "components/unions/SearchResult/**"],
-        "action": "add",
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/search/**", "components/unions/SearchResult/**"], "action": "add", "type": { "1.0": "R" } }
     ]
   },
   {
@@ -8735,13 +8561,9 @@
       }
     ],
     "covers": ["gi:UNION_MEMBER_REMOVED", "gjs:TYPE_REMOVED_FROM_UNION"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/**", "components/unions/SearchResult/**"],
-        "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
-      }
+      { "at": ["queries/search/**", "components/unions/SearchResult/**"], "action": "remove", "type": { "1.0": "B" } }
     ]
   },
   {
@@ -8772,18 +8594,10 @@
       }
     ],
     "covers": ["gi:UNION_MEMBER_REMOVED", "gi:UNION_MEMBER_ADDED", "gjs:TYPE_REMOVED_FROM_UNION"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/search/**", "components/unions/SearchResult/**"],
-        "action": "remove",
-        "type": { "0.1.2": "B", "1.0": "B" }
-      },
-      {
-        "at": ["queries/search/**", "components/unions/SearchResult/**"],
-        "action": "add",
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/search/**", "components/unions/SearchResult/**"], "action": "remove", "type": { "1.0": "B" } },
+      { "at": ["queries/search/**", "components/unions/SearchResult/**"], "action": "add", "type": { "1.0": "R" } }
     ]
   },
   {
@@ -8804,7 +8618,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -8825,10 +8639,10 @@
       }
     ],
     "covers": ["gi:UNION_MEMBER_ADDED", "gi:TYPE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/search", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/unions/SearchResult", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } }
+      { "at": "queries/search", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/unions/SearchResult", "action": "add", "type": { "1.0": "N" } }
     ]
   },
   {
@@ -8864,12 +8678,9 @@
       }
     ],
     "covers": ["gi:OBJECT_TYPE_INTERFACE_ADDED", "gjs:IMPLEMENTED_INTERFACE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/item/**", "components/objects/Item/**", "components/interfaces/**"],
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/item/**", "components/objects/Item/**", "components/interfaces/**"], "type": { "1.0": "R" } }
     ]
   },
   {
@@ -8895,12 +8706,9 @@
       }
     ],
     "covers": ["gi:OBJECT_TYPE_INTERFACE_ADDED", "gjs:IMPLEMENTED_INTERFACE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      {
-        "at": ["queries/item/**", "components/objects/Item/**", "components/interfaces/**"],
-        "type": { "0.1.2": "R", "1.0": "R" }
-      }
+      { "at": ["queries/item/**", "components/objects/Item/**", "components/interfaces/**"], "type": { "1.0": "R" } }
     ]
   },
   {
@@ -8936,8 +8744,8 @@
       }
     ],
     "covers": ["gi:OBJECT_TYPE_INTERFACE_REMOVED", "gjs:IMPLEMENTED_INTERFACE_REMOVED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["components/objects/Item/**"], "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["components/objects/Item/**"], "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "GQL-IFC-004",
@@ -8963,10 +8771,10 @@
       { "tool": "graphql-inspector", "ref": "packages/core/__tests__/diff/object.test.ts interfaces removed" }
     ],
     "covers": ["gi:OBJECT_TYPE_INTERFACE_REMOVED", "gi:OBJECT_TYPE_INTERFACE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": ["components/objects/Item/**"], "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } },
-      { "at": ["components/objects/Item/**"], "action": "add", "type": { "0.1.2": "R", "1.0": "R" } }
+      { "at": ["components/objects/Item/**"], "action": "remove", "type": { "1.0": "B" } },
+      { "at": ["components/objects/Item/**"], "action": "add", "type": { "1.0": "R" } }
     ]
   },
   {
@@ -8991,7 +8799,7 @@
       }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": []
   },
   {
@@ -9012,15 +8820,11 @@
       }
     ],
     "covers": ["gi:TYPE_ADDED", "gi:OBJECT_TYPE_INTERFACE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
+    "variants": ["1.0 DCA"],
     "expected": [
-      { "at": "queries/photo", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      { "at": "components/objects/Photo", "action": "add", "type": { "0.1.2": "N", "1.0": "N" } },
-      {
-        "at": ["components/interfaces/Node/**", "queries/node/**"],
-        "optional": true,
-        "type": { "0.1.2": "A", "1.0": "A" }
-      }
+      { "at": "queries/photo", "action": "add", "type": { "1.0": "N" } },
+      { "at": "components/objects/Photo", "action": "add", "type": { "1.0": "N" } },
+      { "at": ["components/interfaces/Node/**", "queries/node/**"], "optional": true, "type": { "1.0": "A" } }
     ]
   },
   {
@@ -9042,7 +8846,7 @@
       }
     ],
     "covers": ["gi:OBJECT_TYPE_INTERFACE_ADDED", "gjs:IMPLEMENTED_INTERFACE_ADDED"],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": ["queries/resource/**", "components/interfaces/**"], "type": { "0.1.2": "R", "1.0": "R" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": ["queries/resource/**", "components/interfaces/**"], "type": { "1.0": "R" } }]
   }
 ]

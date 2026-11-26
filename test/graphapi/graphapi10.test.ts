@@ -1,5 +1,8 @@
 import {
+  apiCompare,
   compareGraphApi,
+  detectSpec,
+  UnsupportedSpecError,
   breaking,
   nonBreaking,
   risky,
@@ -8,7 +11,7 @@ import {
   unclassified,
   type Diff,
 } from "../../src"
-import { graphapi10 } from "../helpers"
+import { graphapi } from "../helpers"
 
 // GraphApi 1.0 (gqlapi 0.6, spec https://udamir.github.io/graphapi/spec/v1.0): flat type usages (`$ref`, built-in
 // `type`, `type: list` + `items`), `nonNull: true` + `default`, definition members next to the definition's `type`,
@@ -16,8 +19,7 @@ import { graphapi10 } from "../helpers"
 
 const metaKey = Symbol("diff")
 
-const sdl = (source: string) =>
-  graphapi10(Object.assign([source], { raw: [source] }) as unknown as TemplateStringsArray)
+const sdl = (source: string) => graphapi(Object.assign([source], { raw: [source] }) as unknown as TemplateStringsArray)
 
 const compare = (before: string, after: string) => compareGraphApi(sdl(before), sdl(after), { metaKey })
 
@@ -37,8 +39,56 @@ describe("GraphApi 1.0: documents and routing", () => {
     expect(diffs).toMatchObject([{ path: ["queries", "b"], action: "add", type: nonBreaking, scope: "output" }])
   })
 
-  it("G10.2 mixing 0.1.2 and 1.0 documents is rejected", () => {
-    expect(() => compareGraphApi({ graphapi: "0.1.2" }, sdl("type Query { a: String }"))).toThrow(/Cannot compare/)
+  // GraphApi 0.1.2 (gqlapi 0.5 and earlier) is no longer supported: every entry point rejects it with a message that
+  // says how to convert the schema
+  const legacy = { graphapi: "0.1.2", queries: { a: { type: "string", nullable: true } } }
+  const conversion = "convert the GraphQL SDL with gqlapi 0.6 or later, which writes GraphApi 1.0"
+
+  it("G10.2 a GraphApi 0.1.2 document is rejected by compareGraphApi with UnsupportedSpecError", () => {
+    const current = sdl("type Query { a: String }")
+    for (const [before, after] of [
+      [legacy, current],
+      [current, legacy],
+      [legacy, legacy],
+    ]) {
+      expect(() => compareGraphApi(before, after)).toThrow(UnsupportedSpecError)
+    }
+    expect(() => compareGraphApi(legacy, current)).toThrow(`GraphApi 0.1.2 is not supported: ${conversion}`)
+    expect(() => compareGraphApi({ graphapi: "0.2" }, current)).toThrow(`GraphApi 0.2 is not supported: ${conversion}`)
+    try {
+      compareGraphApi(current, legacy)
+    } catch (error) {
+      expect(error).toMatchObject({ name: "UnsupportedSpecError", before: "1.0", after: "0.1.2" })
+    }
+  })
+
+  it("G10.2a a document without a `graphapi` field is GraphApi 0.1.2 for compareGraphApi", () => {
+    const { graphapi: _, ...unmarked } = legacy
+    expect(() => compareGraphApi(unmarked, sdl("type Query { a: String }"))).toThrow(
+      `GraphApi 0.1.2 is not supported (the document has no \`graphapi\` field): ${conversion}`,
+    )
+    expect(() => apiCompare(unmarked, unmarked, { engine: "graphapi" })).toThrow(UnsupportedSpecError)
+  })
+
+  it("G10.2b detectSpec and apiCompare reject GraphApi 0.x and keep marker-less documents as JSON Schema", () => {
+    expect(() => detectSpec(legacy)).toThrow(UnsupportedSpecError)
+    expect(() => detectSpec(legacy)).toThrow(`GraphApi 0.1.2 is not supported: ${conversion}`)
+    expect(() => detectSpec({ graphapi: 0.1 })).toThrow("GraphApi 0.1 is not supported")
+    expect(() => apiCompare(legacy, legacy)).toThrow(`GraphApi 0.1.2 is not supported: ${conversion}`)
+    expect(() => apiCompare(sdl("type Query { a: String }"), legacy)).toThrow(UnsupportedSpecError)
+    expect(detectSpec(sdl("type Query { a: String }"))).toEqual({ engine: "graphapi", version: "1.0" })
+    expect(detectSpec({ graphapi: 1 })).toEqual({ engine: "graphapi", version: "1" })
+    expect(() => detectSpec({ graphapi: "2.0" })).toThrow("Unsupported GraphApi version: 2.0")
+    // no (or a falsy) `graphapi` marker: not a GraphApi document, as in 2.0.0
+    const { graphapi: _, ...unmarked } = legacy
+    expect(detectSpec(unmarked)).toEqual({ engine: "jsonschema" })
+    expect(detectSpec({ ...legacy, graphapi: "" })).toEqual({ engine: "jsonschema" })
+  })
+
+  it("G10.2c a YAML `graphapi: 1.0` (a number) is a GraphApi 1.0 document", () => {
+    const before = { ...sdl("type Query { a: String }"), graphapi: 1 }
+    const after = { ...sdl("type Query { a: String b: Int }"), graphapi: 1 }
+    expect(apiCompare(before, after).diffs).toMatchObject([{ path: ["queries", "b"], type: nonBreaking }])
   })
 
   it("G10.3 identical schemas produce no diffs and merged equals the input", () => {
@@ -381,5 +431,24 @@ describe("GraphApi 1.0: directive usages and built-in definitions", () => {
       : [...definition.locations, "DIRECTIVE_DEFINITION"]
     definition.description = "another graphql-js wording"
     expect(compareGraphApi(before, after, { metaKey }).diffs).toEqual([])
+  })
+})
+
+describe("GraphApi 1.0: root operation type names", () => {
+  it("G10.30 the name of a new or removed root type is named as written, not as a rename of the default name", () => {
+    const without = "type Query { a: String }"
+    const withMutation = "schema { query: Query mutation: M } type Query { a: String } type M { m: String }"
+    expect(byPath(compare(without, withMutation).diffs, "mutationTypeName")).toMatchObject({
+      type: annotation,
+      description: "[Added] mutation root type name `M`",
+    })
+    expect(byPath(compare(withMutation, without).diffs, "mutationTypeName")).toMatchObject({
+      type: annotation,
+      description: "[Removed] mutation root type name `M`",
+    })
+    expect(byPath(compare(without, "schema { query: Q } type Q { a: String }").diffs, "queryTypeName")).toMatchObject({
+      type: breaking,
+      description: "[Replaced] query root type name from `Query` to `Q`",
+    })
   })
 })

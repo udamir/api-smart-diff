@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.1.0
+
+GraphQL schemas are now compared only in the GraphApi 1.0 encoding, which gqlapi 0.6 and later write. Everything else behaves as in 2.0.0.
+
+### Breaking changes
+
+- GraphApi 0.1.2 documents (`graphapi: 0.1.2`, written by gqlapi 0.5 and earlier) are no longer supported: `apiCompare`, `detectSpec` and `compareGraphApi` throw `UnsupportedSpecError` with the message "GraphApi 0.1.2 is not supported: convert the GraphQL SDL with gqlapi 0.6 or later, which writes GraphApi 1.0" (the same for any `graphapi: 0.x`). In 2.0.0 they were compared with their own rule set. Rebuild both sides from the GraphQL SDL with gqlapi 0.6 or later (`buildFromSchema(buildSchema(sdl))`) and compare the GraphApi 1.0 documents; GraphApi 1.0 paths differ from 0.1.2 paths (object fields under `methods`, non-null as `nonNull: true`, enum values keyed under `values`), so update code that reads `Diff.path` of GraphQL diffs.
+- `compareGraphApi` (and `apiCompare` with `engine: "graphapi"`) treats a document without a `graphapi` field as GraphApi 0.1.2 and throws the same error. `detectSpec` and `apiCompare` without `engine` still read a document without a `graphapi` field as a JSON Schema, as in 2.0.0.
+- Comparing a GraphApi 1.0 document with a 0.1.2 document throws the 0.1.2 error above instead of "Cannot compare GraphApi 0.1.2 with GraphApi 1.0".
+- `graphApiRules` is the GraphApi 1.0 rule set (in 2.0.0 it was the 0.1.2 rule set) and takes no options; `graphApi10Rules` is removed. Replace `graphApi10Rules()` with `graphApiRules()`.
+- The `GraphApiRulesOptions` type is removed: its only option, `notMergeAllOf`, applied to the 0.1.2 rule set (GraphApi 1.0 documents have no `allOf`).
+
+### Fixes
+
+- A GraphApi document whose `graphapi` field is a number, as an unquoted `graphapi: 1.0` in YAML parses, is compared with the GraphApi 1.0 rules; 2.0.0 used the 0.1.2 rules for it and left some changes `unclassified`.
+- The name of a root operation type that is added or removed together with the type reads "[Added] mutation root type name `M`" instead of "[Added] mutation root type name from `Mutation` to `M`" (it is not a rename).
+
 ## 2.0.0
 
 The first major release since 1.0.6: a new compare engine behind the same entry points, more specifications (gRPC / Protocol Buffers among them), a sixth classification, usage-based classification of shared components, rename detection, rewritten descriptions and much faster comparison. `apiCompare`, `compareOpenApi`, `compareAsyncApi`, `compareGraphApi`, `compareJsonSchema` and `compare` keep their signatures, `CompareResult` is still `{ diffs, merged, rootMergeMeta }`, `Diff.path` is still the path in the before document, and custom `rules`, `annotateHook` and `ClassifyRule` tuples still work. Step-by-step upgrade notes: [Migration from 1.x](https://udamir.github.io/api-smart-diff/guide/migration).

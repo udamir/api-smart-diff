@@ -131,7 +131,7 @@ The exported mapping resolvers are `objectMappingResolver` and `arrayMappingReso
 
 ## Changing a built-in rule tree
 
-The rule tree builders are exported: `openapi3Rules({ version, notMergeAllOf, extensions })` (`version` is `"3.0"`, `"3.1"` or `"3.2"`), `asyncApi2Rules`, `asyncApi3Rules`, `jsonSchemaRules({ version, notMergeAllOf })`, `graphApiRules`, `graphApi10Rules`, `protoApiRules({ compatibility, files, optionRules })`. Spread a built-in node to change one field and keep the rest:
+The rule tree builders are exported: `openapi3Rules({ version, notMergeAllOf, extensions })` (`version` is `"3.0"`, `"3.1"` or `"3.2"`), `asyncApi2Rules`, `asyncApi3Rules`, `jsonSchemaRules({ version, notMergeAllOf })`, `graphApiRules`, `protoApiRules({ compatibility, files, optionRules })`. Spread a built-in node to change one field and keep the rest:
 
 ```ts
 import { allBreaking, compareOpenApi, openapi3Rules, type CompareRules } from "api-smart-diff"

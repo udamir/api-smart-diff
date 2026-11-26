@@ -126,11 +126,7 @@ const cases: CompatCase[] = [
       unreachable("type Query2 { country: Country } type Country { name: String code: ID }"),
       unreachable("type Query2 { country: Country } type Country { name: String code: String }"),
     ],
-    expect: [
-      { at: "components/objects/Country/**", type: breaking, mentions: ["Country", "code"] },
-      // 0.1.2 also inlines Country into Query2
-      { at: "components/objects/Query2/**", type: breaking, mentions: ["code"], optional: true },
-    ],
+    expect: [{ at: "components/objects/Country/**", type: breaking, mentions: ["Country", "code"] }],
   }),
   gql({
     id: "GQL-RCH-007",
@@ -278,11 +274,7 @@ const cases: CompatCase[] = [
       "type Query { me: String region: Region } type Region { name: String }",
       "type Query { me: String } type Region { name: String }",
     ],
-    expect: [
-      { at: "queries/region", action: "remove", type: breaking, mentions: [QUERY, "region"] },
-      // 0.1.2 lists only reachable named types: Region leaves `components`
-      { at: "components/objects/Region", action: "remove", type: breaking, mentions: ["Region"], optional: true },
-    ],
+    expect: [{ at: "queries/region", action: "remove", type: breaking, mentions: [QUERY, "region"] }],
   }),
   gql({
     id: "GQL-RCH-015",
@@ -308,10 +300,8 @@ const cases: CompatCase[] = [
 for (const c of cases) {
   // the last two cases change reachability through a root field and do not depend on POLICY-02
   if (c.id === "GQL-RCH-014" || c.id === "GQL-RCH-015") continue
-  // GraphApi 0.1.2 references custom scalars through `format` with a fixed scope (§12.2), so those variants pass;
   // GQL-RCH-013 also needed the `risky` class (ISSUE-130, fixed in P1)
-  // ISSUE-132 (fixed) (P8a): POLICY-02 decided (a); ISSUE-127 / ISSUE-57 (fixed) (P8a): the 0.1.2 descriptions of
-  // GQL-RCH-003 … 010 name the type
+  // ISSUE-132 (fixed) (P8a): POLICY-02 decided (a); ISSUE-127 / ISSUE-57 (fixed) (P8a)
   c.issue = undefined
 }
 

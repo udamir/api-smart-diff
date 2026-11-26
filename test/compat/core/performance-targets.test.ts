@@ -119,9 +119,9 @@ describe("compat core / §8 performance targets", () => {
     expect(compare / clone).toBeLessThanOrEqual(1.5)
   })
 
-  // ISSUE-53 (fixed): with the GraphApi 0.1.2 encoding the diff count of a single field removal grew exponentially
-  // with the size of a cyclic type graph (the 1.0 encoding reports it once); 0.1.2 usages are now nominal as well.
-  it("X-PERF-003 GraphApi 0.1.2: one removed field in a 12-type cyclic graph yields a bounded number of diffs", () => {
+  // ISSUE-53 (fixed): a usage of a named type is nominal, so a single field removal is reported once, however large the
+  // cyclic type graph that reaches it
+  it("X-PERF-003 GraphApi: one removed field in a 12-type cyclic graph yields one diff", () => {
     const ring = (k: number, drop?: number) =>
       [
         "type Query { root: T0 }",
@@ -130,10 +130,6 @@ describe("compat core / §8 performance targets", () => {
           (_, i) => `type T${i} { id: ID! ${i === drop ? "" : "extra: Int "}f0: T${(i + 1) % k} f1: T${(i + 2) % k} }`,
         ),
       ].join("\n")
-    const v10 = apiCompare(gqlDocs(ring(12), "1.0"), gqlDocs(ring(12, 11), "1.0")).diffs.length
-    const v012 = apiCompare(gqlDocs(ring(12), "0.1.2"), gqlDocs(ring(12, 11), "0.1.2")).diffs.length
-    expect(v10).toBe(1)
-    // one declaration diff plus at most one per type that references T11 directly
-    expect(v012).toBeLessThanOrEqual(3)
+    expect(apiCompare(gqlDocs(ring(12)), gqlDocs(ring(12, 11))).diffs.length).toBe(1)
   })
 })

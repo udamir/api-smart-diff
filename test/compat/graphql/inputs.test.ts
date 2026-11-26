@@ -94,7 +94,7 @@ const cases: CompatCase[] = [
     covers: ["gi:INPUT_FIELD_ADDED", "gjs:OPTIONAL_INPUT_FIELD_ADDED"],
     sdl: [inp(""), inp("limit: Int! = 10")],
     expect: [{ at: SITES, action: "add", type: risky, mentions: F("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-INP-004",
@@ -108,7 +108,7 @@ const cases: CompatCase[] = [
     covers: ["gi:INPUT_FIELD_ADDED"],
     sdl: [inp(""), inp("limit: Int = 10")],
     expect: [{ at: SITES, action: "add", type: risky, mentions: F("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-INP-005",
@@ -153,7 +153,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-INP-007",
-    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change; 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change
     title: "required input field removed",
     before: "input SearchFilter { term: String limit: Int! }",
     after: "input SearchFilter { term: String }",
@@ -232,7 +232,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-INP-011",
-    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change; 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change
     title: "input field wrapped in a list",
     before: "input SearchFilter { tag: String }",
     after: "input SearchFilter { tag: [String] }",
@@ -307,7 +307,7 @@ const cases: CompatCase[] = [
     covers: ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED", "gjs:INPUT_FIELD_DEFAULT_VALUE_ADDED"],
     sdl: [inp("limit: Int"), inp("limit: Int = 10")],
     expect: [{ at: SITES, type: risky, mentions: F("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-INP-015",
@@ -327,7 +327,7 @@ const cases: CompatCase[] = [
     covers: ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED", "gjs:INPUT_FIELD_DEFAULT_VALUE_CHANGE"],
     sdl: [inp("limit: Int = 10"), inp("limit: Int = 20")],
     expect: [{ at: SITES, type: risky, mentions: F("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-INP-016",
@@ -346,7 +346,7 @@ const cases: CompatCase[] = [
     covers: ["gi:INPUT_FIELD_DEFAULT_VALUE_CHANGED", "gjs:INPUT_FIELD_DEFAULT_VALUE_CHANGE"],
     sdl: [inp("limit: Int = 10"), inp("limit: Int")],
     expect: [{ at: SITES, type: risky, mentions: F("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-INP-017",
@@ -392,7 +392,7 @@ const cases: CompatCase[] = [
     sdl: [inp('tags: [String] = ["a"]'), inp('tags: [String] = ["a", "b"]')],
     expect: [{ at: SITES, type: risky, mentions: F("tags") }],
     // POLICY-05 decided (b); 1.0 also compares the list default item by item without a rule (primary cause)
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description; 1.0: ISSUE-140 (fixed)
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); ISSUE-140 (fixed)
   }),
   gql({
     id: "GQL-INP-020",

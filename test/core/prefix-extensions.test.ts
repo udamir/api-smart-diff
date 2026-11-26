@@ -26,7 +26,6 @@ import {
   resolveClassifyTuple,
   resolveNodeRules,
 } from "../../src/core"
-import { graphApiSchemaRules } from "../../src/graphapi"
 
 // Block A9 — P1 foundations: the `risky` DiffType (decision §11.14, ISSUE-130), prefix rules `/<prefix>*` with json-crawl 1.x
 // semantics (decision §11.15) and the built-in `x-*` extension rule (POLICY-06 / POLICY-07, ISSUE-54 / 73 / 131).
@@ -358,7 +357,7 @@ describe("Block A9 — merged rule sharing", () => {
   // the schema rule objects have more than 64 keys since the keyword entries left the former `/^` prefix map; JavaScriptCore reads
   // such objects through a slower property storage, which is harmless while they are merged once, not per node
   it("A9.13 rules merged for a function rule are built once and shared by every node it applies to", () => {
-    for (const schema of [jsonSchemaRules(), openApiSchemaRules({ version: "3.0" }), graphApiSchemaRules()]) {
+    for (const schema of [jsonSchemaRules(), openApiSchemaRules({ version: "3.0" })]) {
       const items = (value: unknown) => resolveNodeRules(schema, "items", ["items"], value)
       expect(items({ type: "string" })).toBe(items({ type: "number" }))
       expect(items([{ type: "string" }])).toBe(items([{ type: "number" }]))

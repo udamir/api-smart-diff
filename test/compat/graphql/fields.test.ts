@@ -90,7 +90,7 @@ const cases: CompatCase[] = [
     ],
     covers: ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND_SAFE"],
     sdl: [user("name: String"), user("name: String!")],
-    expect: [{ at: ["**/name/**", "**/required/**"], type: nonBreaking, mentions: ["User", "name"] }],
+    expect: [{ at: "**/name/**", type: nonBreaking, mentions: ["User", "name"] }],
   }),
   gql({
     id: "GQL-FLD-004",
@@ -111,7 +111,7 @@ const cases: CompatCase[] = [
     ],
     covers: ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND"],
     sdl: [user("name: String!"), user("name: String")],
-    expect: [{ at: ["**/name/**", "**/required/**"], type: breaking, mentions: ["User", "name"] }],
+    expect: [{ at: "**/name/**", type: breaking, mentions: ["User", "name"] }],
   }),
   gql({
     id: "GQL-FLD-005",
@@ -297,7 +297,7 @@ const cases: CompatCase[] = [
       "type Query { region: Region } type Region { name: String continents: [Continent]! } type Continent { code: ID }",
       "type Query { region: Region } type Region { name: String continents: [Continent] } type Continent { code: ID }",
     ],
-    expect: [{ at: ["**/continents/**", "**/required/**"], type: breaking, mentions: ["Region", "continents"] }],
+    expect: [{ at: "**/continents/**", type: breaking, mentions: ["Region", "continents"] }],
   }),
   gql({
     id: "GQL-FLD-015",
@@ -316,7 +316,7 @@ const cases: CompatCase[] = [
     ],
     covers: ["gi:FIELD_TYPE_CHANGED", "gjs:FIELD_CHANGED_KIND_SAFE"],
     sdl: [user("tags: [String]"), user("tags: [String]!")],
-    expect: [{ at: ["**/tags/**", "**/required/**"], type: nonBreaking, mentions: ["User", "tags"] }],
+    expect: [{ at: "**/tags/**", type: nonBreaking, mentions: ["User", "tags"] }],
   }),
   gql({
     id: "GQL-FLD-016",
@@ -339,7 +339,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-FLD-017",
-    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change; 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change
     title: "output field enum to String",
     before: "type User { role: Role } enum Role { ADMIN GUEST }",
     after: "type User { role: String }",
@@ -353,8 +353,6 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_TYPE_CHANGED"],
     sdl: [user("role: Role } enum Role { ADMIN GUEST"), user("role: String")],
     expect: [
-      // 0.1.2 carries the GraphQL type name in `title`: a secondary diff of the same type change
-      { at: "**/role/title", type: annotation, mentions: ["role"], optional: true },
       { at: "**/role/**", type: breaking, mentions: ["User", "role"] },
       // the enum is no longer used anywhere: its definition disappears with the change
       { at: "components/enums/Role", action: "remove", type: breaking, mentions: ["Role"], optional: true },
@@ -376,8 +374,6 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_TYPE_CHANGED"],
     sdl: [user("role: String"), user("role: Role } enum Role { ADMIN GUEST")],
     expect: [
-      // 0.1.2 carries the GraphQL type name in `title`: a secondary diff of the same type change
-      { at: "**/role/title", type: annotation, mentions: ["role"], optional: true },
       { at: "**/role/**", type: breaking, mentions: ["User", "role"] },
       { at: "components/enums/Role", action: "add", type: nonBreaking, mentions: ["Role"], optional: true },
     ],
@@ -400,8 +396,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-FLD-020",
-    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage; the 0.1.2 description omits
-    // the type (Node / Item), ISSUE-127
+    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage
     // ISSUE-127 (fixed) (P8a)
     title: "interface field added",
     before: "interface Node { id: ID! }",
@@ -436,8 +431,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-FLD-021",
-    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage; the 0.1.2 description omits
-    // the type (Node / Item), ISSUE-127
+    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage
     // ISSUE-127 (fixed) (P8a)
     title: "interface field removed",
     before: "interface Node { id: ID! label: String }",
@@ -476,8 +470,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-FLD-022",
-    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage; the 0.1.2 description omits
-    // the type (Node / Item), ISSUE-127
+    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage
     // ISSUE-127 (fixed) (P8a)
     title: "interface field type changed",
     before: "interface Node { id: ID! rank: Int }",
@@ -507,8 +500,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-FLD-023",
-    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage; the 0.1.2 description omits
-    // the type (Node / Item), ISSUE-127
+    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage
     // ISSUE-127 (fixed) (P8a)
     title: "interface field nullable to non-null",
     before: "interface Node { id: ID! rank: Int }",
@@ -532,8 +524,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-FLD-024",
-    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage; the 0.1.2 description omits
-    // the type (Node / Item), ISSUE-127
+    // ISSUE-118 (fixed): the implementing type is classified by the interface's usage
     // ISSUE-127 (fixed) (P8a)
     title: "interface field non-null to nullable",
     before: "interface Node { id: ID! rank: Int! }",
@@ -636,7 +627,7 @@ const cases: CompatCase[] = [
     ],
     covers: ["gi:FIELD_TYPE_CHANGED"],
     sdl: [union("width: Int"), union("width: Int!")],
-    expect: [{ at: ["**/width/**", "**/required/**"], type: nonBreaking, mentions: ["Photo", "width"] }],
+    expect: [{ at: "**/width/**", type: nonBreaking, mentions: ["Photo", "width"] }],
   }),
   gql({
     id: "GQL-FLD-031",
@@ -651,7 +642,7 @@ const cases: CompatCase[] = [
     ],
     covers: ["gi:FIELD_TYPE_CHANGED"],
     sdl: [union("width: Int!"), union("width: Int")],
-    expect: [{ at: ["**/width/**", "**/required/**"], type: breaking, mentions: ["Photo", "width"] }],
+    expect: [{ at: "**/width/**", type: breaking, mentions: ["Photo", "width"] }],
   }),
   gql({
     id: "GQL-FLD-032",
@@ -683,7 +674,7 @@ const cases: CompatCase[] = [
       "type Query { tweet: Tweet } type Mutation { createTweet(body: String): Tweet } type Tweet { id: ID! body: String }",
       "type Query { tweet: Tweet } type Mutation { createTweet(body: String): Tweet } type Tweet { id: ID body: String }",
     ],
-    expect: [{ at: ["**/id/**", "**/required/**"], type: breaking, mentions: ["Tweet", "id"] }],
+    expect: [{ at: "**/id/**", type: breaking, mentions: ["Tweet", "id"] }],
   }),
   gql({
     id: "GQL-FLD-034",
@@ -731,10 +722,7 @@ const cases: CompatCase[] = [
       "type Query { profile: User } type User { home: Address } type Address { city: String }",
       "type Query { profile: User } type User { home: [Address] } type Address { city: String }",
     ],
-    expect: [
-      { at: "**/home/title", type: annotation, mentions: ["home"], optional: true },
-      { at: "**/home/**", type: breaking, mentions: ["User", "home"] },
-    ],
+    expect: [{ at: "**/home/**", type: breaking, mentions: ["User", "home"] }],
   }),
   gql({
     id: "GQL-FLD-037",

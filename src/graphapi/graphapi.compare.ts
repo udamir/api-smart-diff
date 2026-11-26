@@ -1,59 +1,58 @@
 import type { CompareOptions, CompareResult, CompareRules, SourceContext } from "../types"
 import { graphApiAnnotateHook } from "./graphapi.annotate"
 import { graphApiRules } from "./graphapi.rules"
-import { graphApi10Rules } from "./graphapi10.rules"
 import { compare, UnsupportedSpecError, withDefaults } from "../core"
-import { getStringValue, isObject } from "../utils"
+import { isObject } from "../utils"
 
-export type GraphApiVersion = "0.1.2" | "1.0"
+/** A GraphApi 1.x version (`graphapi: "1.0"`, written by gqlapi 0.6 and later). */
+export const GRAPHAPI_VERSION_PATTERN = /^1(\.\d+)*$/
 
-/** GraphApi document version from the `graphapi` field (0.1.2 when absent). */
-export const getGraphApiVersion = (document: unknown): GraphApiVersion | undefined => {
-  if (!isObject(document)) {
-    return
-  }
-  const version = getStringValue(document, "graphapi")
-  if (version === undefined || version.startsWith("0.")) {
-    return "0.1.2"
-  }
-  if (version === "1.0" || version.startsWith("1.")) {
-    return "1.0"
-  }
-  return
+/** A GraphApi 0.x version (0.1.2, written by gqlapi 0.5 and earlier): no longer supported. */
+export const LEGACY_GRAPHAPI_VERSION_PATTERN = /^0\.\d+(\.\d+)*$/
+
+/** The message of the error for a GraphApi 0.x document (`version` absent: a document without a `graphapi` field). */
+export const legacyGraphApiMessage = (version?: string) =>
+  `GraphApi ${version ?? "0.1.2"} is not supported${version === undefined ? " (the document has no `graphapi` field)" : ""}: convert the GraphQL SDL with gqlapi 0.6 or later, which writes GraphApi 1.0`
+
+const graphApiVersionOf = (document: unknown): string | undefined => {
+  const value = isObject(document) ? document.graphapi : undefined
+  return typeof value === "string" || typeof value === "number" ? String(value) : undefined
 }
 
-// built-in rule trees per encoding, shared by every comparison
-const rulesCache = new Map<GraphApiVersion, CompareRules>()
-
-const builtInRules = (version: GraphApiVersion): CompareRules => {
-  let rules = rulesCache.get(version)
-  if (!rules) {
-    rules = version === "1.0" ? graphApi10Rules() : graphApiRules()
-    rulesCache.set(version, rules)
+/** Throws `UnsupportedSpecError` unless both documents are GraphApi 1.x. */
+const assertGraphApi1 = (before: unknown, after: unknown) => {
+  const bVersion = graphApiVersionOf(before)
+  const aVersion = graphApiVersionOf(after)
+  for (const [document, version] of [
+    [before, bVersion],
+    [after, aVersion],
+  ] as const) {
+    const absent = isObject(document) && (document.graphapi === undefined || document.graphapi === null)
+    if (absent || (version !== undefined && LEGACY_GRAPHAPI_VERSION_PATTERN.test(version))) {
+      throw new UnsupportedSpecError(legacyGraphApiMessage(version), bVersion, aVersion)
+    }
   }
-  return rules
+  if (!bVersion || !aVersion || !GRAPHAPI_VERSION_PATTERN.test(bVersion) || !GRAPHAPI_VERSION_PATTERN.test(aVersion)) {
+    throw new UnsupportedSpecError("Unsupported GraphApi version", String(bVersion), String(aVersion))
+  }
 }
 
+// the built-in rule tree, shared by every comparison
+let builtInRules: CompareRules | undefined
+
+/** Compares two GraphApi 1.x documents (GraphApi 0.1.2 documents throw `UnsupportedSpecError`). */
 export const compareGraphApi = (
   before: unknown,
   after: unknown,
   options: CompareOptions = {},
   context: SourceContext = {},
 ): CompareResult => {
-  const bVersion = getGraphApiVersion(before)
-  const aVersion = getGraphApiVersion(after)
-
-  if (!bVersion || !aVersion) {
-    throw new UnsupportedSpecError("Unsupported GraphApi version", String(bVersion), String(aVersion))
-  }
-  if (bVersion !== aVersion) {
-    throw new UnsupportedSpecError(`Cannot compare GraphApi ${bVersion} with GraphApi ${aVersion}`, bVersion, aVersion)
-  }
+  assertGraphApi1(before, after)
 
   // set default options
   const _options = withDefaults(
     options,
-    options.rules ?? builtInRules(bVersion),
+    options.rules ?? (builtInRules ??= graphApiRules()),
     options.annotateHook ?? graphApiAnnotateHook,
   )
 

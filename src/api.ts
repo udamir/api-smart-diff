@@ -1,6 +1,11 @@
 import type { CompareOptions, CompareEngine, CompareEngineName } from "./types"
 import { compareJsonSchema } from "./jsonSchema"
-import { compareGraphApi } from "./graphapi"
+import {
+  compareGraphApi,
+  GRAPHAPI_VERSION_PATTERN,
+  LEGACY_GRAPHAPI_VERSION_PATTERN,
+  legacyGraphApiMessage,
+} from "./graphapi"
 import { compareAsyncApi } from "./asyncapi"
 import { compareOpenApi } from "./openapi"
 import { compareProtoApi, PROTOAPI_VERSION_PATTERN } from "./protoapi"
@@ -9,7 +14,7 @@ import { isObject } from "./utils"
 
 export interface DetectedSpec {
   engine: CompareEngineName
-  // specification version as written in the document (e.g. "3.1.0", "2.6.0", "0.1.2", "0.1")
+  // specification version as written in the document (e.g. "3.1.0", "2.6.0", "1.0", "0.1")
   version?: string
 }
 
@@ -26,8 +31,8 @@ const versionOf = (value: unknown): string | undefined =>
 
 /**
  * Detects the specification of a document. Objects without a specification marker are JSON Schemas; documents of a
- * recognized but unsupported specification (Swagger 2, OpenAPI 4+, AsyncAPI 1.x/4+, unknown GraphApi or ProtoApi versions)
- * throw `UnsupportedSpecError`.
+ * recognized but unsupported specification (Swagger 2, OpenAPI 4+, AsyncAPI 1.x/4+, GraphApi versions other than
+ * 1.x (0.1.2 included), unknown ProtoApi versions) throw `UnsupportedSpecError`.
  */
 export const detectSpec = (document: unknown): DetectedSpec => {
   if (!isObject(document)) {
@@ -56,8 +61,11 @@ export const detectSpec = (document: unknown): DetectedSpec => {
 
   if ("graphapi" in document && document.graphapi) {
     const version = versionOf(document.graphapi)
-    if (version !== undefined && /^(0\.\d+(\.\d+)*|1(\.\d+)*)$/.test(version)) {
+    if (version !== undefined && GRAPHAPI_VERSION_PATTERN.test(version)) {
       return { engine: "graphapi", version }
+    }
+    if (version !== undefined && LEGACY_GRAPHAPI_VERSION_PATTERN.test(version)) {
+      throw new UnsupportedSpecError(legacyGraphApiMessage(version), version)
     }
     throw new UnsupportedSpecError(`Unsupported GraphApi version: ${String(document.graphapi)}`, version)
   }

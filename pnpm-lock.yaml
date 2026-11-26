@@ -61,9 +61,6 @@ importers:
       gqlapi:
         specifier: ^0.6.0
         version: 0.6.0(graphql@16.9.0)
-      gqlapi-legacy:
-        specifier: file:vendor/gqlapi-0.6.0-pre.20261116.tgz
-        version: gqlapi@file:vendor/gqlapi-0.6.0-pre.20261116.tgz(graphql@16.9.0)
       graphql:
         specifier: ^16.9.0
         version: 16.9.0
@@ -1184,12 +1181,6 @@ packages:
     peerDependencies:
       graphql: ^16.0.0 || ^17.0.0
 
-  gqlapi@file:vendor/gqlapi-0.6.0-pre.20261116.tgz:
-    resolution: {integrity: sha512-lymyVJRfcmbmKIbUJ6nv1Q8PuJ8XAEjoio5nIZBdAERKqqqI0iwtvvBQ4ryFPKzZ0VgaC5lRJkKEYoBOjuKmMA==, tarball: file:vendor/gqlapi-0.6.0-pre.20261116.tgz}
-    version: 0.6.0-pre.20261116
-    peerDependencies:
-      graphql: '>=15'
-
   graphql@16.9.0:
     resolution: {integrity: sha512-GGTKBX4SD7Wdb8mqeDLni2oaRGYQWjWHGKPQ24ZMnUtKfcsVoiv4uX8+LJr1K6U5VW2Lu1BwJnj7uiori0YtRw==}
     engines: {node: ^12.22.0 || ^14.16.0 || ^16.0.0 || >=17.0.0}
@@ -1481,9 +1472,6 @@ packages:
 
   trim-lines@3.0.1:
     resolution: {integrity: sha512-kRj8B+YHZCc9kQYdWfJB2/oUl9rA99qbowYYBtr4ui4mZyAQ2JpvVBd/6U2YloATfqBhBTSMhTpgBHtU0Mf3Rg==}
-
-  tslib@2.9.1:
-    resolution: {integrity: sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA==}
 
   tsrs@7.1.0-beta.tsrs2:
     resolution: {integrity: sha512-T6O1mYbPe7B5ZSudwqJcn7hfn66w3wXsCd+GpXyDPsRmei71W6WAidlj+QWaYgmfpbmMqzcryKcg5aVg8DOSXw==}
@@ -2439,11 +2427,6 @@ snapshots:
     dependencies:
       graphql: 16.9.0
 
-  gqlapi@file:vendor/gqlapi-0.6.0-pre.20261116.tgz(graphql@16.9.0):
-    dependencies:
-      graphql: 16.9.0
-      tslib: 2.9.1
-
   graphql@16.9.0: {}
 
   hast-util-to-html@9.0.7:
@@ -2724,8 +2707,6 @@ snapshots:
   totalist@3.0.1: {}
 
   trim-lines@3.0.1: {}
-
-  tslib@2.9.1: {}
 
   tsrs@7.1.0-beta.tsrs2:
     optionalDependencies:

@@ -23,7 +23,7 @@ Compare two versions of an API document and get every change as a list of diffs 
 | [OpenAPI](https://spec.openapis.org/oas/latest.html) | 3.0, 3.1, 3.2 (documents of different 3.x versions can be compared) |
 | [AsyncAPI](https://www.asyncapi.com/docs/reference) | 2.x (2.0 – 2.6), 3.0 |
 | [JSON Schema](https://json-schema.org/) | draft-04, draft-06, draft-07, 2020-12 |
-| GraphQL via [GraphApi](https://github.com/udamir/graphapi) | GraphApi 0.1.2 and 1.0 (convert SDL with [gqlapi](https://github.com/udamir/graphapi)) |
+| GraphQL via [GraphApi](https://github.com/udamir/graphapi) | GraphApi 1.0 (convert SDL with [gqlapi](https://github.com/udamir/graphapi) 0.6 or later) |
 | gRPC / Protocol Buffers via [ProtoApi](https://github.com/udamir/protoapi) | ProtoApi 0.1 (build it from `.proto` sources with [protoapi](https://github.com/udamir/protoapi)) |
 
 `apiCompare` detects the specification from the documents. Swagger 2.0 is not supported (convert it to OpenAPI 3 first): unsupported documents throw `UnsupportedSpecError`. Details per specification: [Specifications and engines](https://udamir.github.io/api-smart-diff/guide/engines).
@@ -199,7 +199,7 @@ if (risky.length) console.warn(risky.map((diff) => diff.description).join("\n"))
 
 ## Limitations
 
-AsyncAPI 2.x cannot be compared with 3.0, nor GraphApi 0.1.2 with 1.0; external `$ref`s are resolved only from `externalSources`; AsyncAPI payloads in non-JSON-Schema formats (Avro, RAML, Protobuf) are compared as opaque values. Protocol Buffers: both documents must be built with the same protoapi version and options, renamed messages and enums are a removal plus an addition, and additions to responses assume ProtoJSON readers that ignore unknown fields. See [Limitations](https://udamir.github.io/api-smart-diff/guide/limitations).
+AsyncAPI 2.x cannot be compared with 3.0; GraphApi 0.1.2 documents (gqlapi 0.5 and earlier) are not supported; external `$ref`s are resolved only from `externalSources`; AsyncAPI payloads in non-JSON-Schema formats (Avro, RAML, Protobuf) are compared as opaque values. Protocol Buffers: both documents must be built with the same protoapi version and options, renamed messages and enums are a removal plus an addition, and additions to responses assume ProtoJSON readers that ignore unknown fields. See [Limitations](https://udamir.github.io/api-smart-diff/guide/limitations).
 
 ## Contributing
 

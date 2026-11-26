@@ -221,7 +221,7 @@ Replacing the enum value `guest` with `owner` breaks clients that send `guest`. 
 
 ## GraphQL (GraphApi)
 
-GraphQL schemas are compared in their GraphApi encoding: arguments and input types like requests, output fields like responses. Convert SDL with [gqlapi](https://github.com/udamir/graphapi) (`buildFromSchema(buildSchema(sdl))`), or paste SDL into the [online demo](/demo).
+GraphQL schemas are compared in their GraphApi 1.0 encoding: arguments and input types like requests, output fields like responses. Convert SDL with [gqlapi](https://github.com/udamir/graphapi) 0.6 or later (`buildFromSchema(buildSchema(sdl))`), or paste SDL into the [online demo](/demo). GraphApi 0.1.2 documents (written by gqlapi 0.5 and earlier) are not supported.
 
 ### GraphQL fields and arguments
 
@@ -237,14 +237,6 @@ GraphQL is compared in its GraphApi 1.0 encoding (convert the SDL with gqlapi). 
 
 <ClientOnly>
   <DiffExample id="graphapi-enums-unions" />
-</ClientOnly>
-
-### GraphApi 0.1.2 documents
-
-Documents written by gqlapi 0.5 and earlier (`graphapi: 0.1.2`) are compared with their own rule set and get the same verdicts as 1.0 documents. A field type changed from `String` to `Int` is breaking.
-
-<ClientOnly>
-  <DiffExample id="graphapi-012" />
 </ClientOnly>
 
 

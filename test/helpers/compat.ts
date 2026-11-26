@@ -5,7 +5,6 @@
 // annotation (a strong description that names the changed entity and its location context).
 
 import { buildFromSchema } from "gqlapi"
-import { buildFromSchema as buildLegacyFromSchema } from "gqlapi-legacy"
 import { buildSchema } from "graphql"
 import { type BuildIssueCode, buildFromProto } from "protoapi"
 
@@ -116,9 +115,8 @@ export interface SchemaCase extends CaseBase {
 
 export interface GraphqlCase extends CaseBase {
   kind: "graphql"
+  /** both sides as GraphQL SDL, compared in their GraphApi 1.0 encoding (gqlapi 0.6); one variant, `1.0` */
   sdl: [string, string]
-  /** default: both GraphApi encodings */
-  encodings?: ("0.1.2" | "1.0")[]
 }
 
 /** `.proto` input of a ProtoApi case: one file (`a.proto`) or a map of import paths to file texts. */
@@ -346,10 +344,8 @@ const expectFor = (c: CaseBase, variant: string, direction?: Direction, level?: 
   return found
 }
 
-export const gqlDocs = (sdl: string, encoding: "0.1.2" | "1.0") =>
-  encoding === "1.0"
-    ? buildFromSchema(buildSchema(sdl, { noLocation: true }))
-    : buildLegacyFromSchema(buildSchema(sdl, { noLocation: true }))
+/** The GraphApi 1.0 document (gqlapi 0.6) of a GraphQL SDL. */
+export const gqlDocs = (sdl: string) => buildFromSchema(buildSchema(sdl, { noLocation: true }))
 
 // ---- ProtoApi cases (PROTOAPI_DESIGN §9.2)
 
@@ -440,13 +436,15 @@ export const variantsOf = (c: CompatCase, family: string, area: string): Variant
     }))
   }
   if (c.kind === "graphql") {
-    return (c.encodings ?? ["0.1.2", "1.0"]).map((encoding) => ({
-      ...base(encoding),
-      before: gqlDocs(c.sdl[0], encoding),
-      after: gqlDocs(c.sdl[1], encoding),
-      prefix: [],
-      mentions: [],
-    }))
+    return [
+      {
+        ...base("1.0"),
+        before: gqlDocs(c.sdl[0]),
+        after: gqlDocs(c.sdl[1]),
+        prefix: [],
+        mentions: [],
+      },
+    ]
   }
   return (c.placements ?? ["request", "response"]).map((placement) => {
     const direction = placementDirection[placement]

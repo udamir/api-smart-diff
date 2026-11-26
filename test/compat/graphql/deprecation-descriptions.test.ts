@@ -378,7 +378,7 @@ const cases: CompatCase[] = [
     covers: ["gi:ENUM_VALUE_REMOVED"],
     sdl: [color(`RED BLUE ${R("use NAVY")}`), color("RED")],
     expect: [{ at: "**", action: "remove", type: breaking, mentions: ["Color", "BLUE"] }],
-    // ISSUE-57 (fixed) (P8a); ISSUE-119 (fixed); POLICY-04 decided (a); 0.1.2 enum value description
+    // ISSUE-57 (fixed) (P8a); ISSUE-119 (fixed); POLICY-04 decided (a)
   }),
   gql({
     id: "GQL-DEP-017",

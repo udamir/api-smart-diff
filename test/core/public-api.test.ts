@@ -37,7 +37,6 @@ import type {
   DiffType,
   DiffTypeClassifier,
   ExtensionAnnotationResolver,
-  GraphApiRulesOptions,
   JsonSchemaCompareCache,
   JsonSchemaCompareOptions,
   JsonSchemaDraft,
@@ -83,7 +82,6 @@ const PUBLIC_RUNTIME_EXPORTS = [
   "compare",
   "asyncApi2Rules",
   "asyncApi3Rules",
-  "graphApi10Rules",
   "graphApiRules",
   "jsonSchemaRules",
   "openApiSchemaRules",
@@ -195,7 +193,6 @@ describe("public API of the package entry", () => {
       DiffType,
       DiffTypeClassifier,
       ExtensionAnnotationResolver,
-      GraphApiRulesOptions,
       JsonSchemaCompareCache,
       JsonSchemaCompareOptions,
       JsonSchemaDraft,
@@ -221,7 +218,7 @@ describe("public API of the package entry", () => {
       ScopeResolver,
       SourceContext,
     ]
-    expectTypeOf<PublicTypes["length"]>().toEqualTypeOf<55>()
+    expectTypeOf<PublicTypes["length"]>().toEqualTypeOf<54>()
 
     // the types fit the values they describe
     const rule: CompareRule = { $: api.allBreaking, mapping: api.objectMappingResolver }

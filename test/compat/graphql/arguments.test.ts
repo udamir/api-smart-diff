@@ -109,7 +109,7 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_ARGUMENT_ADDED", "gjs:OPTIONAL_ARG_ADDED"],
     sdl: [q(""), q("limit: Int! = 10")],
     expect: [{ at: "queries/search/args/**", action: "add", type: risky, mentions: ARG("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ARG-005",
@@ -123,7 +123,7 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_ARGUMENT_ADDED"],
     sdl: [q(""), q("limit: Int = 10")],
     expect: [{ at: "queries/search/args/**", action: "add", type: risky, mentions: ARG("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ARG-006",
@@ -246,7 +246,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-ARG-012",
-    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change; 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change
     title: "argument scalar Int to Float",
     before: "search(limit: Int)",
     after: "search(limit: Float)",
@@ -272,7 +272,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-ARG-014",
-    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change; 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change
     title: "argument wrapped in a list (Int to [Int])",
     before: "search(tag: String)",
     after: "search(tag: [String])",
@@ -371,7 +371,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-ARG-019",
-    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change; 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change
     title: "argument changed from String to an enum",
     before: "search(sort: String)",
     after: "search(sort: Order) enum Order { ASC DESC }",
@@ -384,14 +384,13 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_ARGUMENT_TYPE_CHANGED"],
     sdl: [q("sort: String"), "type Query { search(sort: Order): [String] } enum Order { ASC DESC }"],
     expect: [
-      { at: "queries/search/args/**/title", type: annotation, optional: true },
       { at: ["queries/search/args/**"], type: breaking, mentions: ARG("sort") },
       { at: "components/enums/Order", action: "add", type: nonBreaking, optional: true },
     ],
   }),
   gql({
     id: "GQL-ARG-020",
-    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change; 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-123 (fixed): one nominal type change
     title: "argument changed from String to an input object",
     before: "search(filter: String)",
     after: "search(filter: SearchFilter) input SearchFilter { term: String }",
@@ -404,7 +403,6 @@ const cases: CompatCase[] = [
       "type Query { search(filter: SearchFilter): [String] } input SearchFilter { term: String }",
     ],
     expect: [
-      { at: "queries/search/args/**/title", type: annotation, optional: true },
       { at: ["queries/search/args/**"], type: breaking, mentions: ARG("filter") },
       { at: "components/inputObjects/SearchFilter", action: "add", type: nonBreaking, optional: true },
     ],
@@ -429,7 +427,7 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED", "gjs:ARG_DEFAULT_VALUE_ADDED"],
     sdl: [q("limit: Int"), q("limit: Int = 10")],
     expect: [{ at: ["queries/search/args/**"], type: risky, mentions: ARG("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ARG-022",
@@ -454,7 +452,7 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED", "gjs:ARG_DEFAULT_VALUE_CHANGE"],
     sdl: [q("limit: Int = 10"), q("limit: Int = 20")],
     expect: [{ at: ["queries/search/args/**"], type: risky, mentions: ARG("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ARG-023",
@@ -474,7 +472,7 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED", "gjs:ARG_DEFAULT_VALUE_CHANGE"],
     sdl: [q("limit: Int = 10"), q("limit: Int")],
     expect: [{ at: ["queries/search/args/**"], type: risky, mentions: ARG("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ARG-024",
@@ -524,7 +522,7 @@ const cases: CompatCase[] = [
     covers: ["gi:FIELD_ARGUMENT_DEFAULT_CHANGED"],
     sdl: [q("limit: Int! = 10"), q("limit: Int! = 20")],
     expect: [{ at: ["queries/search/args/**"], type: risky, mentions: ARG("limit") }],
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ARG-027",
@@ -544,7 +542,7 @@ const cases: CompatCase[] = [
     sdl: [q('tags: [String] = ["a"]'), q('tags: [String] = ["a", "b"]')],
     expect: [{ at: ["queries/search/args/**"], type: risky, mentions: ARG("tags") }],
     // POLICY-05 decided (b); 1.0 also compares the list default item by item without a rule (primary cause)
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description; 1.0: ISSUE-140 (fixed)
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); ISSUE-140 (fixed)
   }),
   gql({
     id: "GQL-ARG-028",

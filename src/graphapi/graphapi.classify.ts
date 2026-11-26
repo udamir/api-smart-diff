@@ -1,10 +1,10 @@
 import { annotation, breaking, createUniqueItemsMappingResolver, deepEqual, nonBreaking } from "../core"
 import { nonDirectional } from "../jsonSchema"
 import type { ClassifyRule, CompareContext, CompareTransformResolver, DiffTypeClassifier } from "../types"
-import { getKeyValue, isArray, isObject, isString } from "../utils"
+import { getKeyValue, isArray, isObject } from "../utils"
 
 /**
- * Classifiers shared by the GraphApi 0.1.2 and 1.0 rule sets: both encodings must give the same verdicts.
+ * Classifiers of the GraphApi 1.0 rule set.
  */
 
 const operationsKey = { query: "queries", mutation: "mutations", subscription: "subscriptions" } as const
@@ -19,8 +19,8 @@ const hasOperations = (root: unknown, kind: RootKind) => {
 /**
  * Name of a root operation type (`queryTypeName`, ...): operations do not name the root type, but fragments `on Query`
  * and `__typename` checks do, so renaming an existing root type is breaking (graphql-inspector
- * SCHEMA_*_TYPE_CHANGED, ISSUE-122). 0.1.2 writes the name only when it is not the default one, 1.0 always: a default
- * name appearing with a new root type, or a custom name of a root type that is new / gone, is an annotation.
+ * SCHEMA_*_TYPE_CHANGED, ISSUE-122). The name is written with its root type: a default name appearing with a new root
+ * type, or a custom name of a root type that is new / gone, is an annotation.
  */
 export const rootTypeNameClassifyRule = (kind: RootKind): ClassifyRule => {
   const isDefault = (value: unknown) => value === undefined || value === defaultRootName[kind]
@@ -133,29 +133,3 @@ export const transformBuiltinDirectives: CompareTransformResolver = (before, aft
   }
   return [b ?? before, a ?? after]
 }
-
-// GraphQL type of a GraphApi 0.1.2 usage node (a field, an argument, an input field, a list item), nullability aside:
-// a named type (`$ref`), a built-in or custom scalar (`type` + `format`) or a list of one of them
-const builtinScalars: Record<string, string> = { integer: "Int", number: "Float", boolean: "Boolean", string: "String" }
-
-export const graphTypeOf = (node: unknown): string | undefined => {
-  if (!isObject(node) || isArray(node)) {
-    return
-  }
-  if (isString(node.$ref)) {
-    return node.$ref
-  }
-  const { type } = node
-  if (type === "array") {
-    const item = graphTypeOf(node.items)
-    return item === undefined ? undefined : `[${item}]`
-  }
-  if (!isString(type) || !(type in builtinScalars)) {
-    return
-  }
-  return isString(node.format) ? node.format : builtinScalars[type]
-}
-
-/** The document path of the node a diff is about (the after path for an added node). */
-export const graphNodePath = (ctx: CompareContext) =>
-  ctx.before.value !== undefined ? ctx.before.path : ctx.after.path

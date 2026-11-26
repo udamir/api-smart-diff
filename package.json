@@ -1,6 +1,6 @@
 {
   "name": "api-smart-diff",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Generate the diff between two API specifications (OpenAPI, AsyncAPI, GraphApi, ProtoApi, JsonSchema)",
   "keywords": [
     "api",
@@ -73,7 +73,6 @@
     "codemirror": "^6.0.2",
     "fast-json-patch": "^3.1.1",
     "gqlapi": "^0.6.0",
-    "gqlapi-legacy": "file:vendor/gqlapi-0.6.0-pre.20261116.tgz",
     "graphql": "^16.9.0",
     "js-yaml": "^4.1.0",
     "protoapi": "^0.1.0",

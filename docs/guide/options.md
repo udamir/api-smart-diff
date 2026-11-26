@@ -107,7 +107,7 @@ apiCompare(before, after, { extensions: { "/x-internal": { $: allBreaking } } })
 
 ## rules
 
-A complete rule tree that replaces the engine's built-in one. Usually you start from a built-in tree (`openapi3Rules`, `asyncApi2Rules`, `asyncApi3Rules`, `jsonSchemaRules`, `graphApiRules`, `graphApi10Rules`) and change parts of it. See [Custom rules](./custom-rules).
+A complete rule tree that replaces the engine's built-in one. Usually you start from a built-in tree (`openapi3Rules`, `asyncApi2Rules`, `asyncApi3Rules`, `jsonSchemaRules`, `graphApiRules`, `protoApiRules`) and change parts of it. See [Custom rules](./custom-rules).
 
 ## annotateHook
 

@@ -1,7 +1,3 @@
-import { buildFromSchema } from "gqlapi"
-import { buildFromSchema as buildLegacyFromSchema } from "gqlapi-legacy"
-import { buildSchema } from "graphql"
-
 import { compareGraphApi, type Diff } from "../../src"
 import { graphapi } from "../helpers"
 
@@ -62,29 +58,23 @@ describe("GraphQL annotations", () => {
   })
 
   // P8-rest (ISSUE-127 / 128 / 129 / 57, POLICY-90): the changed item is named once with its kind, the element it
-  // belongs to separately, in the same words for both GraphApi encodings
-  describe("element descriptions read the same in both encodings", () => {
-    const encode = (source: string, version: "0.1.2" | "1.0") =>
-      version === "1.0"
-        ? buildFromSchema(buildSchema(source, { noLocation: true }))
-        : buildLegacyFromSchema(buildSchema(source, { noLocation: true }))
-    const descriptions = (before: string, after: string, version: "0.1.2" | "1.0") =>
-      compareGraphApi(encode(before, version), encode(after, version), { metaKey })
+  // belongs to separately
+  describe("element descriptions", () => {
+    const descriptions = (before: string, after: string) =>
+      compare(before, after)
         .diffs.map((d) => d.description)
         .sort()
-    const expectBoth = (before: string, after: string, expected: string[]) => {
-      for (const version of ["0.1.2", "1.0"] as const) {
-        expect(descriptions(before, after, version), version).toEqual([...expected].sort())
-      }
+    const expectDescriptions = (before: string, after: string, expected: string[]) => {
+      expect(descriptions(before, after)).toEqual([...expected].sort())
     }
 
     it("E-ANN.1 argument, field and input field added / removed", () => {
-      expectBoth(
+      expectDescriptions(
         "type Query { search(term: String): [String] } input F { a: Int }",
         "type Query { search(term: String, limit: Int): [String] } input F { a: Int b: Int }",
         ["[Added] argument `limit` to field `Query.search`", "[Added] input field `b` to input type `F`"],
       )
-      expectBoth(
+      expectDescriptions(
         "type Query { me: U } type U { age: Int name: String }",
         "type Query { me: U } type U { name: String }",
         ["[Removed] field `age` from object type `U`"],
@@ -92,7 +82,7 @@ describe("GraphQL annotations", () => {
     })
 
     it("E-ANN.2 type, default value and deprecation of an argument", () => {
-      expectBoth(
+      expectDescriptions(
         "type Query { search(term: String, limit: Int = 10): [String] }",
         'type Query { search(term: Int, limit: Int = 20 @deprecated(reason: "use first")): [String] }',
         [
@@ -105,7 +95,7 @@ describe("GraphQL annotations", () => {
 
     it("E-ANN.3 schema description and an applied directive's argument", () => {
       const directive = "directive @tag(name: String) on SCHEMA | OBJECT"
-      expectBoth(
+      expectDescriptions(
         `${directive} "The API" schema { query: Query } type Query { a: Item } type Item @tag(name: "x") { b: Int }`,
         `${directive} "The public API" schema { query: Query } type Query { a: Item } type Item @tag(name: "y") { b: Int }`,
         [
@@ -116,7 +106,7 @@ describe("GraphQL annotations", () => {
     })
 
     it("E-ANN.4 enum value metadata", () => {
-      expectBoth(
+      expectDescriptions(
         "type Query { c: Color } enum Color { RED BLUE }",
         'type Query { c: Color } enum Color { "Warm" RED BLUE @deprecated(reason: "navy") }',
         [
@@ -126,14 +116,9 @@ describe("GraphQL annotations", () => {
       )
     })
 
-    it("E-ANN.5 list item nullability in each encoding's own terms", () => {
-      const before = "type Query { tags: [String] }"
-      const after = "type Query { tags: [String!] }"
-      // 0.1.2 marks nullable list items, 1.0 non-null ones
-      expect(descriptions(before, after, "0.1.2")).toEqual([
-        "[Removed] nullable status from list items of field `Query.tags`",
-      ])
-      expect(descriptions(before, after, "1.0")).toEqual([
+    it("E-ANN.5 list item nullability", () => {
+      // GraphApi 1.0 marks non-null list items
+      expect(descriptions("type Query { tags: [String] }", "type Query { tags: [String!] }")).toEqual([
         "[Added] non-null status to list items of field `Query.tags`",
       ])
     })
@@ -141,7 +126,7 @@ describe("GraphQL annotations", () => {
     // POLICY-95 decided (c): descriptions and deprecation reasons list their values shortened, on one line
     it("E-ANN.6 free-text values are shortened", () => {
       const long = "The pets of the store, including the adopted ones.\nSorted by name and then by age"
-      expectBoth(
+      expectDescriptions(
         'type Query { "All pets" pets: [String] @deprecated(reason: "use search") }',
         `type Query { """${long}""" pets: [String] @deprecated(reason: "${long.replace("\n", " ")}") }`,
         [

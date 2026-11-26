@@ -1,6 +1,5 @@
 import { applyOperation, type Operation } from "fast-json-patch"
-import { buildFromSchema, type GraphApiSchema as GraphApi10Schema } from "gqlapi"
-import { buildFromSchema as buildLegacyFromSchema, type GraphApiSchema } from "gqlapi-legacy"
+import { buildFromSchema, type GraphApiSchema } from "gqlapi"
 import { buildSchema } from "graphql"
 import {
   buildFromProto,
@@ -27,13 +26,8 @@ export const yaml = (strings: TemplateStringsArray): object => {
   return YAML.load(strings[0]) as object
 }
 
-// GraphApi 0.1.2 documents come from the gqlapi pre-release that still writes them (gqlapi 0.6 writes only 1.0)
-export const graphapi = (strings: TemplateStringsArray): GraphApiSchema => {
-  return buildLegacyFromSchema(buildSchema(strings[0], { noLocation: true }))
-}
-
 /** GraphApi 1.0 document (gqlapi 0.6) from SDL */
-export const graphapi10 = (strings: TemplateStringsArray): GraphApi10Schema => {
+export const graphapi = (strings: TemplateStringsArray): GraphApiSchema => {
   return buildFromSchema(buildSchema(strings[0], { noLocation: true }))
 }
 
@@ -141,7 +135,7 @@ export class ExampleResource {
     } else if (/.(graphql|gql)$/g.test(filename)) {
       try {
         const schema = buildSchema(data, { noLocation: true })
-        this.res = buildLegacyFromSchema(schema)
+        this.res = buildFromSchema(schema)
       } catch (e) {
         console.log(e)
       }

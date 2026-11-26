@@ -65,7 +65,7 @@ const wrapper = (
     covers,
     sdl: [sdl(from), sdl(to)],
     expect: [{ at, type, mentions }],
-    // ISSUE-127 (fixed) (P8a): the 0.1.2 descriptions name the type / the root operation
+    // ISSUE-127 (fixed) (P8a)
     ...extra,
   })
 }
@@ -378,11 +378,11 @@ const cases: CompatCase[] = [
     [brk("should detect if a field argument has changed type (arg5)")],
     ["gjs:ARG_CHANGED_KIND"],
     {
-      // both encodings report the nullability part (non-null to nullable, non-breaking on its own) and the named-type
-      // part (String to Int, breaking) as separate diffs
+      // the nullability part (non-null to nullable, non-breaking on its own) and the named-type part (String to Int,
+      // breaking) are separate diffs
       expect: [
         {
-          at: ["queries/search/args/required/**", "queries/search/args/ids/nonNull"],
+          at: "queries/search/args/ids/nonNull",
           type: nonBreaking,
           mentions: [QUERY, "search", "ids"],
         },
@@ -423,7 +423,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-GJS-027",
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
     area: "directives",
     title: "non-null argument with a default added to an executable directive",
     before: "directive @limit on FIELD",
@@ -447,7 +447,7 @@ const cases: CompatCase[] = [
   gql({
     id: "GQL-GJS-028",
     // 1.0: input-object and list defaults are compared item by item without a rule (ISSUE-140)
-    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 description; 1.0: ISSUE-140 (fixed)
+    // ISSUE-127 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); ISSUE-140 (fixed)
     area: "arguments",
     title: "input-object default of an argument changed",
     before: "search(filter: Filter = { ids: [1, 2, 3] })",
@@ -479,7 +479,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-GJS-030",
-    // ISSUE-57 (fixed) (P8a); ISSUE-132 (fixed): POLICY-02 decided (a); 0.1.2 enum value description
+    // ISSUE-57 (fixed) (P8a); ISSUE-132 (fixed): POLICY-02 decided (a)
     area: "reachability",
     title: "enum value added to an unreachable enum",
     before: "enum TestEnum { FIRST_VALUE } (not used by any field)",

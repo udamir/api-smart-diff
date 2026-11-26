@@ -17,65 +17,17 @@ import {
   fallbackAnnotation,
   formatText,
   formatValue,
-  CompareScopes,
   annotationTemplate as t,
   ruleView,
 } from "../core"
-import { getTarget, jsonSchemaAnnotations } from "../jsonSchema"
+import { jsonSchemaAnnotations } from "../jsonSchema"
 import { getKeyValue, getStringValue, isArray, isNumber, isObject, isString } from "../utils"
-
-const graphSchemaArgAnnotations = {
-  add: "[Added] {{text}} to Argument",
-  add_target: "[Added] {{text}} to Argument `{{target}}`",
-  add_target_schema: "[Added] {{text}} to Argument `{{target}}` of property `{{schema}}(...)`",
-  add_target_directive: "[Added] {{text}} to Argument `{{target}}` of directive `@{{directive}}(...)`",
-  remove: "[Removed] {{text}} from Argument",
-  remove_target: "[Removed] {{text}} from Argument `{{target}}`",
-  remove_target_schema: "[Removed] {{text}} from Argument `{{target}}` of property `{{schema}}(...)`",
-  remove_target_directive: "[Removed] {{text}} from Argument `{{target}}` of directive `@{{directive}}(...)`",
-  replace: "[Replaced] {{text}} of Argument",
-  replace_target: "[Replaced] {{text}} of Argument `{{target}}`",
-  replace_target_schema: "[Replaced] {{text}} of Argument `{{target}}` of property `{{schema}}(...)`",
-  replace_target_directive: "[Replaced] {{text}} of Argument `{{target}}` of directive `@{{directive}}(...)`",
-  // the same with the keyword's values (`keywordValues`), so a value never displaces the owner of the argument
-  add_target_value: "[Added] {{text}} {{value}} to Argument `{{target}}`",
-  add_target_schema_value: "[Added] {{text}} {{value}} to Argument `{{target}}` of property `{{schema}}(...)`",
-  add_target_directive_value: "[Added] {{text}} {{value}} to Argument `{{target}}` of directive `@{{directive}}(...)`",
-  remove_target_value: "[Removed] {{text}} {{value}} from Argument `{{target}}`",
-  remove_target_schema_value: "[Removed] {{text}} {{value}} from Argument `{{target}}` of property `{{schema}}(...)`",
-  remove_target_directive_value:
-    "[Removed] {{text}} {{value}} from Argument `{{target}}` of directive `@{{directive}}(...)`",
-  replace_target_before_after: "[Replaced] {{text}} of Argument `{{target}}` from {{before}} to {{after}}",
-  replace_target_schema_before_after:
-    "[Replaced] {{text}} of Argument `{{target}}` of property `{{schema}}(...)` from {{before}} to {{after}}",
-  replace_target_directive_before_after:
-    "[Replaced] {{text}} of Argument `{{target}}` of directive `@{{directive}}(...)` from {{before}} to {{after}}",
-}
 
 const graphApiAnnotations = {
   ...jsonSchemaAnnotations,
 
-  directive: "directive `@{{key}}`",
-  directive_definition: "definition for directive `@{{key}}`",
-  directive_meta: "directive meta `@{{key}}({{meta}})`",
-  values_annotation: "possible values annotation ({{key}})",
-  values_status: "possible values {{key}} status",
-  reason: "deprecation reason",
-  items: "array items",
-  operation: "operation `{{key}}`",
-  typeDef: "type definition",
-  kind: "type kind",
-  nullable: "nullable status",
-  methods: "fields",
-  properties: "input fields",
-  values: "possible values",
   interfaces: "implemented interfaces",
-  implementedBy: "implementing types",
   locations: "directive locations",
-  repeatable: "repeatable status",
-  args: "arguments",
-  output: "result type",
-  graph_type: "type from `{{before}}` to `{{after}}`",
   interface_item: "implemented interface `{{name}}`",
   interface_swap: "implemented interface `{{before}}` with `{{after}}`",
   interface_list: "implemented interfaces {{names}}",
@@ -120,32 +72,12 @@ const describeGraphApiDiff: AnnotateHook = (diff, ctx) => {
     return fallbackAnnotation(diff, ctx, locateGraphApiContainer)
   }
 
-  const argsIndex = diff.path.indexOf("args")
-  if (ctx.scope === CompareScopes.args && argsIndex >= 0 && argsIndex < diff.path.length - 1) {
-    const _diff = { ...diff, path: diff.path.slice(argsIndex) }
-    // the operation or field that owns the argument; the operation name when the argument belongs to an operation
-    const owner = diff.path.slice(0, argsIndex)
-    const schema = getTarget(owner) ?? (owner.length === 2 ? String(owner[1]) : undefined)
-    const directive = diff.path[1] === "directives" ? diff.path[2] : undefined
-
-    const schemaChangeTemplate = annotate(_diff, ctx)
-    if (schemaChangeTemplate) {
-      const argsTemplate = { ...schemaChangeTemplate, params: { ...schemaChangeTemplate.params, schema, directive } }
-      const text = createAnnotation(argsTemplate, { ...graphApiAnnotations, ...graphSchemaArgAnnotations }, diff.type)
-      if (text) {
-        return text
-      }
-    }
-    return fallbackAnnotation(diff, ctx, locateGraphApiContainer)
-  }
-
   return describeDiff(diff, ctx, graphApiAnnotations, annotate, locateGraphApiContainer)
 }
 
 /**
  * GraphApi descriptions: a change of a GraphQL element (field, input field, argument, enum value, type, directive,
- * schema) is described in GraphQL terms by `describeGraphElementChange`, the same way for both encodings; any other
- * change by its rule's template (or the generated fallback) with the enclosing type or directive named.
+ * schema) is described in GraphQL terms by `describeGraphElementChange`; any other change by its rule's template (or the generated fallback) with the enclosing type or directive named.
  */
 export const graphApiAnnotateHook: AnnotateHook = (diff, ctx) =>
   describeGraphElementChange(diff, ctx) ??
@@ -153,19 +85,6 @@ export const graphApiAnnotateHook: AnnotateHook = (diff, ctx) =>
 
 // `#/components/enums/Role` -> `Role`, `[#/components/objects/A]` -> `[A]`
 const typeName = (type: string | undefined) => type?.replace(/#\/components\/[^/\]]+\//g, "") ?? "?"
-
-/** A GraphApi 0.1.2 usage whose GraphQL type changed (ISSUE-123): names both types. */
-export const graphTypeChangeAnnotation =
-  (before: string | undefined, after: string | undefined): ChangeAnnotationResolver =>
-  ({ path }) => {
-    const key = path[path.length - 1]
-    const parentKey = path[path.length - 2]
-    const text = t("graph_type", { before: typeName(before), after: typeName(after) })
-    if (parentKey === "queries" || parentKey === "mutations" || parentKey === "subscriptions") {
-      return t("replace", { text, target: t("operation", { key }) })
-    }
-    return t("replace", { text, target: getTarget(path) })
-  }
 
 const rootTypeNames: Record<string, string> = { query: "Query", mutation: "Mutation", subscription: "Subscription" }
 
@@ -221,15 +140,8 @@ export const directiveLocationAnnotation: ChangeAnnotationResolver = (diff) => {
 export const rootTypeNameAnnotation: ChangeAnnotationResolver = (diff) => {
   const { path, action } = diff
   const kind = String(path[path.length - 1]).replace(/TypeName$/, "")
-  const fallback = rootTypeNames[kind]
   if (action === "replace") {
     return t(action, { text: t("root_type_rename", { kind, before: diff.before, after: diff.after }) })
-  }
-  // 0.1.2 writes a custom name only: adding it renames the default root type, removing it restores the default name
-  const before = action === "add" ? fallback : diff.before
-  const after = action === "add" ? diff.after : fallback
-  if (before !== after && fallback) {
-    return t(action, { text: t("root_type_rename", { kind, before, after }) })
   }
   return t(action, { text: t("root_type_name", { kind, name: action === "add" ? diff.after : diff.before }) })
 }
@@ -245,9 +157,8 @@ export const unionMemberAnnotation: ChangeAnnotationResolver = (diff) => {
   return t(action, { text: t("union_member", { name: member }), target: union })
 }
 
-// directive usages: `{ <name>: { $ref } }` (0.1.2) or `[{ $ref, meta }]` (1.0)
-const usageName = (usage: unknown, key?: unknown) =>
-  (getStringValue(usage, "$ref") ?? String(key ?? "")).replace(/^#\/components\/directives\//, "")
+// directive usages: `[{ $ref, meta }]`
+const usageName = (usage: unknown) => (getStringValue(usage, "$ref") ?? "").replace(/^#\/components\/directives\//, "")
 
 /**
  * A directive applied to a named type or an enum value (`@oneOf` on an input object, ISSUE-117; directives on enum
@@ -264,62 +175,18 @@ export const directiveUsageAnnotation: ChangeAnnotationResolver = (diff) => {
   const target = owner.length ? owner.map(String).join(".") : undefined
   const value = action === "add" ? diff.after : diff.before
   if (index === path.length - 1) {
-    const usages = Array.isArray(value) ? value : isObject(value) ? Object.entries(value).map(([k, v]) => [k, v]) : []
-    const names = usages
-      .map((usage) => `\`@${Array.isArray(usage) ? usageName(usage[1], usage[0]) : usageName(usage)}\``)
-      .join(", ")
+    const usages = Array.isArray(value) ? value : []
+    const names = usages.map((usage) => `\`@${usageName(usage)}\``).join(", ")
     return names ? t(action, { text: t("directive_usages", { names }), target }) : undefined
   }
   if (index !== path.length - 2) {
     return
   }
-  return t(action, { text: t("directive_usage", { name: usageName(value, path[path.length - 1]) }), target })
-}
-
-export const valuesAnnotationChange: ChangeAnnotationResolver = ({ path, action }) => {
-  const key = path[path.length - 1]
-  const valuesIndex = path.lastIndexOf("values")
-  const target = getTarget(path.slice(0, valuesIndex))
-  switch (key) {
-    case "description":
-      return t(action, { text: t("values_annotation", { key }), target })
-    case "deprecated":
-      return t(action, { text: t("values_status", { key }), target })
-    case "reason":
-      return t(action, { text: t("values_annotation", { key: "deprecation reason" }), target })
-  }
-  if (path[valuesIndex + 1] === key) {
-    return t(action, { text: t("values_annotation", { key }), target })
-  }
-}
-
-export const parentKeyChangeAnnotation: ChangeAnnotationResolver = ({ path, action }) => {
-  const key = path[path.length - 1]
-  const parentKey = path[path.length - 2]
-  const target = getTarget(path)
-
-  switch (parentKey) {
-    case "directives":
-      return t(action, { text: t("directive", { key, definition: path[0] === "components" ? 1 : undefined }), target })
-    case "deprecated":
-      return t(action, { text: t("reason", { key }), target })
-    case "meta":
-      return t(action, {
-        text: t("directive", { key: path[path.length - 3], meta: key }),
-        target: getTarget(path.slice(0, -4)),
-      })
-    case "queries":
-    case "mutations":
-    case "subscriptions":
-      return t(action, { text: t("operation", { key }) })
-  }
-  if (path[0] === "components" && path[1] === "directives" && path.length === 4) {
-    return t(action, { text: t(String(key)), target: t("directive", { key: path[2], definition: 1 }) })
-  }
+  return t(action, { text: t("directive_usage", { name: usageName(value) }), target })
 }
 
 // ---------------------------------------------------------------------------------------------------------------
-// GraphQL element descriptions (P8-rest, ISSUE-127 / 128 / 129 / 57, POLICY-90): one wording for both encodings
+// GraphQL element descriptions (P8-rest, ISSUE-127 / 128 / 129 / 57, POLICY-90)
 
 /**
  * Templates of the element descriptions: the changed item is named once with its kind ("argument `limit`", "field
@@ -384,8 +251,6 @@ const elementDictionary: Record<string, string> = { ...graphApiAnnotations, ...g
 const rootKinds: Record<string, string> = { queries: "query", mutations: "mutation", subscriptions: "subscription" }
 
 interface GraphElement {
-  // GraphApi 1.0 encoding
-  v10: boolean
   // the innermost named element and what it belongs to (both absent for a change of a type, directive or the schema)
   element?: AnnotateTemplate
   short?: AnnotateTemplate
@@ -409,16 +274,13 @@ const valueAt = (node: NodeContext | undefined, length: number): unknown => {
   return current && current.path.length === length ? current.value : undefined
 }
 
-const isV10 = (root: unknown) => String(getKeyValue(root, "graphapi") ?? "").startsWith("1")
-
 const rootTypeName = (root: unknown, kind: string) =>
   getStringValue(root, `${kind}TypeName`) ?? rootTypeNames[kind] ?? kind
 
-/** Splits a GraphApi path (either encoding) into the GraphQL element it belongs to and the change below it. */
+/** Splits a GraphApi path into the GraphQL element it belongs to and the change below it. */
 const parseGraphElement = (diff: Diff, ctx: CompareContext): GraphElement | undefined => {
   const { path } = diff
   const root = sideOf(diff, ctx).root
-  const v10 = isV10(root)
   let owner: AnnotateTemplate
   let element: AnnotateTemplate | undefined
   let short: AnnotateTemplate | undefined
@@ -427,11 +289,6 @@ const parseGraphElement = (diff: Diff, ctx: CompareContext): GraphElement | unde
   // the field (or directive) that owns arguments
   let argsOwner: AnnotateTemplate | undefined
   let isField = false
-  // a 0.1.2 `required` entry names its argument / field by value
-  const requiredName = () => {
-    const value = diff.action === "add" ? diff.after : diff.before
-    return isString(value) ? value : undefined
-  }
 
   const head = String(path[0])
   if (head in rootKinds) {
@@ -474,13 +331,6 @@ const parseGraphElement = (diff: Diff, ctx: CompareContext): GraphElement | unde
       short = t("elEnumValue", { name })
       parent = owner
       i += 2
-    } else if (!v10 && key === "required" && isNumber(name) && path.length === i + 2) {
-      const field = requiredName()
-      if (!field) {
-        return
-      }
-      const word = kind === "inputObjects" ? "elInputField" : "elField"
-      return { v10, owner, element: t(word, { name: `${typeName}.${field}` }), usageLength: 0, rest: ["required"] }
     }
   } else if (head === "description" || head === "directives") {
     owner = t("elSchema")
@@ -491,51 +341,25 @@ const parseGraphElement = (diff: Diff, ctx: CompareContext): GraphElement | unde
 
   let usageLength = i
   if (argsOwner && path[i] === "args") {
-    if (!v10 && path[i + 1] === "properties" && isString(path[i + 2])) {
-      element = t("elArgumentOf", { name: String(path[i + 2]), owner: argsOwner })
-      short = t("elArgument", { name: String(path[i + 2]) })
-      parent = argsOwner
-      i += 3
-      usageLength = i
-    } else if (!v10 && path[i + 1] === "required" && isNumber(path[i + 2]) && path.length === i + 3) {
-      const name = requiredName()
-      return name
-        ? { v10, owner, element: t("elArgumentOf", { name, owner: argsOwner }), usageLength: 0, rest: ["required"] }
-        : undefined
-    } else if (v10 && isString(path[i + 1])) {
+    if (isString(path[i + 1])) {
       element = t("elArgumentOf", { name: String(path[i + 1]), owner: argsOwner })
       short = t("elArgument", { name: String(path[i + 1]) })
       parent = argsOwner
       i += 2
       usageLength = i
     } else {
-      return { v10, owner, element: argsOwner, usageLength, rest: path.slice(i) }
+      return { owner, element: argsOwner, usageLength, rest: path.slice(i) }
     }
   }
-  return { v10, owner, element, short, parent, usageLength, rest: path.slice(i) }
+  return { owner, element, short, parent, usageLength, rest: path.slice(i) }
 }
 
 // ---- GraphQL type of a usage, as SDL (`[String!]`), without the outer non-null marker --------------------------
 
 const refName = (ref: unknown) => (isString(ref) ? ref.slice(ref.lastIndexOf("/") + 1) : undefined)
 
-const usageType012 = (node: unknown): string | undefined => {
-  if (!isObject(node) || isArray(node)) {
-    return
-  }
-  if (isString(node.$ref)) {
-    return refName(node.$ref)
-  }
-  if (node.type === "array") {
-    const item = usageType012(node.items)
-    return item === undefined ? undefined : `[${item}${getKeyValue(node.items, "nullable") === true ? "" : "!"}]`
-  }
-  const builtin: Record<string, string> = { integer: "Int", number: "Float", boolean: "Boolean", string: "String" }
-  return isString(node.format) ? node.format : isString(node.type) ? builtin[node.type] : undefined
-}
-
-// a 1.0 type usage, written flat on its usage site: `$ref`, a built-in `type`, or `type: list` with `items`
-const usageType10 = (node: unknown): string | undefined => {
+// a type usage, written flat on its usage site: `$ref`, a built-in `type`, or `type: list` with `items`
+const usageType = (node: unknown): string | undefined => {
   const ref = getKeyValue(node, "$ref")
   if (isString(ref)) {
     return refName(ref)
@@ -543,28 +367,27 @@ const usageType10 = (node: unknown): string | undefined => {
   const type = getKeyValue(node, "type")
   if (type === "list") {
     const items = getKeyValue(node, "items")
-    const item = usageType10(items)
+    const item = usageType(items)
     return item === undefined ? undefined : `[${item}${getKeyValue(items, "nonNull") === true ? "!" : ""}]`
   }
   return isString(type) ? type : undefined
 }
 
 // a named type's kind word, for two types of the same name (an enum replaced by a scalar `Status`)
-const usageKind = (node: unknown, v10: boolean): string | undefined => {
+const usageKind = (node: unknown): string | undefined => {
   const ref = getKeyValue(node, "$ref")
   const kind = isString(ref) ? ref.split("/")[2] : undefined
   return kind && kind in kindWords ? kindWords[kind] : "scalar"
 }
 
 const typeChange = (el: GraphElement, diff: Diff, ctx: CompareContext) => {
-  const render = el.v10 ? usageType10 : usageType012
   const before = valueAt(ctx.before, el.usageLength)
   const after = valueAt(ctx.after, el.usageLength)
-  const from = render(before)
-  const to = render(after)
+  const from = usageType(before)
+  const to = usageType(after)
   if (from === undefined || to === undefined || from === to) {
     return from !== undefined && from === to
-      ? { from: `${usageKind(before, el.v10)} \`${from}\``, to: `${usageKind(after, el.v10)} \`${to}\`` }
+      ? { from: `${usageKind(before)} \`${from}\``, to: `${usageKind(after)} \`${to}\`` }
       : {}
   }
   return { from: `\`${from}\``, to: `\`${to}\`` }
@@ -618,19 +441,15 @@ const usageArguments = (meta: unknown): string => {
     .join(", ")})`
 }
 
-// `@tag(name: "x")` (arguments left out when long); 0.1.2 usages are keyed by name, 1.0 usages are list items
-const usageLabel = (usage: unknown, key?: unknown): string => {
-  const name = usageName(usage, key)
+// `@tag(name: "x")` (arguments left out when long)
+const usageLabel = (usage: unknown): string => {
+  const name = usageName(usage)
   const args = usageArguments(getKeyValue(usage, "meta"))
   return `\`@${name}${args.length <= MAX_LISTED_LENGTH ? args : ""}\``
 }
 
 const usageList = (value: unknown): string | undefined => {
-  const labels = isArray(value)
-    ? value.map((usage) => usageLabel(usage))
-    : isObject(value)
-      ? Object.entries(value).map(([key, usage]) => usageLabel(usage, key))
-      : []
+  const labels = isArray(value) ? value.map((usage) => usageLabel(usage)) : []
   return labels.length ? labels.join(", ") : undefined
 }
 
@@ -642,26 +461,19 @@ const directiveChange = (diff: Diff, ctx: CompareContext, rest: JsonPath, target
     if (!names) {
       return
     }
-    const one = isArray(value) ? value.length === 1 : isObject(value) && Object.keys(value).length === 1
+    const one = isArray(value) && value.length === 1
     return t(action, { text: one ? t("elUsage", { name: names }) : t("elUsages", { names }), target })
   }
   const side = sideOf(diff, ctx)
   const usage = valueAt(side, side.path.length - rest.length + 2)
-  const name = usageName(usage, rest[1])
+  const name = usageName(usage)
   if (rest.length === 2) {
     if (action === "replace") {
       return t(action, { text: t("elUsage", { name: `\`@${name}\`` }), target })
     }
-    return t(action, { text: t("elUsage", { name: usageLabel(value, rest[1]) }), target })
+    return t(action, { text: t("elUsage", { name: usageLabel(value) }), target })
   }
   const on = t("elUsageOn", { name, element: target })
-  // a further usage of a repeatable directive (0.1.2 `repeats`)
-  if (rest[2] === "repeats") {
-    if (rest.length === 4 && action !== "replace") {
-      return t(action, { text: t("elUsage", { name: usageLabel(value, name) }), target })
-    }
-    return
-  }
   if (rest[2] !== "meta") {
     return
   }
@@ -686,16 +498,13 @@ const directiveChange = (diff: Diff, ctx: CompareContext, rest: JsonPath, target
 
 // ---- the description --------------------------------------------------------------------------------------------
 
-// the type of a usage: 1.0 `$ref` / `type` / `items` of the usage site (except list item nullability), 0.1.2 type
-// keywords
-const isTypePath = (rest: JsonPath, v10: boolean) =>
-  v10
-    ? ["type", "$ref", "items"].includes(String(rest[0])) && rest[rest.length - 1] !== "nonNull"
-    : ["format", "type", "$ref", "items"].includes(String(rest[0])) && rest[rest.length - 1] !== "nullable"
+// the type of a usage: `$ref` / `type` / `items` of the usage site (except list item nullability)
+const isTypePath = (rest: JsonPath) =>
+  ["type", "$ref", "items"].includes(String(rest[0])) && rest[rest.length - 1] !== "nonNull"
 
-// list item nullability: 0.1.2 `items[/items]/nullable`, 1.0 `items[/items]/nonNull`
-const listDepth = (rest: JsonPath, v10: boolean): number => {
-  if (rest[rest.length - 1] !== (v10 ? "nonNull" : "nullable")) {
+// list item nullability: `items[/items]/nonNull`
+const listDepth = (rest: JsonPath): number => {
+  if (rest[rest.length - 1] !== "nonNull") {
     return 0
   }
   const steps = rest.slice(0, -1)
@@ -722,7 +531,7 @@ const typePartText = (diff: Diff, rest: JsonPath): AnnotateTemplate => {
 
 const elementChange = (diff: Diff, ctx: CompareContext, el: GraphElement): AnnotateTemplate | undefined => {
   const { action } = diff
-  const { rest, v10 } = el
+  const { rest } = el
   const target = el.element ?? el.owner
   const key = rest[0]
 
@@ -741,12 +550,12 @@ const elementChange = (diff: Diff, ctx: CompareContext, el: GraphElement): Annot
     return from && to ? t("replace", { text: t("elTypeOf"), target, before: from, after: to }) : undefined
   }
 
-  const depth = listDepth(rest, v10)
+  const depth = listDepth(rest)
   if (depth) {
     const items = t(depth > 1 ? "elInnerListItems" : "elListItems", { element: target })
-    return t(action === "replace" ? "replace" : action, { text: t(v10 ? "elNonNull" : "elNullable"), target: items })
+    return t(action === "replace" ? "replace" : action, { text: t("elNonNull"), target: items })
   }
-  if (isTypePath(rest, v10)) {
+  if (isTypePath(rest)) {
     const { from, to } = typeChange(el, diff, ctx)
     if (action === "replace") {
       return from && to ? t("replace", { text: t("elTypeOf"), target, before: from, after: to }) : undefined
@@ -779,39 +588,21 @@ const elementChange = (diff: Diff, ctx: CompareContext, el: GraphElement): Annot
       return rest.length === 1 ? valueChange(diff, t("elSpecifiedBy"), target) : undefined
     case "default":
       return rest.length === 1 && el.element ? valueChange(diff, t("elDefault"), target) : undefined
-    case "deprecated":
     case "deprecation": {
       if (rest.length === 2 && rest[1] === "reason") {
         return valueChange(diff, t("elDeprecationReason"), target, true)
       }
-      if (rest.length !== 1) {
+      if (rest.length !== 1 || action === "replace") {
         return
-      }
-      if (action === "replace") {
-        // 0.1.2: `true` <-> `{ reason }`: the reason added or removed
-        const added = isObject(diff.after) && !isObject(diff.before)
-        const removed = isObject(diff.before) && !isObject(diff.after)
-        if (!added && !removed) {
-          return
-        }
-        const value = reasonOf(added ? diff.after : diff.before)
-        return t(added ? "add" : "remove", { text: t("elDeprecationReason"), target, value })
       }
       const value = action === "add" ? diff.after : diff.before
       return t(action, { text: t("elDeprecation", { reason: reasonOf(value) }), target })
     }
-    case "nullable":
-      // 0.1.2 `nullable: true` (a nullable root field)
-      return !v10 && rest.length === 1 && el.element && action !== "replace"
-        ? t(action, { text: t("elNullable"), target })
-        : undefined
     case "nonNull":
-      // 1.0 `nonNull: true` (non-null)
-      return v10 && rest.length === 1 && el.element && action !== "replace"
+      // `nonNull: true` (non-null)
+      return rest.length === 1 && el.element && action !== "replace"
         ? t(action, { text: t("elNonNull"), target })
         : undefined
-    case "required":
-      return rest.length === 1 && action !== "replace" ? t(action, { text: t("elNonNull"), target }) : undefined
     case "directives":
       return directiveChange(diff, ctx, rest, target)
     case "repeatable": {
@@ -823,39 +614,6 @@ const elementChange = (diff: Diff, ctx: CompareContext, el: GraphElement): Annot
         return diff.before === true ? t("remove", { text: t("elRepeatable"), target }) : undefined
       }
       return on === undefined ? undefined : t(on ? "add" : "remove", { text: t("elRepeatable"), target })
-    }
-    case "args": {
-      // 0.1.2: the arguments object of a field added or removed as a whole
-      if (v10 || action === "replace" || (rest.length !== 1 && !(rest.length === 2 && rest[1] === "properties"))) {
-        return
-      }
-      const value = action === "add" ? diff.after : diff.before
-      const properties = rest.length === 1 ? getKeyValue(value, "properties") : value
-      const names = isObject(properties) ? Object.keys(properties) : []
-      if (!names.length) {
-        return
-      }
-      const list = names.map((name) => `\`${name}\``).join(", ")
-      return t(action, {
-        text: names.length === 1 ? t("elArgument", { name: names[0] }) : t("elArguments", { names: list }),
-        target,
-      })
-    }
-    case "enum": {
-      // 0.1.2 enum values: `enum[i]`
-      if (rest.length !== 2 || !isNumber(rest[1])) {
-        return
-      }
-      if (action === "replace") {
-        return t("replace", {
-          text: t("elEnumValueWord"),
-          target,
-          before: listedValue(diff.before),
-          after: listedValue(diff.after),
-        })
-      }
-      const value = action === "add" ? diff.after : diff.before
-      return isString(value) ? t(action, { text: t("elEnumValue", { name: value }), target }) : undefined
     }
   }
   return

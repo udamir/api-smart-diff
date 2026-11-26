@@ -27,9 +27,8 @@ const byPath = (diffs: Diff[], path: string) => {
   return diff as Diff
 }
 
-// ISSUE-53 (fixed): a GraphApi 0.1.2 usage of a named type is nominal (like a 1.0 `typeDef`), so a change inside a
-// named type is reported once, at its declaration under `components`, classified by the scopes that use the type; the
-// expectations below formerly looked the change up at the inlined usage site (`queries/<op>/...`)
+// ISSUE-53 (fixed): a usage of a named type is nominal, so a change inside a named type is reported once, at its
+// declaration under `components`, classified by the scopes that use the type
 const declarationDiffs = (diffs: Diff[]) => diffs.filter((d) => d.path[0] === "components")
 
 const hasMeta = (node: unknown): boolean => {
@@ -66,7 +65,7 @@ describe("GraphQL classification: operations", () => {
   // GraphQL type of a usage is nominal, one type change at the usage node
   it("changing the return scalar type is breaking", () => {
     const { diffs } = compare("type Query { a: String }", "type Query { a: Int }")
-    expect(byPath(diffs, "queries/a").type).toBe(breaking)
+    expect(byPath(diffs, "queries/a/type").type).toBe(breaking)
   })
 
   // ISSUE-41 (fixed): structurally identical named types are indistinguishable, only `title` changes (annotation)
@@ -203,7 +202,7 @@ describe("GraphQL classification: object types", () => {
       "type Query { t: T } type T { a: String }",
       "type Query { t: T } type T { a: String b: String }",
     )
-    expect(byPath(diffs, "components/objects/T/properties/b").type).toBe(nonBreaking)
+    expect(byPath(diffs, "components/objects/T/methods/b").type).toBe(nonBreaking)
   })
 
   // ISSUE-25 (fixed): clients selecting the removed field fail validation
@@ -212,16 +211,16 @@ describe("GraphQL classification: object types", () => {
       "type Query { t: T } type T { a: String b: String }",
       "type Query { t: T } type T { a: String }",
     )
-    expect(byPath(diffs, "components/objects/T/properties/b").type).toBe(breaking)
+    expect(byPath(diffs, "components/objects/T/methods/b").type).toBe(breaking)
   })
 
   // ISSUE-39 (fixed); ISSUE-123 (fixed): one nominal type change at the field
   it("changing a field type is breaking", () => {
     const { diffs } = compare("type Query { t: T } type T { a: String }", "type Query { t: T } type T { a: Int }")
-    expect(byPath(diffs, "components/objects/T/properties/a").type).toBe(breaking)
+    expect(byPath(diffs, "components/objects/T/methods/a/type").type).toBe(breaking)
   })
 
-  // ISSUE-41 (fixed): custom scalars are `type: string` + `format`, so String -> Date is only a non-breaking format add
+  // ISSUE-41 (fixed): String -> Date is a nominal type change, not a non-breaking format add
   it("changing a field type from String to a custom scalar is breaking", () => {
     const { diffs } = compare(
       "type Query { t: T } type T { a: String }",
@@ -232,12 +231,12 @@ describe("GraphQL classification: object types", () => {
 
   it("making a field nullable is breaking", () => {
     const { diffs } = compare("type Query { t: T } type T { a: String! }", "type Query { t: T } type T { a: String }")
-    expect(byPath(diffs, "components/objects/T/required/0").type).toBe(breaking)
+    expect(byPath(diffs, "components/objects/T/methods/a/nonNull").type).toBe(breaking)
   })
 
   it("making a field non-null is non-breaking", () => {
     const { diffs } = compare("type Query { t: T } type T { a: String }", "type Query { t: T } type T { a: String! }")
-    expect(byPath(diffs, "components/objects/T/required/0").type).toBe(nonBreaking)
+    expect(byPath(diffs, "components/objects/T/methods/a/nonNull").type).toBe(nonBreaking)
   })
 
   // ISSUE-40 (fixed): the `interfaces` node itself has no classify rule, only `interfaces/*`
@@ -305,7 +304,7 @@ describe("GraphQL classification: input objects", () => {
       "type Query { q(i: I): String } input I { a: String }",
       "type Query { q(i: I): String } input I { a: String! }",
     )
-    expect(byPath(diffs, "components/inputObjects/I/required/0").type).toBe(breaking)
+    expect(byPath(diffs, "components/inputObjects/I/properties/a/nonNull").type).toBe(breaking)
   })
 })
 
@@ -313,12 +312,12 @@ describe("GraphQL classification: enums", () => {
   // POLICY-05 decided (b), decision §11.14, ISSUE-130 fixed: a client with an exhaustive switch may fail on the new value (was breaking)
   it("adding a value to an output enum is risky", () => {
     const { diffs } = compare("type Query { e: E } enum E { A B }", "type Query { e: E } enum E { A B C }")
-    expect(byPath(diffs, "components/enums/E/enum/2").type).toBe(risky)
+    expect(byPath(diffs, "components/enums/E/values/C").type).toBe(risky)
   })
 
   it("removing a value from an output enum is non-breaking", () => {
     const { diffs } = compare("type Query { e: E } enum E { A B C }", "type Query { e: E } enum E { A B }")
-    expect(byPath(diffs, "components/enums/E/enum/2").type).toBe(nonBreaking)
+    expect(byPath(diffs, "components/enums/E/values/C").type).toBe(nonBreaking)
   })
 
   // ISSUE-24 (fixed)
@@ -327,7 +326,7 @@ describe("GraphQL classification: enums", () => {
       "type Query { q(e: E): String } enum E { A B }",
       "type Query { q(e: E): String } enum E { A B C }",
     )
-    expect(byPath(diffs, "components/enums/E/enum/2").type).toBe(nonBreaking)
+    expect(byPath(diffs, "components/enums/E/values/C").type).toBe(nonBreaking)
   })
 
   // ISSUE-24 (fixed)
@@ -336,7 +335,7 @@ describe("GraphQL classification: enums", () => {
       "type Query { q(e: E): String } enum E { A B C }",
       "type Query { q(e: E): String } enum E { A B }",
     )
-    expect(byPath(diffs, "components/enums/E/enum/2").type).toBe(breaking)
+    expect(byPath(diffs, "components/enums/E/values/C").type).toBe(breaking)
   })
 
   it("deprecating an enum value is a deprecation", () => {
@@ -344,7 +343,7 @@ describe("GraphQL classification: enums", () => {
       "type Query { e: E } enum E { A B }",
       'type Query { e: E } enum E { A B @deprecated(reason: "x") }',
     )
-    expect(byPath(diffs, "components/enums/E/values/B/deprecated").type).toBe(deprecated)
+    expect(byPath(diffs, "components/enums/E/values/B/deprecation").type).toBe(deprecated)
   })
 })
 
@@ -378,7 +377,7 @@ describe("GraphQL classification: scalars", () => {
       "type Query { t: T } type T { a: String }",
       "scalar Date type Query { t: T } type T { a: String d: Date }",
     )
-    expect(byPath(diffs, "components/objects/T/properties/d").type).toBe(nonBreaking)
+    expect(byPath(diffs, "components/objects/T/methods/d").type).toBe(nonBreaking)
     for (const diff of diffs) {
       expect(diff.type).not.toBe(unclassified)
     }
@@ -456,13 +455,12 @@ describe("GraphQL classification: consistency", () => {
     const { diffs } = compare(before, after)
     expect(diffs.filter((d) => d.path[0] !== "components")).toEqual([])
     expect(byPath(diffs, "components/inputObjects/I/properties/b").type).toBe(breaking)
-    expect(byPath(diffs, "components/inputObjects/I/required/0").type).toBe(breaking)
   })
 
   // ISSUE-18 (fixed): components.inputObjects.* is classified with output (reversed) semantics
   it("components.inputObjects required field addition is breaking", () => {
     const { diffs } = compare(before, after)
-    expect(byPath(diffs, "components/inputObjects/I/required/0").type).toBe(breaking)
+    expect(byPath(diffs, "components/inputObjects/I/properties/b")).toMatchObject({ action: "add", type: breaking })
   })
 })
 

@@ -174,7 +174,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-GID-009",
-    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2: enum value and field descriptions (ISSUE-57, ISSUE-127)
+    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
     area: "fields",
     title: "several changes in one type and in the enum it returns",
     before: "enum UserRole { ADMIN EDITOR } type User { id: ID! name: String! email: String! role: UserRole }",
@@ -189,27 +189,10 @@ const cases: CompatCase[] = [
       "type Query { users: [User!] } enum UserRole { ADMIN EDITOR VIEWER } type User { id: ID! name: String! address: String role: UserRole! }",
     ],
     expect: [
-      { at: ["**/enum/*", "**/values/VIEWER"], action: "add", type: risky, mentions: ["UserRole", "VIEWER"] },
-      {
-        at: ["**/properties/email", "**/methods/email"],
-        action: "remove",
-        type: breaking,
-        mentions: ["User", "email"],
-      },
-      {
-        at: ["**/properties/address", "**/methods/address"],
-        action: "add",
-        type: nonBreaking,
-        mentions: ["User", "address"],
-      },
-      // GraphApi 0.1.2 encodes non-null as the `required` list of the object schema
-      {
-        at: ["**/role/nonNull", "**/required/*"],
-        action: "add",
-        type: nonBreaking,
-        mentions: ["User", "role"],
-      },
-      { at: "**/required/*", action: "remove", type: breaking, mentions: ["User", "email"], optional: true },
+      { at: "**/values/VIEWER", action: "add", type: risky, mentions: ["UserRole", "VIEWER"] },
+      { at: "**/methods/email", action: "remove", type: breaking, mentions: ["User", "email"] },
+      { at: "**/methods/address", action: "add", type: nonBreaking, mentions: ["User", "address"] },
+      { at: "**/role/nonNull", action: "add", type: nonBreaking, mentions: ["User", "role"] },
     ],
   }),
   gql({
@@ -269,8 +252,7 @@ const cases: CompatCase[] = [
   }),
   gql({
     id: "GQL-GID-013",
-    // GraphApi (both encodings) drops the `implements` clause of root operation types
-    // ISSUE-127 (fixed) (P8a); ISSUE-141 (fixed): gqlapi 0.6 rootTypes interfaces; 0.1.2 root field descriptions
+    // ISSUE-127 (fixed) (P8a); ISSUE-141 (fixed): gqlapi 0.6 rootTypes interfaces
     area: "unions-interfaces",
     title: "query root type starts implementing an interface while a root field is removed and another added",
     before: "interface Node { id: ID } type Query { foo: String bar: String }",
@@ -341,7 +323,7 @@ const cases: CompatCase[] = [
       "directive @special(a: String, b: Int) on FIELD_DEFINITION type Query { foo: String }",
     ],
     expect: [
-      { at: ["**/args/b", "**/args/properties/b"], action: "add", type: nonBreaking, mentions: ["special", "b"] },
+      { at: "**/args/b", action: "add", type: nonBreaking, mentions: ["special", "b"] },
       { at: "components/directives/special/args/**", type: breaking, mentions: ["special", "a"] },
     ],
   }),

@@ -20,19 +20,19 @@
     },
     "core": {
       "cases": 11,
-      "variants": 12,
-      "detected": 12,
-      "classified": 12,
-      "annotated": 12,
-      "passing": 12
+      "variants": 11,
+      "detected": 11,
+      "classified": 11,
+      "annotated": 11,
+      "passing": 11
     },
     "graphql": {
       "cases": 349,
-      "variants": 698,
-      "detected": 698,
-      "classified": 698,
-      "annotated": 698,
-      "passing": 698
+      "variants": 349,
+      "detected": 349,
+      "classified": 349,
+      "annotated": 349,
+      "passing": 349
     },
     "jsonschema": {
       "cases": 555,

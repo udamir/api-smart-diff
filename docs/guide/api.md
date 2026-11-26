@@ -118,7 +118,6 @@ See [Result](./result).
 | `OpenApi3RulesOptions`, `OpenApi3SchemaRulesOptions` | the options of `openapi3Rules` and `openApiSchemaRules` |
 | `AsyncApiRulesOptions` | the options of `asyncApi2Rules` and `asyncApi3Rules` |
 | `JsonSchemaRulesOptions` | the options of `jsonSchemaRules` |
-| `GraphApiRulesOptions` | the options of `graphApiRules` |
 | `ProtoApiCompareOptions` | `CompareOptions` plus `compatibility`, `files` and `optionRules` |
 | `ProtoApiCompatibility` | `"FILE" \| "PACKAGE" \| "WIRE_JSON" \| "WIRE"`: the [compatibility level](./protoapi#compatibility-levels) |
 | `ProtoApiRulesOptions` | the options of `protoApiRules`: `compatibility`, `files`, `optionRules` and `extensions` |
@@ -145,12 +144,11 @@ openApiSchemaRules(options?: OpenApi3SchemaRulesOptions): CompareRules
 asyncApi2Rules(options?: AsyncApiRulesOptions): CompareRules // { notMergeAllOf?, extensions? }
 asyncApi3Rules(options?: AsyncApiRulesOptions): CompareRules
 jsonSchemaRules(options?: JsonSchemaRulesOptions): CompareRules // { version?, notMergeAllOf?, extensions?, baseRules? }
-graphApiRules(options?: GraphApiRulesOptions): CompareRules // { notMergeAllOf? }
-graphApi10Rules(): CompareRules
+graphApiRules(): CompareRules
 protoApiRules(options?: ProtoApiRulesOptions): CompareRules // { compatibility?, files?, optionRules?, extensions? }
 ```
 
-The rule trees of the built-in engines: OpenAPI 3.x (`openapi3Rules`, generated for `version`, default `"3.0"`), the OpenAPI schema object (`openApiSchemaRules`), AsyncAPI 2.x and 3.0 (`asyncApi2Rules`, `asyncApi3Rules`), JSON Schema (`jsonSchemaRules`, for a draft, default `"2020-12"`), GraphApi 0.1.2 (`graphApiRules`), GraphApi 1.0 (`graphApi10Rules`) and ProtoApi 0.1 (`protoApiRules`, for a compatibility level, default `"FILE"`). Spread one to change a node and keep the rest (see [Changing a built-in rule tree](./custom-rules#changing-a-built-in-rule-tree)).
+The rule trees of the built-in engines: OpenAPI 3.x (`openapi3Rules`, generated for `version`, default `"3.0"`), the OpenAPI schema object (`openApiSchemaRules`), AsyncAPI 2.x and 3.0 (`asyncApi2Rules`, `asyncApi3Rules`), JSON Schema (`jsonSchemaRules`, for a draft, default `"2020-12"`), GraphApi 1.0 (`graphApiRules`) and ProtoApi 0.1 (`protoApiRules`, for a compatibility level, default `"FILE"`). Spread one to change a node and keep the rest (see [Changing a built-in rule tree](./custom-rules#changing-a-built-in-rule-tree)).
 
 ### Annotate hooks
 

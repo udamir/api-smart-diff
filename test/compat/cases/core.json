@@ -62,7 +62,7 @@
     "title": "an output field removed from one type of a cyclic type graph",
     "before": "Query.root: T0; ring T0..T7, each type with 2 fields to the next types and `extra: Int`",
     "after": "T7.extra removed",
-    "rationale": "one declaration changed; GraphApi 0.1.2 inlines object types at every usage, so the change is re-reported inside every type on every acyclic path to T7 (hundreds of diffs for 8 types, growing exponentially; the GitHub schema does not finish), while the 1.0 encoding reports it once",
+    "rationale": "one declaration changed; a usage of a named type is nominal, so the change is reported once, at the declaration, not re-reported inside every type on every acyclic path to T7 (hundreds of diffs for 8 types, growing exponentially)",
     "annotation": "names the type and the field (T7, extra)",
     "sources": [
       {
@@ -72,8 +72,8 @@
       { "tool": "graphql-inspector", "ref": "FIELD_REMOVED", "verdict": "1 change" }
     ],
     "covers": [],
-    "variants": ["0.1.2 DCA", "1.0 DCA"],
-    "expected": [{ "at": "components/objects/T7/**/extra", "action": "remove", "type": { "0.1.2": "B", "1.0": "B" } }]
+    "variants": ["1.0 DCA"],
+    "expected": [{ "at": "components/objects/T7/**/extra", "action": "remove", "type": { "1.0": "B" } }]
   },
   {
     "id": "X-TBAPI-001",

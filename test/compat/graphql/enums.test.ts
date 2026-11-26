@@ -55,7 +55,7 @@ const cases: CompatCase[] = [
     covers: ["gi:ENUM_VALUE_ADDED", "gjs:VALUE_ADDED_TO_ENUM"],
     sdl: [out("RED BLUE"), out("RED BLUE GREEN")],
     expect: [{ at: "**", action: "add", type: risky, mentions: V("GREEN") }],
-    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 enum value description
+    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ENM-002",
@@ -92,12 +92,8 @@ const cases: CompatCase[] = [
     sources: [gi("enum.test.ts value added"), bench("Q10", "risky"), asd("test/graphapi/graphapi10.test.ts G10.18")],
     covers: ["gi:ENUM_VALUE_ADDED"],
     sdl: [both("RED BLUE"), both("RED BLUE GREEN")],
-    expect: [
-      // 0.1.2 inlines the enum at each usage site: the argument site has input semantics
-      { at: "queries/profile/args/**", action: "add", type: nonBreaking, mentions: V("GREEN"), optional: true },
-      { at: "**", action: "add", type: risky, mentions: V("GREEN") },
-    ],
-    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 enum value description
+    expect: [{ at: "**", action: "add", type: risky, mentions: V("GREEN") }],
+    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ENM-004",
@@ -158,17 +154,7 @@ const cases: CompatCase[] = [
     sources: [gi("enum.test.ts value removed"), bench("Q9")],
     covers: ["gi:ENUM_VALUE_REMOVED"],
     sdl: [both("RED BLUE GREEN"), both("RED BLUE")],
-    expect: [
-      // 0.1.2 inlines the enum at each usage site: the result sites have output semantics, the named type is breaking
-      {
-        at: ["queries/profile/properties/**", "components/objects/User/**"],
-        action: "remove",
-        type: nonBreaking,
-        mentions: V("GREEN"),
-        optional: true,
-      },
-      { at: "**", action: "remove", type: breaking, mentions: V("GREEN") },
-    ],
+    expect: [{ at: "**", action: "remove", type: breaking, mentions: V("GREEN") }],
   }),
   gql({
     id: "GQL-ENM-007",
@@ -216,7 +202,7 @@ const cases: CompatCase[] = [
       "type Query { profile: User } type User { id: ID! colors: [Color!]! } enum Color { RED BLUE GREEN }",
     ],
     expect: [{ at: "**", action: "add", type: risky, mentions: V("GREEN") }],
-    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 enum value description
+    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ENM-010",
@@ -232,7 +218,7 @@ const cases: CompatCase[] = [
       "type Query { node: Node } interface Node { id: ID! color: Color } enum Color { RED BLUE GREEN }",
     ],
     expect: [{ at: "**", action: "add", type: risky, mentions: V("GREEN") }],
-    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b); 0.1.2 enum value description
+    // ISSUE-57 (fixed) (P8a); ISSUE-130 (fixed): POLICY-05 decided (b)
   }),
   gql({
     id: "GQL-ENM-011",

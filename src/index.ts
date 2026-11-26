@@ -29,7 +29,6 @@ export { openApiSchemaRules } from "./openapi/openapi3.schema"
 export { asyncApi2Rules } from "./asyncapi/asyncapi2.rules"
 export { asyncApi3Rules } from "./asyncapi/asyncapi3.rules"
 export { graphApiRules } from "./graphapi/graphapi.rules"
-export { graphApi10Rules } from "./graphapi/graphapi10.rules"
 export { protoApiRules } from "./protoapi/protoapi.rules"
 
 export { jsonSchemaAnnotationHook } from "./jsonSchema/jsonSchema.annotate"
@@ -110,7 +109,6 @@ export type {
   JsonSchemaDraft,
   JsonSchemaRulesOptions,
 } from "./jsonSchema/jsonSchema.types"
-export type { GraphApiRulesOptions } from "./graphapi/graphapi.rules"
 export type {
   ProtoApiCompareOptions,
   ProtoApiCompatibility,

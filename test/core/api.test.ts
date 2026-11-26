@@ -20,7 +20,7 @@ describe("Block A8 — public API and engine discovery", () => {
       expect(discoverCompareEngine({ openapi: "3.0.3" })).toBe(compareOpenApi)
       expect(discoverCompareEngine({ openapi: "3.1.0" })).toBe(compareOpenApi)
       expect(discoverCompareEngine({ asyncapi: "2.6.0" })).toBe(compareAsyncApi)
-      expect(discoverCompareEngine({ graphapi: "0.1.2" })).toBe(compareGraphApi)
+      expect(discoverCompareEngine({ graphapi: "1.0" })).toBe(compareGraphApi)
       expect(discoverCompareEngine({ type: "object" })).toBe(compareJsonSchema)
     })
 
@@ -34,6 +34,7 @@ describe("Block A8 — public API and engine discovery", () => {
     // being diffed as plain JSON Schema; AsyncAPI 3 is routed to the AsyncAPI engine; `options.engine` forces one.
     it("A8.3 unsupported specifications are rejected with UnsupportedSpecError", () => {
       expect(() => discoverCompareEngine({ swagger: "2.0" })).toThrow(UnsupportedSpecError)
+      expect(() => discoverCompareEngine({ graphapi: "0.1.2" })).toThrow(/GraphApi 0.1.2 is not supported/)
       expect(() => apiCompare({ swagger: "2.0" }, { swagger: "2.0" })).toThrow(/Swagger 2.0 is not supported/)
       expect(() => apiCompare({ openapi: "3.0.0" }, { asyncapi: "2.6.0" })).toThrow(UnsupportedSpecError)
       expect(discoverCompareEngine({ asyncapi: "3.0.0" })).toBe(compareAsyncApi)
